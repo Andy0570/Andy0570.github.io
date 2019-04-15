@@ -1,0 +1,1268 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+  
+  
+    
+      
+    
+    
+      
+    
+  <script src="//cdn.jsdelivr.net/npm/pace-js@1/pace.min.js"></script>
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/pace-js@1/themes/blue/pace-theme-minimal.css">
+
+
+
+  
+  
+    
+  
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/han-css@3/dist/han.min.css">
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+
+
+
+
+
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/font-awesome@4/css/font-awesome.min.css">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/panda/apple-touch-icon.png?v=7.1.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/panda/favicon-32x32.png?v=7.1.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/panda/favicon-16x16.png?v=7.1.0">
+
+
+  <link rel="mask-icon" href="/images/panda/safari-pinned-tab.svg?v=7.1.0" color="#222">
+
+
+  <link rel="manifest" href="/images/panda/site.webmanifest">
+
+
+  <meta name="msapplication-config" content="/images/panda/browserconfig.xml">
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.1.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: true,
+    fastclick: true,
+    lazyload: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="CA中心——CA系统——数字证书 CA 中心管理并运营 CA 系统，CA 系统负责颁发数字证书。 专门负责颁发数字证书的系统称为 CA 系统，负责管理并运营 CA 系统的机构称为 CA 中心。所有与数字证书相关的各种概念和技术，统称为 PKI（Public Key Infrastructure）。  传统密码学 换位加密法； 替换加密法；  现代密码学  对称算法/密码密钥算法/单密钥算法：加密">
+<meta name="keywords" content="PKI,密码学">
+<meta property="og:type" content="article">
+<meta property="og:title" content="PKI 体系">
+<meta property="og:url" content="https://andy0570.com/2018/08/15/PKI 体系/index.html">
+<meta property="og:site_name" content="独木舟的木">
+<meta property="og:description" content="CA中心——CA系统——数字证书 CA 中心管理并运营 CA 系统，CA 系统负责颁发数字证书。 专门负责颁发数字证书的系统称为 CA 系统，负责管理并运营 CA 系统的机构称为 CA 中心。所有与数字证书相关的各种概念和技术，统称为 PKI（Public Key Infrastructure）。  传统密码学 换位加密法； 替换加密法；  现代密码学  对称算法/密码密钥算法/单密钥算法：加密">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/2648731-89c03684f48a6c3c.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/2648731-4bfdf47ced515611.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/620">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/2648731-47a32d37d5491925.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/2648731-248d8cbb3257e59d.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/2648731-2022dcdcebc24edd.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/2648731-3b40c81976c04e57.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:updated_time" content="2019-04-15T09:36:06.618Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="PKI 体系">
+<meta name="twitter:description" content="CA中心——CA系统——数字证书 CA 中心管理并运营 CA 系统，CA 系统负责颁发数字证书。 专门负责颁发数字证书的系统称为 CA 系统，负责管理并运营 CA 系统的机构称为 CA 中心。所有与数字证书相关的各种概念和技术，统称为 PKI（Public Key Infrastructure）。  传统密码学 换位加密法； 替换加密法；  现代密码学  对称算法/密码密钥算法/单密钥算法：加密">
+<meta name="twitter:image" content="http://upload-images.jianshu.io/upload_images/2648731-89c03684f48a6c3c.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+
+
+
+  <link rel="alternate" href="/atom.xml" title="独木舟的木" type="application/atom+xml">
+
+
+
+  
+  
+  <link rel="canonical" href="https://andy0570.com/2018/08/15/PKI 体系/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>PKI 体系 | 独木舟的木</title>
+  
+
+
+
+
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?8229a094facca297f211d61323fd9fde";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <a href="https://github.com/andy0570" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewbox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+    
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">独木舟的木</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">iOS Developer</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">1</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签<span class="badge">2</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">10</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+
+  
+    <div class="site-search">
+      
+  
+  <div class="algolia-popup popup search-popup">
+    <div class="algolia-search">
+      <div class="algolia-search-input-icon">
+        <i class="fa fa-search"></i>
+      </div>
+      <div class="algolia-search-input" id="algolia-search-input"></div>
+    </div>
+
+    <div class="algolia-results">
+      <div id="algolia-stats"></div>
+      <div id="algolia-hits"></div>
+      <div id="algolia-pagination" class="algolia-pagination"></div>
+    </div>
+
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+  </div>
+
+
+
+
+    </div>
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://andy0570.com/2018/08/15/PKI 体系/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="独木舟的木">
+      <meta itemprop="description" content="有时候阳光很好 有时候阳光很暗">
+      <meta itemprop="image" content="https://ws1.sinaimg.cn/large/006tNc79gy1g22m14458rj30u014xu0x.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="独木舟的木">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">PKI 体系
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-08-15 14:39:00" itemprop="dateCreated datePublished" datetime="2018-08-15T14:39:00+08:00">2018-08-15</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-04-15 17:36:06" itemprop="dateModified" datetime="2019-04-15T17:36:06+08:00">2019-04-15</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/PKI-密码学/" itemprop="url" rel="index"><span itemprop="name">PKI&密码学</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+            <span id="/2018/08/15/PKI 体系/" class="leancloud_visitors" data-flag-title="PKI 体系">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读次数：</span>
+              
+                <span class="leancloud-visitors-count"></span>
+            </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body han-init-context" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>CA中心——CA系统——数字证书</p>
+<p>CA 中心管理并运营 CA 系统，CA 系统负责颁发数字证书。</p>
+<p>专门负责颁发数字证书的系统称为 CA 系统，负责管理并运营 CA 系统的机构称为 CA 中心。所有与数字证书相关的各种概念和技术，统称为 PKI（Public Key Infrastructure）。</p>
+</blockquote>
+<h3 id="传统密码学"><a href="#传统密码学" class="headerlink" title="传统密码学"></a>传统密码学</h3><ul>
+<li>换位加密法；</li>
+<li>替换加密法；</li>
+</ul>
+<h3 id="现代密码学"><a href="#现代密码学" class="headerlink" title="现代密码学"></a>现代密码学</h3><p><img src="http://upload-images.jianshu.io/upload_images/2648731-89c03684f48a6c3c.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="现代密码学"></p>
+<ul>
+<li><strong>对称算法/密码密钥算法/单密钥算法</strong>：加密和解密使用同一密钥或加密和解密的密钥之间存在简单的、容易计算的互推关系。<ul>
+<li>流密码算法又称序列密码算法，每次加密或解密一位或一字节的明文或密文。</li>
+<li>分组密码算法将明文（密文）分成固定长度的数据块（比特块或字节块），用同一密钥和算法对每一明文（密文）块加密（解密）后得到等长的密文（明文）块，然后将密文（文）块按照顺序组合起来最终得到密文（明文）。</li>
+</ul>
+</li>
+<li><strong>非对称算法/公钥算法</strong>：加密密钥（公钥）和解密密钥（私钥）不相同的密码算法。</li>
+<li><strong>摘要算法/散列函数/哈希函数/杂凑函数</strong>：把任意长的输入消息数据转化成固定长度的输出数据的一种密码算法。</li>
+<li><strong>数字签名</strong>：验证消息源及数据内容的真实性；签名能够被第三方验证，并确定消息内容的真实性和签名者身份。<ul>
+<li>数字签名体制包括三个算法：密钥生成算法、签名算法、验证算法。</li>
+</ul>
+</li>
+</ul>
+<h4 id="数字签名"><a href="#数字签名" class="headerlink" title="数字签名"></a>数字签名</h4><p>消息加密只是解决了传送消息的保密问题，而防止他人对传输文件进行破坏，以及确定发信人的身份需要使用数字签名。完善的数字签名应具备签字方不能抵赖、他人不能伪造、在公证人面前能够验证真伪的能力。</p>
+<h5 id="常用的数字签名方法："><a href="#常用的数字签名方法：" class="headerlink" title="常用的数字签名方法："></a>常用的数字签名方法：</h5><ul>
+<li>RSA 签名；</li>
+<li>DSS 签名；</li>
+<li>Hash 签名；</li>
+</ul>
+<h5 id="数字签名原理："><a href="#数字签名原理：" class="headerlink" title="数字签名原理："></a>数字签名原理：</h5><p>报文的发送方从报文文本中生成一个固定长度的散列值（报文摘要）。发送方用自己的私钥对这个散列值进行加密来形成发送方的数字签名。然后，这个数字签名将作为报文的附件和报文一起发送给报文的接收方。报文的接收方首先从接收到的原始报文中计算出散列值，接着再用发送方的公钥来对报文附加的数字签名进行解密。如果两个散列值相同，那么接收方就能确认该数字签名是发送方的。通过数字签名能够实现对原始报文的鉴别。<br><img src="https://upload-images.jianshu.io/upload_images/2648731-4bfdf47ced515611.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/620" alt="数字签名原理"><br>采用数字签名，能够保证：</p>
+<ol>
+<li>信息是由签名者发送的；</li>
+<li>信息自签发后到收到为止未曾有过任何修改；</li>
+</ol>
+<h5 id="数字签名与非对称加密的关系"><a href="#数字签名与非对称加密的关系" class="headerlink" title="数字签名与非对称加密的关系"></a>数字签名与非对称加密的关系</h5><blockquote>
+<p>一言以蔽之，数字签名就是将<a href="https://www.wikiwand.com/zh-hans/%E5%85%AC%E9%92%A5%E5%AF%86%E7%A0%81" target="_blank" rel="noopener">公钥密码</a>反过来使用。</p>
+</blockquote>
+<ul>
+<li>都使用公钥体系，但实现的方法正好相反，使用的密钥对也不同。</li>
+<li><strong>数字签名</strong> 使用的是发送方的密钥对，发送方用自己的私钥进行加密，接收方用发送方的公开密钥进行解密。一对多关系。</li>
+<li><strong>非对称加密</strong>的加密解密则使用的是接收方的密钥对，这是多对一的关系：任何知道接收方公开密钥的人都可以向接收方发送加密信息，只有唯一拥有接收方私有密钥的人才能对信息解密。</li>
+<li>在实用过程中，通常一个用户拥有两个密钥对，一个密钥对用来进行数字签名，另一个密钥对用来进行非对称加密，这种方式提供了更高的安全性。</li>
+</ul>
+<h3 id="密钥管理"><a href="#密钥管理" class="headerlink" title="密钥管理"></a>密钥管理</h3><p><img src="http://upload-images.jianshu.io/upload_images/2648731-47a32d37d5491925.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image"></p>
+<h3 id="密钥管理模式"><a href="#密钥管理模式" class="headerlink" title="密钥管理模式"></a>密钥管理模式</h3><ul>
+<li>无中心模式；</li>
+<li>有中心模式；</li>
+</ul>
+<h3 id="PKI-的本质是把非对称密钥管理标准化"><a href="#PKI-的本质是把非对称密钥管理标准化" class="headerlink" title="PKI 的本质是把非对称密钥管理标准化"></a>PKI 的本质是把非对称密钥管理标准化</h3><p>PKI 是 Public Key Infrastructure 的缩写，其主要功能是绑定证书持有者的身份和相关的密钥对（通过为公钥及相关的用户身份信息签发数字证书），为用户提供方便的证书申请、证书作废、证书获取、证书状态查询的途径，并利用数字证书及相关的各种服务（证书发布，黑名单发布，时间戳服务等）实现通信中各实体的身份认证、完整性、抗抵赖性和保密性。</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/2648731-248d8cbb3257e59d.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image"></p>
+<ul>
+<li><strong>数字证书</strong>：解决公钥与用户映射关系问题；</li>
+<li><strong>CA</strong>：解决数字证书签发问题；<br><img src="http://upload-images.jianshu.io/upload_images/2648731-2022dcdcebc24edd.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image"></li>
+<li><strong>KMC</strong>：解决私钥的备份与恢复问题；</li>
+<li><strong>双证书机制</strong>：「签名证书及私钥」只用于签名验签，「加密证书及私钥」只用于加密解密。</li>
+<li><strong>LDAP</strong>：解决数字证书查询和下载的性能问题，避免 CA 中心成为性能瓶颈。</li>
+<li><strong>CRL（证书作废列表）</strong> 和 <strong>OSCP（在线证书状态协议）</strong>：方便用户快速获得证书状态。</li>
+<li><strong>RA</strong>：方便证书业务远程办理、方便证书管理流程与应用系统结合。</li>
+<li><strong>电子认证服务机构</strong>：保证 CA 系统在数字证书管理方面的规范性、合规性和安全性。</li>
+</ul>
+<h3 id="基于数字证书可以实现四种基本安全功能："><a href="#基于数字证书可以实现四种基本安全功能：" class="headerlink" title="基于数字证书可以实现四种基本安全功能："></a>基于数字证书可以实现四种基本安全功能：</h3><ol>
+<li>身份认证；</li>
+<li>保密性；</li>
+<li>完整性；</li>
+<li>抗抵赖性；</li>
+</ol>
+<h3 id="数字证书分类"><a href="#数字证书分类" class="headerlink" title="数字证书分类"></a>数字证书分类</h3><p><img src="http://upload-images.jianshu.io/upload_images/2648731-3b40c81976c04e57.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image"></p>
+<h3 id="PKI-基本组件"><a href="#PKI-基本组件" class="headerlink" title="PKI 基本组件"></a>PKI 基本组件</h3><p>完整的 PKI 系统必须具有数字证书、认证中心（CA）、证书资料库、证书吊销系统、密钥备份及恢复系统、PKI 应用接口系统等构成部分。</p>
+<table>
+<thead>
+<tr>
+<th>组件</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>数字证书</td>
+<td>包含了用于签名和加密数据的公钥的电子凭证，是PKI的核心元素</td>
+</tr>
+<tr>
+<td>认证中心（CA）</td>
+<td>数字证书的申请及签发机关，CA必须具备权威性</td>
+</tr>
+<tr>
+<td>证书资料库</td>
+<td>存储已签发的数字证书和公钥，以及相关证书目录，用户可由此获得所需的其他用户的证书及公钥</td>
+</tr>
+<tr>
+<td>证书吊销列表（CRL）/OCSP</td>
+<td>在有效期内吊销的证书列表，在线证书状态协议OCSP是获得证书状态的国际协议</td>
+</tr>
+<tr>
+<td>密钥备份及恢复</td>
+<td>为避免因用户丢失解密密钥而无法解密合法数据的情况，PKI提供备份与恢复密钥的机制。必须由可信的机构来完成。并且，密钥备份与恢复只能针对解密密钥，签名私钥不能够作备份</td>
+</tr>
+<tr>
+<td>PKI应用接口（API）</td>
+<td>为各种各样的应用提供安全、一致、 可信的方式与PKI交互，确保建立起来的网络环境安全可靠，并降低管理成本</td>
+</tr>
+</tbody>
+</table>
+<h3 id="PKI-画外音"><a href="#PKI-画外音" class="headerlink" title="PKI 画外音"></a>PKI 画外音</h3><ul>
+<li><a href="http://www.jiemian.com/article/231843.html" target="_blank" rel="noopener">OpenSSL 隐形战友</a></li>
+<li><a href="https://www.zhihu.com/question/21838720/answer/62574832" target="_blank" rel="noopener">知乎：为什么 SSL 证书那么贵?</a></li>
+<li><a href="https://www.zhihu.com/question/19578422" target="_blank" rel="noopener">知乎：SSL 证书服务，大家用哪家的？</a></li>
+<li><a href="https://www.cnblogs.com/LittleHann/p/3738141.html" target="_blank" rel="noopener">openSSL 命令、PKI、CA、SSL 证书原理</a></li>
+<li><a href="https://blog.csdn.net/xiyuan1999/article/details/6416948" target="_blank" rel="noopener">OpenSSL 中文手册 之一 OpenSSL 简介－证书</a></li>
+</ul>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+      <div>
+        
+
+
+
+
+  
+
+
+
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>独木舟的木</li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    
+    <a href="https://andy0570.com/2018/08/15/PKI 体系/" title="PKI 体系">https://andy0570.com/2018/08/15/PKI 体系/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！</li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/PKI/" rel="tag"># PKI</a>
+          
+            <a href="/tags/密码学/" rel="tag"># 密码学</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/11/01/笔记：密码学/" rel="next" title="密码学笔记">
+                <i class="fa fa-chevron-left"></i> 密码学笔记
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/09/13/OpenSSL/" rel="prev" title="OpenSSL">
+                OpenSSL <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="https://ws1.sinaimg.cn/large/006tNc79gy1g22m14458rj30u014xu0x.jpg" alt="独木舟的木">
+            
+              <p class="site-author-name" itemprop="name">独木舟的木</p>
+              <div class="site-description motion-element" itemprop="description">有时候阳光很好 有时候阳光很暗</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">10</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                    <span class="site-state-item-count">1</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">2</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/Andy0570" title="GitHub &rarr; https://github.com/Andy0570" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="mailto:andywhm@163.com" title="E-Mail &rarr; mailto:andywhm@163.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                </span>
+              
+            </div>
+          
+
+          
+             <div class="cc-license motion-element" itemprop="license">
+              
+              
+                
+              
+              
+              
+              <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+             </div>
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#传统密码学"><span class="nav-number">1.</span> <span class="nav-text">传统密码学</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#现代密码学"><span class="nav-number">2.</span> <span class="nav-text">现代密码学</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#数字签名"><span class="nav-number">2.1.</span> <span class="nav-text">数字签名</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#常用的数字签名方法："><span class="nav-number">2.1.1.</span> <span class="nav-text">常用的数字签名方法：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#数字签名原理："><span class="nav-number">2.1.2.</span> <span class="nav-text">数字签名原理：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#数字签名与非对称加密的关系"><span class="nav-number">2.1.3.</span> <span class="nav-text">数字签名与非对称加密的关系</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#密钥管理"><span class="nav-number">3.</span> <span class="nav-text">密钥管理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#密钥管理模式"><span class="nav-number">4.</span> <span class="nav-text">密钥管理模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#PKI-的本质是把非对称密钥管理标准化"><span class="nav-number">5.</span> <span class="nav-text">PKI 的本质是把非对称密钥管理标准化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#基于数字证书可以实现四种基本安全功能："><span class="nav-number">6.</span> <span class="nav-text">基于数字证书可以实现四种基本安全功能：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数字证书分类"><span class="nav-number">7.</span> <span class="nav-text">数字证书分类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#PKI-基本组件"><span class="nav-number">8.</span> <span class="nav-text">PKI 基本组件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#PKI-画外音"><span class="nav-number">9.</span> <span class="nav-text">PKI 画外音</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">独木舟的木</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.1.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+  
+    
+    
+      
+    
+  
+  <script color="17,119,176" opacity="0.5" zindex="-1" count="99" src="//cdn.jsdelivr.net/gh/theme-next/theme-next-canvas-nest@1/canvas-nest.min.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="//cdn.jsdelivr.net/npm/jquery@2/dist/jquery.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/fastclick@1/lib/fastclick.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/jquery-lazyload@1/jquery.lazyload.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/velocity-animate@1/velocity.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/velocity-animate@1/velocity.ui.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.0"></script>
+
+  <script src="/js/motion.js?v=7.1.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.0"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.0"></script>
+
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.0"></script>
+<script src="/js/post-details.js?v=7.1.0"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.0"></script>
+
+
+  
+
+  
+
+  
+  
+  
+    
+  
+
+  
+
+  
+  
+  
+
+
+  
+
+
+  
+
+
+  
+
+
+
+  
+  
+  
+    
+  
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/instantsearch.js@2/dist/instantsearch.min.css">
+
+  
+  
+    
+  
+  <script src="//cdn.jsdelivr.net/npm/instantsearch.js@2/dist/instantsearch.js"></script>
+  
+
+  <script src="/js/algolia-search.js?v=7.1.0"></script>
+
+
+
+  
+  
+  <script>
+    
+    function addCount(Counter) {
+      var $visitors = $('.leancloud_visitors');
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+
+      Counter('get', '/classes/Counter', { where: JSON.stringify({ url }) })
+        .done(function({ results }) {
+          if (results.length > 0) {
+            var counter = results[0];
+            
+            Counter('put', '/classes/Counter/' + counter.objectId, JSON.stringify({ time: { '__op': 'Increment', 'amount': 1 } }))
+            
+              .done(function() {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.time + 1);
+              })
+            
+              .fail(function ({ responseJSON }) {
+                console.log('Failed to save Visitor num, with error message: ' + responseJSON.error);
+              })
+          } else {
+            
+              var $element = $(document.getElementById(url));
+              $element.find('.leancloud-visitors-count').text('Counter not initialized! More info at console err msg.');
+              console.error('ATTENTION! LeanCloud counter has security bug, see how to solve it here: https://github.com/theme-next/hexo-leancloud-counter-security. \n However, you can still use LeanCloud without security, by setting `security` option to `false`.');
+            
+          }
+        })
+        .fail(function ({ responseJSON }) {
+          console.log('LeanCloud Counter Error: ' + responseJSON.code + ' ' + responseJSON.error);
+        });
+    }
+    
+
+    $(function() {
+      $.get('https://app-router.leancloud.cn/2/route?appId=' + 'S7i1Y8YorMKFPaYbJbekD5el-gzGzoHsz')
+        .done(function({ api_server }) {
+          var Counter = function(method, url, data) {
+            return $.ajax({
+              method: method,
+              url: 'https://' + api_server + '/1.1' + url,
+              headers: {
+                'X-LC-Id': 'S7i1Y8YorMKFPaYbJbekD5el-gzGzoHsz',
+                'X-LC-Key': 'brOnU8mOQvSjpipJvdKUAIbU',
+                'Content-Type': 'application/json',
+              },
+              data: data
+            });
+          };
+          
+            addCount(Counter);
+          
+        });
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+  
+    
+  
+  <script src="//cdn.jsdelivr.net/npm/pangu@4/dist/browser/pangu.min.js"></script>
+  <script>pangu.spacingPage();</script>
+
+
+  
+  
+  
+    
+  
+  <script src="//cdn.jsdelivr.net/gh/theme-next/theme-next-bookmark@1/bookmark.min.js"></script>
+  <script>
+  
+    bookmark.scrollToMark('auto', "#更多");
+  
+  </script>
+
+
+  
+
+  
+
+  
+
+
+  <!-- red heart -->
+  <script type="text/javascript" src="/js/src/love.js"></script>
+  
+</body>
+</html>
