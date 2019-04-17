@@ -1,0 +1,1478 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+  
+  
+    
+      
+    
+    
+      
+    
+  <script src="//cdn.jsdelivr.net/npm/pace-js@1/pace.min.js"></script>
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/pace-js@1/themes/blue/pace-theme-minimal.css">
+
+
+
+  
+  
+    
+  
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/han-css@3/dist/han.min.css">
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+
+
+
+
+
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/font-awesome@4/css/font-awesome.min.css">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/panda/apple-touch-icon.png?v=7.1.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/panda/favicon-32x32.png?v=7.1.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/panda/favicon-16x16.png?v=7.1.0">
+
+
+  <link rel="mask-icon" href="/images/panda/safari-pinned-tab.svg?v=7.1.0" color="#222">
+
+
+  <link rel="manifest" href="/images/panda/site.webmanifest">
+
+
+  <meta name="msapplication-config" content="/images/panda/browserconfig.xml">
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.1.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: true,
+    fastclick: true,
+    lazyload: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="点击TableView列表展示WebView注： 本文参考 IOS编程（第四版） 第21章 web服务与UIwebView 相关内容开发一款名为Nerdfeed的应用。展示 UITableView 与 UIWebView 相关知识内容，以为整理记录，作为日后开发过程中参考并使用。    Needfeed 的作用是读取并通过 UITableView 显示 Big Nerd Ranch 提供的在线课">
+<meta name="keywords" content="iOS">
+<meta property="og:type" content="article">
+<meta property="og:title" content="《iOS编程（第四版）》Demo：Needfeed">
+<meta property="og:url" content="https://andy0570.com/2016/09/30/《iOS编程（第四版）》Demo：Needfeed/index.html">
+<meta property="og:site_name" content="独木舟的木">
+<meta property="og:description" content="点击TableView列表展示WebView注： 本文参考 IOS编程（第四版） 第21章 web服务与UIwebView 相关内容开发一款名为Nerdfeed的应用。展示 UITableView 与 UIWebView 相关知识内容，以为整理记录，作为日后开发过程中参考并使用。    Needfeed 的作用是读取并通过 UITableView 显示 Big Nerd Ranch 提供的在线课">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/2648731-04d5f253d8f0537a.gif?imageMogr2/auto-orient/strip">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/2648731-069f2b28b2799215.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:updated_time" content="2019-04-17T09:18:57.752Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="《iOS编程（第四版）》Demo：Needfeed">
+<meta name="twitter:description" content="点击TableView列表展示WebView注： 本文参考 IOS编程（第四版） 第21章 web服务与UIwebView 相关内容开发一款名为Nerdfeed的应用。展示 UITableView 与 UIWebView 相关知识内容，以为整理记录，作为日后开发过程中参考并使用。    Needfeed 的作用是读取并通过 UITableView 显示 Big Nerd Ranch 提供的在线课">
+<meta name="twitter:image" content="http://upload-images.jianshu.io/upload_images/2648731-04d5f253d8f0537a.gif?imageMogr2/auto-orient/strip">
+
+
+
+  <link rel="alternate" href="/atom.xml" title="独木舟的木" type="application/atom+xml">
+
+
+
+  
+  
+  <link rel="canonical" href="https://andy0570.com/2016/09/30/《iOS编程（第四版）》Demo：Needfeed/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>《iOS编程（第四版）》Demo：Needfeed | 独木舟的木</title>
+  
+
+
+
+
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?8229a094facca297f211d61323fd9fde";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <a href="https://github.com/andy0570" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewbox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+    
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">独木舟的木</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">iOS Developer</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">15</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签<span class="badge">76</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">311</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+
+  
+    <div class="site-search">
+      
+  
+  <div class="algolia-popup popup search-popup">
+    <div class="algolia-search">
+      <div class="algolia-search-input-icon">
+        <i class="fa fa-search"></i>
+      </div>
+      <div class="algolia-search-input" id="algolia-search-input"></div>
+    </div>
+
+    <div class="algolia-results">
+      <div id="algolia-stats"></div>
+      <div id="algolia-hits"></div>
+      <div id="algolia-pagination" class="algolia-pagination"></div>
+    </div>
+
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+  </div>
+
+
+
+
+    </div>
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://andy0570.com/2016/09/30/《iOS编程（第四版）》Demo：Needfeed/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="独木舟的木">
+      <meta itemprop="description" content="有时候阳光很好 有时候阳光很暗">
+      <meta itemprop="image" content="https://ws1.sinaimg.cn/large/006tNc79gy1g22m14458rj30u014xu0x.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="独木舟的木">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">《iOS编程（第四版）》Demo：Needfeed
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2016-09-30 15:35:00" itemprop="dateCreated datePublished" datetime="2016-09-30T15:35:00+08:00">2016-09-30</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-04-17 17:18:57" itemprop="dateModified" datetime="2019-04-17T17:18:57+08:00">2019-04-17</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/iOS/" itemprop="url" rel="index"><span itemprop="name">iOS</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+            <span id="/2016/09/30/《iOS编程（第四版）》Demo：Needfeed/" class="leancloud_visitors" data-flag-title="《iOS编程（第四版）》Demo：Needfeed">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读次数：</span>
+              
+                <span class="leancloud-visitors-count"></span>
+            </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body han-init-context" itemprop="articleBody">
+
+      
+      
+
+      
+        <a id="more"></a>
+<h2 id="点击TableView列表展示WebView"><a href="#点击TableView列表展示WebView" class="headerlink" title="点击TableView列表展示WebView"></a>点击TableView列表展示WebView</h2><p>注： <strong>本文参考 <em>IOS编程（第四版）</em> 第21章 <em>web服务与UIwebView</em> 相关内容开发一款名为Nerdfeed的应用。展示 <em>UITableView</em> 与 <em>UIWebView</em> 相关知识内容，以为整理记录，作为日后开发过程中参考并使用。</strong>   </p>
+<p><strong>Needfeed</strong> 的作用是读取并通过 <strong>UITableView</strong> 显示 Big Nerd Ranch 提供的在线课程，选择某项课程会打开相应课程的网页。Demo如下：</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/2648731-04d5f253d8f0537a.gif?imageMogr2/auto-orient/strip" alt="Needfeed"></p>
+<p>要实现以上Demo所示的Needfeed应用，需要完成两项任务：   </p>
+<ol>
+<li>连接指定的web服务并获取数据，然后根据得到的数据创建模型对象。   </li>
+<li>用UIWebView显示Web内容。</li>
+</ol>
+<h2 id="1-创建HQLCoursesViewController类，并将其父类设置为UITableViewController"><a href="#1-创建HQLCoursesViewController类，并将其父类设置为UITableViewController" class="headerlink" title="1.创建HQLCoursesViewController类，并将其父类设置为UITableViewController"></a>1.创建HQLCoursesViewController类，并将其父类设置为UITableViewController</h2><p><code>@interface HQLCoursesViewController : UITableViewController</code></p>
+<h3 id="遵守UITableViewDataSource协议的类需要实现数据源方法"><a href="#遵守UITableViewDataSource协议的类需要实现数据源方法" class="headerlink" title="遵守UITableViewDataSource协议的类需要实现数据源方法"></a>遵守UITableViewDataSource协议的类需要实现数据源方法</h3><blockquote>
+<p> API文档描述 &gt; The UITableViewDataSource protocol is adopted by an object that mediates the application’s data model for a UITableView object. The data source provides the table-view object with the information it needs to construct and modify a table view.</p>
+</blockquote>
+<p>翻译：当一个对象需要为应用程序的UITableView对象提供数据源模型时，采用UITableViewDataSource协议。数据源则为table-view对象提供它需要建立和修改列表视图的信息。</p>
+<p>UITableViewDataSource协议必须（@requored）实现的2个方法：</p>
+<ul>
+<li><p>-(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section;<br>向数据源获取并返回列表视图中给定section区域中的行数。</p>
+</li>
+<li><p>-(UITableViewCell <em>)tableView:(UITableView </em>)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath;<br>在列表视图的特定单元格位置插入请求到的数据</p>
+</li>
+</ul>
+<p>因此，我们先在HQLCoursesViewController.m中实现空的数据源方法，之后再作修改。</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//返回行数</span></span><br><span class="line">- (<span class="built_in">NSInteger</span>) tableView:(<span class="built_in">UITableView</span> *)tableView</span><br><span class="line">  numberOfRowsInSection:(<span class="built_in">NSInteger</span>)section &#123;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//获取用于显示第section个表格段、第row行数据的UITableViewCell对象</span></span><br><span class="line">- (<span class="built_in">UITableViewCell</span> *) tableView:(<span class="built_in">UITableView</span> *)tableView</span><br><span class="line">          cellForRowAtIndexPath:(<span class="built_in">NSIndexPath</span> *)indexPath &#123;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> <span class="literal">nil</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="2-在AppDelegate-m中创建视图控制器对象"><a href="#2-在AppDelegate-m中创建视图控制器对象" class="headerlink" title="2.在AppDelegate.m中创建视图控制器对象"></a>2.在AppDelegate.m中创建视图控制器对象</h2><p>需要创建<strong>UINavigationControl</strong>对象，并将其设置为<strong>UIWindow</strong>的根视图控制器</p>
+<pre><code>//创建coursesViewController对象 cvc
+HQLCoursesViewController *cvc = [[HQLCoursesViewController alloc] initWithStyle:UITableViewStylePlain];
+
+//UINavigationController对象 masterNav 是 cvc 的根视图控制器
+UINavigationController *masterNav = [[UINavigationController alloc] initWithRootViewController:cvc];
+
+self.window.rootViewController = masterNav;
+</code></pre><h2 id="NSURL、NSURLRequest、NSURLSession和NSURLSessionTask"><a href="#NSURL、NSURLRequest、NSURLSession和NSURLSessionTask" class="headerlink" title="NSURL、NSURLRequest、NSURLSession和NSURLSessionTask"></a>NSURL、NSURLRequest、NSURLSession和NSURLSessionTask</h2><p> 要从web服务器获取数据，Nerdfeed需要使用NSURL、NSURLRequest、NSURLSession和NSURLSessionTask四个类。<br> 推荐阅读：[^1]<br>[^1]:<a href="http://www.cnblogs.com/kenshincui/p/4042190.html" target="_blank" rel="noopener">http://www.cnblogs.com/kenshincui/p/4042190.html</a>      </p>
+<p>关系图：<br><img src="http://upload-images.jianshu.io/upload_images/2648731-069f2b28b2799215.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt></p>
+<ul>
+<li><strong>NSURL</strong>对象负责以<strong>URL</strong>的格式保存web应用的位置。对大多数web服务，<strong>URL</strong>将包含基地址（base address）、web应用名和需要传送的参数。</li>
+<li><strong>NSURLRequest</strong>对象负责保存需要传送给web服务器的全部数据，这些数据包括：一个NSURL对象、缓存方法（caching policy）、等待web服务器响应的最长时间和需要通过HTTP协议传送的额外信息（<strong>NSMutableURLRequest</strong>是<strong>NSURLRequest</strong>的可变子类）。</li>
+<li>每一个<strong>NSURLSessionTask</strong>对象都表示一个<strong>NSURLRequest</strong>的生命周期。<strong>NSURLSessionTask</strong>可以跟踪<strong>NSURLRequest</strong>的状态，还可以对<strong>NSURLRequest</strong>执行取消、暂停和继续操作。<strong>NSURLSessionTask</strong>有多种不同功能的子类，包括<strong>NSURLSession-DataTask</strong>,<strong>NSURLSessionUploadTask</strong>和<strong>NSURLSessionDownloadTask</strong>.</li>
+<li><strong>NSURLSession</strong>对象可以看作是一个生产<strong>NSURLSessionTask</strong>对象的工厂。可以设置其生产出来的<strong>NSURLSessionTask</strong>对象的通用属性，例如请求的内容、是否允许在蜂窝网络下发送请求等。<strong>NSURLSession</strong>对象还有一个功能强大的委托，可以跟踪<strong>NSURLSessionTask</strong>对象的状态、处理服务器的认证要求等。</li>
+</ul>
+<h2 id="3-构建URL与发送请求"><a href="#3-构建URL与发送请求" class="headerlink" title="3.构建URL与发送请求"></a>3.构建URL与发送请求</h2><h2 id="NSURLSession"><a href="#NSURLSession" class="headerlink" title="NSURLSession"></a>NSURLSession</h2><p>NSURLSession有两种不同的含义：第一种含义指NSURLSession类；第二种含义指一组用于处理网络请求的API。<br>此处使用第一种含义，首先在HQLCoursesViewController.m的类扩展中添加一个属性，用于保存NSURLSession对象：</p>
+<p><code>@property (nonatomic) NSURLSession *session;</code>   </p>
+<ol>
+<li>接下来覆盖<strong>HQLCoursesViewController.m</strong>的<strong>initWithStyle</strong>：方法，创建<strong>NSURLSession</strong>对象</li>
+</ol>
+<pre><code><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">instancetype</span>) initWithStyle:(<span class="built_in">UITableViewStyle</span>)style &#123;</span><br><span class="line"></span><br><span class="line"><span class="comment">//创建NSURLSession对象</span></span><br><span class="line"><span class="keyword">self</span> = [<span class="keyword">super</span> initWithStyle:style];</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (<span class="keyword">self</span>) &#123;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">self</span>.navigationItem.title = <span class="string">@"BNRCourses"</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">NSURLSessionConfiguration</span> *config = [<span class="built_in">NSURLSessionConfiguration</span> defaultSessionConfiguration];</span><br><span class="line">    </span><br><span class="line">    _session = [<span class="built_in">NSURLSession</span> sessionWithConfiguration:config</span><br><span class="line">                                        <span class="comment">//NSURLSessionConfiguration对象</span></span><br><span class="line">                                             delegate:<span class="literal">nil</span>   <span class="comment">//委托</span></span><br><span class="line">                                        delegateQueue:<span class="literal">nil</span>]; <span class="comment">//委托队列</span></span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"> <span class="keyword">return</span> <span class="keyword">self</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</code></pre><ol start="2">
+<li><p>在<strong>HQLCoursesViewController.m</strong>中实现<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">此处NSURLRequest使用默认的**GET**请求方法，若要使用**POST**方法，需要设置**POST**请求体。</span><br></pre></td></tr></table></figure></p>
+<p> // 获取数据方法<br>  -(void) fetchFeed {</p>
+<p> //创建NSURLRequest请求对象<br> NSString <em>requestString = @”<a href="http://bookapi.bignerdranch.com/private/courses.json&quot;" target="_blank" rel="noopener">http://bookapi.bignerdranch.com/private/courses.json&quot;</a>;<br> NSURL </em>url = [NSURL URLWithString:requestString];<br> NSURLRequest *req = [NSURLRequest requestWithURL:url];</p>
+<p> //使用NSURLSession对象创建一个NSURLSessionDataTask对象，将NSURLRequest对象发送给服务器<br> NSURLSessionDataTask *dataTask = [self.session dataTaskWithRequest:req</p>
+<pre><code>               completionHandler://block对象
+^(NSData * _Nullable data,
+  NSURLResponse * _Nullable response,
+  NSError * _Nullable error) {
+</code></pre><p> //接收数据<br> NSString *json = [[NSString alloc] initWithData:data</p>
+<pre><code>encoding:NSUTF8StringEncoding];
+</code></pre><p> NSLog(@”%@”,json);</p>
+<p> //NSURLSessionDataTask在刚创建的时候处于暂停状态，需要手动调用resume方法恢复,让NSURLSessionDataTask开始向服务器发送请求。<br> [dataTask resume];<br> }</p>
+ <figure class="highlight asciidoc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">3. Nerdfeed应该在创建HQLCoursesViewController对象后就发起网络请求。修改*<span class="strong">*HQLCoursesViewController.m*</span><span class="strong">*的*</span><span class="strong">*initWithStyle*</span><span class="strong">*：方法，添加调用 *</span><span class="strong">*fetchFeed*</span><span class="strong">*的方法。</span></span><br><span class="line"><span class="strong">session对象创建完成后调用```[self fetchFeed];</span></span><br></pre></td></tr></table></figure>
+ <figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">	- (<span class="keyword">instancetype</span>) initWithStyle:(<span class="built_in">UITableViewStyle</span>)style &#123;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//创建NSURLSession对象</span></span><br><span class="line">    <span class="keyword">self</span> = [<span class="keyword">super</span> initWithStyle:style];</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">self</span>) &#123;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">self</span>.navigationItem.title = <span class="string">@"BNRCourses"</span>;</span><br><span class="line">        </span><br><span class="line">        <span class="built_in">NSURLSessionConfiguration</span> *config = [<span class="built_in">NSURLSessionConfiguration</span> defaultSessionConfiguration];</span><br><span class="line">        </span><br><span class="line">        _session = [<span class="built_in">NSURLSession</span> sessionWithConfiguration:config</span><br><span class="line">                                            <span class="comment">//NSURLSessionConfiguration对象</span></span><br><span class="line">                                                 delegate:<span class="literal">nil</span>   <span class="comment">//委托</span></span><br><span class="line">                                            delegateQueue:<span class="literal">nil</span>]; <span class="comment">//委托队列</span></span><br><span class="line">        [<span class="keyword">self</span> fetchFeed];</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">     <span class="keyword">return</span> <span class="keyword">self</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h2 id="JSON数据"><a href="#JSON数据" class="headerlink" title="JSON数据"></a>JSON数据</h2><ul>
+<li>JSON数据只包含有限的几种基础对象，用于表示来自服务器的模型对象，例如数组、字典、字符串和数字。而每个JOSN文件是由这些基础对象嵌套组合而成的。</li>
+</ul>
+<h2 id="4-解析JSON数据"><a href="#4-解析JSON数据" class="headerlink" title="4.解析JSON数据"></a>4.解析JSON数据</h2><ul>
+<li><strong>NSJSONSerialization</strong>类：用于解析JSON数据</li>
+<li><strong>NSJSONSerialization</strong>可以将JSON数据转换为Object-C对象</li>
+<li><strong>字典</strong>会转换为<strong>NSDictionary</strong>对象；<strong>数组</strong>会转换为<strong>NSArray</strong>对象；<strong>字符串</strong>会转换为<strong>NSString</strong>对象；<strong>数字</strong>会转换为<strong>NSNumber</strong>对象</li>
+</ul>
+<p>删除</p>
+<p><del>NSString *json = [[NSString alloc] initWithData:data<br>                                             encoding:NSUTF8StringEncoding];</del><br>~~NSLog(@”%@”,json); ~~  </p>
+<p>修改为</p>
+<pre><code>NSDictionary *jsonObject = [NSJSONSerialization JSONObjectWithData:data
+                                                               options:0
+                                                                 error:nil];
+NSLog(@&quot;%@&quot;,jsonObject);
+</code></pre><p>在HQLCoursesViewController.m的类扩展中添加一个属性用于保存在线课程数组。数组中的每一个元素都是一个NSDictionary对象，表示一项课程的详细信息。</p>
+<pre><code>@interface HQLCoursesViewController () 
+
+@property (nonatomic) NSURLSession *session;
+
+//保存在线课程数组
+@property (nonatomic,copy) NSArray *courses;
+
+@end
+</code></pre><p>然后修改NSURLSessionDataTask的completionHandler，</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">NSURLSessionDataTask</span> *dataTask = [<span class="keyword">self</span>.session dataTaskWithRequest:req</span><br><span class="line">                                                     completionHandler: <span class="comment">//block对象</span></span><br><span class="line">                                      ^(<span class="built_in">NSData</span> * _Nullable data,</span><br><span class="line">                                        <span class="built_in">NSURLResponse</span> * _Nullable response,</span><br><span class="line">                                        <span class="built_in">NSError</span> * _Nullable error) &#123;</span><br><span class="line">        </span><br><span class="line"></span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 解析JSON数据</span></span><br><span class="line">        <span class="built_in">NSDictionary</span> *jsonObject = [<span class="built_in">NSJSONSerialization</span> JSONObjectWithData:data</span><br><span class="line">                                                                   options:<span class="number">0</span></span><br><span class="line">                                                                     error:<span class="literal">nil</span>];</span><br><span class="line"> 		 <span class="comment">//NSLog(@"%@",jsonObject)</span></span><br><span class="line">        <span class="comment">//将NSDictionary代表的课程存入数组</span></span><br><span class="line">        <span class="keyword">self</span>.courses = jsonObject[<span class="string">@"courses"</span>];</span><br><span class="line">        <span class="built_in">NSLog</span>(<span class="string">@"%@"</span>,<span class="keyword">self</span>.courses);</span><br><span class="line">        </span><br><span class="line">    &#125;];</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//NSURLSessionDataTask在刚创建的时候处于暂停状态</span></span><br><span class="line">    [dataTask resume];  <span class="comment">//手动调用resume方法恢复</span></span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>接下来修改<strong>UITableView</strong>的数据源方法，将课程的title显示在相应的<strong>UITableViewCell</strong>中。最后还需要覆盖<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">	</span><br><span class="line">	- (void) viewDidLoad &#123;</span><br><span class="line">	</span><br><span class="line">	[super viewDidLoad];</span><br><span class="line">	</span><br><span class="line">	//重用UITableViewCell，向表视图注册应该使用的UITableViewCell</span><br><span class="line">	[self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@&quot;UITableViewCell&quot;];</span><br><span class="line">	</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	//获取数据源</span><br><span class="line">	//UITableViewDataSource协议必须（@requored）实现的2个方法</span><br><span class="line">	////返回行数</span><br><span class="line">	- (NSInteger) tableView:(UITableView *)tableView</span><br><span class="line">	numberOfRowsInSection:(NSInteger)section &#123;</span><br><span class="line">	</span><br><span class="line">	//返回课程数目</span><br><span class="line">	return self.courses.count;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	//获取用于显示第section个表格段、第row行数据的UITableViewCell对象</span><br><span class="line">	- (UITableViewCell *) tableView:(UITableView *)tableView</span><br><span class="line">	      cellForRowAtIndexPath:(NSIndexPath *)indexPath &#123;</span><br><span class="line">	</span><br><span class="line">	//创建或重用UITableViewCell对象</span><br><span class="line">	UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@&quot;UITableViewCell&quot;</span><br><span class="line">	                         forIndexPath:indexPath];</span><br><span class="line">	</span><br><span class="line">	NSDictionary *course = self.courses[indexPath.row];</span><br><span class="line">	cell.textLabel.text  = course [@&quot;title&quot;];//设置标题</span><br><span class="line">	return cell;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">### 主线程</span><br><span class="line">* 主线程有时也被称为用户界面线程（UI thread），这是由于修改用户界面的代码必须在主线程中运行。</span><br><span class="line">* 当web服务请求成功后，**HQLCoursesViewController**需要重新加载**UITableView**对象的数据（调用**UITableView**对象的```reloadData```方法），默认情况下**NSURLSessionDataTask**是在后台线程中执行```completionHandler:```的，为了让```reloadData```方法在主线程中运行，可以使用**dispatch_asynch**函数.</span><br></pre></td></tr></table></figure></p>
+<p>…<br>//将NSDictionary代表的课程存入数组<br>        self.courses = jsonObject[@”courses”];<br>        NSLog(@”%@”,self.courses);</p>
+<pre><code>dispatch_async(dispatch_get_main_queue(), ^{
+    //重新加载UITableView对象的数据
+    [self.tableView reloadData];
+</code></pre><p>…</p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="section">### 5.UIWebView</span></span><br><span class="line">注：官方建议，以 iOS 8 或者以后的版本运行的应用程序，使用<span class="strong">**WKWebView**</span>类而不是使用<span class="strong">**UIWebView**</span>。</span><br><span class="line"></span><br><span class="line">可参阅对UIWebView、WKWebView官方文档翻译，点击查看：</span><br><span class="line"></span><br><span class="line">[<span class="string">API翻译：UIWebView</span>](<span class="link">http://www.jianshu.com/p/bc935fab4e30</span>) 、  [<span class="string">API翻译：WKWebView</span>](<span class="link">http://www.jianshu.com/p/793d815006c5</span>) 、  [<span class="string">API翻译：WebKit</span>](<span class="link">http://www.jianshu.com/p/18d2f56b8414</span>)    </span><br><span class="line"></span><br><span class="line">课程返回的JSON数据中，每个Course对象都是一个NSDictionary对象，其中含有"url"键，值是一个URL字符串，表示对应的网址。   </span><br><span class="line">新建一个<span class="strong">**HQLWebViewController**</span>对象，父类是<span class="strong">**UIViewController**</span></span><br><span class="line"></span><br><span class="line"><span class="code">	#import &lt;UIKit/UIKit.h&gt;</span></span><br><span class="line"><span class="code">	</span></span><br><span class="line"><span class="code">	@interface HQLWebViewController : UIViewController </span></span><br><span class="line"><span class="code">	</span></span><br><span class="line"><span class="code">	@property (nonatomic) NSURL *URL;</span></span><br><span class="line"><span class="code">	</span></span><br><span class="line"><span class="code">	@end </span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">​	</span><br><span class="line">在<span class="strong">**HQLWebViewController.m**</span>中，加入以下代码：</span><br></pre></td></tr></table></figure>
+<p>@implementation HQLWebViewController</p>
+<ul>
+<li><p>(void) loadView {</p>
+<p>  UIWebView *webView = [[UIWebView alloc] init];<br>  webView.scalesPageToFit = YES;<br>  self.view = webView ;</p>
+</li>
+</ul>
+<p>}</p>
+<ul>
+<li>(void) setURL:(NSURL *)URL<br>{<br>  _URL = URL;<br>  if (_URL) {<pre><code>NSURLRequest *req = [NSURLRequest requestWithURL:_URL];
+[(UIWebView *)self.view loadRequest:req];
+</code></pre>  }<br>}</li>
+</ul>
+<p>@end</p>
+<figure class="highlight asciidoc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">在*<span class="strong">*HQLCoursesViewController.h*</span><span class="strong">*中，声明一个新属性，指向*</span><span class="strong">*HQLWebViewController*</span><span class="strong">*。</span></span><br><span class="line"><span class="strong"></span></span><br><span class="line"><span class="strong">	#import &lt;UIKit/UIKit.h&gt;</span></span><br><span class="line"><span class="strong">	@class HQLWebViewController;</span></span><br><span class="line"><span class="strong">	</span></span><br><span class="line"><span class="strong">	@interface HQLCoursesViewController : UITableViewController</span></span><br><span class="line"><span class="strong">	</span></span><br><span class="line"><span class="strong">	@property (nonatomic) HQLWebViewController *</span>webViewController;</span><br><span class="line"><span class="code">	</span></span><br><span class="line"><span class="code">	@end</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">在*<span class="strong">*AppDelegate.m*</span><span class="strong">*中，创建*</span><span class="strong">*HQLWebViewController*</span><span class="strong">*对象并将其赋给*</span><span class="strong">*HQLCoursesViewController*</span><span class="strong">*对象的*</span><span class="strong">*webViewController*</span><span class="strong">*属性。</span></span><br></pre></td></tr></table></figure>
+<pre><code>- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+
+self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+
+HQLCoursesViewController *cvc = [[HQLCoursesViewController alloc] initWithStyle:UITableViewStylePlain];
+
+UINavigationController *masterNav = [[UINavigationController alloc] initWithRootViewController:cvc];
+
+HQLWebViewController *wvc = [[HQLWebViewController alloc] init];
+cvc.webViewController = wvc;
+
+self.window.rootViewController = masterNav;
+
+self.window.backgroundColor = [UIColor whiteColor];
+[self.window makeKeyAndVisible];
+return YES;
+</code></pre><p>}</p>
+<figure class="highlight asciidoc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">在*<span class="strong">*HQLCoursesViewController.m*</span><span class="strong">*中导入*</span><span class="strong">*HQLWebViewController.h*</span><span class="strong">*,然后实现*</span><span class="strong">*UITableView*</span><span class="strong">*对象的数据源协议，用户点击*</span><span class="strong">*UITableView*</span><span class="strong">*对象中的某个*</span><span class="strong">*UITableViewCell*</span><span class="strong">*后，NerdFeed会创建*</span><span class="strong">*HQLWebViewController.h*</span><span class="strong">*对象并将其压入*</span><span class="strong">*UINavigationController*</span><span class="strong">*栈。</span></span><br></pre></td></tr></table></figure>
+<p>//用户更改选择后调用<br>//创建HQLWebViewController对象并将其压入UINavigationController栈</p>
+<ul>
+<li>(void) tableView:(UITableView <em>)tableView<br>didSelectRowAtIndexPath:(NSIndexPath </em>)indexPath {<br>  NSDictionary <em>course = self.courses [indexPath.row];<br>  NSURL </em>URL = [NSURL URLWithString:course [@”url”]];<br>  self.webViewController.title =course [@”title”];<br>  self.webViewController.URL = URL;<br>  //如果对象不属于splitViewController，则当前设备不是iPad,可以将webViewController压入navigationController栈<br>  if (! self.splitViewController) { <pre><code>[self.navigationController pushViewController:self.webViewController animated:YES];
+</code></pre>  }<br>}<figure class="highlight autohotkey"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">### <span class="number">6</span>.认证信息</span><br><span class="line">* web服务可以在返回HTTP响应时附带认证要求（authentication challenge）,只有当发起方提供相应的认证信息（比如用户名和密码），且当认证通过后，web服务才会返回真正的HTTP相应。</span><br><span class="line"></span><br><span class="line"><span class="symbol">* 当应用收到认证要求时，NSURLSession的委托会收到```(void)URLSession:task:didReceiveChallenge:completionHandler:```消</span>息，可以在该消息中发送用户名和密码，完成认证。</span><br><span class="line"></span><br><span class="line">打开**HQLCoursesViewController.m**文件，修改```fetchFeed```方法中的URL地址将**http**改为**HTTPS**。</span><br><span class="line"></span><br><span class="line">```NSString *requestString = @<span class="string">"https://bookapi.bignerdranch.com/private/courses.json"</span><span class="comment">;</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>还需要在初始化时为NSURLSession设置委托。更新<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">        _session = [NSURLSession sessionWithConfiguration:config</span><br><span class="line">                                            //NSURLSessionConfiguration对象</span><br><span class="line">                                                 delegate:self   //设置委托</span><br><span class="line">                                            delegateQueue:nil]; //委托队列</span><br><span class="line"></span><br><span class="line">然后设置使**HQLCoursesViewController**遵守**NSURLSessionDataDelegate**协议：</span><br><span class="line">```@interface HQLCoursesViewController () &lt;NSURLSessionDataDelegate&gt;</span><br></pre></td></tr></table></figure></p>
+<p>实现<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure></p>
+<p>//处理web服务认证</p>
+<ul>
+<li><p>(void) URLSession:(NSURLSession *)session</p>
+<pre><code>task:(NSURLSessionTask *)task
+</code></pre><p>didReceiveChallenge:(NSURLAuthenticationChallenge <em>)challenge<br>completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition, NSURLCredential </em> _Nullable))completionHandler {</p>
+<p>  //凭据<br>  NSURLCredential *cred = [NSURLCredential</p>
+<pre><code>credentialWithUser:@&quot;BigNerdRanch&quot;
+password:@&quot;AchieveNerdvana&quot;
+persistence:NSURLCredentialPersistenceForSession];//认证信息有效期，枚举值
+</code></pre><p>  //完成处理程序 completionHandler(认证类型，认证信息)<br>  completionHandler (NSURLSessionAuthChallengeUseCredential,cred);</p>
+</li>
+</ul>
+<p>}<br><code>`</code></p>
+<p><a href="https://github.com/Andy0570/Nerdfeed.git" target="_blank" rel="noopener">gitHub地址</a></p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+      <div>
+        
+
+
+
+
+  
+
+
+
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>独木舟的木</li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    
+    <a href="https://andy0570.com/2016/09/30/《iOS编程（第四版）》Demo：Needfeed/" title="《iOS编程（第四版）》Demo：Needfeed">https://andy0570.com/2016/09/30/《iOS编程（第四版）》Demo：Needfeed/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！</li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/iOS/" rel="tag"># iOS</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/09/29/《iOS编程（第四版）》Demo8：Homeowner/" rel="next" title="《iOS编程（第四版）》Demo8：Homeowner">
+                <i class="fa fa-chevron-left"></i> 《iOS编程（第四版）》Demo8：Homeowner
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/10/08/iOS 编程：AppIcon和LaunchScreen/" rel="prev" title="iOS 编程：AppIcon和LaunchScreen">
+                iOS 编程：AppIcon和LaunchScreen <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="https://ws1.sinaimg.cn/large/006tNc79gy1g22m14458rj30u014xu0x.jpg" alt="独木舟的木">
+            
+              <p class="site-author-name" itemprop="name">独木舟的木</p>
+              <div class="site-description motion-element" itemprop="description">有时候阳光很好 有时候阳光很暗</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">311</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">15</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">74</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/Andy0570" title="GitHub &rarr; https://github.com/Andy0570" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="mailto:andywhm@163.com" title="E-Mail &rarr; mailto:andywhm@163.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                </span>
+              
+            </div>
+          
+
+          
+             <div class="cc-license motion-element" itemprop="license">
+              
+              
+                
+              
+              
+              
+              <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+             </div>
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#点击TableView列表展示WebView"><span class="nav-number">1.</span> <span class="nav-text">点击TableView列表展示WebView</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-创建HQLCoursesViewController类，并将其父类设置为UITableViewController"><span class="nav-number">2.</span> <span class="nav-text">1.创建HQLCoursesViewController类，并将其父类设置为UITableViewController</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#遵守UITableViewDataSource协议的类需要实现数据源方法"><span class="nav-number">2.1.</span> <span class="nav-text">遵守UITableViewDataSource协议的类需要实现数据源方法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-在AppDelegate-m中创建视图控制器对象"><span class="nav-number">3.</span> <span class="nav-text">2.在AppDelegate.m中创建视图控制器对象</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NSURL、NSURLRequest、NSURLSession和NSURLSessionTask"><span class="nav-number">4.</span> <span class="nav-text">NSURL、NSURLRequest、NSURLSession和NSURLSessionTask</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-构建URL与发送请求"><span class="nav-number">5.</span> <span class="nav-text">3.构建URL与发送请求</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NSURLSession"><span class="nav-number">6.</span> <span class="nav-text">NSURLSession</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#JSON数据"><span class="nav-number">7.</span> <span class="nav-text">JSON数据</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-解析JSON数据"><span class="nav-number">8.</span> <span class="nav-text">4.解析JSON数据</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">独木舟的木</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.1.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+  
+    
+    
+      
+    
+  
+  <script color="17,119,176" opacity="0.5" zindex="-1" count="99" src="//cdn.jsdelivr.net/gh/theme-next/theme-next-canvas-nest@1/canvas-nest.min.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="//cdn.jsdelivr.net/npm/jquery@2/dist/jquery.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/fastclick@1/lib/fastclick.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/jquery-lazyload@1/jquery.lazyload.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/velocity-animate@1/velocity.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/velocity-animate@1/velocity.ui.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.0"></script>
+
+  <script src="/js/motion.js?v=7.1.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.0"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.0"></script>
+
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.0"></script>
+<script src="/js/post-details.js?v=7.1.0"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.0"></script>
+
+
+  
+
+  
+
+  
+  
+  
+    
+  
+
+  
+
+  
+  
+  
+
+
+  
+
+
+  
+
+
+  
+
+
+
+  
+  
+  
+    
+  
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/instantsearch.js@2/dist/instantsearch.min.css">
+
+  
+  
+    
+  
+  <script src="//cdn.jsdelivr.net/npm/instantsearch.js@2/dist/instantsearch.js"></script>
+  
+
+  <script src="/js/algolia-search.js?v=7.1.0"></script>
+
+
+
+  
+  
+  <script>
+    
+    function addCount(Counter) {
+      var $visitors = $('.leancloud_visitors');
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+
+      Counter('get', '/classes/Counter', { where: JSON.stringify({ url }) })
+        .done(function({ results }) {
+          if (results.length > 0) {
+            var counter = results[0];
+            
+            Counter('put', '/classes/Counter/' + counter.objectId, JSON.stringify({ time: { '__op': 'Increment', 'amount': 1 } }))
+            
+              .done(function() {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.time + 1);
+              })
+            
+              .fail(function ({ responseJSON }) {
+                console.log('Failed to save Visitor num, with error message: ' + responseJSON.error);
+              })
+          } else {
+            
+              var $element = $(document.getElementById(url));
+              $element.find('.leancloud-visitors-count').text('Counter not initialized! More info at console err msg.');
+              console.error('ATTENTION! LeanCloud counter has security bug, see how to solve it here: https://github.com/theme-next/hexo-leancloud-counter-security. \n However, you can still use LeanCloud without security, by setting `security` option to `false`.');
+            
+          }
+        })
+        .fail(function ({ responseJSON }) {
+          console.log('LeanCloud Counter Error: ' + responseJSON.code + ' ' + responseJSON.error);
+        });
+    }
+    
+
+    $(function() {
+      $.get('https://app-router.leancloud.cn/2/route?appId=' + 'S7i1Y8YorMKFPaYbJbekD5el-gzGzoHsz')
+        .done(function({ api_server }) {
+          var Counter = function(method, url, data) {
+            return $.ajax({
+              method: method,
+              url: 'https://' + api_server + '/1.1' + url,
+              headers: {
+                'X-LC-Id': 'S7i1Y8YorMKFPaYbJbekD5el-gzGzoHsz',
+                'X-LC-Key': 'brOnU8mOQvSjpipJvdKUAIbU',
+                'Content-Type': 'application/json',
+              },
+              data: data
+            });
+          };
+          
+            addCount(Counter);
+          
+        });
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+  
+    
+  
+  <script src="//cdn.jsdelivr.net/npm/pangu@4/dist/browser/pangu.min.js"></script>
+  <script>pangu.spacingPage();</script>
+
+
+  
+  
+  
+    
+  
+  <script src="//cdn.jsdelivr.net/gh/theme-next/theme-next-bookmark@1/bookmark.min.js"></script>
+  <script>
+  
+    bookmark.scrollToMark('auto', "#更多");
+  
+  </script>
+
+
+  
+
+  
+
+  
+
+
+  <!-- red heart -->
+  <script type="text/javascript" src="/js/src/love.js"></script>
+  
+</body>
+</html>

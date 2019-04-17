@@ -1,0 +1,1381 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+  
+  
+    
+      
+    
+    
+      
+    
+  <script src="//cdn.jsdelivr.net/npm/pace-js@1/pace.min.js"></script>
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/pace-js@1/themes/blue/pace-theme-minimal.css">
+
+
+
+  
+  
+    
+  
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/han-css@3/dist/han.min.css">
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+
+
+
+
+
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/font-awesome@4/css/font-awesome.min.css">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/panda/apple-touch-icon.png?v=7.1.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/panda/favicon-32x32.png?v=7.1.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/panda/favicon-16x16.png?v=7.1.0">
+
+
+  <link rel="mask-icon" href="/images/panda/safari-pinned-tab.svg?v=7.1.0" color="#222">
+
+
+  <link rel="manifest" href="/images/panda/site.webmanifest">
+
+
+  <meta name="msapplication-config" content="/images/panda/browserconfig.xml">
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.1.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: true,
+    fastclick: true,
+    lazyload: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="在网络流和文件的操作中，需要处理大量的二进制数据，JavaScript自有的字符串无法满足需求（ECAMScript 2015 引入了 TypedArray），Buffer 对象应运而生。 Node.js Buffer API Buffer 结构Buffer 是一个像 Array 的对象，但它主要用于操作字节。Buffer 的运用场景：文件I/O、网络I/O。Buffer 是二进制数据，字符串与B">
+<meta name="keywords" content="Node.js">
+<meta property="og:type" content="article">
+<meta property="og:title" content="深入浅出Node.js_Buffer">
+<meta property="og:url" content="https://andy0570.com/2018/10/28/深入浅出Node.js_Buffer/index.html">
+<meta property="og:site_name" content="独木舟的木">
+<meta property="og:description" content="在网络流和文件的操作中，需要处理大量的二进制数据，JavaScript自有的字符串无法满足需求（ECAMScript 2015 引入了 TypedArray），Buffer 对象应运而生。 Node.js Buffer API Buffer 结构Buffer 是一个像 Array 的对象，但它主要用于操作字节。Buffer 的运用场景：文件I/O、网络I/O。Buffer 是二进制数据，字符串与B">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/2648731-28d2c0fd49208b7c.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:updated_time" content="2019-04-16T18:11:46.030Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="深入浅出Node.js_Buffer">
+<meta name="twitter:description" content="在网络流和文件的操作中，需要处理大量的二进制数据，JavaScript自有的字符串无法满足需求（ECAMScript 2015 引入了 TypedArray），Buffer 对象应运而生。 Node.js Buffer API Buffer 结构Buffer 是一个像 Array 的对象，但它主要用于操作字节。Buffer 的运用场景：文件I/O、网络I/O。Buffer 是二进制数据，字符串与B">
+<meta name="twitter:image" content="http://upload-images.jianshu.io/upload_images/2648731-28d2c0fd49208b7c.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+
+
+
+  <link rel="alternate" href="/atom.xml" title="独木舟的木" type="application/atom+xml">
+
+
+
+  
+  
+  <link rel="canonical" href="https://andy0570.com/2018/10/28/深入浅出Node.js_Buffer/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>深入浅出Node.js_Buffer | 独木舟的木</title>
+  
+
+
+
+
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?8229a094facca297f211d61323fd9fde";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <a href="https://github.com/andy0570" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewbox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+    
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">独木舟的木</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">iOS Developer</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">15</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签<span class="badge">76</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">311</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+
+  
+    <div class="site-search">
+      
+  
+  <div class="algolia-popup popup search-popup">
+    <div class="algolia-search">
+      <div class="algolia-search-input-icon">
+        <i class="fa fa-search"></i>
+      </div>
+      <div class="algolia-search-input" id="algolia-search-input"></div>
+    </div>
+
+    <div class="algolia-results">
+      <div id="algolia-stats"></div>
+      <div id="algolia-hits"></div>
+      <div id="algolia-pagination" class="algolia-pagination"></div>
+    </div>
+
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+  </div>
+
+
+
+
+    </div>
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://andy0570.com/2018/10/28/深入浅出Node.js_Buffer/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="独木舟的木">
+      <meta itemprop="description" content="有时候阳光很好 有时候阳光很暗">
+      <meta itemprop="image" content="https://ws1.sinaimg.cn/large/006tNc79gy1g22m14458rj30u014xu0x.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="独木舟的木">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">深入浅出Node.js_Buffer
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-10-28 14:25:00" itemprop="dateCreated datePublished" datetime="2018-10-28T14:25:00+08:00">2018-10-28</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-04-17 02:11:46" itemprop="dateModified" datetime="2019-04-17T02:11:46+08:00">2019-04-17</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Node-js/" itemprop="url" rel="index"><span itemprop="name">Node.js</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+            <span id="/2018/10/28/深入浅出Node.js_Buffer/" class="leancloud_visitors" data-flag-title="深入浅出Node.js_Buffer">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读次数：</span>
+              
+                <span class="leancloud-visitors-count"></span>
+            </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body han-init-context" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>在网络流和文件的操作中，需要处理大量的二进制数据，JavaScript自有的字符串无法满足需求（ECAMScript 2015 引入了 <strong><a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/TypedArray" target="_blank" rel="noopener">TypedArray</a></strong>），Buffer 对象应运而生。</p>
+<p><a href="http://nodejs.cn/api/buffer.html" target="_blank" rel="noopener">Node.js Buffer API</a></p>
+<h2 id="Buffer-结构"><a href="#Buffer-结构" class="headerlink" title="Buffer 结构"></a>Buffer 结构</h2><p>Buffer 是一个像 Array 的对象，但它主要用于操作字节。<br>Buffer 的运用场景：<strong>文件I/O</strong>、<strong>网络I/O</strong>。<br>Buffer 是二进制数据，字符串与Buffer之间存在编码关系。</p>
+<h3 id="模块结构"><a href="#模块结构" class="headerlink" title="模块结构"></a>模块结构</h3><p>Buffer中，性能相关部分，使用C++实现；非性能相关部分，使用JavaScript实现。</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/2648731-28d2c0fd49208b7c.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image"></p>
+<ul>
+<li>Buffer 所占用的内存不是通过 V8 分配的，属于==堆外内存==。</li>
+<li>Node 在进程启动时已经加载了 Buffer，并将其放在了全局对象（global）上。所以在使用 Buffer 时，无须通过 <code>require()</code> 即可直接使用。</li>
+</ul>
+<h3 id="Buffer-对象"><a href="#Buffer-对象" class="headerlink" title="Buffer 对象"></a>Buffer 对象</h3><p>Buffer 对象类似于数组，它的元素为 16 进制的两位数，即0到255的数值。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> str = <span class="string">'深入浅出 node.js'</span>;</span><br><span class="line"><span class="keyword">var</span> buf = Buffer.from(str, <span class="string">'utf-8'</span>);</span><br><span class="line"><span class="built_in">console</span>.log(buf); <span class="comment">// &lt;Buffer e6 b7 b1 e5 85 a5 e6 b5 85 e5 87 ba 20 6e 6f 64 65 2e 6a 73&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> buf2 = Buffer.alloc(<span class="number">100</span>);</span><br><span class="line"><span class="comment">// 通过 length 获取长度</span></span><br><span class="line"><span class="built_in">console</span>.log(buf2.length); <span class="comment">// 100</span></span><br><span class="line"><span class="comment">// 通过下标访问元素、赋值</span></span><br><span class="line"><span class="built_in">console</span>.log(buf2[<span class="number">10</span>]); <span class="comment">// 0</span></span><br></pre></td></tr></table></figure>
+<p>给元素的赋值（0～255）规则：</p>
+<ul>
+<li>赋值&lt;0，逐次加256；</li>
+<li>赋值&gt;255，逐次减256；</li>
+<li>有小数，舍弃小数部分；</li>
+</ul>
+<h3 id="Buffer-内存分配"><a href="#Buffer-内存分配" class="headerlink" title="Buffer 内存分配"></a>Buffer 内存分配</h3><ul>
+<li><p>Buffer 对象的内存分配是在 Node 的 C++ 层面上实现的内存申请。</p>
+</li>
+<li><p>Node采用了 slab 分配机制，slab 是一种动态内存管理机制。slab 是一块申请好的固定大小的内存区域，slab的3种状态：</p>
+<ul>
+<li>full：完全分配状态；</li>
+<li>partial：部分分配状态；</li>
+<li>empty：没有被分配状态；</li>
+</ul>
+</li>
+<li>Node 以 8KB 来区分 Buffer 是大对象还是小对象。</li>
+</ul>
+<p>简单而言，真正的内存是在Node的C++层面提供的，JavaScript层面只是使用它。</p>
+<ul>
+<li>当进行小而频繁的 Buffer 操作时，采用 slab 的机制进行预先申请和事后分配，使得 JavaScript 到操作系统之间不必有过多的内存申请方面的系统调用。</li>
+<li>对于大块的 Buffer 而言，则直接使用C++层面提供的内存，而无需细腻的分配操作。</li>
+</ul>
+<h2 id="Buffer-的转换"><a href="#Buffer-的转换" class="headerlink" title="Buffer 的转换"></a>Buffer 的转换</h2><p>Buffer 对象可以与字符串之间相互转换。</p>
+<p>支持的字符串编码类型有：ASCII、UTF-8、UTF-16LE/UCS-2、Base64、Latin1、Binary、Hex。</p>
+<p>判断编码是否支持转换：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Buffer.isEncoding(ecoding); <span class="comment">// true/false</span></span><br></pre></td></tr></table></figure>
+<p>第三方模块：</p>
+<ul>
+<li>iconv：通过 C++ 调用 libiconv 库完成。</li>
+<li>iconv-lite：通过 JavaScript 实现。</li>
+</ul>
+<h3 id="宽字节中文乱码"><a href="#宽字节中文乱码" class="headerlink" title="宽字节中文乱码"></a>宽字节中文乱码</h3><ul>
+<li><code>buf.toString([encoding[, start[, end]]])</code> </li>
+<li>文件可读流在读取时会逐个读取Buffer。</li>
+<li>宽字节字符串在UTF-8编码下是以3个字节的方式存储的。</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Buffer 的拼接</span></span><br><span class="line"><span class="keyword">var</span> chunks = []; <span class="comment">// 用数组来存储接收到的所有Buffer片段</span></span><br><span class="line"><span class="keyword">var</span> size = <span class="number">0</span>;    <span class="comment">// 记录下所有片段的总长度</span></span><br><span class="line">res.on(<span class="string">'data'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">chunk</span>) </span>&#123;</span><br><span class="line">    chunks.push(chunk);</span><br><span class="line">    size += chunk.length;</span><br><span class="line">&#125;);</span><br><span class="line">res.on(<span class="string">'end'</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="comment">// Buffer.concat() 生成一个合并的 Buffer 对象</span></span><br><span class="line">    <span class="keyword">var</span> buf = Buffer.concat(chunks, size);</span><br><span class="line">    vr str = iconv.decode(buf, <span class="string">'utf8'</span>);</span><br><span class="line">    <span class="built_in">console</span>.log(str);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<h2 id="Buffer-与性能"><a href="#Buffer-与性能" class="headerlink" title="Buffer 与性能"></a>Buffer 与性能</h2><ul>
+<li>通过预先转换静态内容为Buffer对象，可以有效地减少CPU的重复使用，节省服务器资源。</li>
+<li>在文件读取时，<strong>highWaterMark</strong> 的设置对性能至关重要。该值越大，读取速度越快。</li>
+</ul>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+      <div>
+        
+
+
+
+
+  
+
+
+
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>独木舟的木</li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    
+    <a href="https://andy0570.com/2018/10/28/深入浅出Node.js_Buffer/" title="深入浅出Node.js_Buffer">https://andy0570.com/2018/10/28/深入浅出Node.js_Buffer/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！</li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Node-js/" rel="tag"># Node.js</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/10/26/深入浅出Node.js_内存控制/" rel="next" title="深入浅出Node.js_内存控制">
+                <i class="fa fa-chevron-left"></i> 深入浅出Node.js_内存控制
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/11/01/Node.js实战_1 Node 基础/" rel="prev" title="Node.js实战_1 Node 基础">
+                Node.js实战_1 Node 基础 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="https://ws1.sinaimg.cn/large/006tNc79gy1g22m14458rj30u014xu0x.jpg" alt="独木舟的木">
+            
+              <p class="site-author-name" itemprop="name">独木舟的木</p>
+              <div class="site-description motion-element" itemprop="description">有时候阳光很好 有时候阳光很暗</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">311</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">15</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">74</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/Andy0570" title="GitHub &rarr; https://github.com/Andy0570" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="mailto:andywhm@163.com" title="E-Mail &rarr; mailto:andywhm@163.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                </span>
+              
+            </div>
+          
+
+          
+             <div class="cc-license motion-element" itemprop="license">
+              
+              
+                
+              
+              
+              
+              <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+             </div>
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Buffer-结构"><span class="nav-number">1.</span> <span class="nav-text">Buffer 结构</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#模块结构"><span class="nav-number">1.1.</span> <span class="nav-text">模块结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Buffer-对象"><span class="nav-number">1.2.</span> <span class="nav-text">Buffer 对象</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Buffer-内存分配"><span class="nav-number">1.3.</span> <span class="nav-text">Buffer 内存分配</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Buffer-的转换"><span class="nav-number">2.</span> <span class="nav-text">Buffer 的转换</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#宽字节中文乱码"><span class="nav-number">2.1.</span> <span class="nav-text">宽字节中文乱码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Buffer-与性能"><span class="nav-number">3.</span> <span class="nav-text">Buffer 与性能</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">独木舟的木</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.1.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+  
+    
+    
+      
+    
+  
+  <script color="17,119,176" opacity="0.5" zindex="-1" count="99" src="//cdn.jsdelivr.net/gh/theme-next/theme-next-canvas-nest@1/canvas-nest.min.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="//cdn.jsdelivr.net/npm/jquery@2/dist/jquery.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/fastclick@1/lib/fastclick.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/jquery-lazyload@1/jquery.lazyload.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/velocity-animate@1/velocity.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/velocity-animate@1/velocity.ui.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.0"></script>
+
+  <script src="/js/motion.js?v=7.1.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.0"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.0"></script>
+
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.0"></script>
+<script src="/js/post-details.js?v=7.1.0"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.0"></script>
+
+
+  
+
+  
+
+  
+  
+  
+    
+  
+
+  
+
+  
+  
+  
+
+
+  
+
+
+  
+
+
+  
+
+
+
+  
+  
+  
+    
+  
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/instantsearch.js@2/dist/instantsearch.min.css">
+
+  
+  
+    
+  
+  <script src="//cdn.jsdelivr.net/npm/instantsearch.js@2/dist/instantsearch.js"></script>
+  
+
+  <script src="/js/algolia-search.js?v=7.1.0"></script>
+
+
+
+  
+  
+  <script>
+    
+    function addCount(Counter) {
+      var $visitors = $('.leancloud_visitors');
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+
+      Counter('get', '/classes/Counter', { where: JSON.stringify({ url }) })
+        .done(function({ results }) {
+          if (results.length > 0) {
+            var counter = results[0];
+            
+            Counter('put', '/classes/Counter/' + counter.objectId, JSON.stringify({ time: { '__op': 'Increment', 'amount': 1 } }))
+            
+              .done(function() {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.time + 1);
+              })
+            
+              .fail(function ({ responseJSON }) {
+                console.log('Failed to save Visitor num, with error message: ' + responseJSON.error);
+              })
+          } else {
+            
+              var $element = $(document.getElementById(url));
+              $element.find('.leancloud-visitors-count').text('Counter not initialized! More info at console err msg.');
+              console.error('ATTENTION! LeanCloud counter has security bug, see how to solve it here: https://github.com/theme-next/hexo-leancloud-counter-security. \n However, you can still use LeanCloud without security, by setting `security` option to `false`.');
+            
+          }
+        })
+        .fail(function ({ responseJSON }) {
+          console.log('LeanCloud Counter Error: ' + responseJSON.code + ' ' + responseJSON.error);
+        });
+    }
+    
+
+    $(function() {
+      $.get('https://app-router.leancloud.cn/2/route?appId=' + 'S7i1Y8YorMKFPaYbJbekD5el-gzGzoHsz')
+        .done(function({ api_server }) {
+          var Counter = function(method, url, data) {
+            return $.ajax({
+              method: method,
+              url: 'https://' + api_server + '/1.1' + url,
+              headers: {
+                'X-LC-Id': 'S7i1Y8YorMKFPaYbJbekD5el-gzGzoHsz',
+                'X-LC-Key': 'brOnU8mOQvSjpipJvdKUAIbU',
+                'Content-Type': 'application/json',
+              },
+              data: data
+            });
+          };
+          
+            addCount(Counter);
+          
+        });
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+  
+    
+  
+  <script src="//cdn.jsdelivr.net/npm/pangu@4/dist/browser/pangu.min.js"></script>
+  <script>pangu.spacingPage();</script>
+
+
+  
+  
+  
+    
+  
+  <script src="//cdn.jsdelivr.net/gh/theme-next/theme-next-bookmark@1/bookmark.min.js"></script>
+  <script>
+  
+    bookmark.scrollToMark('auto', "#更多");
+  
+  </script>
+
+
+  
+
+  
+
+  
+
+
+  <!-- red heart -->
+  <script type="text/javascript" src="/js/src/love.js"></script>
+  
+</body>
+</html>

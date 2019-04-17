@@ -1,0 +1,1393 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+  
+  
+    
+      
+    
+    
+      
+    
+  <script src="//cdn.jsdelivr.net/npm/pace-js@1/pace.min.js"></script>
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/pace-js@1/themes/blue/pace-theme-minimal.css">
+
+
+
+  
+  
+    
+  
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/han-css@3/dist/han.min.css">
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+
+
+
+
+
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/font-awesome@4/css/font-awesome.min.css">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/panda/apple-touch-icon.png?v=7.1.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/panda/favicon-32x32.png?v=7.1.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/panda/favicon-16x16.png?v=7.1.0">
+
+
+  <link rel="mask-icon" href="/images/panda/safari-pinned-tab.svg?v=7.1.0" color="#222">
+
+
+  <link rel="manifest" href="/images/panda/site.webmanifest">
+
+
+  <meta name="msapplication-config" content="/images/panda/browserconfig.xml">
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.1.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: true,
+    fastclick: true,
+    lazyload: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="GitHub 开源框架： OAStackView UIStackView 是用于布局按行或者按列排布的视图集合的精简接口。 因为 UIStackView 是适用于StoryBoard 或者 NIB 情况下布局UI控件用的，因此参考了两个 Demo 学习使用：  Demo 1 【原文】iOS 9: Getting Started with UIStackView 【译文】iOS 9: UIStack">
+<meta name="keywords" content="iOS,UIKit,UIStackView">
+<meta property="og:type" content="article">
+<meta property="og:title" content="UIStackView">
+<meta property="og:url" content="https://andy0570.com/2018/01/29/UIStackView/index.html">
+<meta property="og:site_name" content="独木舟的木">
+<meta property="og:description" content="GitHub 开源框架： OAStackView UIStackView 是用于布局按行或者按列排布的视图集合的精简接口。 因为 UIStackView 是适用于StoryBoard 或者 NIB 情况下布局UI控件用的，因此参考了两个 Demo 学习使用：  Demo 1 【原文】iOS 9: Getting Started with UIStackView 【译文】iOS 9: UIStack">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/2648731-47dc95ea5f00d861.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/2648731-4649e3d5d12d0ba1.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/2648731-495260d9a8121237.gif?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/2648731-7697a14edc11f33e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/620">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/2648731-45d809504a737e0e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/620">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/2648731-d1b5ecd2ffe78555.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/620">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/2648731-d3bc50721913110b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/620">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/2648731-6430cc15e5966ca1.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/620">
+<meta property="og:updated_time" content="2019-04-16T14:59:10.033Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="UIStackView">
+<meta name="twitter:description" content="GitHub 开源框架： OAStackView UIStackView 是用于布局按行或者按列排布的视图集合的精简接口。 因为 UIStackView 是适用于StoryBoard 或者 NIB 情况下布局UI控件用的，因此参考了两个 Demo 学习使用：  Demo 1 【原文】iOS 9: Getting Started with UIStackView 【译文】iOS 9: UIStack">
+<meta name="twitter:image" content="http://upload-images.jianshu.io/upload_images/2648731-47dc95ea5f00d861.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+
+
+
+  <link rel="alternate" href="/atom.xml" title="独木舟的木" type="application/atom+xml">
+
+
+
+  
+  
+  <link rel="canonical" href="https://andy0570.com/2018/01/29/UIStackView/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>UIStackView | 独木舟的木</title>
+  
+
+
+
+
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?8229a094facca297f211d61323fd9fde";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <a href="https://github.com/andy0570" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewbox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+    
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">独木舟的木</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">iOS Developer</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">15</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签<span class="badge">76</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">311</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+
+  
+    <div class="site-search">
+      
+  
+  <div class="algolia-popup popup search-popup">
+    <div class="algolia-search">
+      <div class="algolia-search-input-icon">
+        <i class="fa fa-search"></i>
+      </div>
+      <div class="algolia-search-input" id="algolia-search-input"></div>
+    </div>
+
+    <div class="algolia-results">
+      <div id="algolia-stats"></div>
+      <div id="algolia-hits"></div>
+      <div id="algolia-pagination" class="algolia-pagination"></div>
+    </div>
+
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+  </div>
+
+
+
+
+    </div>
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://andy0570.com/2018/01/29/UIStackView/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="独木舟的木">
+      <meta itemprop="description" content="有时候阳光很好 有时候阳光很暗">
+      <meta itemprop="image" content="https://ws1.sinaimg.cn/large/006tNc79gy1g22m14458rj30u014xu0x.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="独木舟的木">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">UIStackView
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-01-29 10:47:00" itemprop="dateCreated datePublished" datetime="2018-01-29T10:47:00+08:00">2018-01-29</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-04-16 22:59:10" itemprop="dateModified" datetime="2019-04-16T22:59:10+08:00">2019-04-16</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/iOS/" itemprop="url" rel="index"><span itemprop="name">iOS</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+            <span id="/2018/01/29/UIStackView/" class="leancloud_visitors" data-flag-title="UIStackView">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读次数：</span>
+              
+                <span class="leancloud-visitors-count"></span>
+            </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body han-init-context" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>GitHub 开源框架： <a href="https://github.com/nsomar/OAStackView" target="_blank" rel="noopener">OAStackView</a></p>
+<p><strong>UIStackView</strong> 是用于布局按行或者按列排布的视图集合的精简接口。</p>
+<p>因为 <strong>UIStackView</strong> 是适用于StoryBoard 或者 NIB 情况下布局UI控件用的，因此参考了两个 Demo 学习使用： </p>
+<h4 id="Demo-1"><a href="#Demo-1" class="headerlink" title="Demo 1"></a>Demo 1</h4><ul>
+<li>【原文】<a href="https://code.tutsplus.com/tutorials/ios-9-getting-started-with-uistackview--cms-24193" target="_blank" rel="noopener">iOS 9: Getting Started with UIStackView</a></li>
+<li>【译文】<a href="http://www.cocoachina.com/ios/20150623/12233.html" target="_blank" rel="noopener">iOS 9: UIStackView入门</a></li>
+</ul>
+<h4 id="Demo-2"><a href="#Demo-2" class="headerlink" title="Demo 2"></a>Demo 2</h4><ul>
+<li>【原文】<a href="https://www.appcoda.com/stack-views-intro/" target="_blank" rel="noopener">An Introduction to Stack Views in iOS 9 and Xcode 7</a></li>
+<li>【译文】<a href="https://www.jianshu.com/p/e81c9fb0bcd3" target="_blank" rel="noopener">IOS9 Xcode7 下的布局神器 Stack Views</a></li>
+</ul>
+<p>记录总结了几个重点内容：</p>
+<ol>
+<li><strong>UIStackView</strong> 的布局属性设置；</li>
+<li>添加和移除子视图；</li>
+<li>使用 Size Class 适配 Stack View；</li>
+<li>学习使用<code>Vertical Stack View</code> 和 <code>Horizontal Stack View</code>的相互嵌套。</li>
+</ol>
+<h3 id="一、UIStackView-布局属性"><a href="#一、UIStackView-布局属性" class="headerlink" title="一、UIStackView 布局属性"></a>一、UIStackView 布局属性</h3><p><img src="http://upload-images.jianshu.io/upload_images/2648731-47dc95ea5f00d861.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="属性检查器设置"></p>
+<p><img src="http://upload-images.jianshu.io/upload_images/2648731-4649e3d5d12d0ba1.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="属性设置示意图"></p>
+<ul>
+<li><p><strong>Axis</strong> 表示堆栈视图的布局方向，水平方向布局（X 轴）还是垂直方向布局（Y 轴）。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">typedef enum UILayoutConstraintAxis : NSInteger &#123;</span><br><span class="line">    UILayoutConstraintAxisHorizontal = 0, // 水平方向布局</span><br><span class="line">    UILayoutConstraintAxisVertical = 1    // 垂直方向布局</span><br><span class="line">&#125; UILayoutConstraintAxis;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>Alignment</strong> 表示垂直于布局方向（<strong>Axis</strong> 轴线）上的对齐方式。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">// UIStackViewAlignmentFill 会调整子视图的大小以填充 UIStackView 容器。</span><br><span class="line">// 而其他布局方式不会调整子视图大小，会使用子视图的固有内容大小（intrinsicContentSize）来布局子视图。</span><br><span class="line">typedef enum UIStackViewAlignment : NSInteger &#123;</span><br><span class="line">    UIStackViewAlignmentFill,</span><br><span class="line">    UIStackViewAlignmentLeading,</span><br><span class="line">    UIStackViewAlignmentTop = UIStackViewAlignmentLeading,</span><br><span class="line">    UIStackViewAlignmentFirstBaseline,</span><br><span class="line">    UIStackViewAlignmentCenter,</span><br><span class="line">    UIStackViewAlignmentTrailing,</span><br><span class="line">    UIStackViewAlignmentBottom = UIStackViewAlignmentTrailing,</span><br><span class="line">    UIStackViewAlignmentLastBaseline</span><br><span class="line">&#125; UIStackViewAlignment;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>Distribution</strong> 表示沿着布局方向（<strong>Axis</strong> 轴线）上的对齐方式。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">typedef enum UIStackViewDistribution : NSInteger &#123;</span><br><span class="line">    UIStackViewDistributionFill = 0, // 填充，会调整子视图的大小以填充剩余空间。放大或缩小子视图时会使用子视图的压缩（compression resistance priority）、放大（hugging priority）优先级。</span><br><span class="line">    UIStackViewDistributionFillEqually, // 均匀填充， 会调整子视图大小。</span><br><span class="line">    UIStackViewDistributionFillProportionally, // 按比例分布，会调整子视图大小。</span><br><span class="line">    UIStackViewDistributionEqualSpacing, // 分散对齐，子视图之间有间隙。</span><br><span class="line">    UIStackViewDistributionEqualCentering // 中心对齐，</span><br><span class="line">&#125; UIStackViewDistribution;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>Spacing</strong> 表示子视图之间的最小距离。</p>
+</li>
+<li><p><strong>baselineRelativeArrangement</strong> 布尔值，表示是否按照子视图的基线来调整垂直间距。</p>
+</li>
+<li><p><strong>layoutMarginsRelativeArrangement</strong> 布尔值，表示子视图布局时，是相对于 UIStackView 的边界（<code>bounds</code>） 、还是相对于其边距（<code>margins</code>）。</p>
+</li>
+</ul>
+<h3 id="二、添加和移除子视图"><a href="#二、添加和移除子视图" class="headerlink" title="二、添加和移除子视图"></a>二、添加和移除子视图</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">// ⚠️ 添加子视图时，如果子视图不在视图层次结构中，系统会自动将其作为 subviews 添加。</span><br><span class="line">- (void)addArrangedSubview:(UIView *)view;</span><br><span class="line"></span><br><span class="line">// ⚠️ 移除子视图时，Stack View 只会将其移出 arrangedSubviews 数组，移出 arrangedSubview 只是确保Stack View 不再管理其约束，而非从视图层次中删除。</span><br><span class="line">- (void)removeArrangedSubview:(UIView *)view;</span><br><span class="line"></span><br><span class="line">// 将子视图插入到 arrangedSubview 数组中</span><br><span class="line">- (void)insertArrangedSubview:(UIView *)view atIndex:(NSUInteger)stackIndex;</span><br></pre></td></tr></table></figure>
+<h4 id="Demo1-示例"><a href="#Demo1-示例" class="headerlink" title="Demo1 示例"></a>Demo1 示例</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">// 添加星星</span><br><span class="line">- (IBAction)addStarButtonDidClicked:(id)sender &#123;</span><br><span class="line">    UIImageView *imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@&quot;star&quot;]];</span><br><span class="line">    imageView.contentMode = UIViewContentModeScaleAspectFit;</span><br><span class="line">    [self.horizontalStarkView addArrangedSubview:imageView];</span><br><span class="line">    [UIView animateWithDuration:0.25 animations:^&#123;</span><br><span class="line">        [self.horizontalStarkView layoutIfNeeded];</span><br><span class="line">    &#125;];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 移除星星</span><br><span class="line">- (IBAction)removeStarButtonDidClicked:(id)sender &#123;</span><br><span class="line">    UIView *view = self.horizontalStarkView.arrangedSubviews.lastObject;</span><br><span class="line">    if (view) &#123;</span><br><span class="line">        [self.horizontalStarkView removeArrangedSubview:view];</span><br><span class="line">        [view removeFromSuperview];</span><br><span class="line">        [UIView animateWithDuration:0.25 animations:^&#123;</span><br><span class="line">            [self.horizontalStarkView layoutIfNeeded];</span><br><span class="line">        &#125;];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="http://upload-images.jianshu.io/upload_images/2648731-495260d9a8121237.gif?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Demo1.gif"></p>
+<h3 id="三、使用-Size-Class-适配-Stack-View"><a href="#三、使用-Size-Class-适配-Stack-View" class="headerlink" title="三、使用 Size Class 适配 Stack View"></a>三、使用 Size Class 适配 Stack View</h3><p>使用 Size Class 可以让 iPhone 的 Stack View 在横屏下自适应，默认情况下是这样的：<br><img src="http://upload-images.jianshu.io/upload_images/2648731-7697a14edc11f33e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/620" alt="默认iPhone 竖屏"></p>
+<p>默认情况下，iPhone 旋转到水平状态时，图片还是竖直排布的。</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/2648731-45d809504a737e0e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/620" alt="默认iPhone横屏"></p>
+<p>但是如果我们想要在水平状态时，图片是水平排布的呢，就像下面这样，就需要用到 Size Class。</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/2648731-d1b5ecd2ffe78555.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/620" alt="使用Size Class 后的iPhone横屏"></p>
+<p>需要看懂下面的一张图片：</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/2648731-d3bc50721913110b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/620" alt="Size Class"></p>
+<p> iPhone:</p>
+<ul>
+<li>竖屏（Portrait）显示时，size class 为：Width Compact,Height Regular.此时需要垂直排列，设置为 Vertical；</li>
+<li>横屏（Landscape）显示时，size class 为：Width Compact,Height Compact.此时需要水平排列，设置为 Horizontal；</li>
+</ul>
+<p>设置：</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/2648731-6430cc15e5966ca1.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/620" alt="Size Class 设置"></p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+      <div>
+        
+
+
+
+
+  
+
+
+
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>独木舟的木</li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    
+    <a href="https://andy0570.com/2018/01/29/UIStackView/" title="UIStackView">https://andy0570.com/2018/01/29/UIStackView/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！</li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/iOS/" rel="tag"># iOS</a>
+          
+            <a href="/tags/UIKit/" rel="tag"># UIKit</a>
+          
+            <a href="/tags/UIStackView/" rel="tag"># UIStackView</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/01/17/UIVisualEffectView/" rel="next" title="UIVisualEffectView">
+                <i class="fa fa-chevron-left"></i> UIVisualEffectView
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/02/06/HTML笔记（一）/" rel="prev" title="HTML笔记（一）">
+                HTML笔记（一） <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="https://ws1.sinaimg.cn/large/006tNc79gy1g22m14458rj30u014xu0x.jpg" alt="独木舟的木">
+            
+              <p class="site-author-name" itemprop="name">独木舟的木</p>
+              <div class="site-description motion-element" itemprop="description">有时候阳光很好 有时候阳光很暗</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">311</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">15</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">74</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/Andy0570" title="GitHub &rarr; https://github.com/Andy0570" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="mailto:andywhm@163.com" title="E-Mail &rarr; mailto:andywhm@163.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                </span>
+              
+            </div>
+          
+
+          
+             <div class="cc-license motion-element" itemprop="license">
+              
+              
+                
+              
+              
+              
+              <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+             </div>
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#Demo-1"><span class="nav-number">1.</span> <span class="nav-text">Demo 1</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Demo-2"><span class="nav-number">2.</span> <span class="nav-text">Demo 2</span></a></li></ol><li class="nav-item nav-level-3"><a class="nav-link" href="#一、UIStackView-布局属性"><span class="nav-number"></span> <span class="nav-text">一、UIStackView 布局属性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#二、添加和移除子视图"><span class="nav-number"></span> <span class="nav-text">二、添加和移除子视图</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Demo1-示例"><span class="nav-number">1.</span> <span class="nav-text">Demo1 示例</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#三、使用-Size-Class-适配-Stack-View"><span class="nav-number"></span> <span class="nav-text">三、使用 Size Class 适配 Stack View</span></a></li></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">独木舟的木</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.1.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+  
+    
+    
+      
+    
+  
+  <script color="17,119,176" opacity="0.5" zindex="-1" count="99" src="//cdn.jsdelivr.net/gh/theme-next/theme-next-canvas-nest@1/canvas-nest.min.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="//cdn.jsdelivr.net/npm/jquery@2/dist/jquery.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/fastclick@1/lib/fastclick.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/jquery-lazyload@1/jquery.lazyload.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/velocity-animate@1/velocity.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/velocity-animate@1/velocity.ui.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.0"></script>
+
+  <script src="/js/motion.js?v=7.1.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.0"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.0"></script>
+
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.0"></script>
+<script src="/js/post-details.js?v=7.1.0"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.0"></script>
+
+
+  
+
+  
+
+  
+  
+  
+    
+  
+
+  
+
+  
+  
+  
+
+
+  
+
+
+  
+
+
+  
+
+
+
+  
+  
+  
+    
+  
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/instantsearch.js@2/dist/instantsearch.min.css">
+
+  
+  
+    
+  
+  <script src="//cdn.jsdelivr.net/npm/instantsearch.js@2/dist/instantsearch.js"></script>
+  
+
+  <script src="/js/algolia-search.js?v=7.1.0"></script>
+
+
+
+  
+  
+  <script>
+    
+    function addCount(Counter) {
+      var $visitors = $('.leancloud_visitors');
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+
+      Counter('get', '/classes/Counter', { where: JSON.stringify({ url }) })
+        .done(function({ results }) {
+          if (results.length > 0) {
+            var counter = results[0];
+            
+            Counter('put', '/classes/Counter/' + counter.objectId, JSON.stringify({ time: { '__op': 'Increment', 'amount': 1 } }))
+            
+              .done(function() {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.time + 1);
+              })
+            
+              .fail(function ({ responseJSON }) {
+                console.log('Failed to save Visitor num, with error message: ' + responseJSON.error);
+              })
+          } else {
+            
+              var $element = $(document.getElementById(url));
+              $element.find('.leancloud-visitors-count').text('Counter not initialized! More info at console err msg.');
+              console.error('ATTENTION! LeanCloud counter has security bug, see how to solve it here: https://github.com/theme-next/hexo-leancloud-counter-security. \n However, you can still use LeanCloud without security, by setting `security` option to `false`.');
+            
+          }
+        })
+        .fail(function ({ responseJSON }) {
+          console.log('LeanCloud Counter Error: ' + responseJSON.code + ' ' + responseJSON.error);
+        });
+    }
+    
+
+    $(function() {
+      $.get('https://app-router.leancloud.cn/2/route?appId=' + 'S7i1Y8YorMKFPaYbJbekD5el-gzGzoHsz')
+        .done(function({ api_server }) {
+          var Counter = function(method, url, data) {
+            return $.ajax({
+              method: method,
+              url: 'https://' + api_server + '/1.1' + url,
+              headers: {
+                'X-LC-Id': 'S7i1Y8YorMKFPaYbJbekD5el-gzGzoHsz',
+                'X-LC-Key': 'brOnU8mOQvSjpipJvdKUAIbU',
+                'Content-Type': 'application/json',
+              },
+              data: data
+            });
+          };
+          
+            addCount(Counter);
+          
+        });
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+  
+    
+  
+  <script src="//cdn.jsdelivr.net/npm/pangu@4/dist/browser/pangu.min.js"></script>
+  <script>pangu.spacingPage();</script>
+
+
+  
+  
+  
+    
+  
+  <script src="//cdn.jsdelivr.net/gh/theme-next/theme-next-bookmark@1/bookmark.min.js"></script>
+  <script>
+  
+    bookmark.scrollToMark('auto', "#更多");
+  
+  </script>
+
+
+  
+
+  
+
+  
+
+
+  <!-- red heart -->
+  <script type="text/javascript" src="/js/src/love.js"></script>
+  
+</body>
+</html>

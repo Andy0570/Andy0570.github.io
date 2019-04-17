@@ -1,0 +1,1441 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+  
+  
+    
+      
+    
+    
+      
+    
+  <script src="//cdn.jsdelivr.net/npm/pace-js@1/pace.min.js"></script>
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/pace-js@1/themes/blue/pace-theme-minimal.css">
+
+
+
+  
+  
+    
+  
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/han-css@3/dist/han.min.css">
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+
+
+
+
+
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/font-awesome@4/css/font-awesome.min.css">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/panda/apple-touch-icon.png?v=7.1.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/panda/favicon-32x32.png?v=7.1.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/panda/favicon-16x16.png?v=7.1.0">
+
+
+  <link rel="mask-icon" href="/images/panda/safari-pinned-tab.svg?v=7.1.0" color="#222">
+
+
+  <link rel="manifest" href="/images/panda/site.webmanifest">
+
+
+  <meta name="msapplication-config" content="/images/panda/browserconfig.xml">
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.1.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: true,
+    fastclick: true,
+    lazyload: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="UIImage 和 base64 相互转化1. UIImage 转换为 base6412345678910111213141516// UIimage 对象UIImage *image = [UIImage imageNamed:@&amp;quot;7th.png&amp;quot;];// 创建 NSData 对象// UIImageJPEGRepresentation 函数:以JPEG格式返回指定图像的数据">
+<meta name="keywords" content="iOS,UIKit,UIImage">
+<meta property="og:type" content="article">
+<meta property="og:title" content="UIImage 使用Tips">
+<meta property="og:url" content="https://andy0570.com/2017/05/10/UIImage 使用Tips/index.html">
+<meta property="og:site_name" content="独木舟的木">
+<meta property="og:description" content="UIImage 和 base64 相互转化1. UIImage 转换为 base6412345678910111213141516// UIimage 对象UIImage *image = [UIImage imageNamed:@&amp;quot;7th.png&amp;quot;];// 创建 NSData 对象// UIImageJPEGRepresentation 函数:以JPEG格式返回指定图像的数据">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/2648731-08740aab30941877.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/310">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/2648731-9d2048a33b0992eb.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/310">
+<meta property="og:updated_time" content="2019-04-16T16:40:29.162Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="UIImage 使用Tips">
+<meta name="twitter:description" content="UIImage 和 base64 相互转化1. UIImage 转换为 base6412345678910111213141516// UIimage 对象UIImage *image = [UIImage imageNamed:@&amp;quot;7th.png&amp;quot;];// 创建 NSData 对象// UIImageJPEGRepresentation 函数:以JPEG格式返回指定图像的数据">
+<meta name="twitter:image" content="http://upload-images.jianshu.io/upload_images/2648731-08740aab30941877.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/310">
+
+
+
+  <link rel="alternate" href="/atom.xml" title="独木舟的木" type="application/atom+xml">
+
+
+
+  
+  
+  <link rel="canonical" href="https://andy0570.com/2017/05/10/UIImage 使用Tips/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>UIImage 使用Tips | 独木舟的木</title>
+  
+
+
+
+
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?8229a094facca297f211d61323fd9fde";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <a href="https://github.com/andy0570" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewbox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+    
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">独木舟的木</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">iOS Developer</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">15</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签<span class="badge">76</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">311</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+
+  
+    <div class="site-search">
+      
+  
+  <div class="algolia-popup popup search-popup">
+    <div class="algolia-search">
+      <div class="algolia-search-input-icon">
+        <i class="fa fa-search"></i>
+      </div>
+      <div class="algolia-search-input" id="algolia-search-input"></div>
+    </div>
+
+    <div class="algolia-results">
+      <div id="algolia-stats"></div>
+      <div id="algolia-hits"></div>
+      <div id="algolia-pagination" class="algolia-pagination"></div>
+    </div>
+
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+  </div>
+
+
+
+
+    </div>
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://andy0570.com/2017/05/10/UIImage 使用Tips/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="独木舟的木">
+      <meta itemprop="description" content="有时候阳光很好 有时候阳光很暗">
+      <meta itemprop="image" content="https://ws1.sinaimg.cn/large/006tNc79gy1g22m14458rj30u014xu0x.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="独木舟的木">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">UIImage 使用Tips
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2017-05-10 14:37:00" itemprop="dateCreated datePublished" datetime="2017-05-10T14:37:00+08:00">2017-05-10</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-04-17 00:40:29" itemprop="dateModified" datetime="2019-04-17T00:40:29+08:00">2019-04-17</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/iOS/" itemprop="url" rel="index"><span itemprop="name">iOS</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+            <span id="/2017/05/10/UIImage 使用Tips/" class="leancloud_visitors" data-flag-title="UIImage 使用Tips">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读次数：</span>
+              
+                <span class="leancloud-visitors-count"></span>
+            </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body han-init-context" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="UIImage-和-base64-相互转化"><a href="#UIImage-和-base64-相互转化" class="headerlink" title="UIImage 和 base64 相互转化"></a>UIImage 和 base64 相互转化</h2><h3 id="1-UIImage-转换为-base64"><a href="#1-UIImage-转换为-base64" class="headerlink" title="1. UIImage 转换为 base64"></a>1. UIImage 转换为 base64</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">// UIimage 对象</span><br><span class="line">UIImage *image = [UIImage imageNamed:@&quot;7th.png&quot;];</span><br><span class="line"></span><br><span class="line">// 创建 NSData 对象</span><br><span class="line">// UIImageJPEGRepresentation 函数:以JPEG格式返回指定图像的数据。</span><br><span class="line">// 参数一：image 对象</span><br><span class="line">// 参数二：compressionQuality 图像压缩率（0.0~1.0）</span><br><span class="line">NSData *imageData = UIImageJPEGRepresentation(image, 1.0);</span><br><span class="line"></span><br><span class="line">// 1.UIImage ——&gt; base64 String</span><br><span class="line">NSString *encodedString = [imageData base64EncodedStringWithOptions:NSDataBase64Encoding64CharacterLineLength];</span><br><span class="line">// 2.UIImage ——&gt; base64 Data</span><br><span class="line">NSData *encodedData = [imageData base64EncodedDataWithOptions:NSDataBase64Encoding64CharacterLineLength];</span><br><span class="line"></span><br><span class="line">NSLog(@&quot;encodedString:%@&quot;,encodedString);</span><br><span class="line">NSLog(@&quot;encodedData:%@&quot;,encodedData);</span><br></pre></td></tr></table></figure>
+<h3 id="2-base64-转换为-UIImage"><a href="#2-base64-转换为-UIImage" class="headerlink" title="2. base64 转换为 UIImage"></a>2. base64 转换为 UIImage</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">// 1.base64 String  ——&gt; NSData</span><br><span class="line">NSData *decodedImageData1 = [[NSData alloc] initWithBase64EncodedString:encodedString options:NSDataBase64DecodingIgnoreUnknownCharacters];</span><br><span class="line">// 2.base64 Data  ——&gt; NSData</span><br><span class="line">NSData *decodedImageData2 = [[NSData alloc] initWithBase64EncodedData:encodedData options:NSDataBase64DecodingIgnoreUnknownCharacters];</span><br><span class="line"></span><br><span class="line">// NSData  ——&gt; UIImage</span><br><span class="line">UIImage *decodedImage = [UIImage imageWithData:decodedImageData1];</span><br><span class="line"></span><br><span class="line">if (!decodedImage) &#123;</span><br><span class="line">    NSLog(@&quot;初始化图片失败了&quot;);</span><br><span class="line">&#125;else &#123;</span><br><span class="line">    // 图片尺寸</span><br><span class="line">    NSLog(@&quot;Decoded image size: %@&quot;, NSStringFromCGSize(decodedImage.size));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>生成的base64数据打印出来后可以拷贝到网上测试 <a href="http://imgbase64.duoshitong.com" target="_blank" rel="noopener">在线图片转换Base64</a></p>
+<hr>
+<h2 id="加载图片"><a href="#加载图片" class="headerlink" title="加载图片"></a>加载图片</h2><ul>
+<li><a href="http://blog.csdn.net/wzzvictory/article/details/9053813" target="_blank" rel="noopener">IOS如何选择图片加载方式：imageNamed和imageWithContentsOfFile的区别</a></li>
+<li><a href="http://www.jianshu.com/p/0f30f6ffbae6" target="_blank" rel="noopener">iOS 加载图片imageNamed 和imageWithContentsOfFile的区别</a></li>
+</ul>
+<h3 id="方法一-imageNamed"><a href="#方法一-imageNamed" class="headerlink" title="方法一 imageNamed:"></a>方法一 <code>imageNamed:</code></h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">+ (nullable UIImage *)imageNamed:(NSString *)name;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>该方法 <strong>首先会在系统缓存中根据指定的名字查找图片</strong>，如果找到了就返回。如果没有在缓存中找到图片，该方法会从指定的文件中加载图片数据并缓存，然后返回结果。下次再使用该图片时就省去了从硬盘中加载图片的过程。对于相同名称的图片，系统只会把它缓存到内存一次。</li>
+<li>因此， <code>imageNamed</code> 的优点是加载时会缓存图片。所以当图片会频繁的使用时，那么用 <code>imageNamed</code> 的方法会比较好。</li>
+</ul>
+<p>使用示例：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">// 加载名称为 7th.png 的图片对象</span><br><span class="line">UIImage *image = [UIImage imageNamed:@&quot;7th&quot;];</span><br></pre></td></tr></table></figure>
+<h3 id="方法二-imageWithContentsOfFile-或-imageWithData"><a href="#方法二-imageWithContentsOfFile-或-imageWithData" class="headerlink" title="方法二 imageWithContentsOfFile 或 imageWithData"></a>方法二 <code>imageWithContentsOfFile</code> 或 <code>imageWithData</code></h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">+ (nullable UIImage *)imageWithContentsOfFile:(NSString *)path;</span><br><span class="line">+ (nullable UIImage *)imageWithData:(NSData *)data;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>这两个方法 <strong>不会缓存图片对象</strong>。图像会被系统以数据方式加载到程序。</li>
+<li>因此，对于较大的图片以及使用情况较少时，可以用该方法，降低内存消耗。</li>
+</ul>
+<p>使用示例：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">// 指定路径</span><br><span class="line">NSString *path = [[NSBundle mainBundle] pathForResource:@&quot;7th&quot; ofType:@&quot;png&quot;];</span><br><span class="line">UIImage *fileImage = [UIImage imageWithContentsOfFile:path];</span><br></pre></td></tr></table></figure>
+<hr>
+<h2 id="正确设定背景图片"><a href="#正确设定背景图片" class="headerlink" title="正确设定背景图片"></a>正确设定背景图片</h2><p>在View里放背景图片就像很多其它iOS编程一样有很多方法:</p>
+<ol>
+<li><p>使用 <strong>UIColor</strong> 的 <code>colorWithPatternImage</code> 来设置背景色；</p>
+</li>
+<li><p>在 view 中添加一个 <strong>UIImageView</strong> 作为一个子View。</p>
+</li>
+</ol>
+<h3 id="方法一：在-view-中添加一个-UIImageView。"><a href="#方法一：在-view-中添加一个-UIImageView。" class="headerlink" title="方法一：在 view 中添加一个 UIImageView。"></a>方法一：在 view 中添加一个 <strong>UIImageView</strong>。</h3><p>如果你使用全画幅的背景图，你就必须使用 <strong>UIImageView</strong>， 因为<strong>UIColor</strong> 的 <code>colorWithPatternImage</code> 是用来创建小的重复的图片作为背景的。这种情形下使用 <strong>UIImageView</strong> 可以节约不少的内存：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// You could also achieve the same result in Interface Builder</span></span><br><span class="line"><span class="built_in">UIImageView</span> *backgroundView = [[<span class="built_in">UIImageView</span> alloc] initWithImage:[<span class="built_in">UIImage</span> imageNamed:<span class="string">@"background"</span>]];</span><br><span class="line">[<span class="keyword">self</span>.view addSubview:backgroundView];</span><br></pre></td></tr></table></figure>
+<h3 id="方法二：使用-UIColor-的-colorWithPatternImage-方法；"><a href="#方法二：使用-UIColor-的-colorWithPatternImage-方法；" class="headerlink" title="方法二：使用 UIColor 的 colorWithPatternImage 方法；"></a>方法二：使用 <strong>UIColor</strong> 的 <code>colorWithPatternImage</code> 方法；</h3><p>如果你用小图平铺来创建背景，你就需要用 <strong>UIColor</strong> 的<code>colorWithPatternImage</code> 来做了，它会更快地渲染也不会花费很多内存：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">self</span>.view.backgroundColor = [<span class="built_in">UIColor</span> colorWithPatternImage:[<span class="built_in">UIImage</span> imageNamed:<span class="string">@"background"</span>]];</span><br></pre></td></tr></table></figure>
+<hr>
+<h2 id="为图片设置圆角"><a href="#为图片设置圆角" class="headerlink" title="为图片设置圆角"></a>为图片设置圆角</h2><p>关于为图片设置圆角参考了几篇文章：</p>
+<ul>
+<li><a href="http://www.jianshu.com/p/f970872fdc22" target="_blank" rel="noopener">iOS 高效添加圆角效果实战讲解</a></li>
+<li><a href="http://www.jianshu.com/p/d6817aa696f5" target="_blank" rel="noopener">老生常谈的圆角图片优化，结合SDWebImage的解决方案。</a></li>
+<li><a href="http://www.jianshu.com/p/e7bbba14bdb0" target="_blank" rel="noopener">图片圆角设置</a></li>
+</ul>
+<h3 id="方法一：设置-cornerRadius"><a href="#方法一：设置-cornerRadius" class="headerlink" title="方法一：设置 cornerRadius"></a>方法一：设置 <code>cornerRadius</code></h3><h4 id="代码方式"><a href="#代码方式" class="headerlink" title="代码方式"></a>代码方式</h4><pre><code>imgView.layer.cornerRadius = 5;
+imgView.layer.masksToBounds = YES;
+</code></pre><p>设置<code>cornerRadius</code> 只会影响视图的背景颜色和 border。问题在于碰到需要裁剪的视图，用到<code>View.layer.masksToBounds = YES</code>、或者 <code>View.clipsToBounds = YES;</code> 会产生离屏渲染。</p>
+<h4 id="XIB-方式"><a href="#XIB-方式" class="headerlink" title="XIB 方式"></a>XIB 方式</h4><p><img src="http://upload-images.jianshu.io/upload_images/2648731-08740aab30941877.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/310" alt="第一步：勾选Clip To Bounds"><br><img src="http://upload-images.jianshu.io/upload_images/2648731-9d2048a33b0992eb.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/310" alt="第二步：设置圆角半径"></p>
+<h3 id="方法二：使用-Core-Graphics-框架绘制"><a href="#方法二：使用-Core-Graphics-框架绘制" class="headerlink" title="方法二：使用 Core Graphics 框架绘制"></a>方法二：使用 Core Graphics 框架绘制</h3><ul>
+<li>实现方式一：调用四次 <code>CGContextAddArcToPoint</code> 函数绘制圆角矩形，再从当前的绘图上下文中获取图片。</li>
+<li>实现方式二：使用贝塞尔曲线截取图片<code>bezierPathWithRoundedRect: byRoundingCorners: cornerRadii:</code></li>
+<li>实现方式三：直接获取圆形图片：<code>CGContextAddEllipseInRect()</code></li>
+<li>…</li>
+</ul>
+<blockquote>
+<p>摘自：<a href="https://github.com/ibireme/YYWebImage" target="_blank" rel="noopener">YYWebImage</a></p>
+</blockquote>
+<p>使用 <strong> UIBezierPath</strong> 截取图片：<br><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="built_in">UIImage</span> *)imageByRoundCornerRadius:(<span class="built_in">CGFloat</span>)radius</span><br><span class="line">                              corners:(<span class="built_in">UIRectCorner</span>)corners</span><br><span class="line">                          borderWidth:(<span class="built_in">CGFloat</span>)borderWidth</span><br><span class="line">                          borderColor:(<span class="built_in">UIColor</span> *)borderColor</span><br><span class="line">                       borderLineJoin:(<span class="built_in">CGLineJoin</span>)borderLineJoin &#123;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> (corners != <span class="built_in">UIRectCornerAllCorners</span>) &#123;</span><br><span class="line">        <span class="built_in">UIRectCorner</span> tmp = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">if</span> (corners &amp; <span class="built_in">UIRectCornerTopLeft</span>) tmp |= <span class="built_in">UIRectCornerBottomLeft</span>;</span><br><span class="line">        <span class="keyword">if</span> (corners &amp; <span class="built_in">UIRectCornerTopRight</span>) tmp |= <span class="built_in">UIRectCornerBottomRight</span>;</span><br><span class="line">        <span class="keyword">if</span> (corners &amp; <span class="built_in">UIRectCornerBottomLeft</span>) tmp |= <span class="built_in">UIRectCornerTopLeft</span>;</span><br><span class="line">        <span class="keyword">if</span> (corners &amp; <span class="built_in">UIRectCornerBottomRight</span>) tmp |= <span class="built_in">UIRectCornerTopRight</span>;</span><br><span class="line">        corners = tmp;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">UIGraphicsBeginImageContextWithOptions</span>(<span class="keyword">self</span>.size, <span class="literal">NO</span>, <span class="keyword">self</span>.scale);</span><br><span class="line">    <span class="built_in">CGContextRef</span> context = <span class="built_in">UIGraphicsGetCurrentContext</span>();</span><br><span class="line">    <span class="built_in">CGRect</span> rect = <span class="built_in">CGRectMake</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="keyword">self</span>.size.width, <span class="keyword">self</span>.size.height);</span><br><span class="line">    <span class="built_in">CGContextScaleCTM</span>(context, <span class="number">1</span>, <span class="number">-1</span>);</span><br><span class="line">    <span class="built_in">CGContextTranslateCTM</span>(context, <span class="number">0</span>, -rect.size.height);</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">CGFloat</span> minSize = MIN(<span class="keyword">self</span>.size.width, <span class="keyword">self</span>.size.height);</span><br><span class="line">    <span class="keyword">if</span> (borderWidth &lt; minSize / <span class="number">2</span>) &#123;</span><br><span class="line">        <span class="built_in">UIBezierPath</span> *path = [<span class="built_in">UIBezierPath</span> bezierPathWithRoundedRect:<span class="built_in">CGRectInset</span>(rect, borderWidth, borderWidth) byRoundingCorners:corners cornerRadii:<span class="built_in">CGSizeMake</span>(radius, borderWidth)];</span><br><span class="line">        [path closePath];</span><br><span class="line">        </span><br><span class="line">        <span class="built_in">CGContextSaveGState</span>(context);</span><br><span class="line">        [path addClip];</span><br><span class="line">        <span class="built_in">CGContextDrawImage</span>(context, rect, <span class="keyword">self</span>.CGImage);</span><br><span class="line">        <span class="built_in">CGContextRestoreGState</span>(context);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> (borderColor &amp;&amp; borderWidth &lt; minSize / <span class="number">2</span> &amp;&amp; borderWidth &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="built_in">CGFloat</span> strokeInset = (floor(borderWidth * <span class="keyword">self</span>.scale) + <span class="number">0.5</span>) / <span class="keyword">self</span>.scale;</span><br><span class="line">        <span class="built_in">CGRect</span> strokeRect = <span class="built_in">CGRectInset</span>(rect, strokeInset, strokeInset);</span><br><span class="line">        <span class="built_in">CGFloat</span> strokeRadius = radius &gt; <span class="keyword">self</span>.scale / <span class="number">2</span> ? radius - <span class="keyword">self</span>.scale / <span class="number">2</span> : <span class="number">0</span>;</span><br><span class="line">        <span class="built_in">UIBezierPath</span> *path = [<span class="built_in">UIBezierPath</span> bezierPathWithRoundedRect:strokeRect byRoundingCorners:corners cornerRadii:<span class="built_in">CGSizeMake</span>(strokeRadius, borderWidth)];</span><br><span class="line">        [path closePath];</span><br><span class="line">        </span><br><span class="line">        path.lineWidth = borderWidth;</span><br><span class="line">        path.lineJoinStyle = borderLineJoin;</span><br><span class="line">        [borderColor setStroke];</span><br><span class="line">        [path stroke];</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">UIImage</span> *image = <span class="built_in">UIGraphicsGetImageFromCurrentImageContext</span>();</span><br><span class="line">    <span class="built_in">UIGraphicsEndImageContext</span>();</span><br><span class="line">    <span class="keyword">return</span> image;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<hr>
+<h1 id="设置-UIImageView-灰色圆角边框"><a href="#设置-UIImageView-灰色圆角边框" class="headerlink" title="设置 UIImageView 灰色圆角边框"></a>设置 UIImageView 灰色圆角边框</h1><pre><code>// 添加边框效果
+[self.uploadImageView.layer setMasksToBounds:YES];
+// 设置层的圆角半径
+[self.uploadImageView.layer setCornerRadius:5.0];
+// 设置边框的宽度
+[self.uploadImageView.layer setBorderWidth:2.0];
+// 设置边框的颜色
+CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+CGColorRef colorRef = CGColorCreate(colorSpace, (CGFloat[]){ 142/255.0, 142/255.0, 142/255.0, 1 });
+[self.uploadImageView.layer setBorderColor:colorRef];
+</code></pre><hr>
+<h1 id="保存图片到本地"><a href="#保存图片到本地" class="headerlink" title="保存图片到本地"></a>保存图片到本地</h1><h2 id="使用-UIImageWriteToSavedPhotosAlbum-函数："><a href="#使用-UIImageWriteToSavedPhotosAlbum-函数：" class="headerlink" title="使用 UIImageWriteToSavedPhotosAlbum 函数："></a>使用 <strong>UIImageWriteToSavedPhotosAlbum</strong> 函数：</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">// 将照片添加到已保存的照片相册。The optional completionSelector should have the form:</span><br><span class="line">//  - (void)image:(UIImage *)image didFinishSavingWithError:(NSError *)error contextInfo:(void *)contextInfo;</span><br><span class="line">void UIImageWriteToSavedPhotosAlbum(UIImage *image, id completionTarget, SEL completionSelector, void *contextInfo);</span><br></pre></td></tr></table></figure>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">参数</th>
+<th style="text-align:left">含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>image</strong></td>
+<td style="text-align:left">要保存到相册的图片对象</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>completionTarget</strong></td>
+<td style="text-align:left">可选，图片保存到相册后，选择器的回调对象。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>completionSelector</strong></td>
+<td style="text-align:left"><code>completionTarget</code> 回调对象要调用的的方法选择器。 此可选方法应符合以下形式: <figure class="highlight plain"><figcaption><span>*)image didFinishSavingWithError:(NSError *)error contextInfo:(void *)contextInfo;``` |</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">| **contextInfo**        | 指向要传递给 **Completion Selector** 的任何上下文相关数据的可选指针。 |</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">使用示例：</span><br><span class="line"></span><br><span class="line">```objective-c</span><br><span class="line"></span><br><span class="line">- (void)saveImageToPhotosAlbum:(UIImage *)image &#123;</span><br><span class="line">    // 保存到本地</span><br><span class="line">    UIImageWriteToSavedPhotosAlbum(image, self, @selector(image:didFinishSavingWithError:contextInfo:),(__bridge void *)self));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)image:(UIImage *)image didFinishSavingWithError:(NSError *)error contextInfo:(void *)contextInfo &#123;</span><br><span class="line">    if (!error) &#123;</span><br><span class="line">        NSLog(@&quot;成功保存图片到相册！&quot;);</span><br><span class="line">    &#125;else &#123;</span><br><span class="line">        NSLog(@&quot;保存图片到相册失败！&quot;);</span><br><span class="line">       	NSLog(@&quot;image = %@, error = %@, contextInfo = %@&quot;, image, error, contextInfo);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></td>
+</tr>
+</tbody>
+</table>
+<h2 id="使用-Photos-框架的-PHPhotoLibrary-类"><a href="#使用-Photos-框架的-PHPhotoLibrary-类" class="headerlink" title="使用 Photos 框架的 PHPhotoLibrary 类"></a>使用 Photos 框架的 PHPhotoLibrary 类</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br></pre></td><td class="code"><pre><span class="line">#import &lt;AssetsLibrary/AssetsLibrary.h&gt; // iOS9.0彻底弃用,用下面这个吧,拿出来只是提醒你一下</span><br><span class="line">#import &lt;Photos/Photos.h&gt; // iOS8.0开始,我们最好用这个咯</span><br><span class="line"></span><br><span class="line">- (IBAction)save &#123;</span><br><span class="line">    // 0.判断状态</span><br><span class="line">    PHAuthorizationStatus status = [PHPhotoLibrary authorizationStatus];</span><br><span class="line">    if (status == PHAuthorizationStatusDenied) &#123;</span><br><span class="line">        BSLog(@&quot;用户拒绝当前应用访问相册,我们需要提醒用户打开访问开关&quot;);</span><br><span class="line">    &#125;else if (status == PHAuthorizationStatusRestricted)&#123;</span><br><span class="line">        BSLog(@&quot;家长控制,不允许访问&quot;);</span><br><span class="line">    &#125;else if (status == PHAuthorizationStatusNotDetermined)&#123;</span><br><span class="line">        BSLog(@&quot;用户还没有做出选择&quot;);</span><br><span class="line">        [self saveImage];</span><br><span class="line">    &#125;else if (status == PHAuthorizationStatusAuthorized)&#123;</span><br><span class="line">        BSLog(@&quot;用户允许当前应用访问相册&quot;);</span><br><span class="line">        [self saveImage];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> *  返回相册</span><br><span class="line"> */</span><br><span class="line">- (PHAssetCollection *)collection&#123;</span><br><span class="line">    // 先获得之前创建过的相册</span><br><span class="line">    PHFetchResult&lt;PHAssetCollection *&gt; *collectionResult = [PHAssetCollection fetchAssetCollectionsWithType:PHAssetCollectionTypeAlbum subtype:PHAssetCollectionSubtypeAlbumRegular options:nil];</span><br><span class="line">    for (PHAssetCollection *collection in collectionResult) &#123;</span><br><span class="line">        if ([collection.localizedTitle isEqualToString:BSCollectionName]) &#123;</span><br><span class="line">            return collection;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    // 如果相册不存在,就创建新的相册(文件夹)</span><br><span class="line">    __block NSString *collectionId = nil; // __block修改block外部的变量的值</span><br><span class="line">    // 这个方法会在相册创建完毕后才会返回</span><br><span class="line">    [[PHPhotoLibrary sharedPhotoLibrary] performChangesAndWait:^&#123;</span><br><span class="line">        // 新建一个PHAssertCollectionChangeRequest对象, 用来创建一个新的相册</span><br><span class="line">        collectionId = [PHAssetCollectionChangeRequest creationRequestForAssetCollectionWithTitle:BSCollectionName].placeholderForCreatedAssetCollection.localIdentifier;</span><br><span class="line">    &#125; error:nil];</span><br><span class="line">    </span><br><span class="line">    return [PHAssetCollection fetchAssetCollectionsWithLocalIdentifiers:@[collectionId] options:nil].firstObject;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> *  返回相册,避免重复创建相册引起不必要的错误</span><br><span class="line"> */</span><br><span class="line">- (void)saveImage&#123;</span><br><span class="line">    /*</span><br><span class="line">     PHAsset : 一个PHAsset对象就代表一个资源文件,比如一张图片</span><br><span class="line">     PHAssetCollection : 一个PHAssetCollection对象就代表一个相册</span><br><span class="line">     */</span><br><span class="line">    </span><br><span class="line">    __block NSString *assetId = nil;</span><br><span class="line">    // 1. 存储图片到&quot;相机胶卷&quot;</span><br><span class="line">    [[PHPhotoLibrary sharedPhotoLibrary] performChanges:^&#123; // 这个block里保存一些&quot;修改&quot;性质的代码</span><br><span class="line">        // 新建一个PHAssetCreationRequest对象, 保存图片到&quot;相机胶卷&quot;</span><br><span class="line">        // 返回PHAsset(图片)的字符串标识</span><br><span class="line">        assetId = [PHAssetCreationRequest creationRequestForAssetFromImage:self.imageView.image].placeholderForCreatedAsset.localIdentifier;</span><br><span class="line">    &#125; completionHandler:^(BOOL success, NSError * _Nullable error) &#123;</span><br><span class="line">        if (error) &#123;</span><br><span class="line">            BSLog(@&quot;保存图片到相机胶卷中失败&quot;);</span><br><span class="line">            return;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        BSLog(@&quot;成功保存图片到相机胶卷中&quot;);</span><br><span class="line">        </span><br><span class="line">        // 2. 获得相册对象</span><br><span class="line">        PHAssetCollection *collection = [self collection];</span><br><span class="line">        </span><br><span class="line">        // 3. 将“相机胶卷”中的图片添加到新的相册</span><br><span class="line">        [[PHPhotoLibrary sharedPhotoLibrary] performChanges:^&#123;</span><br><span class="line">            PHAssetCollectionChangeRequest *request = [PHAssetCollectionChangeRequest changeRequestForAssetCollection:collection];</span><br><span class="line">            </span><br><span class="line">            // 根据唯一标示获得相片对象</span><br><span class="line">            PHAsset *asset = [PHAsset fetchAssetsWithLocalIdentifiers:@[assetId] options:nil].firstObject;</span><br><span class="line">            // 添加图片到相册中</span><br><span class="line">            [request addAssets:@[asset]];</span><br><span class="line">        &#125; completionHandler:^(BOOL success, NSError * _Nullable error) &#123;</span><br><span class="line">            if (error) &#123;</span><br><span class="line">                BSLog(@&quot;添加图片到相册中失败&quot;);</span><br><span class="line">                return;</span><br><span class="line">            &#125;</span><br><span class="line">            </span><br><span class="line">            BSLog(@&quot;成功添加图片到相册中&quot;);</span><br><span class="line">            [[NSOperationQueue mainQueue] addOperationWithBlock:^&#123;</span><br><span class="line">                [SVProgressHUD showSuccessWithStatus:@&quot;保存成功&quot;];</span><br><span class="line">            &#125;];</span><br><span class="line">        &#125;];</span><br><span class="line">    &#125;];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="保存-WKScriptMessage-中的图片"><a href="#保存-WKScriptMessage-中的图片" class="headerlink" title="保存 WKScriptMessage 中的图片"></a>保存 WKScriptMessage 中的图片</h2><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 保存支付凭证?</span></span><br><span class="line"><span class="keyword">if</span> ([message.name isEqualToString:<span class="string">@"saveBase64"</span>]) &#123;</span><br><span class="line">    <span class="built_in">NSLog</span>(<span class="string">@"%@:%@"</span>,message.name,message.body);</span><br><span class="line">    <span class="comment">// 截取并删除起始无效字符串</span></span><br><span class="line">    <span class="built_in">NSString</span> *subString = [message.body substringFromIndex:<span class="number">22</span>];</span><br><span class="line">    <span class="comment">// base64字符串 转换为 UIImage 对象</span></span><br><span class="line">    <span class="built_in">NSData</span> *decodedImageData = [[<span class="built_in">NSData</span> alloc] initWithBase64EncodedString:subString options:<span class="built_in">NSDataBase64DecodingIgnoreUnknownCharacters</span>];</span><br><span class="line">    <span class="built_in">UIImage</span> *decodedImage = [<span class="built_in">UIImage</span> imageWithData:decodedImageData];</span><br><span class="line">    <span class="keyword">if</span> (!decodedImage) &#123;</span><br><span class="line">        <span class="built_in">NSLog</span>(<span class="string">@"获取图片失败！"</span>);</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 保存到本地</span></span><br><span class="line">    <span class="built_in">UIImageWriteToSavedPhotosAlbum</span>(decodedImage, <span class="keyword">self</span>, <span class="keyword">@selector</span>(image:didFinishSavingWithError:contextInfo:),<span class="literal">nil</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="根据全尺寸图片生成缩略图"><a href="#根据全尺寸图片生成缩略图" class="headerlink" title="根据全尺寸图片生成缩略图"></a>根据全尺寸图片生成缩略图</h1><figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)setThumbnailFromImage:(UIImage *)<span class="built_in">image</span> &#123;</span><br><span class="line">    CGSize origImageSize = <span class="built_in">image</span>.<span class="built_in">size</span>;</span><br><span class="line">    <span class="comment">// 缩略图的大小</span></span><br><span class="line">    CGRect newRect = CGRectMake(<span class="number">0</span>, <span class="number">0</span>, <span class="number">40</span>, <span class="number">40</span>);</span><br><span class="line">    <span class="comment">// 确定缩放倍数并保持宽高比不变</span></span><br><span class="line">    <span class="keyword">float</span> ratio = MAX(newRect.<span class="built_in">size</span>.<span class="built_in">width</span> / origImageSize.<span class="built_in">width</span>,</span><br><span class="line">                      newRect.<span class="built_in">size</span>.<span class="built_in">height</span>/origImageSize.<span class="built_in">height</span>);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 根据当前设备的屏幕 scailing factor 创建透明的位图上下文</span></span><br><span class="line">    UIGraphicsBeginImageContextWithOptions(newRect.<span class="built_in">size</span>, NO, <span class="number">0.0</span>);</span><br><span class="line">    <span class="comment">// 创建表示圆角矩形的 UIBezierPath</span></span><br><span class="line">    UIBezierPath *path = [UIBezierPath bezierPathWithRoundedRect:newRect</span><br><span class="line">                                                    cornerRadius:<span class="number">5.0</span>];</span><br><span class="line">    <span class="comment">// 根据 UIBezierPath 对象裁剪图形上下文</span></span><br><span class="line">    [path addClip];</span><br><span class="line">    <span class="comment">// 让图片在缩略图绘制范围内居中</span></span><br><span class="line">    CGRect projectRect;</span><br><span class="line">    projectRect.<span class="built_in">size</span>.<span class="built_in">width</span> = ratio * origImageSize.<span class="built_in">width</span>;</span><br><span class="line">    projectRect.<span class="built_in">size</span>.<span class="built_in">height</span> = ratio * origImageSize.<span class="built_in">height</span>;</span><br><span class="line">    projectRect.origin.x = (newRect.<span class="built_in">size</span>.<span class="built_in">width</span> - projectRect.<span class="built_in">size</span>.<span class="built_in">width</span>) / <span class="number">2.0</span>;</span><br><span class="line">    projectRect.origin.y = (newRect.<span class="built_in">size</span>.<span class="built_in">height</span> - projectRect.<span class="built_in">size</span>.<span class="built_in">height</span>) / <span class="number">2.0</span>;</span><br><span class="line">    <span class="comment">// 在上下文中绘制图片</span></span><br><span class="line">    [<span class="built_in">image</span> drawInRect:projectRect];</span><br><span class="line">    <span class="comment">// 通过图形上下文得到 UIImage 对象，并将其赋给 thumbnail 属性</span></span><br><span class="line">    UIImage *smallImage = UIGraphicsGetImageFromCurrentImageContext();</span><br><span class="line">    self.thumbnail = smallImage;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 清理图形上下文</span></span><br><span class="line">    UIGraphicsEndImageContext();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="使用指定颜色创建图片"><a href="#使用指定颜色创建图片" class="headerlink" title="使用指定颜色创建图片"></a>使用指定颜色创建图片</h1><p>摘自 <strong><a href="https://github.com/ibireme/YYKit" target="_blank" rel="noopener">YYKit</a></strong>：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">+ (UIImage *)imageWithColor:(UIColor *)color &#123;</span><br><span class="line">    return [self imageWithColor:color size:CGSizeMake(1, 1)];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">+ (UIImage *)imageWithColor:(UIColor *)color size:(CGSize)size &#123;</span><br><span class="line">    if (!color || size.width &lt;= 0 || size.height &lt;= 0) return nil;</span><br><span class="line">    CGRect rect = CGRectMake(0.0f, 0.0f, size.width, size.height);</span><br><span class="line">    UIGraphicsBeginImageContextWithOptions(rect.size, NO, 0);</span><br><span class="line">    CGContextRef context = UIGraphicsGetCurrentContext();</span><br><span class="line">    CGContextSetFillColorWithColor(context, color.CGColor);</span><br><span class="line">    CGContextFillRect(context, rect);</span><br><span class="line">    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();</span><br><span class="line">    UIGraphicsEndImageContext();</span><br><span class="line">    return image;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="给一个view截图"><a href="#给一个view截图" class="headerlink" title="给一个view截图"></a>给一个view截图</h1><p>摘自：<a href="http://www.jianshu.com/p/1ff9e44ccc78" target="_blank" rel="noopener">多年iOS开发经验总结(一)</a>—16</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">UIGraphicsBeginImageContextWithOptions</span>(view.bounds.size, <span class="literal">YES</span>, <span class="number">0.0</span>);</span><br><span class="line">[view.layer renderInContext:<span class="built_in">UIGraphicsGetCurrentContext</span>()];</span><br><span class="line"><span class="built_in">UIImage</span> *img = <span class="built_in">UIGraphicsGetImageFromCurrentImageContext</span>();</span><br><span class="line"><span class="built_in">UIGraphicsEndImageContext</span>();</span><br></pre></td></tr></table></figure>
+<h1 id="画水印"><a href="#画水印" class="headerlink" title="画水印"></a>画水印</h1><p>摘自：<a href="http://www.jianshu.com/p/1ff9e44ccc78" target="_blank" rel="noopener">多年iOS开发经验总结(一)</a>—75</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">- (void) setImage:(UIImage *)image withWaterMark:(UIImage *)mark inRect:(CGRect)rect &#123;</span><br><span class="line">    if ([[[UIDevice currentDevice] systemVersion] floatValue] &gt;= 4.0)</span><br><span class="line">    &#123;</span><br><span class="line">        UIGraphicsBeginImageContextWithOptions(self.frame.size, NO, 0.0);</span><br><span class="line">    &#125;</span><br><span class="line">    //原图</span><br><span class="line">    [image drawInRect:self.bounds];</span><br><span class="line">    //水印图</span><br><span class="line">    [mark drawInRect:rect];</span><br><span class="line">    UIImage *newPic = UIGraphicsGetImageFromCurrentImageContext();</span><br><span class="line">    UIGraphicsEndImageContext();</span><br><span class="line">    self.image = newPic;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><ul>
+<li><a href="https://www.jianshu.com/p/f8a3400836b5" target="_blank" rel="noopener">iOS 常用组件-高效切圆角方法总结</a></li>
+<li><a href="http://blog.ibireme.com/2015/11/02/ios_image_tips/" target="_blank" rel="noopener">iOS 处理图片的一些小 Tip</a></li>
+<li><a href="http://www.cnblogs.com/hd1992/articles/5101488.html" target="_blank" rel="noopener"><a href="http://www.cnblogs.com/hd1992/articles/5101488.html" target="_blank" rel="noopener">iOS图片转base64字符串和字符串转回图片</a></a></li>
+<li><a href="https://itony.me/488.html" target="_blank" rel="noopener">[译]iOS 7: 使用Base64编解码NSData和NSString对象</a></li>
+<li><a href="https://my.oschina.net/vimfung/blog/703588" target="_blank" rel="noopener">iOS下将照片保存到相册的三种方法</a></li>
+<li><a href="http://www.devzhang.com/14519908036820.html" target="_blank" rel="noopener">iOS保存图片到相册</a></li>
+<li><a href="http://www.jianshu.com/p/1ff9e44ccc78" target="_blank" rel="noopener">多年iOS开发经验总结(一)</a></li>
+</ul>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+      <div>
+        
+
+
+
+
+  
+
+
+
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>独木舟的木</li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    
+    <a href="https://andy0570.com/2017/05/10/UIImage 使用Tips/" title="UIImage 使用Tips">https://andy0570.com/2017/05/10/UIImage 使用Tips/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！</li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/iOS/" rel="tag"># iOS</a>
+          
+            <a href="/tags/UIKit/" rel="tag"># UIKit</a>
+          
+            <a href="/tags/UIImage/" rel="tag"># UIImage</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/05/03/Cocoa代码风格指南/" rel="next" title="Cocoa代码风格指南">
+                <i class="fa fa-chevron-left"></i> Cocoa代码风格指南
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/05/19/UIPopoverPresentationController/" rel="prev" title="UIPopoverPresentationController">
+                UIPopoverPresentationController <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="https://ws1.sinaimg.cn/large/006tNc79gy1g22m14458rj30u014xu0x.jpg" alt="独木舟的木">
+            
+              <p class="site-author-name" itemprop="name">独木舟的木</p>
+              <div class="site-description motion-element" itemprop="description">有时候阳光很好 有时候阳光很暗</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">311</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">15</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">74</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/Andy0570" title="GitHub &rarr; https://github.com/Andy0570" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="mailto:andywhm@163.com" title="E-Mail &rarr; mailto:andywhm@163.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                </span>
+              
+            </div>
+          
+
+          
+             <div class="cc-license motion-element" itemprop="license">
+              
+              
+                
+              
+              
+              
+              <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+             </div>
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#UIImage-和-base64-相互转化"><span class="nav-number">1.</span> <span class="nav-text">UIImage 和 base64 相互转化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-UIImage-转换为-base64"><span class="nav-number">1.1.</span> <span class="nav-text">1. UIImage 转换为 base64</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-base64-转换为-UIImage"><span class="nav-number">1.2.</span> <span class="nav-text">2. base64 转换为 UIImage</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#加载图片"><span class="nav-number">2.</span> <span class="nav-text">加载图片</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#方法一-imageNamed"><span class="nav-number">2.1.</span> <span class="nav-text">方法一 imageNamed:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#方法二-imageWithContentsOfFile-或-imageWithData"><span class="nav-number">2.2.</span> <span class="nav-text">方法二 imageWithContentsOfFile 或 imageWithData</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#正确设定背景图片"><span class="nav-number">3.</span> <span class="nav-text">正确设定背景图片</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#方法一：在-view-中添加一个-UIImageView。"><span class="nav-number">3.1.</span> <span class="nav-text">方法一：在 view 中添加一个 UIImageView。</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#方法二：使用-UIColor-的-colorWithPatternImage-方法；"><span class="nav-number">3.2.</span> <span class="nav-text">方法二：使用 UIColor 的 colorWithPatternImage 方法；</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#为图片设置圆角"><span class="nav-number">4.</span> <span class="nav-text">为图片设置圆角</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#方法一：设置-cornerRadius"><span class="nav-number">4.1.</span> <span class="nav-text">方法一：设置 cornerRadius</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#代码方式"><span class="nav-number">4.1.1.</span> <span class="nav-text">代码方式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#XIB-方式"><span class="nav-number">4.1.2.</span> <span class="nav-text">XIB 方式</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#方法二：使用-Core-Graphics-框架绘制"><span class="nav-number">4.2.</span> <span class="nav-text">方法二：使用 Core Graphics 框架绘制</span></a></li></ol></li></ol><li class="nav-item nav-level-1"><a class="nav-link" href="#设置-UIImageView-灰色圆角边框"><span class="nav-number"></span> <span class="nav-text">设置 UIImageView 灰色圆角边框</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#保存图片到本地"><span class="nav-number"></span> <span class="nav-text">保存图片到本地</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#使用-UIImageWriteToSavedPhotosAlbum-函数："><span class="nav-number">1.</span> <span class="nav-text">使用 UIImageWriteToSavedPhotosAlbum 函数：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用-Photos-框架的-PHPhotoLibrary-类"><span class="nav-number">2.</span> <span class="nav-text">使用 Photos 框架的 PHPhotoLibrary 类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#保存-WKScriptMessage-中的图片"><span class="nav-number">3.</span> <span class="nav-text">保存 WKScriptMessage 中的图片</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#根据全尺寸图片生成缩略图"><span class="nav-number"></span> <span class="nav-text">根据全尺寸图片生成缩略图</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#使用指定颜色创建图片"><span class="nav-number"></span> <span class="nav-text">使用指定颜色创建图片</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#给一个view截图"><span class="nav-number"></span> <span class="nav-text">给一个view截图</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#画水印"><span class="nav-number"></span> <span class="nav-text">画水印</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考"><span class="nav-number"></span> <span class="nav-text">参考</span></a></li></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">独木舟的木</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.1.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+  
+    
+    
+      
+    
+  
+  <script color="17,119,176" opacity="0.5" zindex="-1" count="99" src="//cdn.jsdelivr.net/gh/theme-next/theme-next-canvas-nest@1/canvas-nest.min.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="//cdn.jsdelivr.net/npm/jquery@2/dist/jquery.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/fastclick@1/lib/fastclick.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/jquery-lazyload@1/jquery.lazyload.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/velocity-animate@1/velocity.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/velocity-animate@1/velocity.ui.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.0"></script>
+
+  <script src="/js/motion.js?v=7.1.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.0"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.0"></script>
+
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.0"></script>
+<script src="/js/post-details.js?v=7.1.0"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.0"></script>
+
+
+  
+
+  
+
+  
+  
+  
+    
+  
+
+  
+
+  
+  
+  
+
+
+  
+
+
+  
+
+
+  
+
+
+
+  
+  
+  
+    
+  
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/instantsearch.js@2/dist/instantsearch.min.css">
+
+  
+  
+    
+  
+  <script src="//cdn.jsdelivr.net/npm/instantsearch.js@2/dist/instantsearch.js"></script>
+  
+
+  <script src="/js/algolia-search.js?v=7.1.0"></script>
+
+
+
+  
+  
+  <script>
+    
+    function addCount(Counter) {
+      var $visitors = $('.leancloud_visitors');
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+
+      Counter('get', '/classes/Counter', { where: JSON.stringify({ url }) })
+        .done(function({ results }) {
+          if (results.length > 0) {
+            var counter = results[0];
+            
+            Counter('put', '/classes/Counter/' + counter.objectId, JSON.stringify({ time: { '__op': 'Increment', 'amount': 1 } }))
+            
+              .done(function() {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.time + 1);
+              })
+            
+              .fail(function ({ responseJSON }) {
+                console.log('Failed to save Visitor num, with error message: ' + responseJSON.error);
+              })
+          } else {
+            
+              var $element = $(document.getElementById(url));
+              $element.find('.leancloud-visitors-count').text('Counter not initialized! More info at console err msg.');
+              console.error('ATTENTION! LeanCloud counter has security bug, see how to solve it here: https://github.com/theme-next/hexo-leancloud-counter-security. \n However, you can still use LeanCloud without security, by setting `security` option to `false`.');
+            
+          }
+        })
+        .fail(function ({ responseJSON }) {
+          console.log('LeanCloud Counter Error: ' + responseJSON.code + ' ' + responseJSON.error);
+        });
+    }
+    
+
+    $(function() {
+      $.get('https://app-router.leancloud.cn/2/route?appId=' + 'S7i1Y8YorMKFPaYbJbekD5el-gzGzoHsz')
+        .done(function({ api_server }) {
+          var Counter = function(method, url, data) {
+            return $.ajax({
+              method: method,
+              url: 'https://' + api_server + '/1.1' + url,
+              headers: {
+                'X-LC-Id': 'S7i1Y8YorMKFPaYbJbekD5el-gzGzoHsz',
+                'X-LC-Key': 'brOnU8mOQvSjpipJvdKUAIbU',
+                'Content-Type': 'application/json',
+              },
+              data: data
+            });
+          };
+          
+            addCount(Counter);
+          
+        });
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+  
+    
+  
+  <script src="//cdn.jsdelivr.net/npm/pangu@4/dist/browser/pangu.min.js"></script>
+  <script>pangu.spacingPage();</script>
+
+
+  
+  
+  
+    
+  
+  <script src="//cdn.jsdelivr.net/gh/theme-next/theme-next-bookmark@1/bookmark.min.js"></script>
+  <script>
+  
+    bookmark.scrollToMark('auto', "#更多");
+  
+  </script>
+
+
+  
+
+  
+
+  
+
+
+  <!-- red heart -->
+  <script type="text/javascript" src="/js/src/love.js"></script>
+  
+</body>
+</html>
