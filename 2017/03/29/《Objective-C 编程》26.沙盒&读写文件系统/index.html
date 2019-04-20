@@ -1,0 +1,1425 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+  
+  
+    
+      
+    
+    
+      
+    
+  <script src="//cdn.jsdelivr.net/npm/pace-js@1/pace.min.js"></script>
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/pace-js@1/themes/blue/pace-theme-minimal.css">
+
+
+
+  
+  
+    
+  
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/han-css@3/dist/han.min.css">
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+
+
+
+
+
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/font-awesome@4/css/font-awesome.min.css">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/panda/apple-touch-icon.png?v=7.1.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/panda/favicon-32x32.png?v=7.1.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/panda/favicon-16x16.png?v=7.1.0">
+
+
+  <link rel="mask-icon" href="/images/panda/safari-pinned-tab.svg?v=7.1.0" color="#222">
+
+
+  <link rel="manifest" href="/images/panda/site.webmanifest">
+
+
+  <meta name="msapplication-config" content="/images/panda/browserconfig.xml">
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.1.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: true,
+    fastclick: true,
+    lazyload: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="应用沙盒机制每个iOS应用都有自己专属的应用沙盒（sandbox）。应用沙盒就是文件系统中的目录，但是iOS系统会将每个应用的沙盒目录与文件系统的其他部分隔离。应用只能访问各自的沙盒。 应用沙盒目录  应用程序包（application bundle）包含应用可执行文件和所有资源文件，例如NIB文件和图像文件。它是只读目录。  Doucments/存放应用运行时生成的并且需要保留的数据。iTun">
+<meta name="keywords" content="iOS,Objective-C">
+<meta property="og:type" content="article">
+<meta property="og:title" content="《Objective-C 编程》26.沙盒&amp;读写文件系统">
+<meta property="og:url" content="https://andy0570.com/2017/03/29/《Objective-C 编程》26.沙盒&读写文件系统/index.html">
+<meta property="og:site_name" content="独木舟的木">
+<meta property="og:description" content="应用沙盒机制每个iOS应用都有自己专属的应用沙盒（sandbox）。应用沙盒就是文件系统中的目录，但是iOS系统会将每个应用的沙盒目录与文件系统的其他部分隔离。应用只能访问各自的沙盒。 应用沙盒目录  应用程序包（application bundle）包含应用可执行文件和所有资源文件，例如NIB文件和图像文件。它是只读目录。  Doucments/存放应用运行时生成的并且需要保留的数据。iTun">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/2648731-924f6ee4a675d730.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/2648731-337d28b9ef0cf235.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:updated_time" content="2019-04-17T16:58:18.149Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="《Objective-C 编程》26.沙盒&amp;读写文件系统">
+<meta name="twitter:description" content="应用沙盒机制每个iOS应用都有自己专属的应用沙盒（sandbox）。应用沙盒就是文件系统中的目录，但是iOS系统会将每个应用的沙盒目录与文件系统的其他部分隔离。应用只能访问各自的沙盒。 应用沙盒目录  应用程序包（application bundle）包含应用可执行文件和所有资源文件，例如NIB文件和图像文件。它是只读目录。  Doucments/存放应用运行时生成的并且需要保留的数据。iTun">
+<meta name="twitter:image" content="http://upload-images.jianshu.io/upload_images/2648731-924f6ee4a675d730.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+
+
+
+  <link rel="alternate" href="/atom.xml" title="独木舟的木" type="application/atom+xml">
+
+
+
+  
+  
+  <link rel="canonical" href="https://andy0570.com/2017/03/29/《Objective-C 编程》26.沙盒&读写文件系统/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>《Objective-C 编程》26.沙盒&读写文件系统 | 独木舟的木</title>
+  
+
+
+
+
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?8229a094facca297f211d61323fd9fde";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <a href="https://github.com/andy0570" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewbox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+    
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">独木舟的木</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">iOS Developer</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">14</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签<span class="badge">57</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">310</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+
+  
+    <div class="site-search">
+      
+  
+  <div class="algolia-popup popup search-popup">
+    <div class="algolia-search">
+      <div class="algolia-search-input-icon">
+        <i class="fa fa-search"></i>
+      </div>
+      <div class="algolia-search-input" id="algolia-search-input"></div>
+    </div>
+
+    <div class="algolia-results">
+      <div id="algolia-stats"></div>
+      <div id="algolia-hits"></div>
+      <div id="algolia-pagination" class="algolia-pagination"></div>
+    </div>
+
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+  </div>
+
+
+
+
+    </div>
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://andy0570.com/2017/03/29/《Objective-C 编程》26.沙盒&读写文件系统/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="独木舟的木">
+      <meta itemprop="description" content="有时候阳光很好 有时候阳光很暗">
+      <meta itemprop="image" content="https://ws1.sinaimg.cn/large/006tNc79gy1g22m14458rj30u014xu0x.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="独木舟的木">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">《Objective-C 编程》26.沙盒&读写文件系统
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2017-03-29 10:06:00" itemprop="dateCreated datePublished" datetime="2017-03-29T10:06:00+08:00">2017-03-29</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-04-18 00:58:18" itemprop="dateModified" datetime="2019-04-18T00:58:18+08:00">2019-04-18</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Objective-C-编程/" itemprop="url" rel="index"><span itemprop="name">Objective-C 编程</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+            <span id="/2017/03/29/《Objective-C 编程》26.沙盒&读写文件系统/" class="leancloud_visitors" data-flag-title="《Objective-C 编程》26.沙盒&读写文件系统">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读次数：</span>
+              
+                <span class="leancloud-visitors-count"></span>
+            </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body han-init-context" itemprop="articleBody">
+
+      
+      
+
+      
+        <a id="more"></a>
+<h1 id="应用沙盒机制"><a href="#应用沙盒机制" class="headerlink" title="应用沙盒机制"></a>应用沙盒机制</h1><p>每个iOS应用都有自己专属的应用沙盒（sandbox）。应用沙盒就是文件系统中的目录，但是iOS系统会将每个应用的沙盒目录与文件系统的其他部分隔离。应用只能访问各自的沙盒。</p>
+<h1 id="应用沙盒目录"><a href="#应用沙盒目录" class="headerlink" title="应用沙盒目录"></a>应用沙盒目录</h1><p><img src="http://upload-images.jianshu.io/upload_images/2648731-924f6ee4a675d730.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="应用沙盒目录"></p>
+<ul>
+<li><p>应用程序包（application bundle）<br>包含应用可执行文件和所有资源文件，例如NIB文件和图像文件。它是只读目录。</p>
+</li>
+<li><p>Doucments/<br>存放应用运行时生成的并且需要保留的数据。iTune 或 iCloud 会在同步设备时备份该目录。当设备发生故障时，可以从 iTunes 或 iCloud 恢复该目录中的文件。</p>
+</li>
+<li><p>Library/Caches/ </p>
+<p>存放应用运行时生成的需要保留的数据。与Documents/目录不同的是，iTunes 或 iCloud 不会在同步设备时备份该目录。不备份缓存数据的主要原因是相关数据的体积可能会很大，从而延长同步设备所需的时间。如果数据源是在别处（例如web服务器），就可以将得到的数据保存在Library/Caches/目录。当用户需要恢复设备时，相关的应用只需要从数据源（例如web服务器）再次获取数据即可。</p>
+</li>
+<li><p>Library/Preferences/<br>存放所有的偏好设置，iOS的设置（Setting）应用也会在该目录中查找应用的设置信息。使用 <strong>NSUserDefaults</strong> 类，可以通过Library/Preferences/目录中的某个特定文件以键值对形式保存数据。iTunes或iCloud会在同步设备时备份该目录。</p>
+</li>
+<li><p>tmp/<br>存放应用运行时所需的临时数据。当某个应用没有运行时，iOS系统可能会清除该应用的tmp/目录下的文件，但是为了节约用户设备空间，不能依赖这种自动清除机制，而是当应用不再需要使用tmp/目录中的文件时，就及时手动删除这写文件。iTune或iCloud不会在同步设备时备份tmp/目录。通过 <strong>NSTemporaryDirectory</strong> 函数可以得到应用沙盒中的tmp/目录的全路径。</p>
+</li>
+</ul>
+<h1 id="获取应用文件夹目录"><a href="#获取应用文件夹目录" class="headerlink" title="获取应用文件夹目录"></a>获取应用文件夹目录</h1><h2 id="文档文件夹：Doucments"><a href="#文档文件夹：Doucments" class="headerlink" title="文档文件夹：Doucments"></a>文档文件夹：Doucments</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">// 返回应用的 Documents 目录：NSDocumentDirectory</span><br><span class="line">NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);</span><br><span class="line">// 获取数组的第一个对象，是沙箱目录中的【文档文件夹】路径。在应用中，用户的数据可以放在这里。在备份和恢复设备的时候，会包括此目录。</span><br><span class="line">NSString *documentsDirectory = [paths objectAtIndex:0];</span><br></pre></td></tr></table></figure>
+<h2 id="Library-文件夹"><a href="#Library-文件夹" class="headerlink" title="Library 文件夹"></a>Library 文件夹</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">// 返回应用的 Library 目录：NSLibraryDirectory</span><br><span class="line">NSArray *paths = NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES);</span><br><span class="line">NSString *libraryDirectory = [paths objectAtIndex:0];</span><br></pre></td></tr></table></figure>
+<h3 id="Library-Caches-文件夹"><a href="#Library-Caches-文件夹" class="headerlink" title="Library/Caches 文件夹"></a>Library/Caches 文件夹</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">//获取Library/Caches目录路径</span><br><span class="line">NSString *path = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) firstObject];</span><br></pre></td></tr></table></figure>
+<h2 id="Home文件夹"><a href="#Home文件夹" class="headerlink" title="Home文件夹"></a>Home文件夹</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">// 获得程序的【Home文件夹】路径</span><br><span class="line">NSString *homeDirectory = NSHomeDirectory();</span><br><span class="line">NSLog(@&quot;Home Directory:%@&quot;,homeDirectory);</span><br></pre></td></tr></table></figure>
+<h2 id="临时文件夹：tmp"><a href="#临时文件夹：tmp" class="headerlink" title="临时文件夹：tmp"></a>临时文件夹：tmp</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">// 获得程序的【临时文件夹】路径，主要存放临时文件。在设备的备份和恢复时，不会备份此目录。而且此目录下的文件，可能会在应用退出后被删除。</span><br><span class="line">NSString *temporaryDirectory = NSTemporaryDirectory();</span><br><span class="line">NSLog(@&quot;temporary Directory:%@&quot;,temporaryDirectory);</span><br></pre></td></tr></table></figure>
+<h2 id="资源文件夹"><a href="#资源文件夹" class="headerlink" title="资源文件夹"></a>资源文件夹</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">// 获得程序的【资源文件夹】路径。</span><br><span class="line">NSString *resourceDirectory = [[NSBundle mainBundle] resourcePath];</span><br><span class="line">NSLog(@&quot;resource Directory:%@&quot;,resourceDirectory);</span><br></pre></td></tr></table></figure>
+<h2 id="第三方框架便捷语法：YYKit"><a href="#第三方框架便捷语法：YYKit" class="headerlink" title="第三方框架便捷语法：YYKit"></a>第三方框架便捷语法：YYKit</h2><p>获取文档沙盒目录也可以使用 YYKit 框架中封装好的便捷语法，在 <code>UIApplication+YYAdd</code>类中定义成了相关的属性供使用：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">// documents</span><br><span class="line">- (NSURL *)documentsURL &#123;</span><br><span class="line">    return [[[NSFileManager defaultManager]</span><br><span class="line">             URLsForDirectory:NSDocumentDirectory</span><br><span class="line">             inDomains:NSUserDomainMask] lastObject];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (NSString *)documentsPath &#123;</span><br><span class="line">    return [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) firstObject];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// caches</span><br><span class="line">- (NSURL *)cachesURL &#123;</span><br><span class="line">    return [[[NSFileManager defaultManager]</span><br><span class="line">             URLsForDirectory:NSCachesDirectory</span><br><span class="line">             inDomains:NSUserDomainMask] lastObject];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (NSString *)cachesPath &#123;</span><br><span class="line">    return [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) firstObject];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// library</span><br><span class="line">- (NSURL *)libraryURL &#123;</span><br><span class="line">    return [[[NSFileManager defaultManager]</span><br><span class="line">             URLsForDirectory:NSLibraryDirectory</span><br><span class="line">             inDomains:NSUserDomainMask] lastObject];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (NSString *)libraryPath &#123;</span><br><span class="line">    return [NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES) firstObject];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="Xcode7-模拟器应用沙盒查看"><a href="#Xcode7-模拟器应用沙盒查看" class="headerlink" title="Xcode7 模拟器应用沙盒查看"></a>Xcode7 模拟器应用沙盒查看</h2><p>下面的方法可以查看【模拟器中的应用沙盒】在Mac中的位置：</p>
+<p>参考：<a href="http://blog.csdn.net/belugaw/article/details/51018235" target="_blank" rel="noopener"> Mac10.11 Xcode7 模拟器应用沙盒查看（手动）  </a></p>
+<ol>
+<li><p>先查看模拟器 Identifier.<br> Xcode ——Windows——Devices （或者快捷键 shift + cmd + 2），记住Identifier所对应的值。<br> <img src="http://upload-images.jianshu.io/upload_images/2648731-337d28b9ef0cf235.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt></p>
+</li>
+<li><p>打开Finder，shift + cmd + G 搜索路径<br> 路径：/Users/<em>用户名</em>/Library/Developer/CoreSimulator/Devices/查找到的模拟器的Identitfier值/data/Containers/Data/Application/BAB08A8E-914C-4552-B58E-3015436D3F0E（项目的id）/Library/Caches</p>
+<blockquote>
+<p>Tips:如何查看隐藏文件夹？使用快捷键：cmd+shift+,</p>
+</blockquote>
+</li>
+<li><p><strong>po NSHomeDirectory()</strong> 指令方法：<br> 在项目中的某处打一个断点，然后运行程序，在控制台窗口All Output中(lldb)后面输入”po NSHomeDirectory()”<br> 参考：<a href="http://www.jianshu.com/p/e46725c3e0b1" target="_blank" rel="noopener">如何快速定位应用的沙盒存放路径</a></p>
+</li>
+</ol>
+<h3 id="模拟器在Mac中的位置："><a href="#模拟器在Mac中的位置：" class="headerlink" title="模拟器在Mac中的位置："></a>模拟器在Mac中的位置：</h3><p>/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/</p>
+<h1 id="读写文件"><a href="#读写文件" class="headerlink" title="读写文件"></a>读写文件</h1><h2 id="NSString"><a href="#NSString" class="headerlink" title="NSString"></a>NSString</h2><h3 id="将-NSString-对象写入文件"><a href="#将-NSString-对象写入文件" class="headerlink" title="将 NSString 对象写入文件"></a>将 NSString 对象写入文件</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">NSMutableString *str = [[NSMutableString alloc] init];</span><br><span class="line">for (int i = 0; i &lt; 10; i++) &#123;</span><br><span class="line">    [str appendString:@&quot;Aaron is cool! \n&quot;];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 声明一个指向 NSError 对象的指针，但是不创建相应的对象</span><br><span class="line">// 实际上，只有当发生错误时，才会由 writeToFile创建相应的 NSError 对象</span><br><span class="line">NSError *error;</span><br><span class="line"></span><br><span class="line">// 将 NSError 指针通过引用传入 writeToFile:atomically:encoding:error:方法</span><br><span class="line">BOOL success = [str writeToFile:@&quot;/tmp/cool.txt&quot;</span><br><span class="line">                     atomically:YES</span><br><span class="line">                       encoding:NSUTF8StringEncoding</span><br><span class="line">                          error:&amp;error];</span><br><span class="line"></span><br><span class="line">// 检查返回的布尔值，如果写入文件夹失败，就查询 NSError 对象并输出错误描述</span><br><span class="line">if (success) &#123;</span><br><span class="line">     NSLog(@&quot;done writing /tmp/cool.txt&quot;);</span><br><span class="line">&#125;else &#123;</span><br><span class="line">    NSLog(@&quot;writing /tmp/cool.txt failed:%@&quot;,[error localizedDescription]);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="通过-NSString-读取文件"><a href="#通过-NSString-读取文件" class="headerlink" title="通过 NSString 读取文件"></a>通过 NSString 读取文件</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">NSError *readError;</span><br><span class="line">NSString *readStr = [[NSString alloc]</span><br><span class="line">                     initWithContentsOfFile:@&quot;/etc/resolve.conf&quot;</span><br><span class="line">                                   encoding:NSASCIIStringEncoding</span><br><span class="line">                                      error:&amp;readError];</span><br><span class="line"></span><br><span class="line">if (!readStr) &#123;</span><br><span class="line">    NSLog(@&quot;read failed:%@&quot;,[error localizedDescription]);</span><br><span class="line">&#125;else &#123;</span><br><span class="line">    NSLog(@&quot;resolve.conf looks like this: %@&quot;,readStr);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="文件路径的追加"><a href="#文件路径的追加" class="headerlink" title="文件路径的追加"></a>文件路径的追加</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">// 获取沙盒Home路径</span><br><span class="line">NSString *homeDir = NSHomeDirectory(); </span><br><span class="line">NSString *documents = [homeDir stringByAppendingString:@&quot;/Documents&quot;];   </span><br><span class="line">NSString *documents = [homeDir stringByAppendingPathComponent:@&quot;Documents&quot;]; //注意：不需要加‘/’</span><br></pre></td></tr></table></figure>
+<h3 id="NSString-处理路径"><a href="#NSString-处理路径" class="headerlink" title="NSString 处理路径"></a>NSString 处理路径</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">//演示路径 </span><br><span class="line">NSString *path = @&quot;/Users/apple/file.text&quot;;</span><br><span class="line"></span><br><span class="line">// 1.获取路径的组成部分  结果: (“/”,”Users”, “apple”, “file.text”) </span><br><span class="line">NSArray *components = [path pathComponents];</span><br><span class="line"></span><br><span class="line">// 2.路径的最后一个组成部分   结果: file.text</span><br><span class="line">NSString *lastName = [path lastPathComponent]；</span><br><span class="line"></span><br><span class="line">// 3.追加文件或目录  结果: /Users/apple/file.text/app.text</span><br><span class="line">NSString *filePath = [path stringByAppendingPathComponent:@&quot;app.text&quot;];</span><br><span class="line"></span><br><span class="line">// 4.删除最后部分的组成部分 结果: /Users/apple</span><br><span class="line">NSString *filePath = [path stringByDeletingLastPathComponent];</span><br><span class="line"></span><br><span class="line">// 5. 取路径最后部分的扩展名 结果: text</span><br><span class="line">NSString *extName = [path pathExtension];</span><br><span class="line"></span><br><span class="line">// 6. 追加扩展名   结果: /Users/apple/file.text.jpg</span><br><span class="line">NSString *filePath = [path stringByAppendingPathExtension:@&quot;jpg&quot;];</span><br></pre></td></tr></table></figure>
+<h2 id="NSData"><a href="#NSData" class="headerlink" title="NSData"></a>NSData</h2><ul>
+<li><strong>NSData</strong> 对象“代表”内存中的某块缓冲区，可以保存相应字节数的数据。</li>
+<li><strong>NSData</strong> 是对数据的一种抽象.</li>
+<li>任何数据都可以通过 <strong>NSData</strong> 来存储,<strong>NSMutableData</strong> 是可变的,继承于 <strong>NSData</strong> .</li>
+</ul>
+<h3 id="将-NSData-对象下载的数据写入文件"><a href="#将-NSData-对象下载的数据写入文件" class="headerlink" title="将 NSData 对象下载的数据写入文件"></a>将 NSData 对象下载的数据写入文件</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">NSRunLoop *runLoop = [NSRunLoop currentRunLoop];</span><br><span class="line">NSString *str = @&quot;https://ss0.bdstatic.com/5aV1bjqh_Q23odCf/static/superman/img/logo/logo_white_fe6da1ec.png&quot;;</span><br><span class="line">NSURL *url = [NSURL URLWithString:str];</span><br><span class="line">NSURLSessionDataTask *task = [[NSURLSession sharedSession]</span><br><span class="line">                              dataTaskWithURL:url</span><br><span class="line">                              completionHandler:</span><br><span class="line">  ^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) &#123;</span><br><span class="line"></span><br><span class="line">    if (!data) &#123;</span><br><span class="line">        NSLog(@&quot;fetch failed: %@&quot;,[error localizedDescription]);</span><br><span class="line">    &#125;</span><br><span class="line">    NSLog(@&quot;The file is %lu bytes&quot;,(unsigned long)[data length]);</span><br><span class="line"></span><br><span class="line">    NSError *writtenError = nil;</span><br><span class="line">    // NSData 对象会先将数据写入临时文件，成功后再移动至指定的路径</span><br><span class="line">    BOOL written = [data writeToFile:@&quot;/tmp/baidu.png&quot;</span><br><span class="line">                             options:NSDataWritingAtomic</span><br><span class="line">                               error:&amp;writtenError];</span><br><span class="line">    if (!written) &#123;</span><br><span class="line">        NSLog(@&quot;written failed: %@&quot;,[writtenError localizedDescription]);</span><br><span class="line">    &#125;</span><br><span class="line">    NSLog(@&quot;written success&quot;);</span><br><span class="line"></span><br><span class="line">&#125;];</span><br><span class="line"></span><br><span class="line">//  NSURLSessionDataTask 在刚创建的时候处于暂停状态，需要手动调用resume方法恢复,让NSURLSessionDataTask 开始向服务器发送请求。</span><br><span class="line">[task resume];</span><br><span class="line">[runLoop run];</span><br></pre></td></tr></table></figure>
+<h3 id="从文件读取数据并存入-NSData-对象"><a href="#从文件读取数据并存入-NSData-对象" class="headerlink" title="从文件读取数据并存入 NSData 对象"></a>从文件读取数据并存入 NSData 对象</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">NSData *readData = [NSData dataWithContentsOfFile:@&quot;tmp/baidu.png&quot; options:NSDataReadingMappedIfSafe error:nil];</span><br><span class="line">NSLog(@&quot;The file read from the disk has %lu bytes&quot;,(unsigned long)[readData length]);</span><br></pre></td></tr></table></figure>
+<h3 id="寻找特别目录"><a href="#寻找特别目录" class="headerlink" title="寻找特别目录"></a>寻找特别目录</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">// 方法会返回包含指定的数组</span><br><span class="line">NSArray *desktops = NSSearchPathForDirectoriesInDomains(NSDesktopDirectory, NSUserDomainMask, YES);</span><br><span class="line">// 我知道用户只有一个桌面文件夹</span><br><span class="line">NSString *desktopPath = desktops[0];</span><br><span class="line">NSLog(@&quot;desktop Path:%@&quot;,desktopPath);</span><br></pre></td></tr></table></figure>
+<ul>
+<li>目录枚举</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">typedef NS_ENUM(NSUInteger, NSSearchPathDirectory) &#123;</span><br><span class="line">    NSApplicationDirectory = 1,             // supported applications (Applications)</span><br><span class="line">    NSDemoApplicationDirectory,             // unsupported applications, demonstration versions (Demos)</span><br><span class="line">    NSDeveloperApplicationDirectory,        // developer applications (Developer/Applications). DEPRECATED - there is no one single Developer directory.</span><br><span class="line">    NSAdminApplicationDirectory,            // system and network administration applications (Administration)</span><br><span class="line">    NSLibraryDirectory,                     // various documentation, support, and configuration files, resources (Library)</span><br><span class="line">    NSDeveloperDirectory,                   // developer resources (Developer) DEPRECATED - there is no one single Developer directory.</span><br><span class="line">    NSUserDirectory,                        // user home directories (Users)</span><br><span class="line">    NSDocumentationDirectory,               // documentation (Documentation)</span><br><span class="line">    NSDocumentDirectory,                    // documents (Documents)</span><br><span class="line">    NSCoreServiceDirectory,                 // location of CoreServices directory (System/Library/CoreServices)</span><br><span class="line">    NSAutosavedInformationDirectory NS_ENUM_AVAILABLE(10_6, 4_0) = 11,   // location of autosaved documents (Documents/Autosaved)</span><br><span class="line">    NSDesktopDirectory = 12,                // location of user&apos;s desktop</span><br><span class="line">    NSCachesDirectory = 13,                 // location of discardable cache files (Library/Caches)</span><br><span class="line">    NSApplicationSupportDirectory = 14,     // location of application support files (plug-ins, etc) (Library/Application Support)</span><br><span class="line">    NSDownloadsDirectory NS_ENUM_AVAILABLE(10_5, 2_0) = 15,              // location of the user&apos;s &quot;Downloads&quot; directory</span><br><span class="line">    NSInputMethodsDirectory NS_ENUM_AVAILABLE(10_6, 4_0) = 16,           // input methods (Library/Input Methods)</span><br><span class="line">    NSMoviesDirectory NS_ENUM_AVAILABLE(10_6, 4_0) = 17,                 // location of user&apos;s Movies directory (~/Movies)</span><br><span class="line">    NSMusicDirectory NS_ENUM_AVAILABLE(10_6, 4_0) = 18,                  // location of user&apos;s Music directory (~/Music)</span><br><span class="line">    NSPicturesDirectory NS_ENUM_AVAILABLE(10_6, 4_0) = 19,               // location of user&apos;s Pictures directory (~/Pictures)</span><br><span class="line">    NSPrinterDescriptionDirectory NS_ENUM_AVAILABLE(10_6, 4_0) = 20,     // location of system&apos;s PPDs directory (Library/Printers/PPDs)</span><br><span class="line">    NSSharedPublicDirectory NS_ENUM_AVAILABLE(10_6, 4_0) = 21,           // location of user&apos;s Public sharing directory (~/Public)</span><br><span class="line">    NSPreferencePanesDirectory NS_ENUM_AVAILABLE(10_6, 4_0) = 22,        // location of the PreferencePanes directory for use with System Preferences (Library/PreferencePanes)</span><br><span class="line">    NSApplicationScriptsDirectory NS_ENUM_AVAILABLE(10_8, NA) = 23,      // location of the user scripts folder for the calling application (~/Library/Application Scripts/code-signing-id)</span><br><span class="line">    NSItemReplacementDirectory NS_ENUM_AVAILABLE(10_6, 4_0) = 99,	    // For use with NSFileManager&apos;s URLForDirectory:inDomain:appropriateForURL:create:error:</span><br><span class="line">    NSAllApplicationsDirectory = 100,       // all directories where applications can occur</span><br><span class="line">    NSAllLibrariesDirectory = 101,          // all directories where resources can occur</span><br><span class="line">    NSTrashDirectory NS_ENUM_AVAILABLE(10_8, NA) = 102                   // location of Trash directory</span><br><span class="line"></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h3 id="NSString-lt-—-gt-NSData"><a href="#NSString-lt-—-gt-NSData" class="headerlink" title="NSString &lt;—&gt; NSData"></a>NSString &lt;—&gt; NSData</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">NSString *string1 = @&quot;NSData是对数据的一种抽象&quot;;</span><br><span class="line">// NSString -&gt; NSData</span><br><span class="line">NSData *data = [string1 dataUsingEncoding:NSUTF8StringEncoding];</span><br><span class="line"></span><br><span class="line">// NSData -&gt; NSString</span><br><span class="line">NSString *string2 =[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];</span><br></pre></td></tr></table></figure>
+<h2 id="NSFileManager"><a href="#NSFileManager" class="headerlink" title="NSFileManager"></a>NSFileManager</h2><ul>
+<li><strong>NSFileManager</strong> 主要对文件进行管理,主要有如下功能:创建、复制、删除、剪切等</li>
+</ul>
+<p>常见的 NSFileManager 文件方法</p>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>- (NSData *)contentsAtPath:</td>
+<td>从一个文件中读取数据</td>
+</tr>
+<tr>
+<td>- (BOOL)createFileAtPath: contents: attributes:</td>
+<td>向一个文件写入数据</td>
+</tr>
+<tr>
+<td>- (BOOL)copyItemAtPath: toPath: error:</td>
+<td>复制文件</td>
+</tr>
+<tr>
+<td>- (BOOL)moveItemAtPath: toPath: error:</td>
+<td>重命名或移动一个文件</td>
+</tr>
+<tr>
+<td>- (BOOL)linkItemAtPath: toPath: error:</td>
+<td>在指定的路径上创建项目之间的硬连接</td>
+</tr>
+<tr>
+<td>- (BOOL)removeItemAtPath: error:</td>
+<td>删除文件</td>
+</tr>
+<tr>
+<td>- (BOOL)contentsEqualAtPath: andPath:</td>
+<td>比较这两个文件的内容</td>
+</tr>
+<tr>
+<td>- (BOOL)fileExistsAtPath:</td>
+<td>测试文件是否存在</td>
+</tr>
+<tr>
+<td>- (BOOL)isReadableFileAtPath:</td>
+<td>测试文件是否存在，并且是否能执行读操作</td>
+</tr>
+<tr>
+<td>- (BOOL)isWritableFileAtPath:</td>
+<td>测试文件是否存在，并且是否能执行写操作</td>
+</tr>
+<tr>
+<td>- (NSDictionary *)attributesOfItemAtPath: error:</td>
+<td>获取文件的属性</td>
+</tr>
+<tr>
+<td>- (BOOL)setAttributes:(NSDictionary *)attributes ofItemAtPath: error</td>
+<td>更改文件的属性</td>
+</tr>
+</tbody>
+</table>
+<h3 id="创建文件"><a href="#创建文件" class="headerlink" title="创建文件"></a>创建文件</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">//创建 NSFileManager 对象</span><br><span class="line">NSFileManager *fileManager = [[NSFileManager alloc] init];    </span><br><span class="line">NSFileManager *fileManager = [NSFileManager defaultManager];  //同上</span><br><span class="line">        </span><br><span class="line">//1.构造文件的路径</span><br><span class="line">NSString *homePath = NSHomeDirectory();</span><br><span class="line">NSString *filePath = [homePath stringByAppendingPathComponent:@&quot;file.txt&quot;];</span><br><span class="line"></span><br><span class="line">//2.构造数据</span><br><span class="line">NSString *string = @&quot;Hello World!&quot;;</span><br><span class="line">    </span><br><span class="line">//3.将字符串中的文本数据存储到Data对象中</span><br><span class="line">NSData *data = [string dataUsingEncoding:NSUTF8StringEncoding];</span><br><span class="line"></span><br><span class="line">//4.创建文件</span><br><span class="line">//createFileAtPath 创建文件，如果文件已经存在，那么新创建的文件会将原文件覆盖</span><br><span class="line">BOOL success = [fileManager createFileAtPath:filePath //路径</span><br><span class="line">                                        contents:data //数据</span><br><span class="line">                                      attributes:nil]; //属性</span><br><span class="line">if (success) &#123;</span><br><span class="line">        NSLog(@&quot;create file success&quot;);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>###<br><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 创建并返回文件夹路径：../Library/Private Documents/</span></span><br><span class="line">+ (<span class="built_in">NSString</span> *)getPrivateDocsDir &#123;</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">NSArray</span> *paths = <span class="built_in">NSSearchPathForDirectoriesInDomains</span>(<span class="built_in">NSLibraryDirectory</span>, <span class="built_in">NSUserDomainMask</span>, <span class="literal">YES</span>);</span><br><span class="line">    <span class="built_in">NSString</span> *documentsDirectory = [paths objectAtIndex:<span class="number">0</span>];</span><br><span class="line">    </span><br><span class="line">    documentsDirectory = [documentsDirectory stringByAppendingPathComponent:<span class="string">@"Private Documents"</span>];</span><br><span class="line"></span><br><span class="line">    <span class="built_in">NSError</span> *error;</span><br><span class="line">    [[<span class="built_in">NSFileManager</span> defaultManager] createDirectoryAtPath:documentsDirectory withIntermediateDirectories:<span class="literal">YES</span> attributes:<span class="literal">nil</span> error:&amp;error];</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> documentsDirectory;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 返回数组：存放的是 Scary bug 文件夹名称列表：../Library/Private Documents/#.scarybug</span></span><br><span class="line">+ (<span class="built_in">NSMutableArray</span> *)loadScaryBugDocs &#123;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// Get private docs dir</span></span><br><span class="line">    <span class="built_in">NSString</span> *documentsDirectiory = [HQLScaryBugDatabase getPrivateDocsDir];</span><br><span class="line">    <span class="built_in">NSLog</span>(<span class="string">@"Loading bugs from %@"</span>,documentsDirectiory);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// Get contents of documents directiory 获取文档目录列表</span></span><br><span class="line">    <span class="built_in">NSError</span> *error;</span><br><span class="line">    <span class="built_in">NSArray</span> *files = [[<span class="built_in">NSFileManager</span> defaultManager] contentsOfDirectoryAtPath:documentsDirectiory error:&amp;error];</span><br><span class="line">    <span class="keyword">if</span> (!files) &#123;</span><br><span class="line">        <span class="built_in">NSLog</span>(<span class="string">@"Error reading contents of documents directory:%@"</span>,error.localizedDescription);</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">nil</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// Create HQLScaryBugDoc for each file</span></span><br><span class="line">    <span class="comment">// Documents/Private Documents/#.scarybug</span></span><br><span class="line">    <span class="built_in">NSMutableArray</span> *retval = [<span class="built_in">NSMutableArray</span> arrayWithCapacity:files.count];</span><br><span class="line">    <span class="keyword">for</span> (<span class="built_in">NSString</span> *file <span class="keyword">in</span> files) &#123;</span><br><span class="line">        <span class="comment">// 判断文件扩展名是否相同</span></span><br><span class="line">        <span class="keyword">if</span> ([file.pathExtension compare:<span class="string">@"scarybug"</span> options:<span class="built_in">NSCaseInsensitiveSearch</span>] == <span class="built_in">NSOrderedSame</span>) &#123;</span><br><span class="line">            <span class="built_in">NSString</span> *fullPath = [documentsDirectiory stringByAppendingPathComponent:file];</span><br><span class="line">            HQLScaryBugDoc *doc = [[HQLScaryBugDoc alloc] initWithDocPath:fullPath];</span><br><span class="line">            [retval addObject:doc];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> retval;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="创建文件夹"><a href="#创建文件夹" class="headerlink" title="创建文件夹"></a>创建文件夹</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[fileManager createDirectoryAtPath:(NSString *) withIntermediateDirectories:(BOOL) attributes:(NSDictionary *) error:(NSError *__autoreleasing *)]</span><br></pre></td></tr></table></figure>
+<h3 id="读取文件"><a href="#读取文件" class="headerlink" title="读取文件"></a>读取文件</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">//创建 NSFileManager 对象</span><br><span class="line">NSFileManager *fileManager = [NSFileManager defaultManager]; </span><br><span class="line"></span><br><span class="line">//构造文件的路径</span><br><span class="line">NSString *homePath = NSHomeDirectory();</span><br><span class="line">NSString *filePath = [homePath stringByAppendingPathComponent:@&quot;file.txt&quot;];</span><br><span class="line"></span><br><span class="line">//根据路径读取文件</span><br><span class="line">NSData *fileData = [fileManager contentsAtPath:filePath];</span><br><span class="line"></span><br><span class="line">//将NSData转NSString</span><br><span class="line">NSString *content = [[NSString alloc] initWithData:fileData</span><br><span class="line">                             encoding:NSUTF8StringEncoding];</span><br></pre></td></tr></table></figure>
+<h3 id="移动，剪切文件"><a href="#移动，剪切文件" class="headerlink" title="移动，剪切文件"></a>移动，剪切文件</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">NSFileManager *fileManager = [NSFileManager defaultManager];</span><br><span class="line"></span><br><span class="line">//构造路径</span><br><span class="line">//文件的原路径</span><br><span class="line">NSString *srcPath = [NSHomeDirectory() stringByAppendingPathComponent:@&quot;file.txt&quot;];     </span><br><span class="line">//文件剪切之后的路径</span><br><span class="line">NSString *toPath = [NSHomeDirectory() stringByAppendingPathComponent:@&quot;temp/file.txt&quot;];</span><br><span class="line">    </span><br><span class="line">//注意：如果目标路径已经存在此文件，那么会导致操作失败</span><br><span class="line">NSError *error = nil;</span><br><span class="line">BOOL success = [fileManager moveItemAtPath:srcPath</span><br><span class="line">                                        toPath:toPath</span><br><span class="line">                                         error:&amp;error];</span><br><span class="line">if (!success) &#123;</span><br><span class="line">	NSLog(@&quot;剪切失败,%@&quot;,error);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<h3 id="复制文件"><a href="#复制文件" class="headerlink" title="复制文件"></a>复制文件</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">NSFileManager *fileManager = [NSFileManager defaultManager];</span><br><span class="line"></span><br><span class="line">//1.构造路径</span><br><span class="line">//文件的原路径</span><br><span class="line">NSString *srcPath = [NSHomeDirectory() stringByAppendingPathComponent:@&quot;temp/file.txt&quot;];    </span><br><span class="line">//文件复制之后的路径</span><br><span class="line">NSString *toPath = [NSHomeDirectory() stringByAppendingPathComponent:@&quot;file.txt&quot;];</span><br><span class="line">    </span><br><span class="line">BOOL success = [fileManager copyItemAtPath:srcPath</span><br><span class="line">                                        toPath:toPath</span><br><span class="line">                                         error:nil];</span><br><span class="line">//注意：如果目标路径已经存在此文件，那么会导致操作失败</span><br><span class="line">if (!success) &#123;</span><br><span class="line">        NSLog(@&quot;复制失败&quot;);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<h3 id="删除文件"><a href="#删除文件" class="headerlink" title="删除文件"></a>删除文件</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">NSFileManager *fileManager = [NSFileManager defaultManager];</span><br><span class="line"></span><br><span class="line">//1.构造文件路径</span><br><span class="line">NSString *toPath = [NSHomeDirectory() stringByAppendingPathComponent:@&quot;file.txt&quot;];</span><br><span class="line">    </span><br><span class="line">//2.判断文件是否存在</span><br><span class="line">BOOL exist = [fileManager fileExistsAtPath:toPath];</span><br><span class="line">if (exist) &#123;</span><br><span class="line">//3.删除文件</span><br><span class="line">	if ([fileManager removeItemAtPath:toPath error:nil]) &#123;</span><br><span class="line">            NSLog(@&quot;删除文件成功&quot;);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="删除文件夹"><a href="#删除文件夹" class="headerlink" title="删除文件夹"></a>删除文件夹</h3><p>删除文件或文件夹之前，务必判断文件是否存在，否则会造成过度释放。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">NSString *dir = [NSHomeDirectory() stringByAppendingPathComponent:@&quot;temp&quot;];</span><br><span class="line">[fileManager removeItemAtPath:dir error:nil];</span><br></pre></td></tr></table></figure>
+<h3 id="文件属性"><a href="#文件属性" class="headerlink" title="文件属性"></a>文件属性</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">NSFileManager *fileManager = [NSFileManager defaultManager];</span><br><span class="line"></span><br><span class="line">//1.构造文件路径    </span><br><span class="line">NSString *filePath = [NSHomeDirectory() stringByAppendingPathComponent:@&quot;file.txt&quot;];</span><br><span class="line"></span><br><span class="line">//获得文件的属性字典     </span><br><span class="line">NSDictionary *fileAttribute = [fileManager attributesOfItemAtPath:filePath error:nil];</span><br><span class="line">NSLog(@&quot;%@&quot;,fileAttribute);</span><br><span class="line"></span><br><span class="line">//获取文件大小    </span><br><span class="line">NSNumber *fileSize = [fileAttribute objectForKey:@&quot;NSFileSize&quot;];</span><br><span class="line">long size = [fileSize longValue];</span><br><span class="line">NSLog(@&quot;size = %ld&quot;,size);</span><br></pre></td></tr></table></figure>
+<h3 id="获取文件夹中所有的文件"><a href="#获取文件夹中所有的文件" class="headerlink" title="获取文件夹中所有的文件"></a>获取文件夹中所有的文件</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">NSFileManager *fileManager = [NSFileManager defaultManager];</span><br><span class="line"></span><br><span class="line">//1.构造路径</span><br><span class="line">NSString *filePath = [NSHomeDirectory() stringByAppendingPathComponent:@&quot;壁纸&quot;];</span><br><span class="line">    </span><br><span class="line">//2.获取文件夹中所有的子文件路径(路径是相对路径)</span><br><span class="line">NSArray *subPaths = [fileManager subpathsOfDirectoryAtPath:filePath error:nil];</span><br><span class="line">    </span><br><span class="line">//3.遍历每一个子路径</span><br><span class="line">long sum = 0;</span><br><span class="line">for (NSString *subpath in subPaths) &#123;</span><br><span class="line">        </span><br><span class="line">//4.子路径与父路径拼接</span><br><span class="line">NSString *path = [filePath stringByAppendingPathComponent:subpath];</span><br><span class="line">        </span><br><span class="line">//5.获取文件的属性，计算所有文件占用内存大小</span><br><span class="line">NSDictionary *fileAttribute = [fileManager attributesOfItemAtPath:path error:nil];</span><br><span class="line">        </span><br><span class="line">NSNumber *filesize = fileAttribute[@&quot;NSFileSize&quot;];</span><br><span class="line">long size = [filesize longValue];</span><br><span class="line">sum += size;</span><br><span class="line">&#125;</span><br><span class="line">//6.单位换算</span><br><span class="line">float result = sum / (1000*1000.0);</span><br><span class="line">NSLog(@&quot;result = %.1f&quot;,result);</span><br></pre></td></tr></table></figure>
+<h2 id="NSArray"><a href="#NSArray" class="headerlink" title="NSArray"></a>NSArray</h2><h3 id="写文件"><a href="#写文件" class="headerlink" title="写文件"></a>写文件</h3><ul>
+<li>数组、字典、字符串、NSData都是容纳数据的,他们都有一个writeToFile方法, 将数据写入文件。</li>
+<li>数组、字典写入的文件叫属性列表 (plist) 文件,可以用Xcode打开编辑。</li>
+<li>数组只能将如下数据类型写入文件,如果包含其他对象,将写入失败。NSNumber、NSString、NSData、NSDate、NSArray、NSDictionary</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">// 需要保存的数组</span><br><span class="line">NSArray *array = @[@&quot;1&quot;, @&quot;2&quot;, @&quot;3&quot;, @&quot;4&quot;, @&quot;5&quot;,];</span><br><span class="line"></span><br><span class="line">// 构建路径</span><br><span class="line">NSArray *pathArray = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);</span><br><span class="line">NSString *document = [pathArray lastObject];</span><br><span class="line">NSString *documentPath = [document stringByAppendingPathComponent:@&quot;city.plist&quot;];</span><br><span class="line"></span><br><span class="line">// 判断文件夹是否存在</span><br><span class="line">if (![[NSFileManager defaultManager] fileExistsAtPath:document]) &#123;</span><br><span class="line">    [[NSFileManager defaultManager] createDirectoryAtPath:documentPath withIntermediateDirectories:YES attributes:nil error:nil];</span><br><span class="line">&#125;</span><br><span class="line">NSLog(@&quot;path:%@&quot;,documentPath);</span><br><span class="line"></span><br><span class="line">// 将数组保存到 Documents 目录下，文件名为 city.plist</span><br><span class="line">BOOL isSucceed = [array writeToFile:documentPath atomically:YES];</span><br><span class="line">NSLog(@&quot;isSucceed = %@&quot;,isSucceed ? @&quot;YES&quot; : @&quot;NO&quot;);</span><br></pre></td></tr></table></figure>
+<h3 id="读文件"><a href="#读文件" class="headerlink" title="读文件"></a>读文件</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">//数组读文件</span><br><span class="line">//1.通过alloc创建，并读入文件数据</span><br><span class="line">NSArray *alloc = [[NSArray alloc] initWithContentsOfFile:path]; </span><br><span class="line"> 	</span><br><span class="line">//2.通过类方法创建，并读入文件数据</span><br><span class="line">MSArray *array = [NSArray arrayWithContentsofFile:path];</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+      <div>
+        
+
+
+
+
+  
+
+
+
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>独木舟的木</li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    
+    <a href="https://andy0570.com/2017/03/29/《Objective-C 编程》26.沙盒&读写文件系统/" title="《Objective-C 编程》26.沙盒&读写文件系统">https://andy0570.com/2017/03/29/《Objective-C 编程》26.沙盒&读写文件系统/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！</li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/iOS/" rel="tag"># iOS</a>
+          
+            <a href="/tags/Objective-C/" rel="tag"># Objective-C</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/03/28/《Objective-C 编程》25.常量、#define、enum/" rel="next" title="《Objective-C 编程》25.常量、#define、enum">
+                <i class="fa fa-chevron-left"></i> 《Objective-C 编程》25.常量、#define、enum
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/04/05/JVFloatLabeledTextField/" rel="prev" title="JVFloatLabeledTextField">
+                JVFloatLabeledTextField <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="https://ws1.sinaimg.cn/large/006tNc79gy1g22m14458rj30u014xu0x.jpg" alt="独木舟的木">
+            
+              <p class="site-author-name" itemprop="name">独木舟的木</p>
+              <div class="site-description motion-element" itemprop="description">有时候阳光很好 有时候阳光很暗</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">310</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">14</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">54</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/Andy0570" title="GitHub &rarr; https://github.com/Andy0570" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="mailto:andywhm@163.com" title="E-Mail &rarr; mailto:andywhm@163.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                </span>
+              
+            </div>
+          
+
+          
+             <div class="cc-license motion-element" itemprop="license">
+              
+              
+                
+              
+              
+              
+              <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+             </div>
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#应用沙盒机制"><span class="nav-number">1.</span> <span class="nav-text">应用沙盒机制</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#应用沙盒目录"><span class="nav-number">2.</span> <span class="nav-text">应用沙盒目录</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#获取应用文件夹目录"><span class="nav-number">3.</span> <span class="nav-text">获取应用文件夹目录</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#文档文件夹：Doucments"><span class="nav-number">3.1.</span> <span class="nav-text">文档文件夹：Doucments</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Library-文件夹"><span class="nav-number">3.2.</span> <span class="nav-text">Library 文件夹</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Library-Caches-文件夹"><span class="nav-number">3.2.1.</span> <span class="nav-text">Library/Caches 文件夹</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Home文件夹"><span class="nav-number">3.3.</span> <span class="nav-text">Home文件夹</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#临时文件夹：tmp"><span class="nav-number">3.4.</span> <span class="nav-text">临时文件夹：tmp</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#资源文件夹"><span class="nav-number">3.5.</span> <span class="nav-text">资源文件夹</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第三方框架便捷语法：YYKit"><span class="nav-number">3.6.</span> <span class="nav-text">第三方框架便捷语法：YYKit</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Xcode7-模拟器应用沙盒查看"><span class="nav-number">3.7.</span> <span class="nav-text">Xcode7 模拟器应用沙盒查看</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#模拟器在Mac中的位置："><span class="nav-number">3.7.1.</span> <span class="nav-text">模拟器在Mac中的位置：</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#读写文件"><span class="nav-number">4.</span> <span class="nav-text">读写文件</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#NSString"><span class="nav-number">4.1.</span> <span class="nav-text">NSString</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#将-NSString-对象写入文件"><span class="nav-number">4.1.1.</span> <span class="nav-text">将 NSString 对象写入文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#通过-NSString-读取文件"><span class="nav-number">4.1.2.</span> <span class="nav-text">通过 NSString 读取文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#文件路径的追加"><span class="nav-number">4.1.3.</span> <span class="nav-text">文件路径的追加</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#NSString-处理路径"><span class="nav-number">4.1.4.</span> <span class="nav-text">NSString 处理路径</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NSData"><span class="nav-number">4.2.</span> <span class="nav-text">NSData</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#将-NSData-对象下载的数据写入文件"><span class="nav-number">4.2.1.</span> <span class="nav-text">将 NSData 对象下载的数据写入文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#从文件读取数据并存入-NSData-对象"><span class="nav-number">4.2.2.</span> <span class="nav-text">从文件读取数据并存入 NSData 对象</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#寻找特别目录"><span class="nav-number">4.2.3.</span> <span class="nav-text">寻找特别目录</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#NSString-lt-—-gt-NSData"><span class="nav-number">4.2.4.</span> <span class="nav-text">NSString &lt;—&gt; NSData</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NSFileManager"><span class="nav-number">4.3.</span> <span class="nav-text">NSFileManager</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#创建文件"><span class="nav-number">4.3.1.</span> <span class="nav-text">创建文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#创建文件夹"><span class="nav-number">4.3.2.</span> <span class="nav-text">创建文件夹</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#读取文件"><span class="nav-number">4.3.3.</span> <span class="nav-text">读取文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#移动，剪切文件"><span class="nav-number">4.3.4.</span> <span class="nav-text">移动，剪切文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#复制文件"><span class="nav-number">4.3.5.</span> <span class="nav-text">复制文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#删除文件"><span class="nav-number">4.3.6.</span> <span class="nav-text">删除文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#删除文件夹"><span class="nav-number">4.3.7.</span> <span class="nav-text">删除文件夹</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#文件属性"><span class="nav-number">4.3.8.</span> <span class="nav-text">文件属性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#获取文件夹中所有的文件"><span class="nav-number">4.3.9.</span> <span class="nav-text">获取文件夹中所有的文件</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NSArray"><span class="nav-number">4.4.</span> <span class="nav-text">NSArray</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#写文件"><span class="nav-number">4.4.1.</span> <span class="nav-text">写文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#读文件"><span class="nav-number">4.4.2.</span> <span class="nav-text">读文件</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">独木舟的木</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.1.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+  
+    
+    
+      
+    
+  
+  <script color="17,119,176" opacity="0.5" zindex="-1" count="99" src="//cdn.jsdelivr.net/gh/theme-next/theme-next-canvas-nest@1/canvas-nest.min.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="//cdn.jsdelivr.net/npm/jquery@2/dist/jquery.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/fastclick@1/lib/fastclick.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/jquery-lazyload@1/jquery.lazyload.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/velocity-animate@1/velocity.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/velocity-animate@1/velocity.ui.min.js"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.0"></script>
+
+  <script src="/js/motion.js?v=7.1.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.0"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.0"></script>
+
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.0"></script>
+<script src="/js/post-details.js?v=7.1.0"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.0"></script>
+
+
+  
+
+  
+
+  
+  
+  
+    
+  
+
+  
+
+  
+  
+  
+
+
+  
+
+
+  
+
+
+  
+
+
+
+  
+  
+  
+    
+  
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/instantsearch.js@2/dist/instantsearch.min.css">
+
+  
+  
+    
+  
+  <script src="//cdn.jsdelivr.net/npm/instantsearch.js@2/dist/instantsearch.js"></script>
+  
+
+  <script src="/js/algolia-search.js?v=7.1.0"></script>
+
+
+
+  
+  
+  <script>
+    
+    function addCount(Counter) {
+      var $visitors = $('.leancloud_visitors');
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+
+      Counter('get', '/classes/Counter', { where: JSON.stringify({ url }) })
+        .done(function({ results }) {
+          if (results.length > 0) {
+            var counter = results[0];
+            
+            Counter('put', '/classes/Counter/' + counter.objectId, JSON.stringify({ time: { '__op': 'Increment', 'amount': 1 } }))
+            
+              .done(function() {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.time + 1);
+              })
+            
+              .fail(function ({ responseJSON }) {
+                console.log('Failed to save Visitor num, with error message: ' + responseJSON.error);
+              })
+          } else {
+            
+              var $element = $(document.getElementById(url));
+              $element.find('.leancloud-visitors-count').text('Counter not initialized! More info at console err msg.');
+              console.error('ATTENTION! LeanCloud counter has security bug, see how to solve it here: https://github.com/theme-next/hexo-leancloud-counter-security. \n However, you can still use LeanCloud without security, by setting `security` option to `false`.');
+            
+          }
+        })
+        .fail(function ({ responseJSON }) {
+          console.log('LeanCloud Counter Error: ' + responseJSON.code + ' ' + responseJSON.error);
+        });
+    }
+    
+
+    $(function() {
+      $.get('https://app-router.leancloud.cn/2/route?appId=' + 'S7i1Y8YorMKFPaYbJbekD5el-gzGzoHsz')
+        .done(function({ api_server }) {
+          var Counter = function(method, url, data) {
+            return $.ajax({
+              method: method,
+              url: 'https://' + api_server + '/1.1' + url,
+              headers: {
+                'X-LC-Id': 'S7i1Y8YorMKFPaYbJbekD5el-gzGzoHsz',
+                'X-LC-Key': 'brOnU8mOQvSjpipJvdKUAIbU',
+                'Content-Type': 'application/json',
+              },
+              data: data
+            });
+          };
+          
+            addCount(Counter);
+          
+        });
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+  
+    
+  
+  <script src="//cdn.jsdelivr.net/npm/pangu@4/dist/browser/pangu.min.js"></script>
+  <script>pangu.spacingPage();</script>
+
+
+  
+  
+  
+    
+  
+  <script src="//cdn.jsdelivr.net/gh/theme-next/theme-next-bookmark@1/bookmark.min.js"></script>
+  <script>
+  
+    bookmark.scrollToMark('auto', "#更多");
+  
+  </script>
+
+
+  
+
+  
+
+  
+
+
+  <!-- red heart -->
+  <script type="text/javascript" src="/js/src/love.js"></script>
+  
+</body>
+</html>
