@@ -327,7 +327,7 @@
       
     
 
-    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">310</span></a>
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">312</span></a>
 
   </li>
         
@@ -417,6 +417,632 @@
           <div id="content" class="content">
             
   <section id="posts" class="posts-expand">
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://andy0570.com/2017/03/28/《Objective-C 编程》25.常量、#define、enum/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="独木舟的木">
+      <meta itemprop="description" content="有时候阳光很好 有时候阳光很暗">
+      <meta itemprop="image" content="https://ws1.sinaimg.cn/large/006tNc79gy1g22m14458rj30u014xu0x.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="独木舟的木">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2017/03/28/《Objective-C 编程》25.常量、#define、enum/" class="post-title-link" itemprop="url">《Objective-C 编程》25.常量、#define、enum</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2017-03-28 16:16:00" itemprop="dateCreated datePublished" datetime="2017-03-28T16:16:00+08:00">2017-03-28</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-04-18 00:57:57" itemprop="dateModified" datetime="2019-04-18T00:57:57+08:00">2019-04-18</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Objective-C-编程/" itemprop="url" rel="index"><span itemprop="name">Objective-C 编程</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+            <span id="/2017/03/28/《Objective-C 编程》25.常量、#define、enum/" class="leancloud_visitors" data-flag-title="《Objective-C 编程》25.常量、#define、enum">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读次数：</span>
+              
+                <span class="leancloud-visitors-count"></span>
+            </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body han-init-context" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <a id="more"></a>
+<h1 id="常量"><a href="#常量" class="headerlink" title="常量"></a>常量</h1><ul>
+<li>程序中的某些信息的值是永远不会变的，这类不变的值称为 <strong>常量</strong>。</li>
+<li>在 Objective-C 中，可以通过两种途径来定义 <strong>常量</strong>：<ol>
+<li><strong>全局变量</strong></li>
+<li><strong>#define</strong> 预处理程序</li>
+</ol>
+</li>
+<li><p>常量应该以驼峰法命名，并以相关类名作为前缀。</p>
+<blockquote>
+<p>若常量仅局限于<strong>实现文件(.m)</strong>之内，则在前面加字母 K；<br>若常量在类之外可见，则通常以类名为前缀。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">static const NSTimeInterval ZOCSignInViewControllerFadeOutAnimationDuration = 0.4;</span><br><span class="line">static NSString * const ZOCCacheControllerDidClearCacheNotification = @&quot;ZOCCacheControllerDidClearCacheNotification&quot;;</span><br><span class="line">static const CGFloat ZOCImageThumbnailHeight = 50.0f;</span><br></pre></td></tr></table></figure>
+</blockquote>
+</li>
+<li><p>常量应该在头文件中以这样的形式暴露给外部：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">extern NSString *const ZOCCacheControllerDidClearCacheNotification;</span><br><span class="line"></span><br><span class="line">// 示例</span><br><span class="line">// .h</span><br><span class="line">UIKIT_EXTERN NSString *const HQFormRowDescriptorTypeProvinceAndCity;</span><br><span class="line">UIKIT_EXTERN const CGFloat HQLTableViewCellHeight;</span><br><span class="line">// .m</span><br><span class="line">NSString *const HQFormRowDescriptorTypeProvinceAndCity = @&quot;HQProvinceAndCityCell&quot;;</span><br><span class="line">const CGFloat HQLTableViewCellHeight = 115;</span><br></pre></td></tr></table></figure>
+<p>并在实现文件中为它赋值。<br>只有公有的常量才需要添加命名空间作为前缀。尽管实现文件中私有常量的命名可以遵循另外一种模式，你仍旧可以遵循这个规则。</p>
+</li>
+</ul>
+<h1 id="预处理指令"><a href="#预处理指令" class="headerlink" title="预处理指令"></a>预处理指令</h1><ul>
+<li>C、C++ 或 Objective-C 代码文件要经过两步才能完成编译。首先，<strong>预处理器</strong>（preprocessor）会读入并处理整个文件。接着，预处理器的输出结果会作为输入交给真正的<strong>编译器</strong>。<strong>预处理器</strong>指令都以 <strong>#</strong> 开头。其中最常用的三个为 <strong>#include</strong>、<strong>#import</strong> 和 <strong>#define</strong>。</li>
+</ul>
+<h2 id="define"><a href="#define" class="headerlink" title="#define"></a>#define</h2><ul>
+<li><strong>#define</strong> 告诉预处理器，在编译器看到A之前，使用B替换之。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">int main(int argc, const char * argv[]) &#123;</span><br><span class="line">    @autoreleasepool &#123;</span><br><span class="line">        // M_PI 是在 &lt;math.h&gt; 中定义的常量</span><br><span class="line">        NSLog(@&quot;\u03c0 is %f&quot;,M_PI);  </span><br><span class="line">    &#125;</span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>M_PI 是在 &lt;math.h&gt; 中定义的常量:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#define M_PI        3.14159265358979323846264338327950288   /* pi             */</span><br></pre></td></tr></table></figure>
+<ul>
+<li>除了定义常量，还可以使用 <strong>#define</strong> 构建类似函数的代码段,称之为 <strong>宏</strong>。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">NSLog(@&quot;%d is larger&quot;,MAX(10, 12));</span><br></pre></td></tr></table></figure>
+<p>这里的 <strong>MAX</strong> 不是函数，而是一个 <strong>#define</strong> 指令：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">#if !defined(MAX)</span><br><span class="line">    #define __NSMAX_IMPL__(A,B,L) (&#123; __typeof__(A) __NSX_PASTE__(__a,L) = (A); __typeof__(B) __NSX_PASTE__(__b,L) = (B); (__NSX_PASTE__(__a,L) &lt; __NSX_PASTE__(__b,L)) ? __NSX_PASTE__(__b,L) : __NSX_PASTE__(__a,L); &#125;)</span><br><span class="line">    #define MAX(A,B) __NSMAX_IMPL__(A,B,__COUNTER__)</span><br><span class="line">#endif</span><br></pre></td></tr></table></figure>
+<h3 id="宏定义的日常使用："><a href="#宏定义的日常使用：" class="headerlink" title="宏定义的日常使用："></a>宏定义的日常使用：</h3><p>推荐阅读：</p>
+<ul>
+<li><a href="https://www.jianshu.com/p/2b449a4ae20f" target="_blank" rel="noopener">iOS pch 文件的新建和其缺点</a></li>
+<li><a href="https://cnbin.github.io/blog/2016/03/21/ioshong-ding-yi-de-shi-yong-yu-gui-fan/" target="_blank" rel="noopener">iOS宏定义的使用与规范</a></li>
+<li>宏定义颜色。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">// 获取RGB颜色</span><br><span class="line">#define Color_A(r, g, b, a) [UIColor colorWithRed:(r)/255.0 green:(g)/255.0 blue:(b)/255.0 alpha:(a)]</span><br><span class="line">#define Color(r, g, b) [UIColor colorWithRed:(r)/255.0 green:(g)/255.0 blue:(b)/255.0 alpha:1.0]</span><br><span class="line"></span><br><span class="line">#define RGBA(r,g,b,a) [UIColor colorWithRed:r/255.0f green:g/255.0f blue:b/255.0f alpha:a]</span><br><span class="line">#define RGB(r,g,b) RGBA(r,g,b,1.0f)</span><br><span class="line"></span><br><span class="line">// rgb颜色转换（16进制-&gt;10进制），输入十六进值颜色值@“#000000”</span><br><span class="line">#define UIColorFromRGB(rgbValue) [UIColor colorWithRed:((float)((rgbValue &amp; 0xFF0000) &gt;&gt; 16))/255.0 green:((float)((rgbValue &amp; 0xFF00) &gt;&gt; 8))/255.0 blue:((float)(rgbValue &amp; 0xFF))/255.0 alpha:1.0]</span><br><span class="line"></span><br><span class="line">// 随机色</span><br><span class="line">#define RANDOM_COLOR [UIColor colorWithRed:arc4random_uniform(255)/255.0 green:arc4random_uniform(255)/255.0 blue:arc4random_uniform(255)/255.0 alpha:arc4random_uniform(255)/255.0]</span><br><span class="line"></span><br><span class="line">// 背景色</span><br><span class="line">#define COLOR_BACKGROUND [UIColor colorWithRed:239/255.0 green:239/255.0 blue:239/255.0 alpha:1.0]</span><br><span class="line"></span><br><span class="line">// Chameleon 框架中的宏定义语法: https://github.com/ViccAlexander/Chameleon</span><br><span class="line">#define rgba(r,g,b,a) [UIColor colorWithRed:r/255.0f green:g/255.0f blue:b/255.0f alpha:a]</span><br><span class="line">#define rgb(r,g,b) [UIColor colorWithRed:r/255.0f green:g/255.0f blue:b/255.0f alpha:1.0]</span><br><span class="line">#define hsba(h,s,b,a) [UIColor colorWithHue:h/360.0f saturation:s/100.0f brightness:b/100.0f alpha:a]</span><br><span class="line">#define hsb(h,s,b) [UIColor colorWithHue:h/360.0f saturation:s/100.0f brightness:b/100.0f alpha:1.0]</span><br></pre></td></tr></table></figure>
+<ul>
+<li>宏定义字体</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">#define CYLabelFont [UIFont boldSystemFontOfSize:13]</span><br><span class="line">#define CYFont(f) [UIFont systemFontOfSize:(f)]</span><br><span class="line">#define CYFontB(f) [UIFont boldSystemFontOfSize:(f)]</span><br></pre></td></tr></table></figure>
+<ul>
+<li><del>屏幕的宽高</del></li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">#define CYScreen [UIScreen mainScreen]</span><br><span class="line">#define CYScreenWidth CYScreen.bounds.size.width</span><br><span class="line">#define CYScreenHeight CYScreen.bounds.size.height</span><br></pre></td></tr></table></figure>
+<p>补充，如果你使用 YYKit 框架，那么 YYCGUtilities.h 中已经写好了：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// main screen's scale</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">ifndef</span> kScreenScale</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> kScreenScale YYScreenScale()</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">// main screen's size (portrait)</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">ifndef</span> kScreenSize</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> kScreenSize YYScreenSize()</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">// main screen's width (portrait)</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">ifndef</span> kScreenWidth</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> kScreenWidth YYScreenSize().width</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">// main screen's height (portrait)</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">ifndef</span> kScreenHeight</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> kScreenHeight YYScreenSize().height</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br></pre></td></tr></table></figure></p>
+<ul>
+<li><del>弧度与角度的相互转换</del><figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/** 角度转换为弧度 */</span></span><br><span class="line"><span class="selector-id">#define</span> <span class="selector-tag">DEGREES_TO_RADIANS</span>(degrees) ((degrees) * M_PI / <span class="number">180</span>)</span><br><span class="line"><span class="comment">/** 弧度转换为角度 */</span></span><br><span class="line"><span class="selector-id">#define</span> <span class="selector-tag">RADIANS_TO_DEGREES</span>(radians) ((radians) * <span class="number">180</span> / M_PI)</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>补充，如果你使用 YYKit 框架，那么 YYCGUtilities.h 中已经写好了：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/// Convert degrees to radians.</span></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">inline</span> <span class="built_in">CGFloat</span> DegreesToRadians(<span class="built_in">CGFloat</span> degrees) &#123;</span><br><span class="line">    <span class="keyword">return</span> degrees * M_PI / <span class="number">180</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/// Convert radians to degrees.</span></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">inline</span> <span class="built_in">CGFloat</span> RadiansToDegrees(<span class="built_in">CGFloat</span> radians) &#123;</span><br><span class="line">    <span class="keyword">return</span> radians * <span class="number">180</span> / M_PI;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><del>强引用与弱引用</del></li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">#define WS(weakself)  __weak __typeof(&amp;*self)weakself = self;</span><br><span class="line">#define SS(strongself)  __strong __typeof(&amp;*self)strongself = self;</span><br><span class="line"></span><br><span class="line">#define WeakSelf(weakSelf)      __weak __typeof(self)weakSelf = self;</span><br><span class="line">#define StrongSelf(strongSelf)  __strong __typeof(weakSelf)strongSelf = weakSelf;</span><br></pre></td></tr></table></figure>
+<p>补充，如果你使用 YYKit 框架，那么 YYCategoriesMacro.h 中已经写好了：</p>
+<figure class="highlight clean"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">#ifndef weakify</span><br><span class="line">    #<span class="keyword">if</span> DEBUG</span><br><span class="line">        #<span class="keyword">if</span> __has_feature(objc_arc)</span><br><span class="line">        #define weakify(object) autoreleasepool&#123;&#125; __weak __typeof__(object) weak##_##object = object;</span><br><span class="line">        #else</span><br><span class="line">        #define weakify(object) autoreleasepool&#123;&#125; __block __typeof__(object) block##_##object = object;</span><br><span class="line">        #endif</span><br><span class="line">    #else</span><br><span class="line">        #<span class="keyword">if</span> __has_feature(objc_arc)</span><br><span class="line">        #define weakify(object) try&#123;&#125; @finally&#123;&#125; &#123;&#125; __weak __typeof__(object) weak##_##object = object;</span><br><span class="line">        #else</span><br><span class="line">        #define weakify(object) try&#123;&#125; @finally&#123;&#125; &#123;&#125; __block __typeof__(object) block##_##object = object;</span><br><span class="line">        #endif</span><br><span class="line">    #endif</span><br><span class="line">#endif</span><br><span class="line"></span><br><span class="line">#ifndef strongify</span><br><span class="line">    #<span class="keyword">if</span> DEBUG</span><br><span class="line">        #<span class="keyword">if</span> __has_feature(objc_arc)</span><br><span class="line">        #define strongify(object) autoreleasepool&#123;&#125; __typeof__(object) object = weak##_##object;</span><br><span class="line">        #else</span><br><span class="line">        #define strongify(object) autoreleasepool&#123;&#125; __typeof__(object) object = block##_##object;</span><br><span class="line">        #endif</span><br><span class="line">    #else</span><br><span class="line">        #<span class="keyword">if</span> __has_feature(objc_arc)</span><br><span class="line">        #define strongify(object) try&#123;&#125; @finally&#123;&#125; __typeof__(object) object = weak##_##object;</span><br><span class="line">        #else</span><br><span class="line">        #define strongify(object) try&#123;&#125; @finally&#123;&#125; __typeof__(object) object = block##_##object;</span><br><span class="line">        #endif</span><br><span class="line">    #endif</span><br><span class="line">#endif</span><br></pre></td></tr></table></figure>
+<ul>
+<li><del>获取沙盒目录</del></li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> PATH_TEMP  NSTemporaryDirectory()</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> PATH_DOCUMENT  [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) firstObject];</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> PATH_CACHE  [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) firstObject];</span></span><br></pre></td></tr></table></figure>
+<p>补充，如果你使用 YYKit 框架，那么UIApplication+YYAdd 中已经写成了属性的形式：<br><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/// "Documents" folder in this app's sandbox.</span></span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">readonly</span>) <span class="built_in">NSURL</span> *documentsURL;</span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">readonly</span>) <span class="built_in">NSString</span> *documentsPath;</span><br><span class="line"></span><br><span class="line"><span class="comment">/// "Caches" folder in this app's sandbox.</span></span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">readonly</span>) <span class="built_in">NSURL</span> *cachesURL;</span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">readonly</span>) <span class="built_in">NSString</span> *cachesPath;</span><br><span class="line"></span><br><span class="line"><span class="comment">/// "Library" folder in this app's sandbox.</span></span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">readonly</span>) <span class="built_in">NSURL</span> *libraryURL;</span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">readonly</span>) <span class="built_in">NSString</span> *libraryPath;</span><br></pre></td></tr></table></figure></p>
+<p>实现的方式是一模一样的：<br><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="built_in">NSURL</span> *)documentsURL &#123;</span><br><span class="line">    <span class="keyword">return</span> [[[<span class="built_in">NSFileManager</span> defaultManager]</span><br><span class="line">             URLsForDirectory:<span class="built_in">NSDocumentDirectory</span></span><br><span class="line">             inDomains:<span class="built_in">NSUserDomainMask</span>] lastObject];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (<span class="built_in">NSString</span> *)documentsPath &#123;</span><br><span class="line">    <span class="keyword">return</span> [<span class="built_in">NSSearchPathForDirectoriesInDomains</span>(<span class="built_in">NSDocumentDirectory</span>, <span class="built_in">NSUserDomainMask</span>, <span class="literal">YES</span>) firstObject];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (<span class="built_in">NSURL</span> *)cachesURL &#123;</span><br><span class="line">    <span class="keyword">return</span> [[[<span class="built_in">NSFileManager</span> defaultManager]</span><br><span class="line">             URLsForDirectory:<span class="built_in">NSCachesDirectory</span></span><br><span class="line">             inDomains:<span class="built_in">NSUserDomainMask</span>] lastObject];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (<span class="built_in">NSString</span> *)cachesPath &#123;</span><br><span class="line">    <span class="keyword">return</span> [<span class="built_in">NSSearchPathForDirectoriesInDomains</span>(<span class="built_in">NSCachesDirectory</span>, <span class="built_in">NSUserDomainMask</span>, <span class="literal">YES</span>) firstObject];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (<span class="built_in">NSURL</span> *)libraryURL &#123;</span><br><span class="line">    <span class="keyword">return</span> [[[<span class="built_in">NSFileManager</span> defaultManager]</span><br><span class="line">             URLsForDirectory:<span class="built_in">NSLibraryDirectory</span></span><br><span class="line">             inDomains:<span class="built_in">NSUserDomainMask</span>] lastObject];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (<span class="built_in">NSString</span> *)libraryPath &#123;</span><br><span class="line">    <span class="keyword">return</span> [<span class="built_in">NSSearchPathForDirectoriesInDomains</span>(<span class="built_in">NSLibraryDirectory</span>, <span class="built_in">NSUserDomainMask</span>, <span class="literal">YES</span>) firstObject];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<ul>
+<li><p>View 设置圆角边框</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#define ViewBorderRadius(View, Radius, Width, Color)  \</span></span><br><span class="line"><span class="section">[View.layer setCornerRadius:(Radius)]</span><span class="comment">;                \</span></span><br><span class="line"><span class="section">[View.layer setMasksToBounds:YES]</span><span class="comment">;                    \</span></span><br><span class="line"><span class="section">[View.layer setBorderWidth:(Width)]</span><span class="comment">;                  \</span></span><br><span class="line"><span class="section">[View.layer setBorderColor:[Color CGColor]]</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>宏定义指定字符串。</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#define URL 	@&quot;https://www.google.com&quot;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>图片路径</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#define CYPasswordViewSrcName(file) [@&quot;CYPasswordView.bundle&quot; stringByAppendingPathComponent:file]</span><br></pre></td></tr></table></figure>
+<ul>
+<li>判断系统版本（来自 <strong>XLForm.h</strong>）<figure class="highlight prolog"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">#define <span class="symbol">SYSTEM_VERSION_EQUAL_TO</span>(v)                  ([[[<span class="symbol">UIDevice</span> currentDevice] systemVersion] compare:v options:<span class="symbol">NSNumericSearch</span>] == <span class="symbol">NSOrderedSame</span>)</span><br><span class="line">#define <span class="symbol">SYSTEM_VERSION_GREATER_THAN</span>(v)              ([[[<span class="symbol">UIDevice</span> currentDevice] systemVersion] compare:v options:<span class="symbol">NSNumericSearch</span>] == <span class="symbol">NSOrderedDescending</span>)</span><br><span class="line">#define <span class="symbol">SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO</span>(v)  ([[[<span class="symbol">UIDevice</span> currentDevice] systemVersion] compare:v options:<span class="symbol">NSNumericSearch</span>] != <span class="symbol">NSOrderedAscending</span>)</span><br><span class="line">#define <span class="symbol">SYSTEM_VERSION_LESS_THAN</span>(v)                 ([[[<span class="symbol">UIDevice</span> currentDevice] systemVersion] compare:v options:<span class="symbol">NSNumericSearch</span>] == <span class="symbol">NSOrderedAscending</span>)</span><br><span class="line">#define <span class="symbol">SYSTEM_VERSION_LESS_THAN_OR_EQUAL_TO</span>(v)     ([[[<span class="symbol">UIDevice</span> currentDevice] systemVersion] compare:v options:<span class="symbol">NSNumericSearch</span>] != <span class="symbol">NSOrderedDescending</span>)</span><br><span class="line"></span><br><span class="line">// 使用示例，传入版本号字符串即可</span><br><span class="line">if (<span class="symbol">SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO</span>(@<span class="string">"8.0"</span>))&#123;</span><br><span class="line">    self.tableView.rowHeight = <span class="symbol">UITableViewAutomaticDimension</span>;</span><br><span class="line">    self.tableView.estimatedRowHeight = <span class="number">44.0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="include-与-import"><a href="#include-与-import" class="headerlink" title="#include 与 #import"></a>#include 与 #import</h2><ul>
+<li><strong>#include</strong> 与 <strong>#import</strong> 的作用类似，都是先要求预处理器读取某个文件，然后将读入的内容添加至输出结果。</li>
+<li>区别：<strong>#import</strong> 会确保预处理器只导入特定的文件一次，而 <strong>#include</strong> 则允许多次导入同一个文件。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">#import &lt;&lt;#header#&gt;&gt;</span><br><span class="line">#import &quot;&lt;#header#&gt;&quot;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>&lt; &gt;尖括号的文件，表示编译器会先在预先设定好的标准目录下查找相应的头文件。</p>
+</li>
+<li><p>“ “双引号的文件，表示编译器会先在项目目录下查找相应的头文件。</p>
+</li>
+<li><p>凡是出现在预编译文件（<strong>.pch</strong>）中的头文件，Xcode 都会事前<strong>编译好并自动导入每个文件</strong>。</p>
+</li>
+</ul>
+<h1 id="全局变量"><a href="#全局变量" class="headerlink" title="全局变量"></a>全局变量</h1><ul>
+<li><strong>局部变量</strong>：程序只在函数运行时才会存在的变量；</li>
+<li><strong>全局变量</strong>：任何函数都可以在任意时刻访问的变量；</li>
+<li><strong>静态变量</strong>: 只有声明某个静态变量的文件才能访问该变量,静态变量既保留了非局部的，存在于任何函数之外的优点，又避免了会被其他文件修改的问题。</li>
+<li>如果没有为<strong>静态变量</strong>和<strong>全局变量</strong>赋初值，则程序会将他们的值自动赋为0.</li>
+</ul>
+<p>编写 Objective-C 程序时，通常不是使用 <strong>#define</strong> 来保存 <strong>常量</strong>，而是使用 <strong>全局变量</strong> 来完成这项任务;</p>
+<p>因为在某些情况下，使用全局变量的效率更高。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">// 获取用户当前区域的货币</span><br><span class="line">NSLocale *here = [NSLocale currentLocale];</span><br><span class="line">//	NSString *currency = [here objectForKey:@&quot;currency&quot;];</span><br><span class="line">// 使用全局变量替换</span><br><span class="line">NSString *currency = [here objectForKey:NSLocaleCountryCode];</span><br><span class="line">NSLog(@&quot;Money is %@&quot;,currency);</span><br></pre></td></tr></table></figure>
+<p><strong>NSLocaleCountryCode</strong> 是一个全局变量，它的声明如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">FOUNDATION_EXPORT NSLocaleKey const NSLocaleCountryCode;		// NSString</span><br></pre></td></tr></table></figure>
+<h3 id="关键字："><a href="#关键字：" class="headerlink" title="关键字："></a>关键字：</h3><ul>
+<li><p><strong>const</strong> ：在程序的整个运行过程中，<strong>NSLocaleCountryCode</strong> 指针的值不会发生变化。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">‼️ 难点 ‼️</span><br><span class="line">// ********************************************************</span><br><span class="line">const CGFloat count = 6;</span><br><span class="line">const NSString *string = @&quot;string&quot;;</span><br><span class="line">// const放在最前面可以往后移一位,含义不变,因此下面两个写法和上面的等价</span><br><span class="line">CGFloat const count = 6;</span><br><span class="line">NSString const *string = @&quot;string&quot;;</span><br><span class="line"></span><br><span class="line">// ********************************************************</span><br><span class="line">// age 是【指针变量】, const 修饰指针变量,意味着【这个指针变量】不可修改,而指针变量存的是地址,意思就是不能把 【这个指针变量存的地址】 改成 【其他地址】.或者说不能改变指针的指向。</span><br><span class="line">int * const age = 25;</span><br><span class="line"></span><br><span class="line">// age 是【指针变量】, *age 是取得【指针所指向的值】, const 修饰 *age, 意味着 【*age 取得指针所指向的值】 不可修改。</span><br><span class="line">int const *age = 23;</span><br></pre></td></tr></table></figure>
+<p>// <strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><em>**</em></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong><br>// p  : 指针变量<br>// <em>p : 取指针指向的内存<br>// &amp;p : 取指针本身的地址<br>// const修饰【指针变量访问的内存空间】，修饰的是右边</em>p1，<br>// 两种方式一样<br>const int <em>p1; // </em>p1：常量 p1:变量<br>int const <em>p1; // </em>p1：常量 p1:变量</p>
+<p>// const修饰指针变量p1<br>int <em> const p1; // </em>p1:变量 p1:常量</p>
+</li>
+</ul>
+<p>  // 第一个const修饰<em>p1，第二个const修饰 p1 (技巧：从后向前看)<br>  // 两种方式一样<br>  const int </em> const p1;  // <em>p1：常量 p1：常量<br>  int const </em> const p1;  // *p1：常量 p1：常量</p>
+<p>  // 开发中经常拿到key修改值，因此用const修饰key,表示key只读，不允许修改。<br>  static  NSString * const key = @”name”;</p>
+<p>  // 如果 const修饰 <em>key1,表示</em>key1只读，key1还是能改变。<br>  static  NSString const *key1 = @”name”;<br>  <figure class="highlight asciidoc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="bullet">* </span>*<span class="strong">*extern*</span><span class="strong">*：*</span><span class="strong">*NSLocaleCountryCode*</span>* 是存在的，但是会在另一个文件中定义。(就是在*<span class="strong">*.h*</span><span class="strong">*文件中声明，在*</span><span class="strong">*.m*</span><span class="strong">*文件中赋值)</span></span><br><span class="line"><span class="strong"></span></span><br><span class="line"><span class="strong">*</span> *<span class="strong">*UIKIT_EXTERN*</span><span class="strong">*: 是苹果使用的 *</span><span class="strong">*extern*</span>* ,只是添加了一些编译器代码，是经过处理的 *<span class="strong">*extern*</span><span class="strong">*。</span></span><br><span class="line"><span class="strong"></span></span><br><span class="line"><span class="strong">*</span> *<span class="strong">*static*</span>* : 该变量仅在定义此变量的编译单元中可见。</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">## enum 枚举类型</span><br><span class="line"></span><br><span class="line">枚举类型用于定义*<span class="strong">*一组常量*</span><span class="strong">*；</span></span><br><span class="line"><span class="strong"></span></span><br><span class="line"><span class="strong"></span></span><br><span class="line"><span class="strong">### 声明方式：</span></span><br><span class="line"><span class="strong"></span></span><br><span class="line"><span class="strong">*</span> 使用 enum 枚举类型</span><br><span class="line"></span><br><span class="line">​<span class="code">```</span>objective-c</span><br><span class="line">typedef enum : NSUInteger &#123;</span><br><span class="line"><span class="code">    MyEnumValueA,</span></span><br><span class="line"><span class="code">    MyEnumValueB,</span></span><br><span class="line"><span class="code">    MyEnumValueC,</span></span><br><span class="line">&#125; MyEnum;</span><br></pre></td></tr></table></figure></p>
+<ul>
+<li>使用 <figure class="highlight plain"><figcaption><span>语法</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">```objective-c</span><br><span class="line">typedef NS_ENUM(NSUInteger, BlenderSpeed) &#123;</span><br><span class="line">    BlenderSpeedStir = 1,</span><br><span class="line">    BlenderSpeedChop = 2,</span><br><span class="line">    BlenderSpeedLiquify = 3,</span><br><span class="line">    BlenderSpeedPulse = 4,</span><br><span class="line">    BlenderSpeedIceCrush = 5</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">@property (nonatomic, assign) BlenderSpeed mySpeed;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a href="https://onevcat.com/2014/01/black-magic-in-macro/" target="_blank" rel="noopener">宏定义的黑魔法 - 宏菜鸟起飞手册 @onevcat</a></li>
+<li><a href="http://www.jianshu.com/p/2e79436e5fe3" target="_blank" rel="noopener">iOS NSLog在项目release版本中的使用注意</a></li>
+<li><a href="http://www.jianshu.com/p/ed2dfbca6e73" target="_blank" rel="noopener">关于全局常量的定义</a></li>
+<li><a href="http://www.cnblogs.com/oumygade/p/4316024.html" target="_blank" rel="noopener">iOS const的使用</a></li>
+<li><a href="http://www.jianshu.com/p/2fd58ed2cf55" target="_blank" rel="noopener">【如何正确使用const,static,extern】|那些人追的干货</a></li>
+</ul>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://andy0570.com/2017/03/27/《Objective-C 编程》24.Collection 集合类/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="独木舟的木">
+      <meta itemprop="description" content="有时候阳光很好 有时候阳光很暗">
+      <meta itemprop="image" content="https://ws1.sinaimg.cn/large/006tNc79gy1g22m14458rj30u014xu0x.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="独木舟的木">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2017/03/27/《Objective-C 编程》24.Collection 集合类/" class="post-title-link" itemprop="url">《Objective-C 编程》24.Collection 集合类</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2017-03-27 17:29:00" itemprop="dateCreated datePublished" datetime="2017-03-27T17:29:00+08:00">2017-03-27</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-04-18 00:57:29" itemprop="dateModified" datetime="2019-04-18T00:57:29+08:00">2019-04-18</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Objective-C-编程/" itemprop="url" rel="index"><span itemprop="name">Objective-C 编程</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+            <span id="/2017/03/27/《Objective-C 编程》24.Collection 集合类/" class="leancloud_visitors" data-flag-title="《Objective-C 编程》24.Collection 集合类">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读次数：</span>
+              
+                <span class="leancloud-visitors-count"></span>
+            </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body han-init-context" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <a id="more"></a>
+<h1 id="Collection-类"><a href="#Collection-类" class="headerlink" title="Collection 类"></a>Collection 类</h1><ul>
+<li><p><strong>Collection</strong> 类的实例用于保存指向其他对象的指针；</p>
+</li>
+<li><p><strong>Collection</strong> 类包括：</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/2648731-31f74128e559fe76.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image"></p>
+</li>
+</ul>
+<blockquote>
+<p>2017/11/17——新增 <strong>NSIndexSet</strong>（索引集合）</p>
+</blockquote>
+<h2 id="NSArray-、NSMutableArray"><a href="#NSArray-、NSMutableArray" class="headerlink" title="NSArray 、NSMutableArray"></a>NSArray 、NSMutableArray</h2><ul>
+<li><a href="http://www.jianshu.com/p/aaa89e070f84" target="_blank" rel="noopener">第17章——NSArray</a></li>
+</ul>
+<ul>
+<li><a href="http://www.jianshu.com/p/64443aecc4dd" target="_blank" rel="noopener">第17章——NSMutableArray</a></li>
+</ul>
+<h2 id="NSSet-、NSMutableSet"><a href="#NSSet-、NSMutableSet" class="headerlink" title="NSSet 、NSMutableSet"></a>NSSet 、NSMutableSet</h2><ul>
+<li><strong>NSSet</strong> 对象包含的“内容”是 <strong>无序</strong> 的。</li>
+<li>在一个 <strong>NSSet</strong> 对象中，某个特定的对象 <strong>只能出现一次</strong> （唯一性）。</li>
+<li><strong>NSSet</strong> 对象的最大用处是 <strong>检查某个对象是否存在</strong>，<strong>NSSet</strong> 完成此类任务的速度比数组快得多。</li>
+</ul>
+<h4 id="NSSet-与-NSArray-的区别："><a href="#NSSet-与-NSArray-的区别：" class="headerlink" title="NSSet 与 NSArray 的区别："></a>NSSet 与 NSArray 的区别：</h4><ul>
+<li><strong>NSSet</strong>和数组一样,是个数据容器。</li>
+<li>数组是有序的，NSSet是无序的。</li>
+<li>数组可以容纳重复对象，NSSet不能。</li>
+<li>数组是有下标的，NSSet没有下标。</li>
+</ul>
+<h4 id="NSSet的创建"><a href="#NSSet的创建" class="headerlink" title="NSSet的创建"></a>NSSet的创建</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">//	alloc 创建</span><br><span class="line">NSSet *set1 = [[NSSet alloc] initWithObjects:@“张三”,@“李四”, nil];</span><br><span class="line">//	类方法创建</span><br><span class="line">NSSet *set2 = [NSSet setWithObjects:s@“张三”,@“李四”，nil];</span><br></pre></td></tr></table></figure>
+<h4 id="其他集合常用创建方法"><a href="#其他集合常用创建方法" class="headerlink" title="其他集合常用创建方法"></a>其他集合常用创建方法</h4><pre><code>//    创建一个新的集合1,集合2有两个对象(a和b)
+NSSet *set1 = [NSSet setWithObjects:@&quot;a&quot;, nil];
+NSSet *set2 = [set1 setByAddingObject:@&quot;b&quot;];
+
+//    通过已有集合7和集合8,创建一个新的集合9
+NSSet *set7 = [NSSet setWithObjects:@&quot;a&quot;, nil];
+NSSet *set8 = [NSSet setWithObjects:@&quot;z&quot;, nil];
+NSSet *set9 = [set7 setByAddingObjectsFromSet:set8];
+
+//    通过已有的集合10和数组对象,创建一个新的集合11
+NSArray *array = [NSArray arrayWithObjects:@&quot;a&quot;, @&quot;b&quot;, @&quot;c&quot;, nil]; 
+NSSet     *set10 = [NSSet setWithObjects:@&quot;z&quot;, nil];
+NSSet *set11 = [set10 setByAddingObjectsFromArray:array]; 
+</code></pre><h4 id="NSSet-与-NSArray-相互转换"><a href="#NSSet-与-NSArray-相互转换" class="headerlink" title="NSSet 与 NSArray 相互转换"></a>NSSet 与 NSArray 相互转换</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">//	NSSet -&gt; NSArray</span><br><span class="line">NSArray *array = [set1 allObjects];</span><br><span class="line"></span><br><span class="line">// 	NSArray --&gt; NSSet</span><br><span class="line">//  如果同一个对象在数组中出现多次，那么它只会添加一次到给定的集合。 每个对象在被添加到集合中时只会收到一次保留消息。</span><br><span class="line">NSSet *set3 = [NSSet setWithArray:array];</span><br></pre></td></tr></table></figure>
+<h5 id="返回元素的个数"><a href="#返回元素的个数" class="headerlink" title="返回元素的个数"></a>返回元素的个数</h5><pre><code>NSUInteger count = [set1 count];
+</code></pre><h5 id="从容器中随机取出一个元素"><a href="#从容器中随机取出一个元素" class="headerlink" title="从容器中随机取出一个元素"></a>从容器中随机取出一个元素</h5><pre><code>NSString *s = [set1 anyObject];
+</code></pre><h5 id="判断对象是否在NSSet中已经存在"><a href="#判断对象是否在NSSet中已经存在" class="headerlink" title="判断对象是否在NSSet中已经存在"></a>判断对象是否在NSSet中已经存在</h5><figure class="highlight plain"><figcaption><span>(BOOL)containsObject:(ObjectType)anObject;```</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">例：```BOOL isContain = [set1 containsObject:@&quot;李四&quot;];</span><br></pre></td></tr></table></figure>
+<ul>
+<li><strong>NSSet</strong> 对象中的对象是无序的，所以不能通过索引来访问，只能向 <strong>NSSet</strong> 对象查询某一个对象是否存在。</li>
+<li>当 <strong>NSSet</strong> 收到 <figure class="highlight plain"><figcaption><span>(BOOL)containsObject:(ObjectType)anObject;``` 消息时，会在其包含的对象中查找和 anObject **相等**的对象 (内容相同，地址可能不同，也就是说可能 【指针指向的内容是相等的】，但是他们两个【未必是同一块地址】，返回 **YES**)。</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br></pre></td><td class="code"><pre><span class="line">* 因此，相同的变量(指针指向同一块内存地址)一定是相等的，而相等的变量不一定是相同的。</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">## NSMutableSet</span><br><span class="line"></span><br><span class="line">---</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">* **NSMutableSet** 是可变集合,它继承自 **NSSet**。</span><br><span class="line"></span><br><span class="line">##### 常用方法</span><br><span class="line"></span><br><span class="line">	//创建一个空的集合</span><br><span class="line">	NSMutableSet *set1 = [NSMutableSet set];</span><br><span class="line">	NSMutableSet *set2 = [NSMutableSet setWithObjects:@&quot;1&quot;, @&quot;2&quot;, nil]; </span><br><span class="line">	</span><br><span class="line">	//集合2“减去”集合3中的元素</span><br><span class="line">	[set2 minusSet:set3];</span><br><span class="line">	</span><br><span class="line">	//集合2与集合3中元素的交集</span><br><span class="line">	[set2 intersectSet:set3]；</span><br><span class="line">	</span><br><span class="line">	//集合2与集合3中的元素的并集；</span><br><span class="line">	[set2 unionSet:set3];</span><br><span class="line">	</span><br><span class="line">	//将空集合1设置为集合3中的内容</span><br><span class="line">	[set1 setSet:set3];</span><br><span class="line">	</span><br><span class="line">	//根据数组的内容删除集合中的对象</span><br><span class="line">	[set2 addObjectsFromArray:array];</span><br><span class="line">	[set2 removeObject:@&quot;1&quot;];</span><br><span class="line">	[set2 removeAllObjects];  	</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">## NSDictionary</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">* 字典是由 **键—值**对 组成的数据容器, 通过  **key** (键，通常是字符串),查找对应 **value** (值，可以是任意类型的对象)。</span><br><span class="line">* 字典中的 **键—值**对 是**无序**的。</span><br><span class="line">* 字典对象中的 **键** 都是独一无二的,如果想要在现存的键后再添加第二个对象，第一个键—值对就会被替换掉。</span><br><span class="line">* 字典中的 **key** 可以是任意类型,一般使用字符串作为一个元素的key。</span><br><span class="line">* **NSDictionary** 是不可变字典。</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">##### 字典的创建</span><br><span class="line"></span><br><span class="line">```objective-c</span><br><span class="line">NSArray *array1 = @[@&quot;zhang3&quot;,@&quot;zhangfei&quot;];</span><br><span class="line">NSArray *array2 = @[@&quot;li4&quot;,@&quot;liming&quot;];</span><br><span class="line"> </span><br><span class="line">/*</span><br><span class="line"> 字典的结构</span><br><span class="line"> 第一个元素：key:@&quot;zhang&quot;     value:array1</span><br><span class="line"> 第二个元素：key:@&quot;li&quot;        value:array2</span><br><span class="line"> ...</span><br><span class="line"> */</span><br><span class="line"></span><br><span class="line">//1.alloc方法创建</span><br><span class="line">NSDictionary *dic1 = [[NSDictionary alloc] initWithObjectsAndKeys:</span><br><span class="line">                      array1,@&quot;zhang&quot;,</span><br><span class="line">                      array2,@&quot;li&quot;, nil];</span><br><span class="line">                      </span><br><span class="line">//xcode4.4以后对字典的创建和访问,语法上做了优化。</span><br><span class="line">NSDictionary *dic11 = @&#123;</span><br><span class="line">					   	@&quot;zhang&quot;:array1,</span><br><span class="line">                       	@&quot;li&quot;:array2</span><br><span class="line">                       &#125;;</span><br><span class="line">                       </span><br><span class="line">//2.类方法创建字典 </span><br><span class="line">NSDictionary *dic2 = [NSDictionary dictionaryWithObjectsAndKeys: </span><br><span class="line">                                      array1,@&quot;zhang&quot;,</span><br><span class="line">                                      array2,@&quot;li&quot;, nil];</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h5 id="返回元素个数"><a href="#返回元素个数" class="headerlink" title="返回元素个数"></a>返回元素个数</h5><pre><code>NSUInteger count = [dic1 count];
+</code></pre><h5 id="通过key获取对应的value"><a href="#通过key获取对应的value" class="headerlink" title="通过key获取对应的value"></a>通过key获取对应的value</h5><pre><code>NSArray *array3 = [dic1 objectForKey:@&quot;zhang&quot;];
+
+//简便写法
+NSArray *array3 = dic1[@&quot;zhang&quot;];
+</code></pre><h5 id="取得所有的keys"><a href="#取得所有的keys" class="headerlink" title="取得所有的keys"></a>取得所有的keys</h5><pre><code>NSArray *allkeys = [dic1 allKeys];
+</code></pre><h5 id="取得所有的Values"><a href="#取得所有的Values" class="headerlink" title="取得所有的Values"></a>取得所有的Values</h5><pre><code>NSArray *allvalue = [dic1 allValues];  //同下get方法
+NSArray *allvalue2 = dic1.allValues;
+</code></pre><h5 id="遍历字典"><a href="#遍历字典" class="headerlink" title="遍历字典"></a>遍历字典</h5><pre><code>//1.普通遍历
+ NSArray *keys = [dic1 allKeys];   //NSDictionary -&gt; NSArray
+for (int i =0;i &lt;keys.count;i++) {
+    NSString *key = keys[i]; //通过下标获取对象key
+
+    NSArray *names =[dic1 objectForKey:key]; //通过key获取对应的value
+    NSLog(@&quot;key=%@,value=%@&quot;,key,names);
+}
+
+//2.快速遍历
+for (NSString *key in dic1) {
+    NSArray *names = [dic1 objectForKey:key];
+    NSLog(@&quot;key=%@,value=%@&quot;,key,names);
+
+}
+</code></pre><h5 id="删除服务器返回的value为NULL的情况"><a href="#删除服务器返回的value为NULL的情况" class="headerlink" title="删除服务器返回的value为NULL的情况"></a>删除服务器返回的value为NULL的情况</h5><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#import <span class="meta-string">&lt;Foundation/Foundation.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> 范畴</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">NSDictionary</span> (<span class="title">MyCustomize</span>)</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> 填充value为空造成的crash</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment"> @return 修改后的NSDictionary</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">- (<span class="built_in">NSDictionary</span> *)deleteAllNULLValue;</span><br><span class="line"></span><br><span class="line"><span class="keyword">@end</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#import <span class="meta-string">"NSDictionary+MyCustomize.h"</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> 自定义范畴类</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">NSDictionary</span> (<span class="title">MyCustomize</span>)</span></span><br><span class="line"></span><br><span class="line">- (<span class="built_in">NSDictionary</span> *)deleteAllNULLValue &#123;</span><br><span class="line">    <span class="built_in">NSMutableDictionary</span> *mutableDic = [[<span class="built_in">NSMutableDictionary</span> alloc] init];</span><br><span class="line">    <span class="keyword">for</span> (<span class="built_in">NSString</span> *keyStr <span class="keyword">in</span> <span class="keyword">self</span>.allKeys) &#123;</span><br><span class="line">        <span class="keyword">if</span> ([[<span class="keyword">self</span> objectForKey:keyStr] isEqual:[<span class="built_in">NSNull</span> null]]) &#123;</span><br><span class="line">            [mutableDic setObject:<span class="string">@"null"</span> forKey:keyStr];</span><br><span class="line">            HQLog(<span class="string">@"changed!"</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span>&#123;</span><br><span class="line">            [mutableDic setObject:[<span class="keyword">self</span> objectForKey:keyStr] forKey:keyStr];</span><br><span class="line">            HQLog(<span class="string">@"no null"</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> mutableDic;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">@end</span></span><br></pre></td></tr></table></figure>
+<h2 id="NSMutableDictionary"><a href="#NSMutableDictionary" class="headerlink" title="NSMutableDictionary"></a>NSMutableDictionary</h2><hr>
+<ul>
+<li><strong>NSMutableDictionary</strong> 是可变字典,字典中的存储是可以修改的。</li>
+<li><strong>NSMutableDictionary</strong> 继承于 <strong>NSDictionary</strong>。</li>
+</ul>
+<h5 id="创建可变字典"><a href="#创建可变字典" class="headerlink" title="创建可变字典"></a>创建可变字典</h5><pre><code>//1.alloc 方法创建
+NSArray *array = [NSArray arrayWithObjects:@&quot;张三&quot;,@&quot;李四&quot;,@&quot;王五&quot;, nil];
+NSMutableDictionary *mdic = [[NSMutableDictionary alloc] 
+                               initWithObjectsAndKeys:array,@&quot;names&quot;, nil];
+
+NSMutableDictionary *mdic1 = [[NSMutableDictionary alloc] init];
+[mdic1 setObject:array forKey:@&quot;names&quot;]; //添加元素
+
+NSMutableDictionary *mdic2 = [[NSMutableDictionary alloc] initWithCapacity:3];
+</code></pre><h5 id="添加元素"><a href="#添加元素" class="headerlink" title="添加元素"></a>添加元素</h5><pre><code>//如果key是重复的，会将之前的value覆盖掉
+[mdic setObject:@&quot;value&quot; forKey:@&quot;zhang&quot;];
+
+//将另外一个字典所有的元素添加到mdic中
+[mdic addEntriesFromDictionary:&lt;#(nonnull NSDictionary *)#&gt;];
+</code></pre><h5 id="删除"><a href="#删除" class="headerlink" title="删除"></a>删除</h5><pre><code>//1&gt;根据Key删除元素
+[mdic removeObjectForKey:@&quot;names&quot;];
+
+//2&gt;根据多个key删除多个元素
+[mdic removeObjectForKey:@[@&quot;zhang&quot;,@&quot;li&quot;]];
+
+//3&gt;删除所有元素
+[mdic removeAllObjects];
+</code></pre><h2 id="数组排序"><a href="#数组排序" class="headerlink" title="数组排序"></a>数组排序</h2><p>见 <strong><a href="http://www.jianshu.com/p/64443aecc4dd" target="_blank" rel="noopener">第17章——NSMutableArray</a></strong></p>
+<h2 id="过滤"><a href="#过滤" class="headerlink" title="过滤"></a>过滤</h2><ol>
+<li>匹配字符串：正则表达式</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">// 正则表达式:验证码</span><br><span class="line">- (BOOL) validateYzm:(NSString *)yzm &#123;</span><br><span class="line">    NSString *regex = @&quot;^\\d&#123;4&#125;$&quot;;</span><br><span class="line">    NSPredicate *predicate = [NSPredicate predicateWithFormat:@&quot;SELF MATCHES %@&quot;,regex];</span><br><span class="line">    return [predicate evaluateWithObject:yzm];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>过滤 collection</li>
+</ol>
+<ul>
+<li><p><strong>NSMutableArray</strong> 有一个名为<figure class="highlight plain"><figcaption><span>filterUsingPredicate:``` 的方法，通过该方法可以很方便地剔除所有不能“满足”传入的 **NSPredicate** 对象的对象</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">* **NSArray** 有一个名为 ```filteredArrayUsingPredicate:``` 的方法，可以创建一个新的数组，包含所有能够满足传入的 **NSPredicate** 对象的对象</span><br><span class="line"></span><br><span class="line">```objective-c</span><br><span class="line">// 要收回拥有物品总价值高于75美元的员工的物品</span><br><span class="line">NSPredicate *predicate = [NSPredicate predicateWithFormat:@&quot;holder.valueOfAssets &gt; 70&quot;];</span><br><span class="line"></span><br><span class="line">NSArray *toBeReclaimed = [allAssets filteredArrayUsingPredicate:predicate];</span><br><span class="line"></span><br><span class="line">NSLog(@&quot;toBeReclaimed:%@&quot;,toBeReclaimed);</span><br></pre></td></tr></table></figure></p>
+</li>
+<li><p><strong>NSSet</strong>:</p>
+<ul>
+<li><figure class="highlight plain"><figcaption><span>(NSSet<objecttype> *)filteredSetUsingPredicate:(NSPredicate *)predicate;```</objecttype></span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">* **NSMutableSet**:</span><br><span class="line"></span><br><span class="line">  *</span><br></pre></td></tr></table></figure>
+<ul>
+<li>(void)filterUsingPredicate:(NSPredicate *)predicate;<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br><span class="line">## NSIndexSet</span><br><span class="line"></span><br><span class="line">&gt; 这个类用于存储有序的索引到某种数据结构，比如数组。例如，使用这个类可以生成一份数组对象的索引号清单，这些对象满足指定的查询条件。</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">#### `- (NSUInteger)indexOfObjectPassingTest:`</span><br><span class="line"></span><br><span class="line">示例代码</span><br><span class="line"></span><br><span class="line">```objective-c</span><br><span class="line">NSArray *array = @[@1, @2, @3, @4, @5];</span><br><span class="line"></span><br><span class="line">// 遍历数组，取出满足条件的数组索引</span><br><span class="line">NSUInteger result = [array indexOfObjectPassingTest:^BOOL(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) &#123;</span><br><span class="line">    if ([(NSNumber *)obj intValue] % 2 == 0) &#123;</span><br><span class="line">        return YES;</span><br><span class="line">    &#125;else &#123;</span><br><span class="line">        return NO;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;];</span><br><span class="line"></span><br><span class="line">// 如果找到一个匹配，则查看并打印此项</span><br><span class="line">if (result != NSNotFound) &#123;</span><br><span class="line">    NSLog(@"%@",array[result]); </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// &gt;输出：2</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>结论：只可以返回一个索引。</p>
+</blockquote>
+<h4 id="NSIndexSet-indexesOfObjectsPassingTest"><a href="#NSIndexSet-indexesOfObjectsPassingTest" class="headerlink" title="- (NSIndexSet *)indexesOfObjectsPassingTest:"></a><code>- (NSIndexSet *)indexesOfObjectsPassingTest:</code></h4><p>示例代码</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">NSArray *array = @[@1, @2, @3, @4, @5];</span><br><span class="line"></span><br><span class="line">// 遍历数组，取出满足条件数组的所有索引</span><br><span class="line">NSIndexSet *result = [array indexesOfObjectsPassingTest:^BOOL(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) &#123;</span><br><span class="line">    if ([(NSNumber *)obj intValue] % 2 == 0) &#123;</span><br><span class="line">        return YES;</span><br><span class="line">    &#125;else &#123;</span><br><span class="line">        return NO;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;];</span><br><span class="line"></span><br><span class="line">// 遍历 NSIndexSet</span><br><span class="line">[result enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL * _Nonnull stop) &#123;</span><br><span class="line">    NSLog(@&quot;%@&quot;,array[idx]);</span><br><span class="line">&#125;];</span><br><span class="line"></span><br><span class="line">// Output：</span><br><span class="line">// 2017-11-17 10:20:13.694049+0800 Test[39023:9364337] 2</span><br><span class="line">// 2017-11-17 10:20:13.694204+0800 Test[39023:9364337] 4</span><br></pre></td></tr></table></figure>
+<h3 id="NSIndexSet-常用方法"><a href="#NSIndexSet-常用方法" class="headerlink" title="NSIndexSet 常用方法"></a>NSIndexSet 常用方法</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">// 创建一个空的索引集合</span><br><span class="line">+ (instancetype)indexSet;</span><br><span class="line">// 给定索引创建索引集合</span><br><span class="line">+ (instancetype)indexSetWithIndex:(NSUInteger)value;</span><br><span class="line">// 给定索引范围创建索引集合</span><br><span class="line">+ (instancetype)indexSetWithIndexesInRange:(NSRange)range;</span><br><span class="line"></span><br><span class="line">- (instancetype)initWithIndexesInRange:(NSRange)range NS_DESIGNATED_INITIALIZER;</span><br><span class="line">// 根据另一个索引集合创建索引集合</span><br><span class="line">- (instancetype)initWithIndexSet:(NSIndexSet *)indexSet NS_DESIGNATED_INITIALIZER;</span><br><span class="line"></span><br><span class="line">// 给定索引值初始化索引集合</span><br><span class="line">- (instancetype)initWithIndex:(NSUInteger)value;</span><br><span class="line"></span><br><span class="line">// 判断两个索引集合是否相等</span><br><span class="line">- (BOOL)isEqualToIndexSet:(NSIndexSet *)indexSet;</span><br><span class="line"></span><br><span class="line">// 是否包含指定的索引</span><br><span class="line">- (BOOL)containsIndex:(NSUInteger)value;</span><br><span class="line">// 是否包含索引范围</span><br><span class="line">- (BOOL)containsIndexesInRange:(NSRange)range;</span><br><span class="line"></span><br><span class="line">// 遍历索引集合方法</span><br><span class="line">- (void)enumerateIndexesUsingBlock:(void (NS_NOESCAPE ^)(NSUInteger idx, BOOL *stop))block API_AVAILABLE(macos(10.6), ios(4.0), watchos(2.0), tvos(9.0));</span><br><span class="line">- (void)enumerateIndexesWithOptions:(NSEnumerationOptions)opts usingBlock:(void (NS_NOESCAPE ^)(NSUInteger idx, BOOL *stop))block API_AVAILABLE(macos(10.6), ios(4.0), watchos(2.0), tvos(9.0));</span><br><span class="line">- (void)enumerateIndexesInRange:(NSRange)range options:(NSEnumerationOptions)opts usingBlock:(void (NS_NOESCAPE ^)(NSUInteger idx, BOOL *stop))block API_AVAILABLE(macos(10.6), ios(4.0), watchos(2.0), tvos(9.0));</span><br><span class="line"></span><br><span class="line">// ...</span><br></pre></td></tr></table></figure>
+<h2 id="推荐阅读"><a href="#推荐阅读" class="headerlink" title="推荐阅读"></a>推荐阅读</h2><ul>
+<li><a href="https://www.objccn.io/issue-7-1/" target="_blank" rel="noopener">obje基础集合类</a></li>
+</ul>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
     
       
 
@@ -2246,498 +2872,11 @@ item3.selectedImage = [[UIImage imageNamed:@&quot;guide_personal_on&quot;] image
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://andy0570.com/2017/03/11/JTFadingInfoView——一个基于UIButton的支持淡入淡出动画特性的视图/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="独木舟的木">
-      <meta itemprop="description" content="有时候阳光很好 有时候阳光很暗">
-      <meta itemprop="image" content="https://ws1.sinaimg.cn/large/006tNc79gy1g22m14458rj30u014xu0x.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="独木舟的木">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2017/03/11/JTFadingInfoView——一个基于UIButton的支持淡入淡出动画特性的视图/" class="post-title-link" itemprop="url">JTFadingInfoView——一个基于UIButton的支持淡入淡出动画特性的视图</a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2017-03-11 14:29:00" itemprop="dateCreated datePublished" datetime="2017-03-11T14:29:00+08:00">2017-03-11</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2019-04-17 01:52:14" itemprop="dateModified" datetime="2019-04-17T01:52:14+08:00">2019-04-17</time>
-              
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/iOS-开源框架/" itemprop="url" rel="index"><span itemprop="name">iOS 开源框架</span></a></span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-            
-          
-
-          
-          
-            <span id="/2017/03/11/JTFadingInfoView——一个基于UIButton的支持淡入淡出动画特性的视图/" class="leancloud_visitors" data-flag-title="JTFadingInfoView——一个基于UIButton的支持淡入淡出动画特性的视图">
-              <span class="post-meta-divider">|</span>
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              
-                <span class="post-meta-item-text">阅读次数：</span>
-              
-                <span class="leancloud-visitors-count"></span>
-            </span>
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body han-init-context" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <ul>
-<li>GitHub地址：<a href="https://github.com/JunichiT/JTFadingInfoView" target="_blank" rel="noopener">JTFadingInfoView</a></li>
-<li>star: 100+</li>
-</ul>
-<p><strong>JTFadingInfoView</strong>是Google 拟物风格的通知视图，具有平滑的淡入/淡出动画功能，基于UIButton子类。</p>
-<p>、</p>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://andy0570.com/2017/03/09/Wonderful——一个关于色彩的库/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="独木舟的木">
-      <meta itemprop="description" content="有时候阳光很好 有时候阳光很暗">
-      <meta itemprop="image" content="https://ws1.sinaimg.cn/large/006tNc79gy1g22m14458rj30u014xu0x.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="独木舟的木">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2017/03/09/Wonderful——一个关于色彩的库/" class="post-title-link" itemprop="url">Wonderful——一个关于色彩的库</a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2017-03-09 10:21:00" itemprop="dateCreated datePublished" datetime="2017-03-09T10:21:00+08:00">2017-03-09</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2019-04-17 01:40:35" itemprop="dateModified" datetime="2019-04-17T01:40:35+08:00">2019-04-17</time>
-              
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/iOS-开源框架/" itemprop="url" rel="index"><span itemprop="name">iOS 开源框架</span></a></span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-            
-          
-
-          
-          
-            <span id="/2017/03/09/Wonderful——一个关于色彩的库/" class="leancloud_visitors" data-flag-title="Wonderful——一个关于色彩的库">
-              <span class="post-meta-divider">|</span>
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              
-                <span class="post-meta-item-text">阅读次数：</span>
-              
-                <span class="leancloud-visitors-count"></span>
-            </span>
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body han-init-context" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <ul>
-<li>GitHub地址：<a href="https://github.com/dsxNiubility/Wonderful" target="_blank" rel="noopener">Wonderful</a></li>
-<li>star: 700+</li>
-</ul>
-<blockquote>
-<pre><code>⭐️⭐️⭐️ 
-</code></pre><p>以下内容来源于官方源码、 README 文档、测试 Demo或个人使用总结 ！</p>
-</blockquote>
-<h1 id="Wonderful"><a href="#Wonderful" class="headerlink" title="Wonderful"></a>Wonderful</h1><p><a href="https://developer.apple.com/iphone/index.action" target="_blank" rel="noopener"><img src="https://img.shields.io/badge/platform-iOS-red.svg" alt></a><br><a href="https://en.wikipedia.org/wiki/Objective-C" target="_blank" rel="noopener"><img src="http://img.shields.io/badge/language-OC-yellow.svg?style=flat" alt></a><br><a href="http://mit-license.org" target="_blank" rel="noopener"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt></a><br><img src="https://img.shields.io/badge/pod-v1.2.1-brightgreen.svg" alt></p>
-<pre><code>一个关于色彩的库
-</code></pre><p><img src="https://github.com/dsxNiubility/Wonderful/raw/master/screenshots/1000.png" alt="image"></p>
-<h4 id="ChangeLog-1-2-1"><a href="#ChangeLog-1-2-1" class="headerlink" title="ChangeLog 1.2.1"></a>ChangeLog 1.2.1</h4><p>1.2.1版本修复了：</p>
-<p>有marquee或是headline组件的页面，后台回到前台偶现错乱的问题</p>
-<p>有marquee或是headline组件的页面，停留在当前页面，锁屏解锁偶现错乱的问题</p>
-<p>允许marquee在运行中修改文字</p>
-<p>####Demo程序截图</p>
-<p>建议使用iPhone6运行Demo程序<br><img src="https://github.com/dsxNiubility/Wonderful/raw/master/screenshots/1001.png" alt="Drawing"><br></p>
-<hr>
-<p>####一、UIColor+Wonderful<br>1.这个分类里扩充了更多的颜色扩展，以后随手写个小Demo再也不需要redColor buleColor了。</p>
-<pre><code>self.view.backgroundColor = [UIColor khakiColor];
-self.view.backgroundColor = [UIColor chocolateColor];
-</code></pre><p>2.平均每个色系有10种颜色，不仅可以使用名称直接敲出，还能使用颜色阶梯的宏敲出，在你想不起词的时候更加方便。 宏从1～10是颜色渐深，可以根据自己的感觉使用浅一级的宏或深一级的宏。<br></p>
-<pre><code>self.view.backgroundColor = Wonderful_YelloeColor4;
-self.view.backgroundColor = Wonderful_BrownColor4;
-</code></pre><p><br><br><img src="https://github.com/dsxNiubility/Wonderful/raw/master/screenshots/1003.png" alt="Drawing"><br><img src="https://github.com/dsxNiubility/Wonderful/raw/master/screenshots/1005.png" alt="Drawing"><br></p>
-<hr>
-<p>####二、UIColor+Separate<br>1.提供颜色分离方案，可以将任何颜色的rgb喝alpha的值取出。<br></p>
-<pre><code>UIColor *testC = [UIColor salmonColor];
-float r= [testC red];
-float g= [testC green];
-float b= [testC blue];
-float alpha= [testC alpha];
-NSLog(@&quot;******  %f,%f,%f,%f&quot;,r,g,b,alpha);
-</code></pre><p>2.可以通过一个颜色算出此颜色的反色，使得背景无论被用户设置成什么色，文字颜色都是背景的反色。<br></p>
-<pre><code>self.showLbl1.backgroundColor = [UIColor peachRed];
-self.showLbl1.textColor = [[UIColor peachRed]reverseColor];
-</code></pre><p>3.也可以直接打印这个颜色的各项详细数值。<br></p>
-<pre><code>[[UIColor salmonColor]printDetail];
-// 打印结果
-This Color&apos;s Red:250, Green:128, Blue:114, Alpha:1
-decimal red:0.9804 green:0.5020 blue:0.4471
-Hexadecimal 0xfa8072
-</code></pre><p>4.提供了颜色微调方案，可以让一个已知颜色的rgb的某值上升或下降若干，可用于不管背景是什么色，边框都比背景深20。 也可以将认可颜色的详细值打印出来。<br></p>
-<pre><code>UIColor *navColor = [[UIColor redColor]up:SXColorTypeBlue num:30]; // 在红色上把蓝色色值提高30
-UIColor *barColor = [[UIColor blueColor]up:1 num:140]; // 可以直接用枚举对应的tag
-UIColor *bgColor = [[UIColor blackColor]down:SXColorTypeAlpha num:10]; // 取一个比黑色稍微淡的颜色
-UIColor *lineColor = [bgColor up:3 num:20]; // 不管背景是什么颜色 线都比背景浅20.
-</code></pre><p><img src="https://github.com/dsxNiubility/Wonderful/raw/master/screenshots/003.gif" alt="image"><br></p>
-<hr>
-<p>####三、SXColorGradientView<br>1.颜色渐变的view，可以设置任何颜色到透明的过渡。<br></p>
-<pre><code>SXColorGradientView *grv1 = [SXColorGradientView createWithColor:[UIColor paleGreen] frame:CGRectMake(10, 10, 80, 30) visible:YES direction:SXColorGradientToRight];
-</code></pre><p>2.也可以设置两个颜色相互过渡。<br></p>
-<pre><code>SXColorGradientView *grv3 = [SXColorGradientView createWithFromColor:[UIColor peruColor] toColor:[UIColor ghostWhite] frame:CGRectMake(10, 50, 80, 30) direction:SXColorGradientToRight];
-</code></pre><p>3.可以设置向上下左右四个过渡的方向。<br></p>
-<pre><code>typedef NS_ENUM(NSInteger, SXColorGradientDirection) {
-    SXColorGradientToTop = 1,
-    SXColorGradientToLeft = 2,
-    SXColorGradientToBottom = 3,
-    SXColorGradientToRight = 4,
-};
-</code></pre><p>4.支持增加传入一个数组，然后搭建一个多个颜色过渡的view。<br><br><img src="https://github.com/dsxNiubility/Wonderful/raw/master/screenshots/1006.png" alt="Drawing"><br></p>
-<hr>
-<p>####四、SXMarquee<br>1.实现任何样式的跑马灯。<br><br>跑马灯方法：<br><figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">-</span> (instancetype)<span class="selector-tag">initWithFrame</span><span class="selector-pseudo">:(CGRect)frame</span></span><br><span class="line">                        <span class="selector-tag">speed</span><span class="selector-pseudo">:(SXMarqueeSpeedLevel)speed</span></span><br><span class="line">                          <span class="selector-tag">Msg</span><span class="selector-pseudo">:(NSString</span> *)<span class="selector-tag">msg</span></span><br><span class="line">                      <span class="selector-tag">bgColor</span><span class="selector-pseudo">:(UIColor</span> *)<span class="selector-tag">bgColor</span></span><br><span class="line">                     <span class="selector-tag">txtColor</span><span class="selector-pseudo">:(UIColor</span> *)<span class="selector-tag">txtColor</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 点击动作，默认点击停止</span></span><br><span class="line"><span class="selector-tag">-</span> (void)<span class="selector-tag">changeTapMarqueeAction</span><span class="selector-pseudo">:(void(</span>^)())<span class="selector-tag">action</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 改变字体大小</span></span><br><span class="line"><span class="selector-tag">-</span> (void)<span class="selector-tag">changeMarqueeLabelFont</span><span class="selector-pseudo">:(UIFont</span> *)<span class="selector-tag">font</span>;</span><br><span class="line"></span><br><span class="line"><span class="selector-tag">-</span> (void)<span class="selector-tag">start</span>;</span><br><span class="line"></span><br><span class="line"><span class="selector-tag">-</span> (void)<span class="selector-tag">stop</span>;</span><br><span class="line"></span><br><span class="line"><span class="selector-tag">-</span> (void)<span class="selector-tag">restart</span>;</span><br></pre></td></tr></table></figure></p>
-<p>Demo:</p>
-<pre><code>SXMarquee *mar = [[SXMarquee alloc] initWithFrame:CGRectMake(20, 255, 335, 35)
-                                            speed:4
-                                              Msg:@&quot;重大活动，天猫的双十一，然而并没卵用&quot;
-                                          bgColor:[UIColor salmonColor]
-                                         txtColor:[UIColor whiteColor]];
-// 默认字体：[UIFont fontWithName:@&quot;HelveticaNeue&quot; size:14.0f]
-[mar changeMarqueeLabelFont:[UIFont systemFontOfSize:26]];
-// 添加点击事件,源码实现方式：在该视图上添加了一个按钮
-[mar changeTapMarqueeAction:^{
-    UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@&quot;点击事件&quot; message:@&quot;可以设置弹窗，当然也能设置别的&quot; delegate:self cancelButtonTitle:@&quot;取消&quot; otherButtonTitles:@&quot;确定&quot;, nil];
-    [alert show];
-}];
-[mar start];
-</code></pre><p>2.跑马灯的背景可以设置任何颜色，这个是基于颜色过渡view做的。<br></p>
-<p>3.跑马灯可以实现点击拖动，或者绑定更多点击事件。<br></p>
-<h6 id="📌-源码解析"><a href="#📌-源码解析" class="headerlink" title="📌 源码解析"></a>📌 源码解析</h6><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> // Label 的宽度是根据字符串长度计算而来</span></span><br><span class="line"><span class="comment"> UIFont *fnt = [UIFont fontWithName:@"HelveticaNeue" size:14.0f];</span></span><br><span class="line"><span class="comment"> CGSize msgSize = [_marqueeLbl.text sizeWithAttributes:@&#123;NSFontAttributeName:fnt&#125;];</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#pragma mark - 核心动画</span></span><br><span class="line">- (<span class="keyword">void</span>)moveAction &#123;</span><br><span class="line">    <span class="comment">// 以 Label 的中心点运动</span></span><br><span class="line">    <span class="comment">// 贝塞尔曲线 起点</span></span><br><span class="line">    <span class="built_in">CGPoint</span> fromPoint = <span class="built_in">CGPointMake</span>(<span class="keyword">self</span>.frame.size.width + <span class="keyword">self</span>.marqueeLbl.frame.size.width/<span class="number">2</span>, <span class="keyword">self</span>.frame.size.height/<span class="number">2</span>);</span><br><span class="line">    <span class="comment">// 贝塞尔曲线 终点</span></span><br><span class="line">    <span class="built_in">CGPoint</span> toPoint = <span class="built_in">CGPointMake</span>(-<span class="keyword">self</span>.marqueeLbl.frame.size.width/<span class="number">2</span>, <span class="keyword">self</span>.frame.size.height/<span class="number">2</span>);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">self</span>.marqueeLbl.center = fromPoint;</span><br><span class="line">    <span class="built_in">UIBezierPath</span> *movePath = [<span class="built_in">UIBezierPath</span> bezierPath];</span><br><span class="line">    [movePath moveToPoint:fromPoint];</span><br><span class="line">    [movePath addLineToPoint:toPoint];</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 创建动画实例</span></span><br><span class="line">    <span class="built_in">CAKeyframeAnimation</span> *moveAnim = [<span class="built_in">CAKeyframeAnimation</span> animationWithKeyPath:<span class="string">@"position"</span>];</span><br><span class="line">    <span class="comment">// 设置动画路径</span></span><br><span class="line">    moveAnim.path = movePath.CGPath;</span><br><span class="line">    <span class="comment">// 完成后移除</span></span><br><span class="line">    moveAnim.removedOnCompletion = <span class="literal">YES</span>;</span><br><span class="line">    <span class="comment">// 设置延迟</span></span><br><span class="line">    moveAnim.duration = <span class="keyword">self</span>.marqueeLbl.frame.size.width * <span class="keyword">self</span>.speedLevel * <span class="number">0.01</span>;</span><br><span class="line">    <span class="comment">// 委托协议，动画完成后重复该动画</span></span><br><span class="line">    moveAnim.delegate = <span class="keyword">self</span>;</span><br><span class="line">    <span class="comment">// 在图层上添加动画</span></span><br><span class="line">    [<span class="keyword">self</span>.marqueeLbl.layer addAnimation:moveAnim forKey:<span class="literal">nil</span>];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">#pragma mark - CAAnimationDelegate</span></span><br><span class="line"></span><br><span class="line">- (<span class="keyword">void</span>)animationDidStop:(<span class="built_in">CAAnimation</span> *)anim finished:(<span class="built_in">BOOL</span>)flag&#123;</span><br><span class="line">    <span class="keyword">if</span> (flag) &#123;</span><br><span class="line">        [<span class="keyword">self</span> moveAction];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h5 id="SXHeadLine"><a href="#SXHeadLine" class="headerlink" title="SXHeadLine"></a>SXHeadLine</h5><p>方法：<br><figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">-</span> (void)<span class="selector-tag">setBgColor</span><span class="selector-pseudo">:(UIColor</span> *)<span class="selector-tag">bgColor</span></span><br><span class="line">         <span class="selector-tag">textColor</span><span class="selector-pseudo">:(UIColor</span> *)<span class="selector-tag">textColor</span></span><br><span class="line">          <span class="selector-tag">textFont</span><span class="selector-pseudo">:(UIFont</span> *)<span class="selector-tag">textFont</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 设置时间间隔</span></span><br><span class="line"><span class="selector-tag">-</span> (void)<span class="selector-tag">setScrollDuration</span><span class="selector-pseudo">:(NSTimeInterval)scrollDuration</span></span><br><span class="line">             <span class="selector-tag">stayDuration</span><span class="selector-pseudo">:(NSTimeInterval)stayDuration</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 改变点击动作，默认点击停止</span></span><br><span class="line"><span class="selector-tag">-</span> (void)<span class="selector-tag">changeTapMarqueeAction</span><span class="selector-pseudo">:(actionBlock)action</span>;</span><br><span class="line"></span><br><span class="line"><span class="selector-tag">-</span> (void)<span class="selector-tag">start</span>;</span><br><span class="line"></span><br><span class="line"><span class="selector-tag">-</span> (void)<span class="selector-tag">stop</span>;</span><br></pre></td></tr></table></figure></p>
-<p>Demo:</p>
-<pre><code>SXHeadLine *headLine3 = [[SXHeadLine alloc]initWithFrame:CGRectMake(100, 530, 250, 30)];
-headLine3.messageArray = @[@&quot;1、库里43分，勇士吊打骑士&quot;,@&quot;2、伦纳德死亡缠绕詹姆斯，马刺大胜骑士&quot;,@&quot;3、乐福致命失误，骑士惨遭5连败&quot;,@&quot;4、五小阵容发威，雄鹿吊打骑士&quot;, @&quot;5、天猫的双十一，然而并没卵用&quot;];
-[headLine3 setBgColor:[UIColor whiteColor] textColor:[UIColor orangeRed] textFont:[UIFont systemFontOfSize:13]];
-[headLine3 setScrollDuration:0.5 stayDuration:3];
-headLine3.hasGradient = YES;
-
-[headLine3 changeTapMarqueeAction:^(NSInteger index) {
-
-    NSLog(@&quot;你点击了第 %ld 个button！内容：%@&quot;, index, headLine3.messageArray[index]);
-
-}];
-[headLine3 start];
-</code></pre><p><img src="https://github.com/dsxNiubility/Wonderful/raw/master/screenshots/004.gif" alt="image"><br></p>
-<p>####五、SXColorLabel<br>1.把text里重要的内容用特殊符号包起来，就会特殊显示<br></p>
-<p>2.如果用&lt;&gt;包起来，就会显示高亮颜色。如果用[]包起来，就会显示高亮的字体。</p>
-<pre><code>lbl.text = @&quot;例1：今天要记得通知&lt;Peter&gt;和&lt;Robin&gt;去开会。&quot;;
-lbl2.text = @&quot;例2：礼物很有[粪]量，你会大吃一[斤]！&quot;;
-</code></pre><p>3.这个高亮颜色和高亮字体可以自行设置。</p>
-<pre><code>// 高亮颜色
-[SXColorLabel setAnotherColor:[UIColor salmonColor]];
-// 高亮字体大小
-[SXColorLabel setAnotherFont:[UIFont boldSystemFontOfSize:18]];
-</code></pre><p>4.两者也可以混合使用。 高亮的字体里有高亮颜色。</p>
-<pre><code>lbl3.text = @&quot;例3：一定要：[通知&lt;Peter&gt;和&lt;Robin&gt;去开会]&quot;;
-</code></pre><p>完整方法：</p>
-<pre><code>SXColorLabel *sxlbl3 = [[SXColorLabel alloc]initWithFrame:CGRectMake(40, 200, 350, 30)];
-sxlbl3.anotherColor = [UIColor salmonColor];
-sxlbl3.anotherFont = [UIFont systemFontOfSize:14];
-sxlbl3.text = @&quot;一定要：[通知&lt;Peter&gt;和&lt;Robin&gt;去开会]&quot;;
-[self.bodyView addSubview:sxlbl3];
-</code></pre><p><img src="https://github.com/dsxNiubility/Wonderful/raw/master/screenshots/1002.png" alt="Drawing"><br></p>
-<h5 id="📌-源码解析-1"><a href="#📌-源码解析-1" class="headerlink" title="📌 源码解析"></a>📌 源码解析</h5><p>在同一个 Label 中设置不同字体颜色的方法参考如下，源码中只是在字符串中放了标记符号&lt;&gt;、[]、遍历删除这些标记符号的同时将他们的范围、长度记录下来设置不同的字体和颜色。<br><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="built_in">UILabel</span> *)titleLabel &#123;</span><br><span class="line">    <span class="keyword">if</span> (!_titleLabel) &#123;</span><br><span class="line">        _titleLabel = [[<span class="built_in">UILabel</span> alloc] initWithFrame:<span class="built_in">CGRectMake</span>((MaxX(<span class="keyword">self</span>.imageView)+<span class="number">10</span>), MinY(<span class="keyword">self</span>.imageView), <span class="number">245</span>, <span class="number">40</span>)];</span><br><span class="line">        _titleLabel.numberOfLines = <span class="number">2</span>;</span><br><span class="line">        _titleLabel.lineBreakMode = <span class="built_in">NSLineBreakByWordWrapping</span>;</span><br><span class="line">        _titleLabel.font = [<span class="built_in">UIFont</span> systemFontOfSize:<span class="number">16</span>];</span><br><span class="line">        </span><br><span class="line">        <span class="built_in">NSString</span> *strPrice = [<span class="built_in">NSString</span> stringWithFormat:<span class="string">@"%d元 - %d元"</span>, (<span class="keyword">int</span>)<span class="keyword">self</span>.data.minPrice, (<span class="keyword">int</span>)<span class="keyword">self</span>.data.maxPrice];</span><br><span class="line">        <span class="built_in">NSString</span> *strTitle = <span class="keyword">self</span>.data.title;</span><br><span class="line">        <span class="built_in">NSMutableAttributedString</span> *string = [[<span class="built_in">NSMutableAttributedString</span> alloc] initWithString:[<span class="built_in">NSString</span> stringWithFormat:<span class="string">@"%@ %@"</span>, strTitle, strPrice]];</span><br><span class="line">        [string setAttributes:@&#123;<span class="built_in">NSForegroundColorAttributeName</span>: COLOR_RGB(<span class="number">34</span>, <span class="number">34</span>, <span class="number">39</span>)&#125; range:<span class="built_in">NSMakeRange</span>(<span class="number">0</span>, strTitle.length)];</span><br><span class="line">        [string setAttributes:@&#123;<span class="built_in">NSForegroundColorAttributeName</span>: COLOR_RGB(<span class="number">255</span>, <span class="number">77</span>, <span class="number">100</span>)&#125; range:<span class="built_in">NSMakeRange</span>((strTitle.length+<span class="number">1</span>), strPrice.length)];</span><br><span class="line">        _titleLabel.attributedText = string;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> _titleLabel;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p><em>旧版demo</em><br><br><em>颜色列表</em><br><br><img src="https://github.com/dsxNiubility/Wonderful/raw/master/screenshots/002.gif" alt="image"></p>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/22/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/22/">22</a><span class="page-number current">23</span><a class="page-number" href="/page/24/">24</a><span class="space">&hellip;</span><a class="page-number" href="/page/31/">31</a><a class="extend next" rel="next" href="/page/24/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+    <a class="extend prev" rel="prev" href="/page/22/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/22/">22</a><span class="page-number current">23</span><a class="page-number" href="/page/24/">24</a><span class="space">&hellip;</span><a class="page-number" href="/page/32/">32</a><a class="extend next" rel="next" href="/page/24/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
   </nav>
 
 
@@ -2781,7 +2920,7 @@ sxlbl3.text = @&quot;一定要：[通知&lt;Peter&gt;和&lt;Robin&gt;去开会]&
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">310</span>
+                    <span class="site-state-item-count">312</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
