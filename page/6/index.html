@@ -1393,6 +1393,193 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://andy0570.com/2018/10/23/OpenSSL-无法使用-RSA-非对称加密算法加密大文件/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="独木舟的木">
+      <meta itemprop="description" content="有时候阳光很好 有时候阳光很暗">
+      <meta itemprop="image" content="https://ws1.sinaimg.cn/large/006tNc79gy1g22m14458rj30u014xu0x.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="独木舟的木">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2018/10/23/OpenSSL-无法使用-RSA-非对称加密算法加密大文件/" class="post-title-link" itemprop="url">OpenSSL-无法使用-RSA-非对称加密算法加密大文件</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-10-23 21:05:00" itemprop="dateCreated datePublished" datetime="2018-10-23T21:05:00+08:00">2018-10-23</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-04-15 17:37:13" itemprop="dateModified" datetime="2019-04-15T17:37:13+08:00">2019-04-15</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/PKI-密码学/" itemprop="url" rel="index"><span itemprop="name">PKI&密码学</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+            <span id="/2018/10/23/OpenSSL-无法使用-RSA-非对称加密算法加密大文件/" class="leancloud_visitors" data-flag-title="OpenSSL-无法使用-RSA-非对称加密算法加密大文件">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读次数：</span>
+              
+                <span class="leancloud-visitors-count"></span>
+            </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body han-init-context" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="Shell-示例代码"><a href="#Shell-示例代码" class="headerlink" title="Shell 示例代码"></a>Shell 示例代码</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 使用 genrsa 命令生成 RSA-2048 位的密钥（rsa_private.key）</span></span><br><span class="line">openssl genrsa -out rsa_private.key 2048</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 解析私钥结构，查看密钥内容</span></span><br><span class="line">openssl rsa -text -in rsa_private.key</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 生成密钥的公钥（rsa_private.key）</span></span><br><span class="line">openssl rsa -in rsa_private.key -pubout -out rsa_public.key</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 使用生成的公钥加密文件</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> -pubin 表明用纯公钥文件加密</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> -inkey 指定密钥（rsa_private.key）</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> -<span class="keyword">in</span> 指定要加密的文件（test.pdf，3.2M）</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> -out 加密后的文件（encrypted.en）</span></span><br><span class="line">openssl rsautl -encrypt -pubin -inkey rsa_public.key  -in test.pdf -out encrypted.en</span><br><span class="line">RSA operation error</span><br><span class="line">4475450988:error:04FFF06E:rsa routines:CRYPTO_internal:data too large for key size:/BuildRoot/Library/Caches/com.apple.xbs/Sources/libressl/libressl-22.200.4/libressl-2.6/crypto/rsa/rsa_pk1.c:151:</span><br></pre></td></tr></table></figure>
+<ul>
+<li><a href="https://stackoverflow.com/questions/7143514/how-to-encrypt-a-large-file-in-openssl-using-public-key" target="_blank" rel="noopener">How to encrypt a large file in openssl using public key</a></li>
+</ul>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://andy0570.com/2018/10/23/OpenLDAP/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1574,193 +1761,6 @@
 <p>​    2. 添加组：Generic: Posix Group</p>
 <p>​    3. 添加用户：Generic: User Account</p>
 <h3 id="第四步：配置-StartTLS-LDAP-加密"><a href="#第四步：配置-StartTLS-LDAP-加密" class="headerlink" title="第四步：配置 StartTLS LDAP 加密"></a>第四步：配置 StartTLS LDAP 加密</h3>
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://andy0570.com/2018/10/23/OpenSSL-无法使用-RSA-非对称加密算法加密大文件/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="独木舟的木">
-      <meta itemprop="description" content="有时候阳光很好 有时候阳光很暗">
-      <meta itemprop="image" content="https://ws1.sinaimg.cn/large/006tNc79gy1g22m14458rj30u014xu0x.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="独木舟的木">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2018/10/23/OpenSSL-无法使用-RSA-非对称加密算法加密大文件/" class="post-title-link" itemprop="url">OpenSSL-无法使用-RSA-非对称加密算法加密大文件</a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2018-10-23 21:05:00" itemprop="dateCreated datePublished" datetime="2018-10-23T21:05:00+08:00">2018-10-23</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2019-04-15 17:37:13" itemprop="dateModified" datetime="2019-04-15T17:37:13+08:00">2019-04-15</time>
-              
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/PKI-密码学/" itemprop="url" rel="index"><span itemprop="name">PKI&密码学</span></a></span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-            
-          
-
-          
-          
-            <span id="/2018/10/23/OpenSSL-无法使用-RSA-非对称加密算法加密大文件/" class="leancloud_visitors" data-flag-title="OpenSSL-无法使用-RSA-非对称加密算法加密大文件">
-              <span class="post-meta-divider">|</span>
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              
-                <span class="post-meta-item-text">阅读次数：</span>
-              
-                <span class="leancloud-visitors-count"></span>
-            </span>
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body han-init-context" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="Shell-示例代码"><a href="#Shell-示例代码" class="headerlink" title="Shell 示例代码"></a>Shell 示例代码</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 使用 genrsa 命令生成 RSA-2048 位的密钥（rsa_private.key）</span></span><br><span class="line">openssl genrsa -out rsa_private.key 2048</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 解析私钥结构，查看密钥内容</span></span><br><span class="line">openssl rsa -text -in rsa_private.key</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 生成密钥的公钥（rsa_private.key）</span></span><br><span class="line">openssl rsa -in rsa_private.key -pubout -out rsa_public.key</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 使用生成的公钥加密文件</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> -pubin 表明用纯公钥文件加密</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> -inkey 指定密钥（rsa_private.key）</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> -<span class="keyword">in</span> 指定要加密的文件（test.pdf，3.2M）</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> -out 加密后的文件（encrypted.en）</span></span><br><span class="line">openssl rsautl -encrypt -pubin -inkey rsa_public.key  -in test.pdf -out encrypted.en</span><br><span class="line">RSA operation error</span><br><span class="line">4475450988:error:04FFF06E:rsa routines:CRYPTO_internal:data too large for key size:/BuildRoot/Library/Caches/com.apple.xbs/Sources/libressl/libressl-22.200.4/libressl-2.6/crypto/rsa/rsa_pk1.c:151:</span><br></pre></td></tr></table></figure>
-<ul>
-<li><a href="https://stackoverflow.com/questions/7143514/how-to-encrypt-a-large-file-in-openssl-using-public-key" target="_blank" rel="noopener">How to encrypt a large file in openssl using public key</a></li>
-</ul>
-
           
         
       
