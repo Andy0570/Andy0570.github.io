@@ -308,7 +308,7 @@
       
     
 
-    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签<span class="badge">57</span></a>
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签<span class="badge">39</span></a>
 
   </li>
         
@@ -327,7 +327,7 @@
       
     
 
-    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">312</span></a>
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">314</span></a>
 
   </li>
         
@@ -417,6 +417,496 @@
           <div id="content" class="content">
             
   <section id="posts" class="posts-expand">
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://andy0570.com/2018/03/26/iOS 编程：AVSpeechSynthesizer 语音合成器/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="独木舟的木">
+      <meta itemprop="description" content="有时候阳光很好 有时候阳光很暗">
+      <meta itemprop="image" content="https://ws1.sinaimg.cn/large/006tNc79gy1g22m14458rj30u014xu0x.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="独木舟的木">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2018/03/26/iOS 编程：AVSpeechSynthesizer 语音合成器/" class="post-title-link" itemprop="url">iOS 编程：AVSpeechSynthesizer 语音合成器</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-03-26 15:33:00" itemprop="dateCreated datePublished" datetime="2018-03-26T15:33:00+08:00">2018-03-26</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-04-18 15:08:44" itemprop="dateModified" datetime="2019-04-18T15:08:44+08:00">2019-04-18</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/iOS/" itemprop="url" rel="index"><span itemprop="name">iOS</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+            <span id="/2018/03/26/iOS 编程：AVSpeechSynthesizer 语音合成器/" class="leancloud_visitors" data-flag-title="iOS 编程：AVSpeechSynthesizer 语音合成器">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读次数：</span>
+              
+                <span class="leancloud-visitors-count"></span>
+            </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body han-init-context" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <a id="more"></a>
+<p>AVSpeechSynthesizer 及其相关类可以将文本转换为语音输出。</p>
+<p>使用示例：<br>需要导入框架：<code>#import &lt;AVFoundation/AVFoundation.h&gt;</code><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">// 语音合成器</span><br><span class="line">AVSpeechSynthesizer *speechSynthesizer = [[AVSpeechSynthesizer alloc] init];</span><br><span class="line">speechSynthesizer.delegate = self;</span><br><span class="line">// 需要转换的文本</span><br><span class="line">AVSpeechUtterance *utterance = [AVSpeechUtterance speechUtteranceWithString:@&quot;人们敢于登上险峻的高山，只为追寻惊艳；人们乐于眺望辽阔的大海，只为饱览奇观；但人们也会在街上擦肩而过，却对彼此一无所感。倘若每个个体都是一场神迹，那为何所有人都对这神迹视而不见？&quot;];</span><br><span class="line">// 设置语言类别</span><br><span class="line">AVSpeechSynthesisVoice *voice = [AVSpeechSynthesisVoice voiceWithLanguage:@&quot;zh-CN&quot;];</span><br><span class="line">utterance.voice = voice;</span><br><span class="line">// 设置播放语速</span><br><span class="line">utterance.rate = 0.4;</span><br><span class="line">// 设置声调，属性值介于 0.5(低音调)~2.0(高音调) 之间。</span><br><span class="line">utterance.pitchMultiplier = 1.0;</span><br><span class="line">// 设置朗读语句停顿延迟</span><br><span class="line">utterance.postUtteranceDelay = 0.1;</span><br><span class="line">// 语音合成器生成音频</span><br><span class="line">[speechSynthesizer speakUtterance:utterance];</span><br></pre></td></tr></table></figure></p>
+<h3 id="AVSpeechSynthesizerDelegate-可以监听的代理方法"><a href="#AVSpeechSynthesizerDelegate-可以监听的代理方法" class="headerlink" title="AVSpeechSynthesizerDelegate 可以监听的代理方法"></a>AVSpeechSynthesizerDelegate 可以监听的代理方法</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">#pragma mark - AVSpeechSynthesizerDelegate</span><br><span class="line"></span><br><span class="line">- (void)speechSynthesizer:(AVSpeechSynthesizer *)synthesizer didStartSpeechUtterance:(AVSpeechUtterance *)utterance &#123;</span><br><span class="line">    NSLog(@&quot;%s&quot;,__func__);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)speechSynthesizer:(AVSpeechSynthesizer *)synthesizer didFinishSpeechUtterance:(AVSpeechUtterance *)utterance &#123;</span><br><span class="line">    NSLog(@&quot;%s&quot;,__func__);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)speechSynthesizer:(AVSpeechSynthesizer *)synthesizer didPauseSpeechUtterance:(AVSpeechUtterance *)utterance &#123;</span><br><span class="line">    NSLog(@&quot;%s&quot;,__func__);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)speechSynthesizer:(AVSpeechSynthesizer *)synthesizer didContinueSpeechUtterance:(AVSpeechUtterance *)utterance &#123;</span><br><span class="line">    NSLog(@&quot;%s&quot;,__func__);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)speechSynthesizer:(AVSpeechSynthesizer *)synthesizer didCancelSpeechUtterance:(AVSpeechUtterance *)utterance &#123;</span><br><span class="line">    NSLog(@&quot;%s&quot;,__func__);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)speechSynthesizer:(AVSpeechSynthesizer *)synthesizer willSpeakRangeOfSpeechString:(NSRange)characterRange utterance:(AVSpeechUtterance *)utterance &#123;</span><br><span class="line">    NSLog(@&quot;%s&quot;,__func__);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="语言类别"><a href="#语言类别" class="headerlink" title="语言类别"></a>语言类别</h3><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line">Language: ar-SA, Name: Maged, Quality:<span class="built_in"> Default </span>[com.apple.ttsbundle.Maged-compact]</span><br><span class="line">Language: cs-CZ, Name: Zuzana, Quality:<span class="built_in"> Default </span>[com.apple.ttsbundle.Zuzana-compact]</span><br><span class="line">Language: da-DK, Name: Sara, Quality:<span class="built_in"> Default </span>[com.apple.ttsbundle.Sara-compact]</span><br><span class="line">Language: de-DE, Name: Anna, Quality:<span class="built_in"> Default </span>[com.apple.ttsbundle.Anna-compact]</span><br><span class="line">Language: de-DE, Name: Helena, Quality:<span class="built_in"> Default </span>[com.apple.ttsbundle.siri_female_de-DE_compact]</span><br><span class="line">Language: de-DE, Name: Martin, Quality:<span class="built_in"> Default </span>[com.apple.ttsbundle.siri_male_de-DE_compact]</span><br><span class="line">Language: el-GR, Name: Melina, Quality:<span class="built_in"> Default </span>[com.apple.ttsbundle.Melina-compact]</span><br><span class="line">Language: en-AU, Name: Catherine, Quality:<span class="built_in"> Default </span>[com.apple.ttsbundle.siri_female_en-AU_compact]</span><br><span class="line">Language: en-AU, Name: Gordon, Quality:<span class="built_in"> Default </span>[com.apple.ttsbundle.siri_male_en-AU_compact]</span><br><span class="line">Language: en-AU, Name: Karen, Quality:<span class="built_in"> Default </span>[com.apple.ttsbundle.Karen-compact]</span><br><span class="line">Language: en-GB, Name: Arthur, Quality:<span class="built_in"> Default </span>[com.apple.ttsbundle.siri_male_en-GB_compact]</span><br><span class="line">Language: en-GB, Name: Daniel, Quality:<span class="built_in"> Default </span>[com.apple.ttsbundle.Daniel-compact]</span><br><span class="line">Language: en-GB, Name: Martha, Quality:<span class="built_in"> Default </span>[com.apple.ttsbundle.siri_female_en-GB_compact]</span><br><span class="line">Language: en-IE, Name: Moira, Quality:<span class="built_in"> Default </span>[com.apple.ttsbundle.Moira-compact]</span><br><span class="line">Language: en-US, Name: Aaron, Quality:<span class="built_in"> Default </span>[com.apple.ttsbundle.siri_male_en-US_compact]</span><br><span class="line">Language: en-US, Name: Fred, Quality:<span class="built_in"> Default </span>[com.apple.speech.synthesis.voice.Fred]</span><br><span class="line">Language: en-US, Name: Nicky, Quality:<span class="built_in"> Default </span>[com.apple.ttsbundle.siri_female_en-US_compact]</span><br><span class="line">Language: en-US, Name: Samantha, Quality:<span class="built_in"> Default </span>[com.apple.ttsbundle.Samantha-compact]</span><br><span class="line">Language: en-ZA, Name: Tessa, Quality:<span class="built_in"> Default </span>[com.apple.ttsbundle.Tessa-compact]</span><br><span class="line">Language: es-ES, Name: Monica, Quality:<span class="built_in"> Default </span>[com.apple.ttsbundle.Monica-compact]</span><br><span class="line">Language: es-MX, Name: Paulina, Quality:<span class="built_in"> Default </span>[com.apple.ttsbundle.Paulina-compact]</span><br><span class="line">Language: fi-FI, Name: Satu, Quality:<span class="built_in"> Default </span>[com.apple.ttsbundle.Satu-compact]</span><br><span class="line">Language: fr-CA, Name: Amelie, Quality:<span class="built_in"> Default </span>[com.apple.ttsbundle.Amelie-compact]</span><br><span class="line">Language: fr-FR, Name: Daniel, Quality:<span class="built_in"> Default </span>[com.apple.ttsbundle.siri_male_fr-FR_compact]</span><br><span class="line">Language: fr-FR, Name: Marie, Quality:<span class="built_in"> Default </span>[com.apple.ttsbundle.siri_female_fr-FR_compact]</span><br><span class="line">Language: fr-FR, Name: Thomas, Quality:<span class="built_in"> Default </span>[com.apple.ttsbundle.Thomas-compact]</span><br><span class="line">Language: he-IL, Name: Carmit, Quality:<span class="built_in"> Default </span>[com.apple.ttsbundle.Carmit-compact]</span><br><span class="line">Language: hi-IN, Name: Lekha, Quality:<span class="built_in"> Default </span>[com.apple.ttsbundle.Lekha-compact]</span><br><span class="line">Language: hu-HU, Name: Mariska, Quality:<span class="built_in"> Default </span>[com.apple.ttsbundle.Mariska-compact]</span><br><span class="line">Language: id-ID, Name: Damayanti, Quality:<span class="built_in"> Default </span>[com.apple.ttsbundle.Damayanti-compact]</span><br><span class="line">Language: it-IT, Name: Alice, Quality:<span class="built_in"> Default </span>[com.apple.ttsbundle.Alice-compact]</span><br><span class="line">Language: ja-JP, Name: Hattori, Quality:<span class="built_in"> Default </span>[com.apple.ttsbundle.siri_male_ja-JP_compact]</span><br><span class="line">Language: ja-JP, Name: Kyoko, Quality:<span class="built_in"> Default </span>[com.apple.ttsbundle.Kyoko-compact]</span><br><span class="line">Language: ja-JP, Name: O-ren, Quality:<span class="built_in"> Default </span>[com.apple.ttsbundle.siri_female_ja-JP_compact]</span><br><span class="line">Language: ko-KR, Name: Yuna, Quality:<span class="built_in"> Default </span>[com.apple.ttsbundle.Yuna-compact]</span><br><span class="line">Language: nl-BE, Name: Ellen, Quality:<span class="built_in"> Default </span>[com.apple.ttsbundle.Ellen-compact]</span><br><span class="line">Language: nl-NL, Name: Xander, Quality:<span class="built_in"> Default </span>[com.apple.ttsbundle.Xander-compact]</span><br><span class="line">Language: no-NO, Name: Nora, Quality:<span class="built_in"> Default </span>[com.apple.ttsbundle.Nora-compact]</span><br><span class="line">Language: pl-PL, Name: Zosia, Quality:<span class="built_in"> Default </span>[com.apple.ttsbundle.Zosia-compact]</span><br><span class="line">Language: pt-BR, Name: Luciana, Quality:<span class="built_in"> Default </span>[com.apple.ttsbundle.Luciana-compact]</span><br><span class="line">Language: pt-PT, Name: Joana, Quality:<span class="built_in"> Default </span>[com.apple.ttsbundle.Joana-compact]</span><br><span class="line">Language: ro-RO, Name: Ioana, Quality:<span class="built_in"> Default </span>[com.apple.ttsbundle.Ioana-compact]</span><br><span class="line">Language: ru-RU, Name: Milena, Quality:<span class="built_in"> Default </span>[com.apple.ttsbundle.Milena-compact]</span><br><span class="line">Language: sk-SK, Name: Laura, Quality:<span class="built_in"> Default </span>[com.apple.ttsbundle.Laura-compact]</span><br><span class="line">Language: sv-SE, Name: Alva, Quality:<span class="built_in"> Default </span>[com.apple.ttsbundle.Alva-compact]</span><br><span class="line">Language: th-TH, Name: Kanya, Quality:<span class="built_in"> Default </span>[com.apple.ttsbundle.Kanya-compact]</span><br><span class="line">Language: tr-TR, Name: Yelda, Quality:<span class="built_in"> Default </span>[com.apple.ttsbundle.Yelda-compact]</span><br><span class="line">Language: zh-CN, Name: Yu-shu (Enhanced), Quality: Enhanced [com.apple.ttsbundle.siri_female_zh-CN_premium]</span><br><span class="line">Language: zh-CN, Name: Li-mu, Quality:<span class="built_in"> Default </span>[com.apple.ttsbundle.siri_male_zh-CN_compact]</span><br><span class="line">Language: zh-CN, Name: Ting-Ting, Quality:<span class="built_in"> Default </span>[com.apple.ttsbundle.Ting-Ting-compact]</span><br><span class="line">Language: zh-CN, Name: Yu-shu, Quality:<span class="built_in"> Default </span>[com.apple.ttsbundle.siri_female_zh-CN_compact]</span><br><span class="line">Language: zh-HK, Name: Sin-Ji, Quality:<span class="built_in"> Default </span>[com.apple.ttsbundle.Sin-Ji-compact]</span><br><span class="line">Language: zh-TW, Name: Mei-Jia, Quality:<span class="built_in"> Default </span>[com.apple.ttsbundle.Mei-Jia-compact]</span><br></pre></td></tr></table></figure>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://andy0570.com/2018/03/19/HTML 前端资源/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="独木舟的木">
+      <meta itemprop="description" content="有时候阳光很好 有时候阳光很暗">
+      <meta itemprop="image" content="https://ws1.sinaimg.cn/large/006tNc79gy1g22m14458rj30u014xu0x.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="独木舟的木">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2018/03/19/HTML 前端资源/" class="post-title-link" itemprop="url">HTML 前端资源</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-03-19 09:33:00" itemprop="dateCreated datePublished" datetime="2018-03-19T09:33:00+08:00">2018-03-19</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-04-17 17:45:54" itemprop="dateModified" datetime="2019-04-17T17:45:54+08:00">2019-04-17</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/HTML/" itemprop="url" rel="index"><span itemprop="name">HTML</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+            <span id="/2018/03/19/HTML 前端资源/" class="leancloud_visitors" data-flag-title="HTML 前端资源">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读次数：</span>
+              
+                <span class="leancloud-visitors-count"></span>
+            </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body han-init-context" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="查询手册"><a href="#查询手册" class="headerlink" title="查询手册"></a>查询手册</h2><ul>
+<li><a href="https://caniuse.com/#" target="_blank" rel="noopener">caniuse</a><br>查询各款浏览器的各种版本对 HTML5 和 CSS3 的支持情况。</li>
+<li><a href="https://validator.w3.org" target="_blank" rel="noopener">W3C校验器</a><br>该验证器用于检查HTML，XHTML，SMIL，MathML等Web文档的标记有效性。</li>
+<li><a href="https://www.iana.org/assignments/link-relations/link-relations.xml" target="_blank" rel="noopener"><link>元素的rel属性文档</a></li>
+<li><a href="https://wiki.whatwg.org/wiki/MetaExtensions" target="_blank" rel="noopener"><meta>MetaExtensions元数据扩展</a></li>
+<li><a href="https://tools.ietf.org/html/bcp47" target="_blank" rel="noopener">lang属性声明语言的全面说明</a></li>
+<li><a href="https://www.w3.org/TR/css-color-3/" target="_blank" rel="noopener">CSS Color Module Level 3</a></li>
+<li><a href="http://www.unicode.org/charts/" target="_blank" rel="noopener">Unicode 10.0 Character Code Charts</a></li>
+<li>Hex颜色：<a href="http://www.color-hex.com" target="_blank" rel="noopener">color-hex</a></li>
+</ul>
+<h2 id="文档资源"><a href="#文档资源" class="headerlink" title="文档资源"></a>文档资源</h2><ul>
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/HTML/Reference" target="_blank" rel="noopener">MDN：HTML参考</a></li>
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/CSS/Reference" target="_blank" rel="noopener">MDN：CSS 参考</a></li>
+<li><a href="http://www.w3school.com.cn/index.html" target="_blank" rel="noopener">w3school中文版: Web 技术教程&amp;手册</a></li>
+<li><a href="https://www.w3schools.com" target="_blank" rel="noopener">w3schools英文版</a></li>
+<li><a href="http://www1.qdfuns.com/feres.php?do=picture&amp;listtype=book" target="_blank" rel="noopener">w3cfuns: 电子书&amp;模版</a></li>
+<li><a href="https://github.com/shihyu/Programming_learning_resource" target="_blank" rel="noopener">电子书资源</a></li>
+<li><a href="https://github.com/JacksonTian/fks" target="_blank" rel="noopener">Github: 前端技能汇总</a></li>
+<li><a href="http://www.chinaw3c.org" target="_blank" rel="noopener">W3C万维网联盟中国官网</a></li>
+<li><a href="https://www.jianshu.com/p/8377068433e2" target="_blank" rel="noopener">前端利器，6 款开源 Web 性能优化辅助工具推荐</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/22181655?hmsr=toutiao.io&amp;refer=jiguang-daily&amp;utm_medium=toutiao.io&amp;utm_source=toutiao.io" target="_blank" rel="noopener">100+ 值得收藏的 Web 开发资源</a></li>
+</ul>
+<h2 id="前端框架"><a href="#前端框架" class="headerlink" title="前端框架"></a>前端框架</h2><ul>
+<li><p><a href="https://getbootstrap.com" target="_blank" rel="noopener">Bootstrap</a></p>
+<blockquote>
+<p>⭐️ 122,447</p>
+<p>简洁，直观且功能强大的前端框架，可实现更快更轻松的网页开发。</p>
+</blockquote>
+</li>
+<li><p><a href="https://foundation.zurb.com" target="_blank" rel="noopener">Foundation</a></p>
+<blockquote>
+<p>⭐️ 27,062</p>
+<p>The most advanced responsive front-end framework in the world. Quickly create prototypes and production code for sites that work on any kind of device.</p>
+<p>世界上最先进的响应式前端框架</p>
+</blockquote>
+</li>
+<li><p><a href="https://semantic-ui.com" target="_blank" rel="noopener">Semantic UI</a></p>
+<blockquote>
+<p>⭐️ 39,907</p>
+<p>Semantic is a development framework that helps create beautiful, responsive layouts using human-friendly HTML.</p>
+<p>Semantic is a UI component framework based around useful principles from natural language. </p>
+<p>基于自然语言原理的UI组件框架</p>
+</blockquote>
+</li>
+<li><p><a href="https://purecss.io" target="_blank" rel="noopener">Pure</a></p>
+<blockquote>
+<p>⭐️ 18,312</p>
+<p>A set of small, responsive CSS modules that you can use in every web project.</p>
+<p>Pure是一个轻量级的模块化框架 - 用纯CSS编写 - 包括可以根据需要一起使用或分开使用的组件。</p>
+</blockquote>
+</li>
+<li><p><a href="https://getuikit.com" target="_blank" rel="noopener">UIKit</a></p>
+<blockquote>
+<p>⭐️ 11,848</p>
+<p>A lightweight and modular front-end framework for developing fast and powerful web interfaces.</p>
+<p>用于开发快速而强大的Web界面的轻量级和模块化前端框架</p>
+</blockquote>
+</li>
+<li><p><a href="http://www.layui.com" target="_blank" rel="noopener">Layui</a></p>
+<blockquote>
+<p>⭐️ 11,857</p>
+</blockquote>
+</li>
+<li><p><a href="http://www.jeasyui.com/index.php" target="_blank" rel="noopener">前端UI框架: EasyUI</a></p>
+</li>
+<li><p><a href="https://github.com/Tencent/weui" target="_blank" rel="noopener">前端UI框架: Tencent/WeUI</a></p>
+</li>
+<li><p><a href="https://www.awesomes.cn/repos/Applications/frameworks" target="_blank" rel="noopener">前端框架List: awesomes</a></p>
+</li>
+<li><p><a href="https://mp.weixin.qq.com/s?__biz=MzUxMzcxMzE5Ng==&amp;mid=2247489128&amp;idx=1&amp;sn=eb12f6b500274a8df8fb1fccc4f6eda3&amp;chksm=f951a32bce262a3d9d6f108e7942cc6d70a7822ffb14e5059e9b5570200559b5b4731d062424#rd" target="_blank" rel="noopener">推荐 21 个顶级的 Vue UI 库！</a></p>
+</li>
+</ul>
+<h2 id="CSS框架"><a href="#CSS框架" class="headerlink" title="CSS框架"></a>CSS框架</h2><ul>
+<li><a href="http://www.csszengarden.com/tr/zh-cn/" target="_blank" rel="noopener">CSS禅意花园</a></li>
+<li><a href="https://github.com/joshuaclayton/blueprint-css" target="_blank" rel="noopener">blueprint</a></li>
+<li><a href="http://lesscss.org" target="_blank" rel="noopener">LESS</a></li>
+<li><a href="http://selectorgadget.com" target="_blank" rel="noopener">SelectorGadget</a><br> CSS选择器生产工具，浏览器载入这个工具的脚本程序之后，用户点击页面元素就能生成相应的CSS选择器。</li>
+<li>CSS模糊效果：<a href="https://codepen.io/ariona/pen/geFIK" target="_blank" rel="noopener">Blurred Background CSS</a></li>
+</ul>
+<h2 id="JavaScript框架"><a href="#JavaScript框架" class="headerlink" title="JavaScript框架"></a>JavaScript框架</h2><ul>
+<li><a href="https://github.com/airbnb/javascript" target="_blank" rel="noopener">Github:Airbnb JavaScript Style Guide</a></li>
+<li><a href="https://github.com/jquery/jquery" target="_blank" rel="noopener">Github:JQuery</a></li>
+<li><a href="https://github.com/nodejs/node" target="_blank" rel="noopener">Github:node.js</a></li>
+<li><a href="https://github.com/isaacs/multipart-js" target="_blank" rel="noopener">multipart-js</a></li>
+<li><a href="https://modernizr.com" target="_blank" rel="noopener">Modernizr</a> | <a href="https://github.com/modernizr/modernizr" target="_blank" rel="noopener">Github:modernizr</a>  <blockquote>
+<p>⭐️22000+</p>
+<p>Modernizr is a JavaScript library that detects HTML5 and CSS3 features in the user’s browser.</p>
+<p>使用 Modernizr 库，可以用编程的方式判断用户使用的浏览器是否支持关键的 HTML5 和 CSS3 特性，籍此可以决定在文档中应该使用哪些特性。</p>
+</blockquote>
+</li>
+<li><a href="https://dojotoolkit.org" target="_blank" rel="noopener">Dojo</a></li>
+</ul>
+<h2 id="字体"><a href="#字体" class="headerlink" title="字体"></a>字体</h2><ul>
+<li><a href="https://fonts.google.com" target="_blank" rel="noopener">Google Fonts</a></li>
+</ul>
+<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><ul>
+<li><a href="https://www.mapbox.com/base/" target="_blank" rel="noopener">mapbox</a></li>
+<li><a href="http://rizzo.lonelyplanet.com/styleguide/design-elements/colours" target="_blank" rel="noopener">lonelyplanet</a></li>
+<li><a href="https://www.phacility.com" target="_blank" rel="noopener">项目管理工具：phacility</a></li>
+<li><a href="https://www.mamp.info/en/" target="_blank" rel="noopener">MAMP</a><blockquote>
+<p>WAMP和MAMP是允许开发者在本地建立虚拟主机的套件，它包含MySQL数据库引擎和PHP和其它增强工具包。 安装本地Web服务器来测试自己的网站比购买虚拟主机或云更容易，也更便宜，方便你在本地开发和测试原型。因此，作为一个测试平台，MAMP完全可以自由使用，有时候比自己搭建本地环境更快捷。</p>
+<p>WAMP适用于Windows操作系统，而MAMP适用于Mac操作系统。</p>
+</blockquote>
+</li>
+</ul>
+<h2 id="HTML-编辑器"><a href="#HTML-编辑器" class="headerlink" title="HTML 编辑器"></a>HTML 编辑器</h2><ul>
+<li><a href="https://notepad-plus-plus.org" target="_blank" rel="noopener">Notepad++</a></li>
+<li><a href="https://www.sublimetext.com" target="_blank" rel="noopener">Sublime Text</a></li>
+<li><a href="https://code.visualstudio.com/" target="_blank" rel="noopener">Visual Studio Code</a></li>
+<li><a href="http://www.dcloud.io" target="_blank" rel="noopener">HBuilder</a></li>
+<li><a href="http://brackets.io" target="_blank" rel="noopener">Brackets</a><blockquote>
+<p><strong>Brackets</strong> 是一个免费、开源且跨平台的 HTML/CSS/JavaScript 前端 WEB 集成开发环境 (IDE工具)。该项目由 Adobe 创建和维护，根据MIT许可证发布，支持 Windows、Linux 以及 OS X 平台。</p>
+<p><strong>Brackets</strong> 的特点是简约、优雅、快捷！它没有很多的视图或者面板，也没太多花哨的功能，它的核心目标是减少在开发过程中那些效率低下的重复性工作，例如浏览器刷新，修改元素的样式，搜索功能等等。和 Sublime Text、Everedit 等通用代码编辑器不一样，Brackets 是专门针对 <strong>WEB 前端开发</strong>而生……</p>
+</blockquote>
+</li>
+<li><a href="http://www.jetbrains.com/webstorm/" target="_blank" rel="noopener">webstorm</a></li>
+<li><a href="https://www.atom.io" target="_blank" rel="noopener">Atom</a></li>
+<li><a href="https://emmet.io" target="_blank" rel="noopener">Emmet 插件</a></li>
+</ul>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
     
       
 
@@ -2199,396 +2689,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://andy0570.com/2018/02/08/HTML笔记 4.HTML5元素速览/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="独木舟的木">
-      <meta itemprop="description" content="有时候阳光很好 有时候阳光很暗">
-      <meta itemprop="image" content="https://ws1.sinaimg.cn/large/006tNc79gy1g22m14458rj30u014xu0x.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="独木舟的木">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2018/02/08/HTML笔记 4.HTML5元素速览/" class="post-title-link" itemprop="url">HTML笔记 4.HTML5元素速览</a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2018-02-08 16:11:00" itemprop="dateCreated datePublished" datetime="2018-02-08T16:11:00+08:00">2018-02-08</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2019-04-18 01:19:04" itemprop="dateModified" datetime="2019-04-18T01:19:04+08:00">2019-04-18</time>
-              
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/HTML/" itemprop="url" rel="index"><span itemprop="name">HTML</span></a></span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-            
-          
-
-          
-          
-            <span id="/2018/02/08/HTML笔记 4.HTML5元素速览/" class="leancloud_visitors" data-flag-title="HTML笔记 4.HTML5元素速览">
-              <span class="post-meta-divider">|</span>
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              
-                <span class="post-meta-item-text">阅读次数：</span>
-              
-                <span class="leancloud-visitors-count"></span>
-            </span>
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body han-init-context" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <a id="more"></a>
-<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><ul>
-<li>《HTML5权威指南 第6章》</li>
-</ul>
-<p>使用HTML元素的建议：</p>
-<ul>
-<li>尽量使用最具体的元素；</li>
-<li>不要误用元素；</li>
-<li>在文档、网站和Web应用系统中元素的使用都要保持一致；</li>
-</ul>
-<h3 id="元素速览"><a href="#元素速览" class="headerlink" title="元素速览"></a>元素速览</h3><h4 id="文档和元数据元素"><a href="#文档和元数据元素" class="headerlink" title="文档和元数据元素"></a>文档和元数据元素</h4><p><img src="http://upload-images.jianshu.io/upload_images/2648731-d763653afee31ad3.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt></p>
-<h4 id="文本元素"><a href="#文本元素" class="headerlink" title="文本元素"></a>文本元素</h4><p><img src="http://upload-images.jianshu.io/upload_images/2648731-b632b8b80762a9fe.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt><br><img src="http://upload-images.jianshu.io/upload_images/2648731-3ce3bea5870f31e0.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt></p>
-<h3 id="对内容分组"><a href="#对内容分组" class="headerlink" title="对内容分组"></a>对内容分组</h3><p><img src="http://upload-images.jianshu.io/upload_images/2648731-b01e47e291b7f7fb.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt></p>
-<h3 id="划分内容"><a href="#划分内容" class="headerlink" title="划分内容"></a>划分内容</h3><p><img src="http://upload-images.jianshu.io/upload_images/2648731-39048e37403e41cd.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt></p>
-<h3 id="制表"><a href="#制表" class="headerlink" title="制表"></a>制表</h3><p><img src="http://upload-images.jianshu.io/upload_images/2648731-17432eaa5f9a5040.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt></p>
-<h3 id="创建表单"><a href="#创建表单" class="headerlink" title="创建表单"></a>创建表单</h3><p><img src="http://upload-images.jianshu.io/upload_images/2648731-76aef27db50e2460.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt></p>
-<h3 id="嵌入内容"><a href="#嵌入内容" class="headerlink" title="嵌入内容"></a>嵌入内容</h3><p><img src="http://upload-images.jianshu.io/upload_images/2648731-c3250cc685eeeb47.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt><br><img src="http://upload-images.jianshu.io/upload_images/2648731-27cdebd4769b0d37.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt></p>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://andy0570.com/2018/02/08/HTML笔记 3.JavaScript/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="独木舟的木">
-      <meta itemprop="description" content="有时候阳光很好 有时候阳光很暗">
-      <meta itemprop="image" content="https://ws1.sinaimg.cn/large/006tNc79gy1g22m14458rj30u014xu0x.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="独木舟的木">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2018/02/08/HTML笔记 3.JavaScript/" class="post-title-link" itemprop="url">HTML笔记 3.JavaScript</a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2018-02-08 15:33:00" itemprop="dateCreated datePublished" datetime="2018-02-08T15:33:00+08:00">2018-02-08</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2019-04-18 01:21:33" itemprop="dateModified" datetime="2019-04-18T01:21:33+08:00">2019-04-18</time>
-              
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/HTML/" itemprop="url" rel="index"><span itemprop="name">HTML</span></a></span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-            
-          
-
-          
-          
-            <span id="/2018/02/08/HTML笔记 3.JavaScript/" class="leancloud_visitors" data-flag-title="HTML笔记 3.JavaScript">
-              <span class="post-meta-divider">|</span>
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              
-                <span class="post-meta-item-text">阅读次数：</span>
-              
-                <span class="leancloud-visitors-count"></span>
-            </span>
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body han-init-context" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <p><img src="http://upload-images.jianshu.io/upload_images/2648731-756487e3a357be96.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt></p>
-          <!--noindex-->
-          
-            <div class="post-button text-center">
-              <a class="btn" href="/2018/02/08/HTML笔记 3.JavaScript/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2637,7 +2737,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">312</span>
+                    <span class="site-state-item-count">314</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -2777,43 +2877,7 @@
                     
                       
                     
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                    <span class="site-state-item-count">54</span>
+                    <span class="site-state-item-count">38</span>
                     <span class="site-state-item-name">标签</span>
                   </a>
                 </div>
