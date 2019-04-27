@@ -308,7 +308,7 @@
       
     
 
-    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签<span class="badge">39</span></a>
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签<span class="badge">37</span></a>
 
   </li>
         
@@ -327,7 +327,7 @@
       
     
 
-    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">314</span></a>
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">317</span></a>
 
   </li>
         
@@ -417,6 +417,936 @@
           <div id="content" class="content">
             
   <section id="posts" class="posts-expand">
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://andy0570.com/2016/09/30/《iOS编程（第四版）》Demo：Needfeed/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="独木舟的木">
+      <meta itemprop="description" content="有时候阳光很好 有时候阳光很暗">
+      <meta itemprop="image" content="https://ws1.sinaimg.cn/large/006tNc79gy1g22m14458rj30u014xu0x.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="独木舟的木">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2016/09/30/《iOS编程（第四版）》Demo：Needfeed/" class="post-title-link" itemprop="url">《iOS编程（第四版）》Demo：Needfeed</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2016-09-30 15:35:00" itemprop="dateCreated datePublished" datetime="2016-09-30T15:35:00+08:00">2016-09-30</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-04-17 17:18:57" itemprop="dateModified" datetime="2019-04-17T17:18:57+08:00">2019-04-17</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/iOS/" itemprop="url" rel="index"><span itemprop="name">iOS</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+            <span id="/2016/09/30/《iOS编程（第四版）》Demo：Needfeed/" class="leancloud_visitors" data-flag-title="《iOS编程（第四版）》Demo：Needfeed">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读次数：</span>
+              
+                <span class="leancloud-visitors-count"></span>
+            </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body han-init-context" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <a id="more"></a>
+<h2 id="点击TableView列表展示WebView"><a href="#点击TableView列表展示WebView" class="headerlink" title="点击TableView列表展示WebView"></a>点击TableView列表展示WebView</h2><p>注： <strong>本文参考 <em>IOS编程（第四版）</em> 第21章 <em>web服务与UIwebView</em> 相关内容开发一款名为Nerdfeed的应用。展示 <em>UITableView</em> 与 <em>UIWebView</em> 相关知识内容，以为整理记录，作为日后开发过程中参考并使用。</strong>   </p>
+<p><strong>Needfeed</strong> 的作用是读取并通过 <strong>UITableView</strong> 显示 Big Nerd Ranch 提供的在线课程，选择某项课程会打开相应课程的网页。Demo如下：</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/2648731-04d5f253d8f0537a.gif?imageMogr2/auto-orient/strip" alt="Needfeed"></p>
+<p>要实现以上Demo所示的Needfeed应用，需要完成两项任务：   </p>
+<ol>
+<li>连接指定的web服务并获取数据，然后根据得到的数据创建模型对象。   </li>
+<li>用UIWebView显示Web内容。</li>
+</ol>
+<h2 id="1-创建HQLCoursesViewController类，并将其父类设置为UITableViewController"><a href="#1-创建HQLCoursesViewController类，并将其父类设置为UITableViewController" class="headerlink" title="1.创建HQLCoursesViewController类，并将其父类设置为UITableViewController"></a>1.创建HQLCoursesViewController类，并将其父类设置为UITableViewController</h2><p><code>@interface HQLCoursesViewController : UITableViewController</code></p>
+<h3 id="遵守UITableViewDataSource协议的类需要实现数据源方法"><a href="#遵守UITableViewDataSource协议的类需要实现数据源方法" class="headerlink" title="遵守UITableViewDataSource协议的类需要实现数据源方法"></a>遵守UITableViewDataSource协议的类需要实现数据源方法</h3><blockquote>
+<p> API文档描述 &gt; The UITableViewDataSource protocol is adopted by an object that mediates the application’s data model for a UITableView object. The data source provides the table-view object with the information it needs to construct and modify a table view.</p>
+</blockquote>
+<p>翻译：当一个对象需要为应用程序的UITableView对象提供数据源模型时，采用UITableViewDataSource协议。数据源则为table-view对象提供它需要建立和修改列表视图的信息。</p>
+<p>UITableViewDataSource协议必须（@requored）实现的2个方法：</p>
+<ul>
+<li><p>-(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section;<br>向数据源获取并返回列表视图中给定section区域中的行数。</p>
+</li>
+<li><p>-(UITableViewCell <em>)tableView:(UITableView </em>)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath;<br>在列表视图的特定单元格位置插入请求到的数据</p>
+</li>
+</ul>
+<p>因此，我们先在HQLCoursesViewController.m中实现空的数据源方法，之后再作修改。</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//返回行数</span></span><br><span class="line">- (<span class="built_in">NSInteger</span>) tableView:(<span class="built_in">UITableView</span> *)tableView</span><br><span class="line">  numberOfRowsInSection:(<span class="built_in">NSInteger</span>)section &#123;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//获取用于显示第section个表格段、第row行数据的UITableViewCell对象</span></span><br><span class="line">- (<span class="built_in">UITableViewCell</span> *) tableView:(<span class="built_in">UITableView</span> *)tableView</span><br><span class="line">          cellForRowAtIndexPath:(<span class="built_in">NSIndexPath</span> *)indexPath &#123;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> <span class="literal">nil</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="2-在AppDelegate-m中创建视图控制器对象"><a href="#2-在AppDelegate-m中创建视图控制器对象" class="headerlink" title="2.在AppDelegate.m中创建视图控制器对象"></a>2.在AppDelegate.m中创建视图控制器对象</h2><p>需要创建<strong>UINavigationControl</strong>对象，并将其设置为<strong>UIWindow</strong>的根视图控制器</p>
+<pre><code>//创建coursesViewController对象 cvc
+HQLCoursesViewController *cvc = [[HQLCoursesViewController alloc] initWithStyle:UITableViewStylePlain];
+
+//UINavigationController对象 masterNav 是 cvc 的根视图控制器
+UINavigationController *masterNav = [[UINavigationController alloc] initWithRootViewController:cvc];
+
+self.window.rootViewController = masterNav;
+</code></pre><h2 id="NSURL、NSURLRequest、NSURLSession和NSURLSessionTask"><a href="#NSURL、NSURLRequest、NSURLSession和NSURLSessionTask" class="headerlink" title="NSURL、NSURLRequest、NSURLSession和NSURLSessionTask"></a>NSURL、NSURLRequest、NSURLSession和NSURLSessionTask</h2><p> 要从web服务器获取数据，Nerdfeed需要使用NSURL、NSURLRequest、NSURLSession和NSURLSessionTask四个类。<br> 推荐阅读：[^1]<br>[^1]:<a href="http://www.cnblogs.com/kenshincui/p/4042190.html" target="_blank" rel="noopener">http://www.cnblogs.com/kenshincui/p/4042190.html</a>      </p>
+<p>关系图：<br><img src="http://upload-images.jianshu.io/upload_images/2648731-069f2b28b2799215.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt></p>
+<ul>
+<li><strong>NSURL</strong>对象负责以<strong>URL</strong>的格式保存web应用的位置。对大多数web服务，<strong>URL</strong>将包含基地址（base address）、web应用名和需要传送的参数。</li>
+<li><strong>NSURLRequest</strong>对象负责保存需要传送给web服务器的全部数据，这些数据包括：一个NSURL对象、缓存方法（caching policy）、等待web服务器响应的最长时间和需要通过HTTP协议传送的额外信息（<strong>NSMutableURLRequest</strong>是<strong>NSURLRequest</strong>的可变子类）。</li>
+<li>每一个<strong>NSURLSessionTask</strong>对象都表示一个<strong>NSURLRequest</strong>的生命周期。<strong>NSURLSessionTask</strong>可以跟踪<strong>NSURLRequest</strong>的状态，还可以对<strong>NSURLRequest</strong>执行取消、暂停和继续操作。<strong>NSURLSessionTask</strong>有多种不同功能的子类，包括<strong>NSURLSession-DataTask</strong>,<strong>NSURLSessionUploadTask</strong>和<strong>NSURLSessionDownloadTask</strong>.</li>
+<li><strong>NSURLSession</strong>对象可以看作是一个生产<strong>NSURLSessionTask</strong>对象的工厂。可以设置其生产出来的<strong>NSURLSessionTask</strong>对象的通用属性，例如请求的内容、是否允许在蜂窝网络下发送请求等。<strong>NSURLSession</strong>对象还有一个功能强大的委托，可以跟踪<strong>NSURLSessionTask</strong>对象的状态、处理服务器的认证要求等。</li>
+</ul>
+<h2 id="3-构建URL与发送请求"><a href="#3-构建URL与发送请求" class="headerlink" title="3.构建URL与发送请求"></a>3.构建URL与发送请求</h2><h2 id="NSURLSession"><a href="#NSURLSession" class="headerlink" title="NSURLSession"></a>NSURLSession</h2><p>NSURLSession有两种不同的含义：第一种含义指NSURLSession类；第二种含义指一组用于处理网络请求的API。<br>此处使用第一种含义，首先在HQLCoursesViewController.m的类扩展中添加一个属性，用于保存NSURLSession对象：</p>
+<p><code>@property (nonatomic) NSURLSession *session;</code>   </p>
+<ol>
+<li>接下来覆盖<strong>HQLCoursesViewController.m</strong>的<strong>initWithStyle</strong>：方法，创建<strong>NSURLSession</strong>对象</li>
+</ol>
+<pre><code><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">instancetype</span>) initWithStyle:(<span class="built_in">UITableViewStyle</span>)style &#123;</span><br><span class="line"></span><br><span class="line"><span class="comment">//创建NSURLSession对象</span></span><br><span class="line"><span class="keyword">self</span> = [<span class="keyword">super</span> initWithStyle:style];</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (<span class="keyword">self</span>) &#123;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">self</span>.navigationItem.title = <span class="string">@"BNRCourses"</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">NSURLSessionConfiguration</span> *config = [<span class="built_in">NSURLSessionConfiguration</span> defaultSessionConfiguration];</span><br><span class="line">    </span><br><span class="line">    _session = [<span class="built_in">NSURLSession</span> sessionWithConfiguration:config</span><br><span class="line">                                        <span class="comment">//NSURLSessionConfiguration对象</span></span><br><span class="line">                                             delegate:<span class="literal">nil</span>   <span class="comment">//委托</span></span><br><span class="line">                                        delegateQueue:<span class="literal">nil</span>]; <span class="comment">//委托队列</span></span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"> <span class="keyword">return</span> <span class="keyword">self</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</code></pre><ol start="2">
+<li><p>在<strong>HQLCoursesViewController.m</strong>中实现<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">此处NSURLRequest使用默认的**GET**请求方法，若要使用**POST**方法，需要设置**POST**请求体。</span><br></pre></td></tr></table></figure></p>
+<p> // 获取数据方法<br>  -(void) fetchFeed {</p>
+<p> //创建NSURLRequest请求对象<br> NSString <em>requestString = @”<a href="http://bookapi.bignerdranch.com/private/courses.json&quot;" target="_blank" rel="noopener">http://bookapi.bignerdranch.com/private/courses.json&quot;</a>;<br> NSURL </em>url = [NSURL URLWithString:requestString];<br> NSURLRequest *req = [NSURLRequest requestWithURL:url];</p>
+<p> //使用NSURLSession对象创建一个NSURLSessionDataTask对象，将NSURLRequest对象发送给服务器<br> NSURLSessionDataTask *dataTask = [self.session dataTaskWithRequest:req</p>
+<pre><code>               completionHandler://block对象
+^(NSData * _Nullable data,
+  NSURLResponse * _Nullable response,
+  NSError * _Nullable error) {
+</code></pre><p> //接收数据<br> NSString *json = [[NSString alloc] initWithData:data</p>
+<pre><code>encoding:NSUTF8StringEncoding];
+</code></pre><p> NSLog(@”%@”,json);</p>
+<p> //NSURLSessionDataTask在刚创建的时候处于暂停状态，需要手动调用resume方法恢复,让NSURLSessionDataTask开始向服务器发送请求。<br> [dataTask resume];<br> }</p>
+ <figure class="highlight asciidoc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">3. Nerdfeed应该在创建HQLCoursesViewController对象后就发起网络请求。修改*<span class="strong">*HQLCoursesViewController.m*</span><span class="strong">*的*</span><span class="strong">*initWithStyle*</span><span class="strong">*：方法，添加调用 *</span><span class="strong">*fetchFeed*</span><span class="strong">*的方法。</span></span><br><span class="line"><span class="strong">session对象创建完成后调用```[self fetchFeed];</span></span><br></pre></td></tr></table></figure>
+ <figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">	- (<span class="keyword">instancetype</span>) initWithStyle:(<span class="built_in">UITableViewStyle</span>)style &#123;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//创建NSURLSession对象</span></span><br><span class="line">    <span class="keyword">self</span> = [<span class="keyword">super</span> initWithStyle:style];</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">self</span>) &#123;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">self</span>.navigationItem.title = <span class="string">@"BNRCourses"</span>;</span><br><span class="line">        </span><br><span class="line">        <span class="built_in">NSURLSessionConfiguration</span> *config = [<span class="built_in">NSURLSessionConfiguration</span> defaultSessionConfiguration];</span><br><span class="line">        </span><br><span class="line">        _session = [<span class="built_in">NSURLSession</span> sessionWithConfiguration:config</span><br><span class="line">                                            <span class="comment">//NSURLSessionConfiguration对象</span></span><br><span class="line">                                                 delegate:<span class="literal">nil</span>   <span class="comment">//委托</span></span><br><span class="line">                                            delegateQueue:<span class="literal">nil</span>]; <span class="comment">//委托队列</span></span><br><span class="line">        [<span class="keyword">self</span> fetchFeed];</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">     <span class="keyword">return</span> <span class="keyword">self</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h2 id="JSON数据"><a href="#JSON数据" class="headerlink" title="JSON数据"></a>JSON数据</h2><ul>
+<li>JSON数据只包含有限的几种基础对象，用于表示来自服务器的模型对象，例如数组、字典、字符串和数字。而每个JOSN文件是由这些基础对象嵌套组合而成的。</li>
+</ul>
+<h2 id="4-解析JSON数据"><a href="#4-解析JSON数据" class="headerlink" title="4.解析JSON数据"></a>4.解析JSON数据</h2><ul>
+<li><strong>NSJSONSerialization</strong>类：用于解析JSON数据</li>
+<li><strong>NSJSONSerialization</strong>可以将JSON数据转换为Object-C对象</li>
+<li><strong>字典</strong>会转换为<strong>NSDictionary</strong>对象；<strong>数组</strong>会转换为<strong>NSArray</strong>对象；<strong>字符串</strong>会转换为<strong>NSString</strong>对象；<strong>数字</strong>会转换为<strong>NSNumber</strong>对象</li>
+</ul>
+<p>删除</p>
+<p><del>NSString *json = [[NSString alloc] initWithData:data<br>                                             encoding:NSUTF8StringEncoding];</del><br>~~NSLog(@”%@”,json); ~~  </p>
+<p>修改为</p>
+<pre><code>NSDictionary *jsonObject = [NSJSONSerialization JSONObjectWithData:data
+                                                               options:0
+                                                                 error:nil];
+NSLog(@&quot;%@&quot;,jsonObject);
+</code></pre><p>在HQLCoursesViewController.m的类扩展中添加一个属性用于保存在线课程数组。数组中的每一个元素都是一个NSDictionary对象，表示一项课程的详细信息。</p>
+<pre><code>@interface HQLCoursesViewController () 
+
+@property (nonatomic) NSURLSession *session;
+
+//保存在线课程数组
+@property (nonatomic,copy) NSArray *courses;
+
+@end
+</code></pre><p>然后修改NSURLSessionDataTask的completionHandler，</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">NSURLSessionDataTask</span> *dataTask = [<span class="keyword">self</span>.session dataTaskWithRequest:req</span><br><span class="line">                                                     completionHandler: <span class="comment">//block对象</span></span><br><span class="line">                                      ^(<span class="built_in">NSData</span> * _Nullable data,</span><br><span class="line">                                        <span class="built_in">NSURLResponse</span> * _Nullable response,</span><br><span class="line">                                        <span class="built_in">NSError</span> * _Nullable error) &#123;</span><br><span class="line">        </span><br><span class="line"></span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 解析JSON数据</span></span><br><span class="line">        <span class="built_in">NSDictionary</span> *jsonObject = [<span class="built_in">NSJSONSerialization</span> JSONObjectWithData:data</span><br><span class="line">                                                                   options:<span class="number">0</span></span><br><span class="line">                                                                     error:<span class="literal">nil</span>];</span><br><span class="line"> 		 <span class="comment">//NSLog(@"%@",jsonObject)</span></span><br><span class="line">        <span class="comment">//将NSDictionary代表的课程存入数组</span></span><br><span class="line">        <span class="keyword">self</span>.courses = jsonObject[<span class="string">@"courses"</span>];</span><br><span class="line">        <span class="built_in">NSLog</span>(<span class="string">@"%@"</span>,<span class="keyword">self</span>.courses);</span><br><span class="line">        </span><br><span class="line">    &#125;];</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//NSURLSessionDataTask在刚创建的时候处于暂停状态</span></span><br><span class="line">    [dataTask resume];  <span class="comment">//手动调用resume方法恢复</span></span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>接下来修改<strong>UITableView</strong>的数据源方法，将课程的title显示在相应的<strong>UITableViewCell</strong>中。最后还需要覆盖<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">	</span><br><span class="line">	- (void) viewDidLoad &#123;</span><br><span class="line">	</span><br><span class="line">	[super viewDidLoad];</span><br><span class="line">	</span><br><span class="line">	//重用UITableViewCell，向表视图注册应该使用的UITableViewCell</span><br><span class="line">	[self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@&quot;UITableViewCell&quot;];</span><br><span class="line">	</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	//获取数据源</span><br><span class="line">	//UITableViewDataSource协议必须（@requored）实现的2个方法</span><br><span class="line">	////返回行数</span><br><span class="line">	- (NSInteger) tableView:(UITableView *)tableView</span><br><span class="line">	numberOfRowsInSection:(NSInteger)section &#123;</span><br><span class="line">	</span><br><span class="line">	//返回课程数目</span><br><span class="line">	return self.courses.count;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	//获取用于显示第section个表格段、第row行数据的UITableViewCell对象</span><br><span class="line">	- (UITableViewCell *) tableView:(UITableView *)tableView</span><br><span class="line">	      cellForRowAtIndexPath:(NSIndexPath *)indexPath &#123;</span><br><span class="line">	</span><br><span class="line">	//创建或重用UITableViewCell对象</span><br><span class="line">	UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@&quot;UITableViewCell&quot;</span><br><span class="line">	                         forIndexPath:indexPath];</span><br><span class="line">	</span><br><span class="line">	NSDictionary *course = self.courses[indexPath.row];</span><br><span class="line">	cell.textLabel.text  = course [@&quot;title&quot;];//设置标题</span><br><span class="line">	return cell;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">### 主线程</span><br><span class="line">* 主线程有时也被称为用户界面线程（UI thread），这是由于修改用户界面的代码必须在主线程中运行。</span><br><span class="line">* 当web服务请求成功后，**HQLCoursesViewController**需要重新加载**UITableView**对象的数据（调用**UITableView**对象的```reloadData```方法），默认情况下**NSURLSessionDataTask**是在后台线程中执行```completionHandler:```的，为了让```reloadData```方法在主线程中运行，可以使用**dispatch_asynch**函数.</span><br></pre></td></tr></table></figure></p>
+<p>…<br>//将NSDictionary代表的课程存入数组<br>        self.courses = jsonObject[@”courses”];<br>        NSLog(@”%@”,self.courses);</p>
+<pre><code>dispatch_async(dispatch_get_main_queue(), ^{
+    //重新加载UITableView对象的数据
+    [self.tableView reloadData];
+</code></pre><p>…</p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="section">### 5.UIWebView</span></span><br><span class="line">注：官方建议，以 iOS 8 或者以后的版本运行的应用程序，使用<span class="strong">**WKWebView**</span>类而不是使用<span class="strong">**UIWebView**</span>。</span><br><span class="line"></span><br><span class="line">可参阅对UIWebView、WKWebView官方文档翻译，点击查看：</span><br><span class="line"></span><br><span class="line">[<span class="string">API翻译：UIWebView</span>](<span class="link">http://www.jianshu.com/p/bc935fab4e30</span>) 、  [<span class="string">API翻译：WKWebView</span>](<span class="link">http://www.jianshu.com/p/793d815006c5</span>) 、  [<span class="string">API翻译：WebKit</span>](<span class="link">http://www.jianshu.com/p/18d2f56b8414</span>)    </span><br><span class="line"></span><br><span class="line">课程返回的JSON数据中，每个Course对象都是一个NSDictionary对象，其中含有"url"键，值是一个URL字符串，表示对应的网址。   </span><br><span class="line">新建一个<span class="strong">**HQLWebViewController**</span>对象，父类是<span class="strong">**UIViewController**</span></span><br><span class="line"></span><br><span class="line"><span class="code">	#import &lt;UIKit/UIKit.h&gt;</span></span><br><span class="line"><span class="code">	</span></span><br><span class="line"><span class="code">	@interface HQLWebViewController : UIViewController </span></span><br><span class="line"><span class="code">	</span></span><br><span class="line"><span class="code">	@property (nonatomic) NSURL *URL;</span></span><br><span class="line"><span class="code">	</span></span><br><span class="line"><span class="code">	@end </span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">​	</span><br><span class="line">在<span class="strong">**HQLWebViewController.m**</span>中，加入以下代码：</span><br></pre></td></tr></table></figure>
+<p>@implementation HQLWebViewController</p>
+<ul>
+<li><p>(void) loadView {</p>
+<p>  UIWebView *webView = [[UIWebView alloc] init];<br>  webView.scalesPageToFit = YES;<br>  self.view = webView ;</p>
+</li>
+</ul>
+<p>}</p>
+<ul>
+<li>(void) setURL:(NSURL *)URL<br>{<br>  _URL = URL;<br>  if (_URL) {<pre><code>NSURLRequest *req = [NSURLRequest requestWithURL:_URL];
+[(UIWebView *)self.view loadRequest:req];
+</code></pre>  }<br>}</li>
+</ul>
+<p>@end</p>
+<figure class="highlight asciidoc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">在*<span class="strong">*HQLCoursesViewController.h*</span><span class="strong">*中，声明一个新属性，指向*</span><span class="strong">*HQLWebViewController*</span><span class="strong">*。</span></span><br><span class="line"><span class="strong"></span></span><br><span class="line"><span class="strong">	#import &lt;UIKit/UIKit.h&gt;</span></span><br><span class="line"><span class="strong">	@class HQLWebViewController;</span></span><br><span class="line"><span class="strong">	</span></span><br><span class="line"><span class="strong">	@interface HQLCoursesViewController : UITableViewController</span></span><br><span class="line"><span class="strong">	</span></span><br><span class="line"><span class="strong">	@property (nonatomic) HQLWebViewController *</span>webViewController;</span><br><span class="line"><span class="code">	</span></span><br><span class="line"><span class="code">	@end</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">在*<span class="strong">*AppDelegate.m*</span><span class="strong">*中，创建*</span><span class="strong">*HQLWebViewController*</span><span class="strong">*对象并将其赋给*</span><span class="strong">*HQLCoursesViewController*</span><span class="strong">*对象的*</span><span class="strong">*webViewController*</span><span class="strong">*属性。</span></span><br></pre></td></tr></table></figure>
+<pre><code>- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+
+self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+
+HQLCoursesViewController *cvc = [[HQLCoursesViewController alloc] initWithStyle:UITableViewStylePlain];
+
+UINavigationController *masterNav = [[UINavigationController alloc] initWithRootViewController:cvc];
+
+HQLWebViewController *wvc = [[HQLWebViewController alloc] init];
+cvc.webViewController = wvc;
+
+self.window.rootViewController = masterNav;
+
+self.window.backgroundColor = [UIColor whiteColor];
+[self.window makeKeyAndVisible];
+return YES;
+</code></pre><p>}</p>
+<figure class="highlight asciidoc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">在*<span class="strong">*HQLCoursesViewController.m*</span><span class="strong">*中导入*</span><span class="strong">*HQLWebViewController.h*</span><span class="strong">*,然后实现*</span><span class="strong">*UITableView*</span><span class="strong">*对象的数据源协议，用户点击*</span><span class="strong">*UITableView*</span><span class="strong">*对象中的某个*</span><span class="strong">*UITableViewCell*</span><span class="strong">*后，NerdFeed会创建*</span><span class="strong">*HQLWebViewController.h*</span><span class="strong">*对象并将其压入*</span><span class="strong">*UINavigationController*</span><span class="strong">*栈。</span></span><br></pre></td></tr></table></figure>
+<p>//用户更改选择后调用<br>//创建HQLWebViewController对象并将其压入UINavigationController栈</p>
+<ul>
+<li>(void) tableView:(UITableView <em>)tableView<br>didSelectRowAtIndexPath:(NSIndexPath </em>)indexPath {<br>  NSDictionary <em>course = self.courses [indexPath.row];<br>  NSURL </em>URL = [NSURL URLWithString:course [@”url”]];<br>  self.webViewController.title =course [@”title”];<br>  self.webViewController.URL = URL;<br>  //如果对象不属于splitViewController，则当前设备不是iPad,可以将webViewController压入navigationController栈<br>  if (! self.splitViewController) { <pre><code>[self.navigationController pushViewController:self.webViewController animated:YES];
+</code></pre>  }<br>}<figure class="highlight autohotkey"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">### <span class="number">6</span>.认证信息</span><br><span class="line">* web服务可以在返回HTTP响应时附带认证要求（authentication challenge）,只有当发起方提供相应的认证信息（比如用户名和密码），且当认证通过后，web服务才会返回真正的HTTP相应。</span><br><span class="line"></span><br><span class="line"><span class="symbol">* 当应用收到认证要求时，NSURLSession的委托会收到```(void)URLSession:task:didReceiveChallenge:completionHandler:```消</span>息，可以在该消息中发送用户名和密码，完成认证。</span><br><span class="line"></span><br><span class="line">打开**HQLCoursesViewController.m**文件，修改```fetchFeed```方法中的URL地址将**http**改为**HTTPS**。</span><br><span class="line"></span><br><span class="line">```NSString *requestString = @<span class="string">"https://bookapi.bignerdranch.com/private/courses.json"</span><span class="comment">;</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>还需要在初始化时为NSURLSession设置委托。更新<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">        _session = [NSURLSession sessionWithConfiguration:config</span><br><span class="line">                                            //NSURLSessionConfiguration对象</span><br><span class="line">                                                 delegate:self   //设置委托</span><br><span class="line">                                            delegateQueue:nil]; //委托队列</span><br><span class="line"></span><br><span class="line">然后设置使**HQLCoursesViewController**遵守**NSURLSessionDataDelegate**协议：</span><br><span class="line">```@interface HQLCoursesViewController () &lt;NSURLSessionDataDelegate&gt;</span><br></pre></td></tr></table></figure></p>
+<p>实现<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure></p>
+<p>//处理web服务认证</p>
+<ul>
+<li><p>(void) URLSession:(NSURLSession *)session</p>
+<pre><code>task:(NSURLSessionTask *)task
+</code></pre><p>didReceiveChallenge:(NSURLAuthenticationChallenge <em>)challenge<br>completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition, NSURLCredential </em> _Nullable))completionHandler {</p>
+<p>  //凭据<br>  NSURLCredential *cred = [NSURLCredential</p>
+<pre><code>credentialWithUser:@&quot;BigNerdRanch&quot;
+password:@&quot;AchieveNerdvana&quot;
+persistence:NSURLCredentialPersistenceForSession];//认证信息有效期，枚举值
+</code></pre><p>  //完成处理程序 completionHandler(认证类型，认证信息)<br>  completionHandler (NSURLSessionAuthChallengeUseCredential,cred);</p>
+</li>
+</ul>
+<p>}<br><code>`</code></p>
+<p><a href="https://github.com/Andy0570/Nerdfeed.git" target="_blank" rel="noopener">gitHub地址</a></p>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://andy0570.com/2016/09/29/《iOS编程（第四版）》Demo8：Homeowner/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="独木舟的木">
+      <meta itemprop="description" content="有时候阳光很好 有时候阳光很暗">
+      <meta itemprop="image" content="https://ws1.sinaimg.cn/large/006tNc79gy1g22m14458rj30u014xu0x.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="独木舟的木">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2016/09/29/《iOS编程（第四版）》Demo8：Homeowner/" class="post-title-link" itemprop="url">《iOS编程（第四版）》Demo8：Homeowner</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2016-09-29 18:11:00" itemprop="dateCreated datePublished" datetime="2016-09-29T18:11:00+08:00">2016-09-29</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-04-17 17:19:39" itemprop="dateModified" datetime="2019-04-17T17:19:39+08:00">2019-04-17</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/iOS/" itemprop="url" rel="index"><span itemprop="name">iOS</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+            <span id="/2016/09/29/《iOS编程（第四版）》Demo8：Homeowner/" class="leancloud_visitors" data-flag-title="《iOS编程（第四版）》Demo8：Homeowner">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读次数：</span>
+              
+                <span class="leancloud-visitors-count"></span>
+            </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body han-init-context" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <a id="more"></a>
+<p>由于我是参考书籍<a href="https://www.amazon.cn/gp/product/B013UG2ULW/ref=oh_aui_d_detailpage_o03_?ie=UTF8&amp;psc=1" target="_blank" rel="noopener">《iOS编程（第四版）[美]Christian Keur》</a>学习iOS开发的,这本📚是2015年版本的，截至写此文之时iOS 10都出来了，Xcode 开发软件也更新到8了，而该📚中的Demo都是使用Xcode 5.0.2开发的，iOS用的7.0版本。版本更新后造成的InterFace Builder差异、method deprecated等对于萌新来说简直各种不适应，连command+N创建个Empty application都找不到啊😭😂😂…好吧，不絮絮叨叨了，总之看科技类书籍，诸如读者定位、作者背景、译者背景、出版社出版年份等很多因素还是要考虑进去。</p>
+<h2 id="（一）Homepwner应用"><a href="#（一）Homepwner应用" class="headerlink" title="（一）Homepwner应用"></a>（一）Homepwner应用</h2><p>参考📚中第八章、第九章使用 <strong>UITableView</strong> 控件做了一个名为 <strong>Homepwner</strong> 的应用，用来管理财产清单，通过一个 <strong>UITableView</strong> 对象显示一组 <strong>Item</strong> 对象。</p>
+<p>Demo：</p>
+<p> <img src="http://upload-images.jianshu.io/upload_images/2648731-5b8f139165a3962e.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Homepwner"></p>
+<ul>
+<li><strong>视图控制对象</strong>：该应用采用 <strong>MVC</strong> 的设计模式，<strong>UITableView</strong> 是视图，因此要通过视图控制对象来创建和释放 <strong>UITableView</strong> 对象，并负责显示或隐藏视图。</li>
+<li><strong>数据源</strong>：<strong>UITableView</strong> 对象要有数据源才能正常工作。<strong>UITableView</strong> 对象会向数据源查询要显示的行数、显示表格行所需要的数据和其他所需的数据。没有数据的 <strong>UITableView</strong> 对象只是空壳。凡是遵守<strong>UITableViewDataSource</strong> 协议的Object-C对象，都可以成为 <strong>UITableView</strong> 对象的数据源（即dataSource属性所指向的对象）。<ul>
+<li><strong>委托对象</strong>：还要为 <strong>UITableView</strong> 对象设置委托对象，以便能在该对象发生特定事件时做出相应的处理。凡是遵守<strong>UITableViewDelegate</strong> 协议的对象，都可以成为 <strong>UITableView</strong> 对象的委托对象。</li>
+<li><strong>UITableViewController</strong> 对象可以扮演以上全部角色，包括 <strong>视图控制对象</strong>、<strong>数据源</strong>和<strong>委托对象</strong>。</li>
+</ul>
+</li>
+</ul>
+<p>Homepwner对象图：</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/2648731-1da18efd01ee1cc2.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Homepwner对象图"></p>
+<h3 id="1-创建-UITableViewController-子类：HQLItemsViewController"><a href="#1-创建-UITableViewController-子类：HQLItemsViewController" class="headerlink" title="1.创建 UITableViewController 子类：HQLItemsViewController"></a>1.创建 UITableViewController 子类：HQLItemsViewController</h3><pre><code>#import &lt;UIKit/UIKit.h&gt;
+
+@interface HQLItemsViewController : UITableViewController
+
+@end
+</code></pre><p>​    </p>
+<h3 id="2-覆盖父类的指定初始化方法：initWithStyle-，将指定初始化方法改为init："><a href="#2-覆盖父类的指定初始化方法：initWithStyle-，将指定初始化方法改为init：" class="headerlink" title="2.覆盖父类的指定初始化方法：initWithStyle:，将指定初始化方法改为init："></a>2.覆盖父类的指定初始化方法：initWithStyle:，将指定初始化方法改为init：</h3><p>在HQLItemsViewController.m文件下实现以下两个初始化方法，可以确保无论向新创建的HQLItemsViewController对象发送哪一个初始化方法，初始化后的对象都会使用 <strong>UITableViewStylePlain</strong> 风格</p>
+<pre><code>-(instancetype) init {
+
+//调用父类的指定初始化方法
+self = [super initWithStyle:UITableViewStylePlain];
+
+return self;
+
+}
+
+- (instancetype) initWithStyle:(UITableViewStyle)style {
+
+return [self init];
+
+}
+</code></pre><p>​    </p>
+<h3 id="3-创建HQLItemsViewController对象"><a href="#3-创建HQLItemsViewController对象" class="headerlink" title="3.创建HQLItemsViewController对象"></a>3.创建HQLItemsViewController对象</h3><p>在 <strong>AppDelegate.m</strong> 文件中导入 <strong>HQLItemsViewController.h</strong> 头文件并初始化创建HQLItemsViewController对象.<a href="该项目后期又进行了优化，为TableViewController设置了NavigationController为rootViewController.">^1</a></p>
+<pre><code>- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+self.window.backgroundColor = [UIColor whiteColor];
+[self.window makeKeyAndVisible];
+
+#pragma mark--初始化代码
+
+//创建TableView视图控制器
+HQLItemsViewController *itemsViewController = [[HQLItemsViewController alloc] init];
+self.window.rootViewController = itemsViewController;
+
+return YES;
+}
+</code></pre><h3 id="4-为UITableView对象设置内容"><a href="#4-为UITableView对象设置内容" class="headerlink" title="4.为UITableView对象设置内容"></a>4.为UITableView对象设置内容</h3><p>这里从外部导入了一个写好的Item类的头文件和实现文件（Item.h 和 Item.m），该类用于生成一组随机数据。</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> *  Item.h</span></span><br><span class="line"><span class="comment"> *  该对象表示某人在真实世界拥有的一件物品</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">#import <span class="meta-string">&lt;Foundation/Foundation.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">//头文件声明顺序：实例变量、类方法、初始化方法、其他方法</span></span><br><span class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">Item</span> : <span class="title">NSObject</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">@property</span> <span class="built_in">NSString</span> *itemName;   <span class="comment">//名称</span></span><br><span class="line"><span class="keyword">@property</span> <span class="built_in">NSString</span> *serialNumber;   <span class="comment">//序列号</span></span><br><span class="line"><span class="keyword">@property</span> <span class="keyword">int</span> valueInDollars;    <span class="comment">//价值</span></span><br><span class="line"><span class="keyword">@property</span> <span class="built_in">NSDate</span> *dateCreated;   <span class="comment">//创建日期</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//类方法</span></span><br><span class="line">+ (<span class="keyword">instancetype</span>)randomItem;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Item类的指定初始化方法</span></span><br><span class="line"><span class="comment">//instancetype,该关键字表示的返回值类型和调用方法的类型相同，init方法的返回值类型都声明为instancetype</span></span><br><span class="line">- (<span class="keyword">instancetype</span>)initWithItemName:(<span class="built_in">NSString</span> *)name</span><br><span class="line">                  valueInDollars:(<span class="keyword">int</span>)value</span><br><span class="line">                    serialNumber:(<span class="built_in">NSString</span> *)sNumber;</span><br><span class="line"></span><br><span class="line"><span class="comment">//其他初始化方法</span></span><br><span class="line">- (<span class="keyword">instancetype</span>)initWithName:(<span class="built_in">NSString</span> *)name serialNumber:(<span class="built_in">NSString</span> *)sNumber;</span><br><span class="line">- (<span class="keyword">instancetype</span>)initWithItemName:(<span class="built_in">NSString</span> *)name;</span><br><span class="line"></span><br><span class="line"><span class="keyword">@end</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> *  Item.m</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//#import 可以确保不会重复导入同一个文件</span></span><br><span class="line"><span class="meta">#import <span class="meta-string">"Item.h"</span></span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">Item</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 类方法</span></span><br><span class="line">+ (<span class="keyword">instancetype</span>)randomItem&#123;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//创建不可变数组对象，包含三个形容词</span></span><br><span class="line">    <span class="built_in">NSArray</span> *randomAdjectiveList = @[<span class="string">@"Fluffy"</span>,<span class="string">@"Rusty"</span>,<span class="string">@"Shiny"</span>];</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//创建三个不可变数组对象，包含三个名词</span></span><br><span class="line">    <span class="built_in">NSArray</span> *randomNounList = @[<span class="string">@"Bear"</span>,<span class="string">@"Spark"</span>,<span class="string">@"Mac"</span>];</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//根据数组对象所含对象的个数，得到随机索引</span></span><br><span class="line">    <span class="comment">//注意：运算符%是模运算符，运算后得到的是余数</span></span><br><span class="line">    <span class="comment">//因此 adjectiveIndex 是一个0到2（包括2）的随机数</span></span><br><span class="line">    <span class="built_in">NSInteger</span> adjectiveIndex = arc4random() % [randomAdjectiveList count];</span><br><span class="line">    <span class="built_in">NSInteger</span> nounIndex = arc4random() % [randomNounList count];</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">NSString</span> *randomName = [<span class="built_in">NSString</span> stringWithFormat:<span class="string">@"%@%@"</span>,</span><br><span class="line">                            randomAdjectiveList [adjectiveIndex],</span><br><span class="line">                            randomNounList [nounIndex]];</span><br><span class="line">    </span><br><span class="line">    </span><br><span class="line">    <span class="keyword">int</span> randomValue = arc4random() % <span class="number">100</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">NSString</span> *randomSerialNumber = [<span class="built_in">NSString</span> stringWithFormat:<span class="string">@"%C%C%C%C%C"</span>,</span><br><span class="line">                                    (<span class="keyword">unichar</span>)(<span class="string">'0'</span>+arc4random() % <span class="number">10</span>),</span><br><span class="line">                                    (<span class="keyword">unichar</span>)(<span class="string">'A'</span>+arc4random() % <span class="number">26</span>),</span><br><span class="line">                                    (<span class="keyword">unichar</span>)(<span class="string">'0'</span>+arc4random() % <span class="number">10</span>),</span><br><span class="line">                                    (<span class="keyword">unichar</span>)(<span class="string">'A'</span>+arc4random() % <span class="number">26</span>),</span><br><span class="line">                                    (<span class="keyword">unichar</span>)(<span class="string">'0'</span>+arc4random() % <span class="number">10</span>)];</span><br><span class="line">    </span><br><span class="line">    Item *newItem = [[<span class="keyword">self</span> alloc] initWithItemName:randomName</span><br><span class="line">                                    valueInDollars:randomValue</span><br><span class="line">                                      serialNumber:randomSerialNumber];</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> newItem;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// 串联（chain）使用初始化方法</span></span><br><span class="line">- (<span class="keyword">instancetype</span>)initWithItemName:(<span class="built_in">NSString</span> *)name</span><br><span class="line">                  valueInDollars:(<span class="keyword">int</span>)value</span><br><span class="line">                    serialNumber:(<span class="built_in">NSString</span> *)sNumber &#123;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">self</span> = [<span class="keyword">super</span> init];</span><br><span class="line">    <span class="comment">//if(self):父类的指定初始化方法是否成功创建了父类对象？</span></span><br><span class="line">    <span class="keyword">if</span>(<span class="keyword">self</span>)&#123;</span><br><span class="line">        _itemName       = name;</span><br><span class="line">        _serialNumber   = sNumber;</span><br><span class="line">        _valueInDollars = value;</span><br><span class="line">        _dateCreated    = [[<span class="built_in">NSDate</span> alloc] init];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">self</span>;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (<span class="keyword">instancetype</span>)initWithName:(<span class="built_in">NSString</span> *)name</span><br><span class="line">                serialNumber:(<span class="built_in">NSString</span> *)sNumber &#123;</span><br><span class="line">    </span><br><span class="line">     <span class="comment">//调用指定初始化方法</span></span><br><span class="line">    <span class="keyword">return</span> [<span class="keyword">self</span> initWithItemName:name</span><br><span class="line">                   valueInDollars:<span class="number">0</span></span><br><span class="line">                     serialNumber:sNumber];</span><br><span class="line">    </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (<span class="keyword">instancetype</span>)initWithItemName:(<span class="built_in">NSString</span> *)name &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//调用指定初始化方法</span></span><br><span class="line">    <span class="keyword">return</span> [<span class="keyword">self</span> initWithItemName:name</span><br><span class="line">                   valueInDollars:<span class="number">0</span></span><br><span class="line">                     serialNumber:<span class="string">@""</span>];</span><br><span class="line">    </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (<span class="keyword">instancetype</span>)init &#123;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> [<span class="keyword">self</span> initWithItemName:<span class="string">@"Item"</span>];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//复写 description 方法</span></span><br><span class="line"><span class="comment">//%@,对应的实参类型是指向任何一种对象的指针，首先返回的是该实参的description消息 </span></span><br><span class="line">- (<span class="built_in">NSString</span> *)description &#123;</span><br><span class="line">    </span><br><span class="line">   <span class="built_in">NSString</span> *descriptionString = [[<span class="built_in">NSString</span> alloc] initWithFormat:<span class="string">@"%@(%@): ,Worth $%d ,recorded on %@"</span>,</span><br><span class="line">                                   <span class="keyword">self</span>.itemName,</span><br><span class="line">                                   <span class="keyword">self</span>.serialNumber,</span><br><span class="line">                                   <span class="keyword">self</span>.valueInDollars,</span><br><span class="line">                                   <span class="keyword">self</span>.dateCreated ];</span><br><span class="line">    <span class="keyword">return</span> descriptionString;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">@end</span></span><br></pre></td></tr></table></figure>
+<h3 id="UITableView数据源"><a href="#UITableView数据源" class="headerlink" title="UITableView数据源"></a>UITableView数据源</h3><ul>
+<li>在 <strong>Cocoa Touch</strong> 中，<strong>UITableView</strong> 对象会自己查询另一个对象以获得需要显示的内容，这个对象就是 <strong>UITableView</strong> 对象的数据源，也就是 dataSource 属性所指向的对象。   </li>
+<li>该应用中，<strong>UITableView</strong> 对象的数据源就是 <strong>HQLItemsViewController</strong> 对象自己。所以要为 <strong>HQLItemsViewController</strong> 对象添加相应的属性和方法，使其能够保存多个 <strong>Item</strong> 对象。</li>
+<li>使用 <strong>HQLItemStore</strong> （类型为NSMutableArray）对象来负责保存和加载 <strong>Item</strong> (类型为NSArray) 对象,当某个对象需要访问所有的 <strong>Item</strong>时，可以通过 <strong>HQLItemStore</strong> 的 <figure class="highlight plain"><figcaption><span>方法获取包含所有 **Item** 的NSMutableArray。此外，**HQLItemStore** 还会负责将 **Item** 存入文件，或者从文件重新载入。</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">### 5.创建HQLItemStore</span><br><span class="line">* **HQLItemStore**对象是一个**单例**。也就是说，每个应用只会有一个这种类型的对象。如果应用尝试创建另一个对象，**HQLItemStore**类就会返回已经存在的那个对象。</span><br></pre></td></tr></table></figure></li>
+</ul>
+<p>#import &lt;Foundation/Foundation.h&gt;</p>
+<p>@interface HQLItemStore : NSObject</p>
+<p>//将此类设置为单例对象</p>
+<ul>
+<li>(instancetype)sharedStore;</li>
+</ul>
+<p>@end</p>
+<figure class="highlight autohotkey"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">* 在 **HQLItemStore.m** 中实现sharedStore，同时编写一个抛出异常的```init```方法和私有指定初始化方法```initPrivate```.</span><br></pre></td></tr></table></figure>
+<p>@implementation HQLItemStore</p>
+<ul>
+<li><p>(instancetype)sharedStore {</p>
+<p>  //将sharedStore声明为了静态变量，当某个定义了静态变量的方法返回时，程序不会释放相应的变量<br>  static HQLItemStore *sharedStore = nil;</p>
+<p>  //判断是否需要创建一个sharedStore对象<br>  // （! sharedStore） 为真 ，即（sharedStore）为假，不存在<br>  if (! sharedStore) {</p>
+<pre><code>sharedStore = [[self alloc] initPrivate];
+</code></pre><p>  }<br>  return sharedStore;</p>
+</li>
+</ul>
+<p>}</p>
+<p>   //如果调用[[HQLItemstore alloc]init],就提示应该使用[HQLItemstore sharedStore].</p>
+<ul>
+<li>(instancetype)init {<br>  @throw [NSException exceptionWithName:@”Singleton”<pre><code>  reason:@&quot;Use + [HQLItemStore sharedStore]&quot;
+userInfo:nil];
+</code></pre>  return  nil;<br>}</li>
+</ul>
+<p>//这是真正的（私有的）初始化方法</p>
+<ul>
+<li>(instancetype)initPrivate {<br>  self = [super init];<br>  return self;<br>}</li>
+</ul>
+<figure class="highlight asciidoc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="bullet">* </span>在 *<span class="strong">*HQLItemStore.h*</span>* 中声明一个方法和一个属性，分别用于创建和保存 *<span class="strong">*Item*</span>* 对象。</span><br></pre></td></tr></table></figure>
+<p>#import &lt;Foundation/Foundation.h&gt;</p>
+<p>//@class 只需要使用类的声明，无需知道具体的实现细节<br>@class Item;</p>
+<p>@interface HQLItemStore : NSObject</p>
+<p>//保存Item<br>//allItems属性被声明为NSArray（不可变数组），且设置为readonly，这样其他类既无法将一个新的数组赋给allItems，也无法修改allItems<br>//allItems属性对外部公开使用<br>@property (nonatomic, readonly) NSArray *allItems;</p>
+<ul>
+<li>(instancetype)sharedStore;</li>
+</ul>
+<p>//创建Item</p>
+<ul>
+<li>(Item *)createItem;</li>
+</ul>
+<p>@end<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br><span class="line">* 在 **HQLItemStore.m** 顶部导入 **Item.h** 文件，以便之后向 **Item** 对象发送消息。 </span><br><span class="line">* 接下来在 **HQLItemStore.m** 的类扩展中声明一个可变数组。</span><br></pre></td></tr></table></figure></p>
+<p>#import “HQLItemStore.h”</p>
+<p>#import “Item.h”</p>
+<p>@interface HQLItemStore ()</p>
+<p>// 类扩展中为NSMutableArray（可变数组）<br>//privateItems属性只在内部使用<br>@property (nonatomic) NSMutableArray *privateItems;</p>
+<p>@end</p>
+<p>@implementation HQLItemStore<br>…</p>
+<figure class="highlight asciidoc"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="bullet">* </span>在*<span class="strong">*HQLItemStore.m*</span><span class="strong">*，实现*</span><span class="strong">*initPrivate*</span><span class="strong">*方法，初始化*</span><span class="strong">*privateItem*</span><span class="strong">*属性。同时还需要覆盖*</span><span class="strong">*allItem*</span><span class="strong">*的取方法，返回*</span><span class="strong">*privateItems*</span><span class="strong">*，同时实现*</span><span class="strong">*createItem*</span><span class="strong">*方法。</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>(instancetype)initPrivate {<br>  self = [super init];<br>  //父类的init方法是否成功创建了对象<br>  if (self) {</p>
+<pre><code>_privateItems = [[NSMutableArray alloc] init];
+</code></pre><p>  }</p>
+<p> return self;<br>}</p>
+</li>
+<li><p>(Item *)createItem {</p>
+<p>  Item *item = [Item randomItem];</p>
+<p>  [self.privateItems addObject:item];</p>
+<p>  return item;<br>}</p>
+</li>
+</ul>
+<p>//allItems取方法，返回值为NSArray类型</p>
+<ul>
+<li><p>(NSArray *)allItems {</p>
+<p> //方法体中返回值为NSMutableArray类型<br> return self.privateItems;<br>}</p>
+</li>
+</ul>
+<figure class="highlight asciidoc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">### 6.实现数据源方法</span><br><span class="line">在*<span class="strong">*HQLItemsViewController.m*</span><span class="strong">*顶部导入 *</span><span class="strong">*HQLItemStore.h*</span>* 和 *<span class="strong">*Item.h*</span><span class="strong">*,然后更新指定初始化方法，创建5个随机的 Item对象并加入HQLItemStore对象。</span></span><br><span class="line"><span class="strong"></span></span><br><span class="line"><span class="strong">	-(instancetype) init &#123;</span></span><br><span class="line"><span class="strong">	</span></span><br><span class="line"><span class="strong">	//调用父类的指定初始化方法</span></span><br><span class="line"><span class="strong">	self = [super initWithStyle:UITableViewStyleGrouped];</span></span><br><span class="line"><span class="strong">	</span></span><br><span class="line"><span class="strong">	//初始化生成随机对象</span></span><br><span class="line"><span class="strong">	if (self) &#123;</span></span><br><span class="line"><span class="strong">	    </span></span><br><span class="line"><span class="strong">	    for (int i = 0; i &lt; 5; i ++) &#123;</span></span><br><span class="line"><span class="strong">	        [[HQLItemStore sharedStore] createItem];</span></span><br><span class="line"><span class="strong">	    &#125;</span></span><br><span class="line"><span class="strong">	&#125;</span></span><br><span class="line"><span class="strong">	return self;</span></span><br><span class="line"><span class="strong">	</span></span><br><span class="line"><span class="strong">	&#125;</span></span><br><span class="line"><span class="strong"></span></span><br><span class="line"><span class="strong">在 HQLItemViewController.m中实现数据源协议 ```tableView: numberOfRowsInSection:```方法</span></span><br><span class="line"><span class="strong">	</span></span><br><span class="line"><span class="strong">	//返回应该显示的行数</span></span><br><span class="line"><span class="strong">	- (NSInteger)tableView:(UITableView *</span>)tableView</span><br><span class="line"><span class="code"> 	numberOfRowsInSection:(NSInteger)section &#123;</span></span><br><span class="line"></span><br><span class="line"><span class="code">    return [[[HQLItemStore sharedStore] allItems] count];</span></span><br><span class="line"><span class="code">    &#125;</span></span><br><span class="line"></span><br><span class="line">另一个必须要实现的数据源协议是<span class="code">```</span>tableView: cellForRowAtIndexPath:<span class="code">```</span>   </span><br><span class="line"></span><br><span class="line"><span class="strong">*注：实现该方法还涉及到另一个类：*</span> **<span class="strong">*UITableViewCell*</span>** ,<span class="strong">*此类的详解及创建自定义子类日后分析*</span>    </span><br><span class="line"></span><br><span class="line"><span class="code">	//获取用于显示第section个表格段、第row行数据的UITableViewCell对象</span></span><br><span class="line"><span class="code">	//返回各行所需视图,每个表格段对应一组独立的行</span></span><br><span class="line"><span class="code">	- (UITableViewCell *)tableView:(UITableView *)tableView</span></span><br><span class="line"><span class="code">	     cellForRowAtIndexPath:(NSIndexPath *)indexPath &#123;</span></span><br><span class="line"><span class="code">	</span></span><br><span class="line"><span class="code">	//    UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"UITableViewCell"];</span></span><br><span class="line"><span class="code">	</span></span><br><span class="line"><span class="code">	//由协议获取已经分配的单元格，而不是分配一个新的,</span></span><br><span class="line"><span class="code">	//创建或重用UITableViewCell对象</span></span><br><span class="line"><span class="code">	//按照约定，应该将UITableViewCell或者UITableViewCell子类的类名用作reuseIdentifier。</span></span><br><span class="line"><span class="code">	UITableViewCell *cell = [tableView</span></span><br><span class="line"><span class="code">	    dequeueReusableCellWithIdentifier:@"UITableViewCell"</span></span><br><span class="line"><span class="code">	                         forIndexPath:indexPath];</span></span><br><span class="line"><span class="code">	</span></span><br><span class="line"><span class="code">	//获取allItem的第n个HQLItem对象，这里的n是该UITableViewCell对象所对应的表格行索引</span></span><br><span class="line"><span class="code">	//然后将该Item对象的描述信息赋给UITableViewCell对象的textlabel</span></span><br><span class="line"><span class="code">	NSArray *items = [[HQLItemStore sharedStore] allItems];</span></span><br><span class="line"><span class="code">	Item *item = items[indexPath.row];</span></span><br><span class="line"><span class="code">	cell.textLabel.text = [item description];</span></span><br><span class="line"><span class="code">	return cell;</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">### 7.重用UITableViewCell对象</span><br><span class="line">*<span class="strong">*UITableView*</span><span class="strong">*对象会将移出窗口的*</span><span class="strong">*UITableViewCell*</span><span class="strong">*对象放入*</span><span class="strong">*UITableViewCell*</span><span class="strong">*对象池，等待重用。当*</span><span class="strong">*UITableView*</span><span class="strong">*对象要求数据源返回某个*</span><span class="strong">*UITableViewCell*</span><span class="strong">*对象时，数据源可以先查看对象池。如果有未使用的*</span><span class="strong">*UITableViewCell*</span><span class="strong">*对象，就可以用新的数据配置这个*</span><span class="strong">*UITableViewCell*</span><span class="strong">*对象，然后将其返回给*</span><span class="strong">*UITableView*</span><span class="strong">*对象，从而避免创建新对象，以上代码已优化重用方式，同时，为了重用*</span><span class="strong">*UITableViewCell*</span><span class="strong">*对象，需要将创建*</span><span class="strong">*UITableViewCell*</span><span class="strong">*对象的过程交由系统管理，如果对象池中没有*</span><span class="strong">*UITableViewCell*</span><span class="strong">*对象，则由系统初始化创建所需类型的*</span><span class="strong">*UITableViewCell*</span><span class="strong">*对象。</span></span><br><span class="line"><span class="strong"></span></span><br><span class="line"><span class="strong">	- (void)viewDidLoad &#123;</span></span><br><span class="line"><span class="strong">	[super viewDidLoad];</span></span><br><span class="line"><span class="strong">	</span></span><br><span class="line"><span class="strong">	//重用UITableViewCell，向表视图注册应该使用的UITableViewCell类型</span></span><br><span class="line"><span class="strong">	[self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"UITableViewCell"];</span></span><br><span class="line"><span class="strong"></span></span><br><span class="line"><span class="strong">### 8.编辑模式</span></span><br><span class="line"><span class="strong">在编辑模式下，用户可以管理*</span><span class="strong">*UITableView*</span><span class="strong">*中的表格行，例如添加、删除和移动等操作。   </span></span><br><span class="line"><span class="strong">为应用添加编辑模式的界面有两种方式：   </span></span><br><span class="line"><span class="strong">1️⃣在视图控制器顶层添加*</span><span class="strong">*NavigationController*</span><span class="strong">*；   </span></span><br><span class="line"><span class="strong">2️⃣为*</span><span class="strong">*UITableView*</span><span class="strong">*对象添加表头视图。</span></span><br><span class="line"><span class="strong">这里先用2️⃣方式实现此功能，1️⃣方法在gitHub上也已给出。</span></span><br><span class="line"><span class="strong"></span></span><br><span class="line"><span class="strong">①创建一个针对表格的表头视图   </span></span><br><span class="line"><span class="strong">创建一个新的XIB文件。cmd+N -&gt; 在 User Interface 窗口中选择 *</span><span class="strong">*Empty*</span><span class="strong">*，将文件名设置为 HeaderView.xib 并保存。打开Interface Buider后，先拖拽一个UIView对象至画布，在添加2个*</span><span class="strong">*UIButton*</span><span class="strong">*对象。  </span></span><br><span class="line"><span class="strong"></span></span><br><span class="line"><span class="strong">![](http://upload-images.jianshu.io/upload_images/2648731-2d960c8c5df65d4c.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)</span></span><br><span class="line"><span class="strong"></span></span><br><span class="line"><span class="strong">&gt; ⚠️ 注意一定要选择 *</span><span class="strong">*Empty*</span>* 类别的XIB文件，有一次我错选了 *<span class="strong">*View*</span><span class="strong">*，真机测试就是加载不出来，老纠结了😂。</span></span><br><span class="line"><span class="strong"></span></span><br><span class="line"><span class="strong">选中*</span><span class="strong">*File's Owner*</span><span class="strong">*,修改*</span><span class="strong">*Class*</span><span class="strong">*文本框为*</span><span class="strong">*HQLItemsViewController*</span><span class="strong">*。</span></span><br><span class="line"><span class="strong"></span></span><br><span class="line"><span class="strong">![](http://upload-images.jianshu.io/upload_images/2648731-2aa6a67734df2d82.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)</span></span><br><span class="line"><span class="strong"></span></span><br><span class="line"><span class="strong">接着选中*</span><span class="strong">*UIView*</span><span class="strong">*对象，将*</span><span class="strong">*Size*</span><span class="strong">*属性设置为*</span><span class="strong">*Freeform*</span><span class="strong">*以调整视图对象大小 。  </span></span><br><span class="line"><span class="strong">![](http://upload-images.jianshu.io/upload_images/2648731-c912f16dc686b839.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)</span></span><br><span class="line"><span class="strong"></span></span><br><span class="line"><span class="strong">将UIView对象的背景颜色改为全透明颜色，即ClearColor.</span></span><br><span class="line"><span class="strong"></span></span><br><span class="line"><span class="strong">②在*</span><span class="strong">*HQLItemViewController.m*</span><span class="strong">*的类扩展中声明插座变量```headerView```，并添加两个动作方法。</span></span><br><span class="line"><span class="strong"></span></span><br><span class="line"><span class="strong"></span></span><br><span class="line"><span class="strong">	@interface HQLItemsViewController ()</span></span><br><span class="line"><span class="strong">	</span></span><br><span class="line"><span class="strong">	//载入XIB文件后，headerView会指向XIB文件中的顶层对象，并且是强引用。</span></span><br><span class="line"><span class="strong">	//指向顶层对象的插座变量必须声明为强引用；相反，当插座变量指向顶层对象所拥有的对象（例如顶层对象的子视图时），应该使用弱引用。</span></span><br><span class="line"><span class="strong">	@property (nonatomic,strong) IBOutlet UIView *</span>headerView;</span><br><span class="line"><span class="code">	</span></span><br><span class="line"><span class="code">	@end</span></span><br><span class="line"><span class="code">	</span></span><br><span class="line"><span class="code">	@implementation HQLItemsViewController</span></span><br><span class="line"><span class="code">	</span></span><br><span class="line"><span class="code">	...</span></span><br><span class="line"><span class="code">	</span></span><br><span class="line"><span class="code">	#pragma mark - 表头视图按钮</span></span><br><span class="line"><span class="code">	</span></span><br><span class="line"><span class="code">	//添加新项目</span></span><br><span class="line"><span class="code">	- (IBAction)addNewItem:(id)sender &#123;</span></span><br><span class="line"><span class="code">	   </span></span><br><span class="line"><span class="code">	&#125;</span></span><br><span class="line"><span class="code">	</span></span><br><span class="line"><span class="code">	//切换编辑模式</span></span><br><span class="line"><span class="code">	- (IBAction)toggleEditingMode:(id)sender &#123;</span></span><br><span class="line"><span class="code">	   </span></span><br><span class="line"><span class="code">	&#125;</span></span><br><span class="line"><span class="code">	@end</span></span><br><span class="line"></span><br><span class="line">在*<span class="strong">*HQLItemsViewController.m*</span><span class="strong">*中实现```hearerView```方法，载入应用程序包中的XIB文件。</span></span><br><span class="line"><span class="strong"> 载入headerView.xib文件</span></span><br><span class="line"><span class="strong"></span></span><br><span class="line"><span class="strong">	- (UIView *</span>)headerView &#123;</span><br><span class="line"><span class="code">	</span></span><br><span class="line"><span class="code">	//如果还没有载入headerView</span></span><br><span class="line"><span class="code">	if (!_headerView) &#123;</span></span><br><span class="line"><span class="code">	    </span></span><br><span class="line"><span class="code">	    //载入指定的XIB文件</span></span><br><span class="line"><span class="code">	    //**将self作为owner实参（拥有者）传给NSBundle对象，目的是当HQLItemsViewController将XIB文件加载为NIB文件时，使用HQLItemsViewController对象自身替换占位符对象File's Owner</span></span><br><span class="line"><span class="code">	    [[NSBundle mainBundle] loadNibNamed:@"HeaderView"</span></span><br><span class="line"><span class="code">	                                  owner:self</span></span><br><span class="line"><span class="code">	                                options:nil];</span></span><br><span class="line"><span class="code">	&#125;</span></span><br><span class="line"><span class="code">	return _headerView;</span></span><br><span class="line"><span class="code">	</span></span><br><span class="line"><span class="code">	&#125;</span></span><br><span class="line"></span><br><span class="line">将*<span class="strong">*headerView*</span><span class="strong">*设置为```UITableView```对象的表头视图。在*</span><span class="strong">*HQLItemsViewController.m*</span><span class="strong">*的```ViewDidLoad```方法中添加以下代码：</span></span><br><span class="line"><span class="strong"></span></span><br><span class="line"><span class="strong">    加载headerView，并将其设置为UITableView对象的表头视图</span></span><br><span class="line"><span class="strong">    UIView *</span>header = self.headerView;</span><br><span class="line"><span class="code">    [self.tableView setTableHeaderView:header];</span></span><br><span class="line"></span><br><span class="line">在HQLItemViewController.m中实现<span class="code">```</span>toggleEditingMode<span class="code">```</span>方法</span><br><span class="line"></span><br><span class="line"><span class="code">	//切换编辑模式</span></span><br><span class="line"><span class="code">	- (IBAction)toggleEditingMode:(id)sender &#123;</span></span><br><span class="line"><span class="code">	</span></span><br><span class="line"><span class="code">	//如果当前的视图控制对象已经处在编辑模式</span></span><br><span class="line"><span class="code">	if (self.isEditing) &#123;</span></span><br><span class="line"><span class="code">	    </span></span><br><span class="line"><span class="code">	    //修改按钮文字，提示用户当前的表格状态</span></span><br><span class="line"><span class="code">	    [sender setTitle:@"Edit" forState:UIControlStateNormal];</span></span><br><span class="line"><span class="code">	    //关闭编辑模式</span></span><br><span class="line"><span class="code">	    [self setEditing:NO animated:YES];</span></span><br><span class="line"><span class="code">	    </span></span><br><span class="line"><span class="code">	&#125;else &#123;</span></span><br><span class="line"><span class="code">	    </span></span><br><span class="line"><span class="code">	    //修改按钮文字，提示用户当前的表格状态</span></span><br><span class="line"><span class="code">	    [sender setTitle:@"Done" forState:UIControlStateNormal];</span></span><br><span class="line"><span class="code">	    //开启编辑模式</span></span><br><span class="line"><span class="code">	    [self setEditing:YES animated:YES];</span></span><br><span class="line"><span class="code">	&#125;</span></span><br><span class="line"><span class="code">	</span></span><br><span class="line"><span class="code">	&#125;</span></span><br><span class="line"></span><br><span class="line">### 9.增加行</span><br><span class="line">该应用实现的增加行方式是，在表视图上放置添加按钮，点击添加按钮之后系统调用<span class="code">```</span>createItem<span class="code">```</span>方法创建随机对象.   </span><br><span class="line">在HQLItemViewController.m中实现<span class="code">```</span>addNewItem<span class="code">```</span>方法</span><br><span class="line"></span><br><span class="line"><span class="code">	- (IBAction)addNewItem:(id)sender &#123;</span></span><br><span class="line"><span class="code">	</span></span><br><span class="line"><span class="code">	//创建NSIndexPath对象，代表的位置是：第一个表格段，最后一个表格行</span></span><br><span class="line"><span class="code">	</span></span><br><span class="line"><span class="code">	//创建新的Item对象并将其加入HQLItemStore对象</span></span><br><span class="line"><span class="code">	Item *newItem = [[HQLItemStore sharedStore] createItem];</span></span><br><span class="line"><span class="code">	</span></span><br><span class="line"><span class="code">	//获取新创建的对象在allitem数组中的索引</span></span><br><span class="line"><span class="code">	NSInteger lastRow = [[[HQLItemStore sharedStore] allItems] indexOfObject:newItem];</span></span><br><span class="line"><span class="code">	</span></span><br><span class="line"><span class="code">	NSIndexPath *indexPath = [NSIndexPath indexPathForRow:lastRow</span></span><br><span class="line"><span class="code">	                                            inSection:0];</span></span><br><span class="line"><span class="code">	</span></span><br><span class="line"><span class="code">	//将新行插入UITableview对象</span></span><br><span class="line"><span class="code">	[self.tableView insertRowsAtIndexPaths:@[indexPath]</span></span><br><span class="line"><span class="code">	                      withRowAnimation:UITableViewRowAnimationTop];</span></span><br><span class="line"><span class="code">	</span></span><br><span class="line"><span class="code">	&#125;</span></span><br><span class="line"></span><br><span class="line">### 10.删除行</span><br><span class="line"></span><br><span class="line">如果UITableView对象请求确认的是删除操作，删除Homepwner中的某个表格行（*<span class="strong">*UITableViewCell*</span><span class="strong">*对象）步骤：   </span></span><br><span class="line"><span class="strong">1️⃣从*</span><span class="strong">*UITableView*</span><span class="strong">*对象删除指定的*</span><span class="strong">*UITableViewCell*</span><span class="strong">*对象；   </span></span><br><span class="line"><span class="strong">2️⃣找到和需要删除的*</span><span class="strong">*UITableViewCell*</span><span class="strong">*对象对应的Item对象，也将其从*</span><span class="strong">*HQLItemStore*</span><span class="strong">*中删除。   </span></span><br><span class="line"><span class="strong">	</span></span><br><span class="line"><span class="strong">完成第2️⃣步需要在 *</span><span class="strong">*HQLItemStore.h*</span>* 中声明删除方法<span class="code">```</span>removeItem<span class="code">```</span>，用于移除指定的Item对象,接着在*<span class="strong">*HQLItemStore.m*</span><span class="strong">*文件中实现该方法。</span></span><br><span class="line"><span class="strong"></span></span><br><span class="line"><span class="strong">*</span><span class="strong">*删除*</span><span class="strong">*：   </span></span><br><span class="line"><span class="strong">```removeItem```方法调用了*</span><span class="strong">*NSMutableArray*</span><span class="strong">*中的```removeObjectIdenticalTo：```比较指向对象的指针，该方法只会移除数组所保存的那些和传入对象指针完全相同的指针.   </span></span><br><span class="line"><span class="strong">```removeObject：```该方法会枚举数组，向每一个对象发送```isEqual：```消息，判断当前对象和传入对象所包含的数据是否相等</span></span><br><span class="line"><span class="strong"></span></span><br><span class="line"><span class="strong"></span></span><br><span class="line"><span class="strong">	- (void)removeItem:(Item *</span>)item &#123;</span><br><span class="line"><span class="code">	</span></span><br><span class="line"><span class="code">	[self.privateItems removeObjectIdenticalTo:item];</span></span><br><span class="line"><span class="code">	&#125;</span></span><br><span class="line"></span><br><span class="line">接下来为*<span class="strong">*HQLItemViewController*</span><span class="strong">*实现方法	```tableView：commitEditingStyle:forRowAtIndexPath：</span></span><br></pre></td></tr></table></figure>
+<pre><code>- (void)tableView:(UITableView *)tableView  //发送该消息的UITableView对象
+commitEditingStyle:(UITableViewCellEditingStyle)editingStyle    //编辑风格
+forRowAtIndexPath:(NSIndexPath *)indexPath {    //相应表格行所在的表格段索引和行索引
+
+//如果UITableView对象请求确认的是删除操作
+if (editingStyle ==UITableViewCellEditingStyleDelete) {
+
+    //先删除Item对象
+    NSArray *items = [[HQLItemStore sharedStore] allItems];
+    Item *deleteItem = items [indexPath.row];
+    [[HQLItemStore sharedStore] removeItem:deleteItem];
+
+    //还要删除表格视图中的相应表格行（带动画效果）
+    [tableView deleteRowsAtIndexPaths:@[indexPath]
+                     withRowAnimation:UITableViewRowAnimationFade];
+}
+}
+</code></pre><h3 id="11-更改删除按钮的标题文本"><a href="#11-更改删除按钮的标题文本" class="headerlink" title="11.更改删除按钮的标题文本"></a>11.更改删除按钮的标题文本</h3><p>删除UITableView对象中的某个表格行时，相应的UITableViewCell对象会在其右侧显示一个标题为“Delete”的按钮，先将该按钮标题改为中文“删除”。</p>
+<pre><code>- (NSString *)tableView:(UITableView *)tableView
+titleForDeleteConfirmationButtonForRowAtIndexPath:(NSIndexPath *)indexPath {
+
+return  @&quot;删除&quot;;
+}
+</code></pre><h3 id="12-移动行"><a href="#12-移动行" class="headerlink" title="12.移动行"></a>12.移动行</h3><p>要改变<strong>UITableView</strong>对象所显示的行的排列位置，需要为数据源实现另一个<strong>UITableViewDataSource</strong>协议的方法，<br>首先要为数据源实现移动方法:<code>moveItemAtIndex:toIndex:</code>,为<strong>HQLItemStore</strong>增加该新方法，同样需要先在.h文件中声明，然后在.m文件中实现。</p>
+<pre><code>- (void)moveItemAtIndex:(NSUInteger)fromIndex toIndex:(NSUInteger)toIndex {
+
+if (fromIndex == toIndex) {
+    return;
+}
+
+//得到要移动的对象的指针，以便稍后能将其插入新的位置
+Item *item = self.privateItems [fromIndex];
+
+//将item从allItem数组所在位置中移除
+[self.privateItems removeObjectAtIndex:fromIndex];
+
+//根据新的索引的位置，将item重新插回allItem数组新的位置
+[self.privateItems insertObject:item atIndex:toIndex];
+
+}
+</code></pre><p>接下来在<strong>HQLItemViewController.m</strong>中实现<code>tableView:moveRowAtIndexPath:toIndexPath:</code>,更新HQLItemStore对象。</p>
+<pre><code>- (void)tableView:(UITableView *)tableView
+moveRowAtIndexPath:(NSIndexPath *)sourceIndexPath
+  toIndexPath:(NSIndexPath *)destinationIndexPath {
+
+[[HQLItemStore sharedStore]moveItemAtIndex:sourceIndexPath.row toIndex:destinationIndexPath.row];
+}
+</code></pre><p>附上完整项目地址：<br><a href="https://github.com/Andy0570/Homepwner" target="_blank" rel="noopener">gitHub地址</a></p>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://andy0570.com/2016/09/28/iOS 收藏整理文章&博客/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="独木舟的木">
+      <meta itemprop="description" content="有时候阳光很好 有时候阳光很暗">
+      <meta itemprop="image" content="https://ws1.sinaimg.cn/large/006tNc79gy1g22m14458rj30u014xu0x.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="独木舟的木">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2016/09/28/iOS 收藏整理文章&博客/" class="post-title-link" itemprop="url">iOS 收藏整理文章&博客</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2016-09-28 13:43:00" itemprop="dateCreated datePublished" datetime="2016-09-28T13:43:00+08:00">2016-09-28</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-04-18 00:33:39" itemprop="dateModified" datetime="2019-04-18T00:33:39+08:00">2019-04-18</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/iOS-资源/" itemprop="url" rel="index"><span itemprop="name">iOS 资源</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+            <span id="/2016/09/28/iOS 收藏整理文章&博客/" class="leancloud_visitors" data-flag-title="iOS 收藏整理文章&博客">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读次数：</span>
+              
+                <span class="leancloud-visitors-count"></span>
+            </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body han-init-context" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <a id="more"></a>
+<h1 id="工具效率类"><a href="#工具效率类" class="headerlink" title="工具效率类"></a>工具效率类</h1><ul>
+<li><a href="http://xialeizhou.com/2019/06/23/%E9%AB%98%E6%95%88macbook%E5%B7%A5%E4%BD%9C%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/" target="_blank" rel="noopener">高效macbook工作环境配置|YuMo’s Blog </a></li>
+<li><a href="http://blog.devtang.com/2014/06/29/ios-dev-tools/" target="_blank" rel="noopener">那些好用的iOS开发工具 @唐巧</a></li>
+<li><a href="http://www.cocoachina.com/ios/20170425/19116.html" target="_blank" rel="noopener">如何让 Xcode 在读写上提速100倍？</a></li>
+<li><a href="https://amazing-apps.gitbooks.io/windows-apps-that-amaze-us/content/zh-CN/" target="_blank" rel="noopener">Windows 绝赞应用</a></li>
+</ul>
+<h1 id="资源类："><a href="#资源类：" class="headerlink" title="资源类："></a>资源类：</h1><ul>
+<li><a href="http://www.jianshu.com/p/473206f54f9b" target="_blank" rel="noopener">大神手册：优秀的iOS开发站点 @吴白</a></li>
+<li><a href="https://www.zhihu.com/question/39479153" target="_blank" rel="noopener">知乎：想写个 App 练手，有什么有趣的 API 接口推荐吗 ：</a></li>
+<li><a href="http://fontawesome.io" target="_blank" rel="noopener">一款可以定制矢量图标的工具包</a></li>
+<li><a href="http://sms.mob.com" target="_blank" rel="noopener">SMSSDK－iOS 免费短信验证码SDK</a></li>
+<li><a href="http://docs.jiguang.cn/jpush/guideline/intro/" target="_blank" rel="noopener">极光推送</a></li>
+<li><a href="https://www.raywenderlich.com/tutorial-archive" target="_blank" rel="noopener">Objective-C tutorials</a></li>
+<li><a href="http://www.jianshu.com/p/619c61d9c8fb" target="_blank" rel="noopener">资源帖-优秀博客、iOS开发技术文、学习网站</a></li>
+<li><a href="https://sdk.cn/news/7246" target="_blank" rel="noopener">研究了5000多个开源项目，发现那些在GitHub上打星最多的60%是库或框架</a></li>
+</ul>
+<h3 id="书籍资源"><a href="#书籍资源" class="headerlink" title="书籍资源"></a>书籍资源</h3><ul>
+<li><a href="http://www.jianshu.com/p/dbfbd3600636" target="_blank" rel="noopener">满足你的电子书资源需求，这两个网站就够了</a></li>
+<li><a href="http://www.imooc.com/article/1216" target="_blank" rel="noopener">Objective-C编码规范：26个方面解决iOS开发问题</a></li>
+</ul>
+<p>#博客</p>
+<ul>
+<li><a href="https://github.com/tangqiaoboy/iOSBlogCN" target="_blank" rel="noopener">中文 iOS/Mac 开发博客列表</a></li>
+<li><a href="http://www.cnblogs.com/wendingding/tag/IOS开发/default.html?page=1" target="_blank" rel="noopener">文顶顶的博客</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/22151280" target="_blank" rel="noopener">可以提高程序员技术档次的书和博客（杜小豆）</a></li>
+<li><a href="http://fnil.net/" target="_blank" rel="noopener">庄周梦蝶</a></li>
+</ul>
+<h1 id="技术类："><a href="#技术类：" class="headerlink" title="技术类："></a>技术类：</h1><h3 id="UI"><a href="#UI" class="headerlink" title="UI"></a>UI</h3><ul>
+<li><a href="http://www.kancloud.cn/digest/ios-1/107417" target="_blank" rel="noopener">iOS UI</a> 【好几个控件详解】</li>
+<li><a href="http://www.jianshu.com/p/c4f3303c63d8" target="_blank" rel="noopener">iOS进阶指南试读之UI篇</a></li>
+</ul>
+<h3 id="页面布局"><a href="#页面布局" class="headerlink" title="页面布局"></a>页面布局</h3><ul>
+<li><a href="http://www.jianshu.com/p/475ff9a76ba2" target="_blank" rel="noopener">8种常见的UI布局方式</a></li>
+<li><a href="https://github.com/HelloYeah/DraggingSort" target="_blank" rel="noopener">长按拖拽排序</a><h3 id="动画"><a href="#动画" class="headerlink" title="动画"></a>动画</h3></li>
+<li><a href="http://www.jianshu.com/p/0e8fbbe0c127" target="_blank" rel="noopener">如何实现百度外卖APP个人中心头像”浪”起来的动画效果</a></li>
+<li><a href="http://www.jianshu.com/p/a098f6e3617f" target="_blank" rel="noopener">iOS那些简单的动画（不定期更新）</a></li>
+</ul>
+<h3 id="二维码"><a href="#二维码" class="headerlink" title="二维码"></a>二维码</h3><ul>
+<li><a href="http://www.cnblogs.com/xiaotian666/p/5802641.html" target="_blank" rel="noopener">iOS-深度解析二维码的生成与使用（尕小天）</a></li>
+</ul>
+<h3 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h3><p><em><a href="http://www.jianshu.com/p/a4ae30a10fb8" target="_blank" rel="noopener">iOS高效调试</a>
+</em><a href="http://www.jianshu.com/p/05b68c84913a" target="_blank" rel="noopener">iOS 性能调优,成为一名合格iOS程序员必须掌握的技能</a><br>*<a href="http://www.yangshebing.com/2016/10/27/iOS开发之Xcode常用调试（Debug）技巧总结/" target="_blank" rel="noopener">iOS开发之Xcode常用调试（Debug）技巧总结</a></p>
+<h3 id="移动支付"><a href="#移动支付" class="headerlink" title="移动支付"></a>移动支付</h3><ul>
+<li><a href="http://www.jianshu.com/p/fe56e122663e" target="_blank" rel="noopener">集成支付宝钱包支付iOS SDK的方法与经验</a></li>
+<li><a href="http://www.jianshu.com/p/59341ea9d86d" target="_blank" rel="noopener">支付宝开放平台支付更新升级全解析</a></li>
+<li><a href="http://www.jianshu.com/p/020621c3a660" target="_blank" rel="noopener">微信和支付宝支付-看我的，用我的就够了</a></li>
+</ul>
+<h3 id="推送"><a href="#推送" class="headerlink" title="推送"></a>推送</h3><ul>
+<li><a href="http://www.cocoachina.com/ios/20161017/17769.html" target="_blank" rel="noopener">iOS10推送必看UNNotificationServiceExtension</a></li>
+</ul>
+<h3 id="其它"><a href="#其它" class="headerlink" title="其它"></a>其它</h3><ul>
+<li><a href="http://www.zoomfeng.com/blog/ipa-size-thin.html" target="_blank" rel="noopener">《iOS安装包瘦身指南》</a></li>
+<li><a href="https://code.tutsplus.com/tutorials/quick-tip-customize-nslog-for-easier-debugging--mobile-19066" target="_blank" rel="noopener">快速提示：自定义NSLog以实现更简单的调试</a></li>
+</ul>
+<h3 id="学习网站"><a href="#学习网站" class="headerlink" title="学习网站"></a>学习网站</h3><ul>
+<li><a href="http://mp.weixin.qq.com/s?__biz=MzA4NzgxMzQzMA==&amp;mid=2654157219&amp;idx=1&amp;sn=8f0c775026d9df76b11ae8d31bd59c38&amp;scene=21#wechat_redirect" target="_blank" rel="noopener">不要瞎找了，你要的自学网站我都给你整理好了！</a></li>
+<li><a href="http://chuansong.me/n/358540848937" target="_blank" rel="noopener">分享8个我最常用的自学网站</a></li>
+</ul>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
     
       
 
@@ -2300,822 +3230,6 @@ UIRectFrame(myFrame);
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://andy0570.com/2016/08/26/《iOS编程（第四版）》Demo4：Hyponsister/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="独木舟的木">
-      <meta itemprop="description" content="有时候阳光很好 有时候阳光很暗">
-      <meta itemprop="image" content="https://ws1.sinaimg.cn/large/006tNc79gy1g22m14458rj30u014xu0x.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="独木舟的木">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2016/08/26/《iOS编程（第四版）》Demo4：Hyponsister/" class="post-title-link" itemprop="url">《iOS编程（第四版）》Demo4：Hyponsister</a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2016-08-26 13:23:00" itemprop="dateCreated datePublished" datetime="2016-08-26T13:23:00+08:00">2016-08-26</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2019-04-18 00:18:50" itemprop="dateModified" datetime="2019-04-18T00:18:50+08:00">2019-04-18</time>
-              
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/iOS/" itemprop="url" rel="index"><span itemprop="name">iOS</span></a></span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-            
-          
-
-          
-          
-            <span id="/2016/08/26/《iOS编程（第四版）》Demo4：Hyponsister/" class="leancloud_visitors" data-flag-title="《iOS编程（第四版）》Demo4：Hyponsister">
-              <span class="post-meta-divider">|</span>
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              
-                <span class="post-meta-item-text">阅读次数：</span>
-              
-                <span class="leancloud-visitors-count"></span>
-            </span>
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body han-init-context" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <a id="more"></a>
-<blockquote>
-<p>重绘与UIScrollView</p>
-</blockquote>
-<p><strong>UIScrollView</strong>类为展示内容比应用程序窗口大的视图提供支持。它允许用户通过触控手势卷起内容并且通过捏合手势放大缩小内容。<br>通常情况下，<strong>UIScrollView</strong>对象适用于那些尺寸大于屏幕的视图。当某个视图是<strong>UIScrollView</strong>对象的子视图时，该对象会画出该视图的某块区域（形状为矩形）。当用户按住这块矩形区域并移动手指（即拖动，pan）时，<strong>UIScrollView</strong>对象会改变该矩形所显示的子视图区域。</p>
-<h3 id="在UIScrollView中放一张2倍于窗口大小的视图"><a href="#在UIScrollView中放一张2倍于窗口大小的视图" class="headerlink" title="在UIScrollView中放一张2倍于窗口大小的视图"></a>在UIScrollView中放一张2倍于窗口大小的视图</h3><p>Demo：<br><img src="http://upload-images.jianshu.io/upload_images/2648731-c2708b32240252d3.gif?imageMogr2/auto-orient/strip" alt="ScrollViewDemo.gif"></p>
-<p>视图层次：UIWindow -&gt;UIViewControl -&gt; UIScrollView -&gt; HyponsisView视图。</p>
-<p>实现方法：覆盖 UIViewController 中的 <code>viewDidLoad</code> 方法，创建视图层次结构。<br>​<br><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)viewDidLoad &#123;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//----------------------创建一个超大视图--------------------------</span></span><br><span class="line">    <span class="comment">// 根视图控制器 中放 UIScrollView ,UIScrollView 中放 HyponsisView</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">// UIScrollView</span></span><br><span class="line">    <span class="built_in">CGRect</span> screenRect = <span class="keyword">self</span>.view.frame;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// HyponsisView</span></span><br><span class="line">    <span class="built_in">CGRect</span> bigRect = screenRect;</span><br><span class="line">    bigRect.size.width *= <span class="number">2.0</span>;</span><br><span class="line">    bigRect.size.height *= <span class="number">2.0</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//创建一个 UIScrollView 对象，将其尺寸设置为窗口大小</span></span><br><span class="line">    <span class="built_in">UIScrollView</span> *scrollView = [[<span class="built_in">UIScrollView</span> alloc] initWithFrame:screenRect];</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">self</span>.view = scrollView;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//创建一个有着超大尺寸的 HQLHypnosisView 对象并将其加入 UIScrollView 对象</span></span><br><span class="line">    HQLHypnosisView *hyponsisView = [[HQLHypnosisView alloc] initWithFrame:bigRect];</span><br><span class="line">    </span><br><span class="line">    [scrollView addSubview:hyponsisView];</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//告诉 UIScrollView 对象“取景”范围有多大</span></span><br><span class="line">    scrollView.contentSize = bigRect.size;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h3 id="拖动与分页显示"><a href="#拖动与分页显示" class="headerlink" title="拖动与分页显示"></a>拖动与分页显示</h3><ul>
-<li>UIScrollView 对象的分页实现原理是：UIScrollView 对象会根据其 bounds 的尺寸，将 contentSize 分割为尺寸相同的多个区域。拖动结束后，UIScrollView 实例会自动滚动并只显示其中的一个区域。</li>
-</ul>
-<p>在UIScrollView中放左右两张视图<br>Demo：<br><img src="http://upload-images.jianshu.io/upload_images/2648731-77b5b883dab47070.gif?imageMogr2/auto-orient/strip" alt="ScrollViewDemo2.gif"></p>
-<p>同样覆盖<code>viewDidLoad</code>方法创建视图层次结构：</p>
-<pre><code>//---------------------拖动与分页------------------------
-</code></pre><p>​<br>​    //创建两个 CGRect 结构分别作为 UIScrollView 对象和 HQLHypnosisView 对象的 frame</p>
-<pre><code>CGRect screenRect = self.view.frame;
-
-//设置 UIScrollView 对象的 contentSize 的宽度是屏幕宽度的2倍，高度不变
-CGRect bigRect = screenRect;
-bigRect.size.width *= 2.0;
-
-//创建一个 UIScrollView 对象，将其尺寸设置为窗口大小
-UIScrollView *scrollView = [[UIScrollView alloc] initWithFrame:screenRect];
-
-//设置UIScrollView 对象的“镜头”的边和其显示的某个视图的边对齐
-[scrollView setPagingEnabled:YES];
-
-self.view = scrollView;
-
-//创建第一个大小与屏幕相同的 HQLPictureView 对象并将其加入 UIScrollView 对象
-HQLPictureView *pictureView = [[HQLPictureView alloc] initWithFrame:screenRect];
-[scrollView addSubview:pictureView];
-
-//创建第二个大小与屏幕相同的 HQLHypnosisView 对象并放置在第一个 HQLPictureView 对象的右侧，使其刚好移除屏幕外
-screenRect.origin.x +=screenRect.size.width;
-
-HQLHypnosisView *anotherView = [[HQLHypnosisView alloc] initWithFrame:screenRect];
-
-[scrollView addSubview:anotherView];
-
-//告诉 UIScrollView 对象“取景”范围有多大
-scrollView.contentSize = bigRect.size;
-</code></pre><p><a href="https://github.com/Andy0570/Hyponsister" target="_blank" rel="noopener">GitHub代码</a></p>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://andy0570.com/2016/08/24/UIKit框架_窗口和视图介绍/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="独木舟的木">
-      <meta itemprop="description" content="有时候阳光很好 有时候阳光很暗">
-      <meta itemprop="image" content="https://ws1.sinaimg.cn/large/006tNc79gy1g22m14458rj30u014xu0x.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="独木舟的木">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2016/08/24/UIKit框架_窗口和视图介绍/" class="post-title-link" itemprop="url">UIKit框架_窗口和视图介绍</a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2016-08-24 14:01:00" itemprop="dateCreated datePublished" datetime="2016-08-24T14:01:00+08:00">2016-08-24</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2019-04-18 00:39:23" itemprop="dateModified" datetime="2019-04-18T00:39:23+08:00">2019-04-18</time>
-              
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/iOS/" itemprop="url" rel="index"><span itemprop="name">iOS</span></a></span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-            
-          
-
-          
-          
-            <span id="/2016/08/24/UIKit框架_窗口和视图介绍/" class="leancloud_visitors" data-flag-title="UIKit框架_窗口和视图介绍">
-              <span class="post-meta-divider">|</span>
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              
-                <span class="post-meta-item-text">阅读次数：</span>
-              
-                <span class="leancloud-visitors-count"></span>
-            </span>
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body han-init-context" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <a id="more"></a>
-<p>本文转载自:<br><a href="http://www.cnblogs.com/CHONGCHONG2008/archive/2012/08/02/2619366.html" target="_blank" rel="noopener">http://www.cnblogs.com/CHONGCHONG2008/archive/2012/08/02/2619366.html</a></p>
-<h2 id="窗口和视图"><a href="#窗口和视图" class="headerlink" title="窗口和视图"></a>窗口和视图</h2><p>窗口和视图是为iPhone应用程序构造用户界面的可视组件。<br>窗口为内容显示提供背景平台，而视图负责绝大部分的内容描画，并负责响应用户的交互。</p>
-<h3 id="什么是窗口和视图？"><a href="#什么是窗口和视图？" class="headerlink" title="什么是窗口和视图？"></a>什么是窗口和视图？</h3><p>和Mac OS X一样，iPhone OS通过窗口和视图在屏幕上展现图形内容。虽然窗口和视图对象之间在两个平台上有很多相似性，但是具体到每个平台上，它们的作用都有轻微的差别。</p>
-<h2 id="UIWindow的作用"><a href="#UIWindow的作用" class="headerlink" title="UIWindow的作用"></a>UIWindow的作用</h2><p>和Mac OS X的应用程序有所不同，iPhone应用程序通常只有一个窗口，表示为一个UIWindow类的实例。您的应用程序在启动时创建这个窗口（或者从nib文件进行装载），并往窗口中加入一或多个视图，然后将它显示出来。窗口显示出来之后，您很少需要再次引用它。</p>
-<p>在iPhone OS中，窗口对象并没有像关闭框或标题栏这样的视觉装饰，用户不能直接对其进行关闭或其它操作。所有对窗口的操作都需要通过其编程接口来实现。应用程序可以借助窗口对象来进行事件传递。窗口对象会持续跟踪当前的第一响应者对象，并在UIApplication对象提出请求时将事件传递它。</p>
-<p>还有一件可能让有经验的Mac OS X开发者觉得奇怪的事是UIWindow类的继承关系。在Mac OS X中，NSWindow的父类是NSResponder；而在iPhone OS中，UIWindow的父类是UIView。因此，窗口在iPhone OS中也是一个视图对象。不管其起源如何，您通常可以将iPhone OS上的窗口和Mac OS X的窗口同样对待。也就是说，您通常不必直接操作UIWindow对象中与视图有关的属性变量。</p>
-<p>在创建应用程序窗口时，您应该总是将其初始的边框尺寸设置为整个屏幕的大小。如果您的窗口是从nib文件装载得到，Interface Builder并不允许创建比屏幕尺寸小的窗口；然而，如果您的窗口是通过编程方式创建的，则必须在创建时传入期望的边框矩形。除了屏幕矩形之外，没有理由传入其它边框矩形。屏幕矩形可以通过UIScreen对象来取得，具体代码如下所示：</p>
-<figure class="highlight inform7"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">self.window = <span class="comment">[<span class="comment">[UIWindow alloc]</span> initWithFrame:<span class="comment">[<span class="comment">[UIScreen mainScreen]</span> bounds]</span>]</span>;</span><br><span class="line">    </span><br><span class="line">// 设置根视图控制器</span><br><span class="line">ViewController *viewController = <span class="comment">[<span class="comment">[ViewController alloc]</span> init]</span>;</span><br><span class="line">self.window.rootViewController = viewController;</span><br><span class="line">    </span><br><span class="line">self.window.backgroundColor = <span class="comment">[UIColor whiteColor]</span>;</span><br><span class="line"><span class="comment">[self.window makeKeyAndVisible]</span>;</span><br></pre></td></tr></table></figure>
-<p>虽然iPhone OS支持将一个窗口叠放在其它窗口的上方，但是您的应用程序永远不应创建多个窗口。系统自身使用额外的窗口来显示系统状态条、重要的警告、以及位于应用程序窗口上方的其它消息。如果您希望在自己的内容上方显示警告，可以使用UIKit提供的警告视图，而不应创建额外的窗口。</p>
-<h2 id="UIView是作用视图"><a href="#UIView是作用视图" class="headerlink" title="UIView是作用视图"></a>UIView是作用视图</h2><p>是UIView类的实例，负责在屏幕上定义一个矩形区域。在iPhone的应用程序中，视图在展示用户界面及响应用户界面交互方面发挥关键作用。每个视图对象都要负责渲染视图矩形区域中的内容，并响应该区域中发生的触碰事件。这一双重行为意味着视图是应用程序与用户交互的重要机制。在一个基于模型-视图-控制器的应用程序中，视图对象明显属于视图部分。</p>
-<p>除了显示内容和处理事件之外，视图还可以用于管理一或多个子视图。子视图是指嵌入到另一视图对象边框内部的视图对象，而被嵌入的视图则被称为父视图或超视图。视图的这种布局方式被称为视图层次，一个视图可以包含任意数量的子视图，通过为子视图添加子视图的方式，视图可以实现任意深度的嵌套。视图在视图层次中的组织方式决定了在屏幕上显示的内容，原因是子视图总是被显示在其父视图的上方；这个组织方法还决定了视图如何响应事件和变化。每个父视图都负责管理其直接的子视图，即根据需要调整它们的位置和尺寸，以及响应它们没有处理的事件。</p>
-<p>由于视图对象是应用程序和用户交互的主要途径，所以需要在很多方面发挥作用，下面是其中的一小部分：</p>
-<pre><code>1. 描画和动画
-    * 视图负责对其所属的矩形区域进行描画。
-    * 某些视图属性变量可以以动画的形式过渡到新的值。
-
-2. 布局和子视图管理
-    * 视图管理着一个子视图列表。
-    * 视图定义了自身相对于其父视图的尺寸调整行为。
-    * 必要时，视图可以通过代码调整其子视图的尺寸和位置。
-    * 视图可以将其坐标系统下的点转换为其它视图或窗口坐标系统下的点。
-
-3. 事件处理
-   *  视图可以接收触摸事件。
-   * 视图是响应者链的参与者。
-</code></pre><p>在iPhone应用程序中，视图和视图控制器紧密协作，管理若干方面的视图行为。视图控制器的作用是处理视图的装载与卸载、处理由于设备旋转导致的界面旋转，以及和用于构建复杂用户界面的高级导航对象进行交互。</p>
-<h2 id="UIKit的视图类"><a href="#UIKit的视图类" class="headerlink" title="UIKit的视图类"></a>UIKit的视图类</h2><p>UIView类定义了视图的基本行为，但并不定义其视觉表示。相反，UIKit通过其子类来为像文本框、按键、及工具条这样的标准界面元素定义具体的外观和行为。图1显示了所有UIKit视图类的层次框图。除了UIView和UIControl类是例外，这个框图中的大多数视图都设计为可直接使用，或者和委托对象结合使用。</p>
-<p><img src="http://upload-images.jianshu.io/upload_images/2648731-2f32405cffed1812.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="图1 视图的类层次"></p>
-<p>这个视图层次可以分为如下几个大类：</p>
-<ol>
-<li><p>容器</p>
-<p> 容器视图用于增强其它视图的功能，或者为视图内容提供额外的视觉分隔。比如，<strong>UIScrollView</strong> 类可以用于显示因内容太大而无法显示在一个屏幕上的视图。<strong>UITableView</strong> 类是 <strong>UIScrollView</strong> 类的子类，用于管理数据列表。表格的行可以支持选择，所以通常也用于层次数据的导航—比如用于挖掘一组有层次结构的对象。</p>
-<p> <strong>UIToolbar</strong> 对象则是一个特殊类型的容器，用于为一或多个类似于按键的项提供视觉分组。工具条通常出现在屏幕的底部。Safari、Mail、和Photos程序都使用工具条来显示一些按键，这些按键代表经常使用的命令。工具条可以一直显示，也可以根据应用程序的需要进行显示。</p>
-</li>
-<li><p>控件</p>
-<p> 控件用于创建大多数应用程序的用户界面。控件是一种特殊类型的视图，继承自 <strong>UIControl</strong> 超类，通常用于显示一个具体的值，并处理修改这个值所需要的所有用户交互。控件通常使用标准的系统范式（比如目标-动作模式和委托模式）来通知应用程序发生了用户交互。控件包括按键、文本框、滑块、和切换开关。</p>
-</li>
-<li><p>显示视图</p>
-<p> 控件和很多其它类型的视图都提供了交互行为，而另外一些视图则只是用于简单地显示信息。具有这种行为的 <strong>UIKit</strong> 类包括<strong>UIImageView、 UILabel、UIProgressView、UIActivityIndicatorView</strong>。</p>
-</li>
-<li><p>文本和web视图</p>
-<p> 文本和web视图为应用程序提供更为高级的显示多行文本的方法。<strong>UITextView</strong> 类支持在滚动区域内显示和编辑多行文本；而 <strong>UIWebView</strong> 类则提供了显示HTML内容的方法，通过这个类，您可以将图形和高级的文本格式选项集成到应用程序中，并以定制的方式对内容进行布局。</p>
-</li>
-<li><p>警告视图和动作表单</p>
-<p>警告视图和动作表单用于即刻取得用户的注意。它们向用户显示一条消息，同时还有一或多个可选的按键，用户通过这些按键来响应消息。警告视图和动作表单的功能类似，但是外观和行为不同。举例来说， <strong>UIAlertView</strong> 类在屏幕上弹出一个蓝色的警告框，而 <strong>UIActionSheet</strong> 类则从屏幕的底部滑出动作框。</p>
-</li>
-<li><p>导航视图</p>
-<p> 页签条和导航条和视图控制器结合使用，为用户提供从一个屏幕到另一个屏幕的导航工具。在使用时，您通常不必直接创建 <strong>UITabBar</strong> 和 <strong>UINavigationBar</strong> 的项，而是通过恰当的控制器接口或 <strong>Interface Builder</strong> 来对其进行配置。</p>
-</li>
-<li><p>窗口</p>
-<p> 窗口提供一个描画内容的表面，是所有其它视图的根容器。每个应用程序通常都只有一个窗口。</p>
-</li>
-</ol>
-<p>除了视图之外， <strong>UIKit</strong> 还提供了视图控制器，用于管理这些对象。更多信息请参见“视图控制器的作用”部分。</p>
-<h2 id="视图控制器的作用"><a href="#视图控制器的作用" class="headerlink" title="视图控制器的作用"></a>视图控制器的作用</h2><p>运行在iPhone OS上的应用程序在如何组织内容和如何将内容呈现给用户方面有很多选择。含有很多内容的应用程序可以将内容分为多个屏幕。在运行时，每个屏幕的背后都是一组视图对象，负责显示该屏幕的数据。一个屏幕的视图后面是一个视图控制器其作用是管理那些视图上显示的数据，并协调它们和应用程序其它部分的关系。</p>
-<p><strong>UIViewController</strong> 类负责创建其管理的视图及在低内存时将它们从内容中移出。视图控制器还为某些标准的系统行为提供自动响应。比如，在响应设备方向变化时，如果应用程序支持该方向，视图控制器可以对其管理的视图进行尺寸调整，使其适应新的方向。您也可以通过视图控制器来将新的视图以模式框的方式显示在当前视图的上方。</p>
-<p>除了基础的 <strong>UIViewController</strong> 类之外，UIKit还包含很多高级子类，用于处理平台共有的某些高级接口。特别需要提到的是，导航控制器用于显示多屏具有一定层次结构的内容；而页签条控制器则支持用户在一组不同的屏幕之间切换，每个屏幕都代表应用程序的一种不同的操作模式。</p>
-<p>有关如何通过视图控制器管理用户界面上视图的更多信息，请参见iPhone OS的视图控制器编程指南。</p>
-<h2 id="视图架构和几何属性"><a href="#视图架构和几何属性" class="headerlink" title="视图架构和几何属性"></a>视图架构和几何属性</h2><p>由于视图是iPhone应用程序的焦点对象，所以对视图与系统其它部分的交互机制有所了解是很重要的。<strong>UIKit</strong> 中的标准视图类为应用程序免费提供相当数量的行为，还提供了一些定义良好的集成点，您可以通过这些集成点来对标准行为进行定制，完成应用程序需要做的工作。</p>
-<p>本文的下面部分将解释视图的标准行为，并说明哪些地方可以集成您的定制代码。如果需要特定类的集成点信息，请参见该类的参考文档。您可以从<strong>UIKit</strong>框架参考中取得所有类参考文档的列表。</p>
-<h3 id="视图交互模型"><a href="#视图交互模型" class="headerlink" title="视图交互模型"></a>视图交互模型</h3><p>任何时候，当用户和您的程序界面进行交互、或者您的代码以编程的方式进行某些修改时，<strong>UIKit</strong> 内部都会发生一个复杂的事件序列。在事件序列的一些特定的点上，<strong>UIKit</strong> 会调用您的视图类，使它们有机会代表应用程序进行事件响应。理解这些调用点是很重要的，有助于理解您的视图对象和系统在哪里进行结合。图2显示了从用户触击屏幕到图形系统更新屏幕内容这一过程的基本事件序列。以编程方式触发事件的基本步骤与此相同，只是没有最初的用户交互。<br>UIKit interactions with your view objects<br><img src="http://upload-images.jianshu.io/upload_images/2648731-f6608fdfd7ef0a2a.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="图2 UIKit和您的视图对象之间的交互"></p>
-<p>下面的步骤说明进一步刨析了图2中的事件序列，解释了序列的每个阶段都发生了什么，以及应用程序可能如何进行响应。</p>
-<ol>
-<li>用户触击屏幕。</li>
-<li>硬件将触击事件报告给UIKit框架。</li>
-<li>UIKit框架将触击信息封装为一个UIEvent对象，并派发给恰当的视图（有关UIKit如何将事件递送给您的视图的详细解释，请参见“事件的传递”部分）。</li>
-<li>视图的事件处理方法可以通过下面的方式来响应事件：<ul>
-<li>调整视图或其子视图的属性变量（边框、边界、透明度等）。</li>
-<li>将视图（或其子视图）标识为需要修改布局。</li>
-<li>将视图（或其子视图）标识为布局需要重画。</li>
-<li>将数据发生的变化通报给控制器。</li>
-</ul>
-</li>
-<li><p>当然，上述的哪些事情需要做及调用什么方法来完成是由视图来决定的。<br>如果视图被标识为需要重新布局，<strong>UIKit</strong>就调用视图的<code>layoutSubviews:</code>方法。</p>
-<p>您可以在自己的定制视图中重载这个方法，以便调整子视图的尺寸和位置。举例来说，如果一个视图具有很大的滚动区域，就需要使用几个子视图来“平铺”，而不是创建一个内存很可能装不下的大视图。在这个方法的实现中，视图可以隐藏所有不需显示在屏幕上的子视图，或者在重新定位之后将它们用于显示新的内容。作为这个过程的一部分，视图也可以将用于“平铺”的子视图标识为需要重画。</p>
-</li>
-<li><p>如果视图的任何部分被标识为需要重画，<strong>UIKit</strong> 就调用该视图的<code>drawRect:</code>方法。</p>
-<p> UIKit只对那些需要重画的视图调用这个方法。在这个方法的实现中，所有视图都应该尽可能快地重画指定的区域，且都应该只重画自己的内容，不应该描画子视图的内容。在这个调用点上，视图不应该尝试进一步改变其属性或布局。</p>
-<p> 所有更新过的视图都和其它可视内容进行合成，然后发送给图形硬件进行显示。</p>
-</li>
-<li><p>图形硬件将渲染完成的内容转移到屏幕。</p>
-</li>
-</ol>
-<p>请注意：上述的更新模型主要适用于采纳内置视图和描画技术的应用程序。如果您的应用程序使用<strong>OpenGL ES</strong>来描画内容，则通常要配置一个全屏的视图，然后直接在<strong>OpenGL</strong>的图形上下文中进行描画。您的视图仍然需要处理触碰事件，但不需要对子视图进行布局或者实现<code>drawRect:</code>方法。有关<strong>OpenGL ES</strong>的更多信息，请参见“用<strong>OpenGL ES</strong>进行描画”部分。</p>
-<p>基于上述的步骤说明可以看出，UIKit为您自己定制的视图提供如下主要的结合点：</p>
-<pre><code>下面这些事件处理方法：
-
-    touchesBegan:withEvent:
-
-    touchesMoved:withEvent:
-
-    touchesEnded:withEvent:
-
-    touchesCancelled:withEvent:
-
-layoutSubviews方法
-
-drawRect:方法
-</code></pre><p>大多数定制视图通过实现这些方法来得到自己期望的行为。您可能不需要重载所有方法，举例来说，如果您实现的视图是固定尺寸的，则可能不需要重载<code>layoutSubviews</code>方法。类似地，如果您实现的视图只是显示简单的内容，比如文本或图像，则通常可以通过简单地嵌入 <strong>UIImageView</strong> 和 <strong>UILabel</strong> 对象作为子视图来避免描画。</p>
-<p>重要的是要记住，这些是主要的结合点，但不是全部。UIView类中有几个方法的设计目的就是让子类重载的。您可以通过查阅 <strong>UIView</strong>类参考中的描述来了解哪些方法可以被重载。</p>
-<h2 id="视图渲染架构"><a href="#视图渲染架构" class="headerlink" title="视图渲染架构"></a>视图渲染架构</h2><p>虽然您通过视图来表示屏幕上的内容，但是 <strong>UIView</strong> 类自身的很多基础行为却严重依赖于另一个对象。<strong>UIKit</strong> 中每个视图对象的背后都有一个 <strong>Core Animation</strong> 层对象，它是一个 <strong>CALayer</strong> 类的实例，该类为视图内容的布局和渲染、以及合成和动画提供基础性的支持。</p>
-<p>和<strong>Mac OS X</strong>（在这个平台上<strong>Core Animation</strong>支持是可选的）不同的是，<strong>iPhone OS</strong>将<strong>Core Animation</strong>集成到视图渲染实现的核心。虽然<strong>Core Animation</strong>发挥核心作用，但是<strong>UIKit</strong>在<strong>Core Animation</strong>上面提供一个透明的接口层，使编程体验更为流畅。这个透明的接口使开发者在大多数情况下不必直接访问<strong>Core Animation</strong>的层，而是通过<strong>UIView</strong>的方法和属性声明取得类似的行为。然而，当<strong>UIView</strong>类没有提供您需要的接口时，<strong>Core Animation</strong>就变得重要了，在那种情况下，您可以深入到<strong>Core Animation</strong>层，在应用程序中实现一些复杂的渲染。</p>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://andy0570.com/2016/08/23/iOS 编程：UITextFiled/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="独木舟的木">
-      <meta itemprop="description" content="有时候阳光很好 有时候阳光很暗">
-      <meta itemprop="image" content="https://ws1.sinaimg.cn/large/006tNc79gy1g22m14458rj30u014xu0x.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="独木舟的木">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2016/08/23/iOS 编程：UITextFiled/" class="post-title-link" itemprop="url">iOS 编程：UITextField</a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2016-08-23 17:45:00" itemprop="dateCreated datePublished" datetime="2016-08-23T17:45:00+08:00">2016-08-23</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2019-04-18 00:32:48" itemprop="dateModified" datetime="2019-04-18T00:32:48+08:00">2019-04-18</time>
-              
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/iOS/" itemprop="url" rel="index"><span itemprop="name">iOS</span></a></span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-            
-          
-
-          
-          
-            <span id="/2016/08/23/iOS 编程：UITextFiled/" class="leancloud_visitors" data-flag-title="iOS 编程：UITextField">
-              <span class="post-meta-divider">|</span>
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              
-                <span class="post-meta-item-text">阅读次数：</span>
-              
-                <span class="leancloud-visitors-count"></span>
-            </span>
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body han-init-context" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <a id="more"></a>
-<p><strong>UITextField</strong> 对象用于在你的界面上显示一个可编辑的文本区域。使用文本区域可以收集来自用户使用屏幕上的键盘输入的基于文本的信息。键盘可以被配置为不同的输入类型，如纯文本，电子邮件，数字，等等。文本区域使用目标操作机制和委托对象来报告在编辑过程中所做的更改。</p>
-<h3 id="初始化textFiled-，设置位置及大小"><a href="#初始化textFiled-，设置位置及大小" class="headerlink" title="初始化textFiled ，设置位置及大小"></a>初始化textFiled ，设置位置及大小</h3><pre><code>CGRect textFiledRect = CGRectMake(87, 70, 240, 30);
-UITextField *textFiled = [[UITextField alloc] initWithFrame:textFiledRect];
-</code></pre><h3 id="设置UITextFiled对象的边框样式"><a href="#设置UITextFiled对象的边框样式" class="headerlink" title="设置UITextFiled对象的边框样式"></a>设置UITextFiled对象的边框样式</h3><pre><code>textFiled.borderStyle = UITextBorderStyleRoundedRect;
-</code></pre><p>如果设置<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br></pre></td><td class="code"><pre><span class="line">*样式类型：*</span><br><span class="line"></span><br><span class="line">* UITextBorderStyleNone,</span><br><span class="line">* UITextBorderStyleLine,</span><br><span class="line">* UITextBorderStyleBezel,</span><br><span class="line">* UITextBorderStyleRoundedRect</span><br><span class="line">  </span><br><span class="line">### 设置输入框的背景颜色</span><br><span class="line">    textFiled.backgroundColor = [UIColor whiteColor];</span><br><span class="line"></span><br><span class="line">### 设置背景</span><br><span class="line">注意： 只有在 UITextBorderStyleNone 样式下，设置背景图才会生效，且图片大小小于 text 的frame时，图片会拉伸。</span><br><span class="line"></span><br><span class="line">    textFiled.borderStyle = UITextBorderStyleNone;</span><br><span class="line">    textFiled.background = [UIImage imageNamed:@&quot;***.png&quot;];</span><br><span class="line"></span><br><span class="line">### 设置enable值为NO时的背景</span><br><span class="line">    textFiled.disabledBackground = [UIImage imageNamed:@&quot;***.png&quot;];</span><br><span class="line"></span><br><span class="line">### 当输入框无内容时，设置占位符提示</span><br><span class="line">    textFiled.placeholder = @&quot;Hypontize me&quot;;</span><br><span class="line"></span><br><span class="line">### 设置输入框默认文本值</span><br><span class="line">    textFiled.text = @&quot;默认值&quot;;</span><br><span class="line"></span><br><span class="line">### 设置输入框内容的字体样式和大小</span><br><span class="line">    textFiled.font = [UIFont fontWithName:@&quot;Arial&quot; size:16];</span><br><span class="line"></span><br><span class="line">### 设置字体颜色</span><br><span class="line">    textFiled.textColor = [UIColor blueColor];</span><br><span class="line"></span><br><span class="line">### 输入框中是否显示×号，用于清空输入框内容</span><br><span class="line">    textFiled.clearButtonMode = UITextFieldViewModeAlways;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">​    </span><br><span class="line">*样式类型：*</span><br><span class="line"></span><br><span class="line">* UITextFieldViewModeNever, 从不出现</span><br><span class="line">* UITextFieldViewModeWhileEditing,  编辑时出现</span><br><span class="line">* UITextFieldViewModeUnlessEditing, 编辑外出现</span><br><span class="line">* UITextFieldViewModeAlways 一直出现</span><br><span class="line">  </span><br><span class="line">### 用于密码输入：每输入一个字符就变成*</span><br><span class="line">    textFiled.secureTextEntry = YES;</span><br><span class="line"></span><br><span class="line">### 自动大小写功能</span><br><span class="line">    textFiled.autocapitalizationType = UITextAutocapitalizationTypeWords;</span><br><span class="line">*样式类型：*</span><br><span class="line">*  UITextAutocapitalizationTypeNone   //关闭</span><br><span class="line">* UITextAutocapitalizationTypeWords     //单词</span><br><span class="line">* UITextAutocapitalizationTypeSentences //句子</span><br><span class="line">* UITextAutocapitalizationTypeAllCharacters //所有字母</span><br><span class="line"></span><br><span class="line">### 换行键自动监测功能</span><br><span class="line">如果将该属性设置为YES，*UITextField* 对象会自动监测用户输入，并根据是否输入了文字启用/禁用换行键,如果文本内容长度为0，则禁用换行键，如果文本内容长度不为0，则启用换行键.</span><br><span class="line"></span><br><span class="line">    textFiled.enablesReturnKeyAutomatically = YES;</span><br><span class="line"></span><br><span class="line">### 拼写建议</span><br><span class="line">可以提供用户输错的单词并提供修改建议</span><br><span class="line"></span><br><span class="line">    textFiled.autocorrectionType = UITextAutocorrectionTypeYes;</span><br><span class="line"></span><br><span class="line">*样式类型：*</span><br><span class="line"></span><br><span class="line">* UITextAutocorrectionTypeDefault</span><br><span class="line">* UITextAutocorrectionTypeNo</span><br><span class="line">* UITextAutocorrectionTypeYes</span><br><span class="line"></span><br><span class="line">### 再次编辑就清空</span><br><span class="line">    textFiled.clearsOnBeginEditing = YES;</span><br><span class="line"></span><br><span class="line">### 内容对齐方式</span><br><span class="line">    textFiled.textAlignment =  NSTextAlignmentCenter;</span><br><span class="line"></span><br><span class="line">*样式类型：*</span><br><span class="line"></span><br><span class="line">* NSTextAlignmentLeft      = 0,    // 自视左对齐</span><br><span class="line">* NSTextAlignmentCenter    = 1,    // 居中</span><br><span class="line">* NSTextAlignmentRight     = 2,    // 右对齐   </span><br><span class="line">  </span><br><span class="line">### 内容的垂直对齐方式</span><br><span class="line">    textFiled.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;</span><br><span class="line"></span><br><span class="line">*样式类型：*</span><br><span class="line"></span><br><span class="line">* UIControlContentVerticalAlignmentCenter  = 0</span><br><span class="line">* UIControlContentVerticalAlignmentTop     = 1</span><br><span class="line">* UIControlContentVerticalAlignmentBottom  = 2</span><br><span class="line">* UIControlContentVerticalAlignmentFill    = 3</span><br><span class="line">  </span><br><span class="line">### 文本自适应文本窗口大小</span><br><span class="line">默认是保持原来大小,而让长文本滚动</span><br><span class="line"></span><br><span class="line">    textFiled.adjustsFontSizeToFitWidth = YES;</span><br><span class="line">    //设置文本最小字体，adjustsFontSizeToFitWidth=YES 时才起作用</span><br><span class="line">    textFiled.minimumFontSize = 10;</span><br><span class="line"></span><br><span class="line">### 设置键盘样式</span><br><span class="line">    textFiled.keyboardType = UIKeyboardTypeDefault;</span><br><span class="line"></span><br><span class="line">*样式类型：*</span><br><span class="line"></span><br><span class="line">* UIKeyboardTypeDefault,                // 默认键盘，支持所有字符</span><br><span class="line">* UIKeyboardTypeASCIICapable,           // 支持ASCII的默认键盘</span><br><span class="line">* UIKeyboardTypeNumbersAndPunctuation,  // 标准电话键盘，支持＋＊＃字符</span><br><span class="line">* UIKeyboardTypeURL,                    // URL键盘，支持.com按钮 只支持URL字符</span><br><span class="line">* UIKeyboardTypeNumberPad,              // 数字键盘</span><br><span class="line">* UIKeyboardTypePhonePad,               // 电话键盘</span><br><span class="line">* UIKeyboardTypeNamePhonePad,           // 电话键盘，也支持输入人名</span><br><span class="line">* UIKeyboardTypeEmailAddress,           // 用于输入电子邮件地址的键盘</span><br><span class="line">* UIKeyboardTypeDecimalPad NS_ENUM_AVAILABLE_IOS(4_1),   // 数字键盘 有数字和小数点</span><br><span class="line">* UIKeyboardTypeTwitter NS_ENUM_AVAILABLE_IOS(5_0),      // 优化的键盘，方便输入@、#字符，用于twitter文本输入</span><br><span class="line">* UIKeyboardTypeWebSearch NS_ENUM_AVAILABLE_IOS(7_0),    // 支持添加链接的默认键盘类型</span><br><span class="line">* UIKeyboardTypeAlphabet = UIKeyboardTypeASCIICapable, // Deprecated</span><br><span class="line"></span><br><span class="line">样式参考：[UIKeyboardType 图解](http://www.jianshu.com/p/446768b350c6)</span><br><span class="line">    </span><br><span class="line">### 软键盘换行键默认显示值</span><br><span class="line">    textFiled.returnKeyType = UIReturnKeyDone;</span><br><span class="line"></span><br><span class="line">*样式类型：*</span><br><span class="line"></span><br><span class="line">* UIReturnKeyDefault,   默认灰色按钮，标有Return</span><br><span class="line">* UIReturnKeyGo,        标有Go的蓝色按钮</span><br><span class="line">* UIReturnKeyGoogle,    标有Google的蓝色按钮，用于搜索</span><br><span class="line">* UIReturnKeyJoin,      标有Join的蓝色按钮</span><br><span class="line">* UIReturnKeyNext,      标有Next的蓝色按钮</span><br><span class="line">* UIReturnKeyRoute,     标有Route的蓝色按钮</span><br><span class="line">* UIReturnKeySearch,    标有Search的蓝色按钮</span><br><span class="line">* UIReturnKeySend,      标有Send的蓝色按钮</span><br><span class="line">* UIReturnKeyYahoo,     标有Yahoo的蓝色按钮</span><br><span class="line">* UIReturnKeyDone,      标有Done的蓝色按钮</span><br><span class="line">* UIReturnKeyEmergencyCall,     紧急呼叫按钮</span><br><span class="line">* UIReturnKeyContinue NS_ENUM_AVAILABLE_IOS(9_0),   标有Continue的蓝色按钮</span><br><span class="line"></span><br><span class="line">    </span><br><span class="line">### 键盘外观</span><br><span class="line">    textFiled.keyboardAppearance = UIKeyboardAppearanceAlert;</span><br><span class="line"></span><br><span class="line">*样式类型：*</span><br><span class="line"></span><br><span class="line">* UIKeyboardAppearanceDefault,          // 默认外观</span><br><span class="line">* UIKeyboardAppearanceDark NS_ENUM_AVAILABLE_IOS(7_0),</span><br><span class="line">* UIKeyboardAppearanceLight NS_ENUM_AVAILABLE_IOS(7_0),</span><br><span class="line">* UIKeyboardAppearanceAlert = UIKeyboardAppearanceDark,  // Deprecated</span><br><span class="line"></span><br><span class="line">    </span><br><span class="line">### 最右侧加图片</span><br><span class="line">    UIImageView *image = [[UIImageView alloc]initWithImage:[UIImage imageNamed:@&quot;***.png&quot;]];</span><br><span class="line">    textFiled.rightView = image;</span><br><span class="line">    textFiled.rightViewMode = UITextFieldViewModeAlways;</span><br><span class="line"></span><br><span class="line">### 设置左侧图片</span><br><span class="line"></span><br><span class="line">    // 设置左侧图片</span><br><span class="line">    self.textField1.leftView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetHeight(self.textField1.frame), CGRectGetHeight(self.textField1.frame))];</span><br><span class="line">    self.textField1.leftViewMode = UITextFieldViewModeAlways;</span><br><span class="line">    </span><br><span class="line">    UIImageView* imgUser = [[UIImageView alloc] initWithFrame:CGRectMake(9, 9, 22, 22)];</span><br><span class="line">    imgUser.image = [UIImage imageNamed:@&quot;iconfont-user&quot;];</span><br><span class="line">    [self.textField1.leftView addSubview:imgUser];</span><br><span class="line"></span><br><span class="line">*样式类型：*</span><br><span class="line">    </span><br><span class="line">* UITextFieldViewModeNever,</span><br><span class="line">* UITextFieldViewModeWhileEditing,</span><br><span class="line">* UITextFieldViewModeUnlessEditing,</span><br><span class="line">* UITextFieldViewModeAlways</span><br><span class="line">  </span><br><span class="line">### 把textFiled添加到视图中</span><br><span class="line">    [backgroundView addSubview:textFiled];</span><br><span class="line"></span><br><span class="line">### 按return键盘放弃第一响应者</span><br><span class="line">UITextfield实例要遵守```UITextFieldDelegate```协议：</span><br><span class="line"></span><br><span class="line">    //设置代理，用于实现协议</span><br><span class="line">    //声明textFiled的代理是我，我会去实现把键盘往下收的方法 这个方法在UITextFieldDelegate里所以我们要采用UITextFieldDelegate这个协议</span><br><span class="line">    textFiled.delegate = self;</span><br><span class="line">    </span><br><span class="line">    - (BOOL)textFieldShouldReturn:(UITextField *)textField</span><br><span class="line">    &#123;</span><br><span class="line">        [textField resignFirstResponder];    </span><br><span class="line">        return YES;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">### 重写绘制行为</span><br><span class="line">除了```UITextField```对象的风格选项，你还可以定制化```UITextField```对象，为他添加许多不同的重写方法，来改变文本字段的显示行为。这些方法都会返回一个```CGRect```结构，制定了文本字段每个部件的边界范围。以下方法都可以重写。</span><br><span class="line"></span><br><span class="line">``` </span><br><span class="line">– textRectForBounds:　　  　//重写来重置文字区域</span><br><span class="line">– drawTextInRect:　　      　//改变绘文字属性.重写时调用super可以按默认图形属性绘制,若自己完全重写绘制函数，就不用调用super了.</span><br><span class="line">– placeholderRectForBounds:　　//重写来重置占位符区域</span><br><span class="line">– drawPlaceholderInRect:　　//重写改变绘制占位符属性.重写时调用super可以按默认图形属性绘制,若自己完全重写绘制函数，就不用调用super了.</span><br><span class="line">– borderRectForBounds:　　//重写来重置边缘区域</span><br><span class="line">– editingRectForBounds:　　//重写来重置编辑区域</span><br><span class="line">– clearButtonRectForBounds:　　//重写来重置clearButton位置,改变size可能导致button的图片失真</span><br><span class="line">– leftViewRectForBounds:</span><br><span class="line">– rightViewRectForBounds:</span><br></pre></td></tr></table></figure></p>
-<h3 id="委托方法"><a href="#委托方法" class="headerlink" title="委托方法"></a>委托方法</h3><ol>
-<li><strong>目标-动作（Target-Action）设计模式：</strong>当某个特定的事件发生时（例如按下按钮），发生事件的一方会向指定的目标对象发送一个之前设定好的动作消息。</li>
-<li>在目标-动作中，针对不同的事件，需要创建不同的动作消息。<strong>UIButton</strong> 对象的事件比较简单，通常只需要处理点击事件；相反，像 <strong>UITextField</strong>这类事件复杂的对象，Apple使用委托设计模式。 <strong>UITextField</strong>对象具有一个委托属性，通过为 <strong>UITextField</strong>对象设置委托， <strong>UITextField</strong>对象会在发生事件时向委托发送响应的消息，由委托处理该事件。</li>
-<li>凡是支持委托的对象，其背后都有一个相应的协议，如果一个类实现了某个协议中规定的方法，就称这个类遵守（conform）了该协议。</li>
-</ol>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//UITextFieldDelegate协议</span></span><br><span class="line"><span class="class"><span class="keyword">@protocol</span> <span class="title">UITextFieldDelegate</span> &lt;<span class="title">NSObject</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">@optional</span>   <span class="comment">//写在该指令之后的所有方法全部声明为可选的</span></span><br><span class="line"><span class="variable">@required</span>  <span class="comment">//必须实现的方法</span></span><br></pre></td></tr></table></figure>
-<p>对于编辑 UITextField 对象文本内容的事件，有以下两个对应的委托方法：</p>
-<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 开始编辑时触发，文本字段将成为first responder</span></span><br><span class="line">- (<span class="keyword">void</span>)<span class="string">textFieldDidBeginEditing:</span>(UITextField *)textField;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 该方法被触发时，输入框已经结束编辑状态</span></span><br><span class="line">- (<span class="keyword">void</span>)<span class="string">textFieldDidEndEditing:</span>(UITextField *)textField;             </span><br><span class="line"><span class="comment">// may be called if forced even if shouldEndEditing returns NO (e.g. view removed from window) or endEditing:YES called</span></span><br></pre></td></tr></table></figure>
-<p>还有一类带有返回值的委托方法，用于从委托中查询需要的信息</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"> - <span class="built_in">BOOL</span>)textFieldShouldBeginEditing:(<span class="built_in">UITextField</span> *)textField &#123;</span><br><span class="line">（输入框询问是否可以编辑，<span class="literal">YES</span>可以编辑，<span class="literal">NO</span>不能编辑）</span><br><span class="line"> <span class="comment">//返回一个BOOL值，指定是否循序文本字段开始编辑,返回NO时不能唤起键盘进行编辑。</span></span><br><span class="line">   <span class="keyword">return</span> <span class="literal">YES</span>;</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"> - (<span class="built_in">BOOL</span>)textFieldShouldEndEditing:(<span class="built_in">UITextField</span> *)textField &#123;</span><br><span class="line">  <span class="comment">//返回BOOL值，指定是否允许文本字段结束编辑，当编辑结束，文本字段会放弃first responder状态　</span></span><br><span class="line">  <span class="comment">//要想在用户结束编辑时阻止文本字段消失，可以返回NO　</span></span><br><span class="line">  <span class="comment">//这对一些文本字段必须始终保持活跃状态的程序很有用，比如即时消息</span></span><br><span class="line">  <span class="keyword">return</span> <span class="literal">NO</span>;　<span class="comment">//一直处于编辑状态</span></span><br><span class="line"> &#125;</span><br><span class="line"></span><br><span class="line"> - (<span class="built_in">BOOL</span>)textField:(<span class="built_in">UITextField</span> *)textField shouldChangeCharactersInRange:(<span class="built_in">NSRange</span>)range replacementString:(<span class="built_in">NSString</span> *)string &#123;</span><br><span class="line"></span><br><span class="line">	<span class="comment">//当用户使用自动更正功能，把输入的文字修改为推荐的文字时，就会调用这个方法。　</span></span><br><span class="line">	<span class="comment">//这对于想要加入撤销选项的应用程序特别有用　</span></span><br><span class="line">	<span class="comment">//可以跟踪字段内所做的最后一次修改，也可以对所有编辑做日志记录,用作审计用途。　　 </span></span><br><span class="line">	<span class="comment">//要防止文字被改变可以返回NO　</span></span><br><span class="line">	<span class="comment">//这个方法的参数中有一个NSRange对象，指明了被改变文字的位置，建议修改的文本也在其中　</span></span><br><span class="line">	<span class="keyword">return</span> <span class="literal">YES</span>;</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"> - (<span class="built_in">BOOL</span>)textFieldShouldClear:(<span class="built_in">UITextField</span> *)textField &#123;</span><br><span class="line"><span class="comment">//返回一个BOOL值指明是否允许根据用户请求清除内容　</span></span><br><span class="line"><span class="comment">//可以设置在特定条件下才允许清除内容　</span></span><br><span class="line"><span class="keyword">return</span> <span class="literal">YES</span>;　<span class="comment">//返回YES，输入内容后，点击右边的清除按钮可以清除，返回NO，点击清除不起作用	</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"> - (<span class="built_in">BOOL</span>)textFieldShouldReturn:(<span class="built_in">UITextField</span> *)textField &#123;</span><br><span class="line"></span><br><span class="line">	<span class="comment">//返回一个BOOL值，指明是否允许在按下回车键时结束编辑　</span></span><br><span class="line">	<span class="comment">//如果允许要调用resignFirstResponder 方法，这会导致结束编辑，而键盘会被收起[textField 	resignFirstResponder];</span></span><br><span class="line">	<span class="comment">//查一下resign（放弃）这个单词的意思就明白这个方法了　</span></span><br><span class="line">	<span class="keyword">return</span> <span class="literal">YES</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>例如 <strong>UITextField</strong> 对象的委托属性为 <strong>HQLHyponsisViewController</strong>自身，<strong>HQLHyponsisViewController</strong>类实现了 <strong>UITextFieldDelegate</strong>协议，当“return”键被按下时触发协议方法， <strong>HQLHyponsisViewController.m</strong> 文件中实现的<code>textFieldShouldReturn:</code>方法被调用。</p>
-<h3 id="通知"><a href="#通知" class="headerlink" title="通知"></a>通知</h3><p><strong>UITextField</strong> 派生自 <strong>UIControl</strong>，所以 <strong>UIControl</strong> 类中的通知系统在文本字段中也可以使用。除了 <strong>UIControl</strong> 类的标准事件，你还可以使用下列 <strong>UITextField</strong>  类特有的事件. </p>
-<p>只有这三个:<br><figure class="highlight plain"><figcaption><span>```  </span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">```UITextFieldTextDidChangeNotification</span><br></pre></td></tr></table></figure></p>
-<figure class="highlight plain"><figcaption><span>``` </span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">当文本字段退出编辑模式时触发。通知的object属性存储了最终文本。 </span><br><span class="line">因为文本字段要使用键盘输入文字，所以下面这些事件发生时，也会发送动作通知.</span><br><span class="line"></span><br><span class="line">	UIKeyboardWillShowNotification 　//键盘显示之前发送</span><br><span class="line">	UIKeyboardDidShowNotification  　//键盘显示之后发送</span><br><span class="line">	UIKeyboardWillHideNotification 　//键盘隐藏之前发送</span><br><span class="line">	UIKeyboardDidHideNotification  　//键盘隐藏之后发送</span><br><span class="line"></span><br><span class="line">#### 监听UITextField的值判断是否禁用按钮</span><br></pre></td></tr></table></figure>
-<ul>
-<li><p>(void)viewDidLoad {<br>  [super viewDidLoad];<br>  // 添加通知<br>  [[NSNotificationCenter defaultCenter] addObserver:self</p>
-<pre><code>selector:@selector(textFieldTextDidChanged:)
-    name:UITextFieldTextDidChangeNotification
-  object:nil];
-</code></pre><p>}</p>
-</li>
-<li><p>(void)dealloc {<br>  // 移除通知<br>  [[NSNotificationCenter defaultCenter] removeObserver:self];<br>}</p>
-</li>
-</ul>
-<p>#pragma mark - NSNotification</p>
-<ul>
-<li>(void)textFieldTextDidChanged:(NSNotification *)notification {<br>  BOOL isTextFieldTextNull = (self.usernameTextField.text.length == 0)||(self.passwordTextField.text.length == 0) ;<br>  self.loginButton.enabled = !isTextFieldTextNull;<br>}<br><code>`</code></li>
-</ul>
-<h3 id="在storyboard中设置UITextField"><a href="#在storyboard中设置UITextField" class="headerlink" title="在storyboard中设置UITextField"></a>在storyboard中设置UITextField</h3><ol>
-<li>Text ：设置文本框的默认文本。</li>
-<li>Placeholder ： 可以在文本框中显示灰色的字，用于提示用户应该在这个文本框输入什么内容。当这个文本框中输入了数据时，用于提示的灰色的字将会自动消失。</li>
-<li>Background ：</li>
-<li>Disabled ： 若选中此项，用户将不能更改文本框内容。</li>
-<li>接下来是三个按钮，用来设置对齐方式。</li>
-<li>Border Style ： 选择边界风格。</li>
-<li>Clear Button ： 这是一个下拉菜单，你可以选择清除按钮什么时候出现，所谓清除按钮就是出一个现在文本框右边的小 X ，你可以有以下选择：<ul>
-<li>Never appears ： 从不出现</li>
-<li>Appears while editing ： 编辑时出现</li>
-<li>Appears unless editing ： </li>
-<li>Is always visible ： 总是可见</li>
-</ul>
-</li>
-<li>Clear when editing begins ： 若选中此项，则当开始编辑这个文本框时，文本框中之前的内容会被清除掉。比如，你现在这个文本框 A 中输入了 “What” ，之后去编辑文本框 B，若再回来编辑文本框 A ，则其中的 “What” 会被立即清除。</li>
-<li>Text Color ： 设置文本框中文本的颜色。</li>
-<li>Font ： 设置文本的字体与字号。</li>
-<li>Min Font Size ： 设置文本框可以显示的最小字体（不过我感觉没什么用）</li>
-<li>Adjust To Fit ： 指定当文本框尺寸减小时，文本框中的文本是否也要缩小。选择它，可以使得全部文本都可见，即使文本很长。但是这个选项要跟 Min Font Size 配合使用，文本再缩小，也不会小于设定的 Min Font Size 。<br>接下来的部分用于设置键盘如何显示。</li>
-<li>Captitalization ： 设置大写。下拉菜单中有四个选项：<ul>
-<li>None ： 不设置大写</li>
-<li>Words ： 每个单词首字母大写，这里的单词指的是以空格分开的字符串</li>
-<li>Sentances ： 每个句子的第一个字母大写，这里的句子是以句号加空格分开的字符串</li>
-<li>All Characters ： 所以字母大写</li>
-</ul>
-</li>
-<li>Correction ： 检查拼写，默认是 YES 。</li>
-<li>Keyboard ： 选择键盘类型，比如全数字、字母和数字等。</li>
-<li>Appearance：</li>
-<li>Return Key ： 选择返回键，可以选择 Search 、 Return 、 Done 等。</li>
-<li>Auto-enable Return Key ： 如选择此项，则只有至少在文本框输入一个字符后键盘的返回键才有效。</li>
-<li>Secure ： 当你的文本框用作密码输入框时，可以选择这个选项，此时，字符显示为星号。</li>
-</ol>
-<ol>
-<li>Alignment Horizontal 水平对齐方式</li>
-<li>Alignment Vertical 垂直对齐方式</li>
-<li>用于返回一个BOOL值　输入框是否 Selected(选中) Enabled(可用) Highlighted(高亮)</li>
-</ol>
-<h3 id="限制只能输入特定的字符"><a href="#限制只能输入特定的字符" class="headerlink" title="限制只能输入特定的字符"></a>限制只能输入特定的字符</h3><pre><code>(BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string{
-NSCharacterSet *cs;
-//invertedSet方法是去反字符,把所有的除了NUMBERS 里的字符都找出来(包含去空格功能)
-
-cs = [[NSCharacterSet characterSetWithCharactersInString:NUMBERS]invertedSet];
-</code></pre><p>​<br>​    // componentsJoinedByString 用于根据一个字符串来将数组连接成一个新的字符串。<br>​    NSString *filtered = [[string componentsSeparatedByCharactersInSet:cs]componentsJoinedByString:@””]; //按cs分离出数组,数组按@””分离出字符串<br>​<br>​    BOOL canChange = [string isEqualToString:filtered];<br>​<br>    return canChange;<br>    //这样写了以后，输入非数字时不能输入<br>    }</p>
-<p>上面那个NUMBERS是一个宏，可以在文件顶部定义：</p>
-<pre><code>#define NUMBERS @”0123456789n” （这个代表可以输入数字和换行，请注意这个n，如果不写这个，Done按键将不会触发，如果用在SearchBar中，将会不触发Search事件，因为你自己限制不让输入n，好惨，我在项目中才发现的。）
-</code></pre><p>所以，如果你要限制输入英文和数字的话，就可以把这个定义为：</p>
-<pre><code>#define kAlphaNum   @”ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789″。
-</code></pre><p>当然，你还可以在以上方法return之前，做一提示的，比如提示用户只能输入数字之类的。如果你觉得有需要的话。</p>
-<h3 id="限制只能输入一定长度的字符"><a href="#限制只能输入一定长度的字符" class="headerlink" title="限制只能输入一定长度的字符"></a>限制只能输入一定长度的字符</h3><pre><code>- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string; 
-{　
-//string就是此时输入的那个字符 textField就是此时正在输入的那个输入框 返回YES就是可以改变输入框的值 NO相反
-
-if ([string isEqualToString:@&quot;n&quot;])　
-//按回车可以改变 
-//这里这个字符写什么，就只能输入什么
-{ 
-    return YES; 
-} 
-
-NSString * toBeString = [textField.text stringByReplacingCharactersInRange:range withString:string]; //得到输入框的内容
-
-if (self.myTextField == textField)　
-//判断是否时我们想要限定的那个输入框
-{ 
-    if ([toBeString length] &gt; 20) { 
-    //如果输入框内容大于20则弹出警告
-textField.text = [toBeString substringToIndex:20]; 
-UIAlertView *alert = [[[UIAlertView alloc] initWithTitle:nil message:@&quot;超过最大字数不能输入了&quot; delegate:nil cancelButtonTitle:@&quot;Ok&quot; otherButtonTitles:nil, nil] autorelease]; 
-//iOS8.3以后用 UIAlertController [alert show]; 
-
-/*
-UIAlertController *alertView = [UIAlertController alertControllerWithTitle:@&quot;提示&quot;message:@&quot;超过最大字数不能输入了&quot;preferredStyle:UIAlertControllerStyleActionSheet];
-    [selfpresentViewController:alertViewanimated:YEScompletion:nil];
-*/
-
-
-        return NO; 
-    } 
-} 
-return YES; 
-}
-</code></pre><ul>
-<li><a href="http://blog.csdn.net/u010850094/article/details/51525964" target="_blank" rel="noopener">http://blog.csdn.net/u010850094/article/details/51525964</a></li>
-<li><a href="http://www.jianshu.com/p/b3ad55a55448" target="_blank" rel="noopener">如何设计出更好的表单？</a></li>
-</ul>
-<h3 id="未完待续…"><a href="#未完待续…" class="headerlink" title="未完待续…"></a>未完待续…</h3>
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -3164,7 +3278,7 @@ return YES;
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">314</span>
+                    <span class="site-state-item-count">317</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -3300,11 +3414,7 @@ return YES;
                     
                       
                     
-                      
-                    
-                      
-                    
-                    <span class="site-state-item-count">38</span>
+                    <span class="site-state-item-count">36</span>
                     <span class="site-state-item-name">标签</span>
                   </a>
                 </div>

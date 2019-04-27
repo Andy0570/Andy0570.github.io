@@ -308,7 +308,7 @@
       
     
 
-    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签<span class="badge">39</span></a>
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签<span class="badge">37</span></a>
 
   </li>
         
@@ -327,7 +327,7 @@
       
     
 
-    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">314</span></a>
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">317</span></a>
 
   </li>
         
@@ -417,6 +417,937 @@
           <div id="content" class="content">
             
   <section id="posts" class="posts-expand">
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://andy0570.com/2017/12/06/高性能 iOS 应用开发——创建复合视图的正确方式/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="独木舟的木">
+      <meta itemprop="description" content="有时候阳光很好 有时候阳光很暗">
+      <meta itemprop="image" content="https://ws1.sinaimg.cn/large/006tNc79gy1g22m14458rj30u014xu0x.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="独木舟的木">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2017/12/06/高性能 iOS 应用开发——创建复合视图的正确方式/" class="post-title-link" itemprop="url">高性能 iOS 应用开发——创建复合视图的正确方式</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2017-12-06 16:02:00" itemprop="dateCreated datePublished" datetime="2017-12-06T16:02:00+08:00">2017-12-06</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-04-17 13:36:05" itemprop="dateModified" datetime="2019-04-17T13:36:05+08:00">2019-04-17</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/iOS/" itemprop="url" rel="index"><span itemprop="name">iOS</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+            <span id="/2017/12/06/高性能 iOS 应用开发——创建复合视图的正确方式/" class="leancloud_visitors" data-flag-title="高性能 iOS 应用开发——创建复合视图的正确方式">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读次数：</span>
+              
+                <span class="leancloud-visitors-count"></span>
+            </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body han-init-context" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <a id="more"></a>
+<blockquote>
+<p>声明：本文参考自<a href="https://www.amazon.cn/高性能iOS应用开发-高拉夫·瓦依希/dp/B06Y635J1R/ref=sr_1_2?ie=UTF8&amp;qid=1512543420&amp;sr=8-2&amp;keywords=高性能+iOS+应用" target="_blank" rel="noopener">高性能iOS应用开发-高拉夫·瓦依希</a> 第6章。</p>
+</blockquote>
+<p><img src="http://upload-images.jianshu.io/upload_images/2648731-20490226465a7ec9.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image"></p>
+<p>创建复合视图的三种方式：</p>
+<ol>
+<li>故事版（Storyboard）或者 NIB 文件；</li>
+<li>手写代码，创建并添加 UI 控件；</li>
+<li>手写代码，直接绘制视图；</li>
+</ol>
+<p>开门见山，我会用以上三种不同的方式创建如下的复合视图（<strong>UITableViewCell</strong> 实例对象），并加载到 <strong>UITableViewController</strong> 页面上，同时测试它们各自的性能（耗时、内存占用）。</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/2648731-98efc36f39cff5fe.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="UITableViewCell"></p>
+<p>元素：四个 <strong>UILabel</strong>、两个 <strong>UIImage</strong> 和一个 <strong>UIButton</strong> 对象。</p>
+<p>从左到右，从上到下依次是：</p>
+<table>
+<thead>
+<tr>
+<th>控件</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>UIImage</td>
+<td>邮件状态图片（已读、未读、已回复）</td>
+</tr>
+<tr>
+<td>UILabel</td>
+<td>E-mail 地址</td>
+</tr>
+<tr>
+<td>UILabel</td>
+<td>时间</td>
+</tr>
+<tr>
+<td>UIImage</td>
+<td>是否有附件的图片📎</td>
+</tr>
+<tr>
+<td>UILabel</td>
+<td>邮件主题</td>
+</tr>
+<tr>
+<td>UIButton</td>
+<td>选中按钮</td>
+</tr>
+<tr>
+<td>UILabel</td>
+<td>邮件摘要</td>
+</tr>
+</tbody>
+</table>
+<h2 id="一、复合视图（NIB方式）"><a href="#一、复合视图（NIB方式）" class="headerlink" title="一、复合视图（NIB方式）"></a>一、复合视图（NIB方式）</h2><p>使用NIB方式创建复合视图是最简单的方式（特点🤩：速度快、简单可视化），我们需要创建一个继承于 <strong>UITableViewCell</strong> 的新类：</p>
+<p>记得勾选  ☑️<strong>Also create XIB file</strong></p>
+<p><img src="http://upload-images.jianshu.io/upload_images/2648731-9509c5a0f9cfa072.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image"></p>
+<p>然后向 NIB 文件中拖拽添加四个 <strong>UILabel</strong>、两个 <strong>UIImage</strong> 和一个 <strong>UIButton</strong> 控件，同时做好自动布局：</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/2648731-82afc7560c2aa03b.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image"></p>
+<h2 id="二、复合视图（手写代码）"><a href="#二、复合视图（手写代码）" class="headerlink" title="二、复合视图（手写代码）"></a>二、复合视图（手写代码）</h2><p>使用手写代码创建复合视图耗时较长（特点✏️：速度慢、但是方便重用），同时我遵循了MVC的设计模式，为它创建了一个模型类。</p>
+<h3 id="HPMailModel——模型类"><a href="#HPMailModel——模型类" class="headerlink" title="HPMailModel——模型类"></a>HPMailModel——模型类</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">// HPMailModel.h</span><br><span class="line">#import &lt;Foundation/Foundation.h&gt;</span><br><span class="line"></span><br><span class="line">typedef NS_ENUM(NSUInteger, HPMailModelStatus) &#123;</span><br><span class="line">    HPMailModelStatusUnread,</span><br><span class="line">    HPMailModelStatusRead,</span><br><span class="line">    HPMailModelStatusReplied,</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> 邮箱模型</span><br><span class="line"> */</span><br><span class="line">@interface HPMailModel : NSObject</span><br><span class="line"></span><br><span class="line">@property (nonatomic, copy, readonly) NSString *email;</span><br><span class="line">@property (nonatomic, copy, readonly) NSString *subject;</span><br><span class="line">@property (nonatomic, copy, readonly) NSString *date;</span><br><span class="line">@property (nonatomic, copy, readonly) NSString *snippet;</span><br><span class="line">@property (nonatomic, assign, readonly) HPMailModelStatus mailStatus;</span><br><span class="line">@property (nonatomic, assign, readonly) BOOL hasAttachment;</span><br><span class="line">@property (nonatomic, assign, readwrite) BOOL isMailSelected;</span><br><span class="line"></span><br><span class="line">- (instancetype)initWithEmail:(NSString *)email</span><br><span class="line">                      subject:(NSString *)subject</span><br><span class="line">                         date:(NSString *)date</span><br><span class="line">                      snippet:(NSString *)snippet</span><br><span class="line">                  emailStatus:(HPMailModelStatus)status</span><br><span class="line">                hasAttachment:(BOOL)hasAttachment;</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">//  HPMailModel.m</span><br><span class="line">// 避免干扰，省略其它代码...</span><br></pre></td></tr></table></figure>
+<h3 id="HPMailCompositeHandCell——视图类"><a href="#HPMailCompositeHandCell——视图类" class="headerlink" title="HPMailCompositeHandCell——视图类"></a>HPMailCompositeHandCell——视图类</h3><p>步骤：</p>
+<ul>
+<li>创建一个继承于 <strong>UITableViewCell</strong> 的新类；</li>
+<li>使用 <code>@property</code> 属性创建 UI 控件支持细节；</li>
+<li>在 <code>contentView</code> 中添加所需的子视图并做好自动布局；</li>
+<li>渲染数据；</li>
+</ul>
+<p>其它说明：</p>
+<ul>
+<li>所有控件通过 Lazy Loading 方式设置；</li>
+<li>使用了 <strong><a href="https://github.com/SnapKit/Masonry" target="_blank" rel="noopener">Masonry</a></strong> 框架实现自动布局；</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br></pre></td><td class="code"><pre><span class="line">//  HPMailCompositeHandCell.h</span><br><span class="line">#import &lt;UIKit/UIKit.h&gt;</span><br><span class="line">@class HPMailModel;</span><br><span class="line"></span><br><span class="line">UIKIT_EXTERN const CGFloat HPMailCompositeHandCellHeight;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> 复合视图，手写代码</span><br><span class="line"> */</span><br><span class="line">@interface HPMailCompositeHandCell : UITableViewCell</span><br><span class="line"></span><br><span class="line">@property (nonatomic, strong) HPMailModel *model;</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">//  HPMailCompositeHandCell.m</span><br><span class="line">#import &quot;HPMailCompositeHandCell.h&quot;</span><br><span class="line"></span><br><span class="line">// Model</span><br><span class="line">#import &quot;HPMailModel.h&quot;</span><br><span class="line"></span><br><span class="line">// Utils</span><br><span class="line">#import &lt;Masonry.h&gt;</span><br><span class="line"></span><br><span class="line">const CGFloat HPMailCompositeHandCellHeight = 64;</span><br><span class="line"></span><br><span class="line">@interface HPMailCompositeHandCell ()</span><br><span class="line"></span><br><span class="line">@property (nonatomic, strong) UILabel *emailLabel;</span><br><span class="line">@property (nonatomic, strong) UILabel *subjectLabel;</span><br><span class="line">@property (nonatomic, strong) UILabel *snippetLabel;</span><br><span class="line">@property (nonatomic, strong) UILabel *dateLabel;</span><br><span class="line">@property (nonatomic, strong) UIButton *sectionButton;</span><br><span class="line">@property (nonatomic, strong) UIImageView *statusImageView;</span><br><span class="line">@property (nonatomic, strong) UIImageView *attachmentImageView;</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">@implementation HPMailCompositeHandCell</span><br><span class="line"></span><br><span class="line">#pragma mark - Lifecycle</span><br><span class="line"></span><br><span class="line">- (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier &#123;</span><br><span class="line">    self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];</span><br><span class="line">    if (self) &#123;</span><br><span class="line">        [self addSubviews];</span><br><span class="line">    &#125;</span><br><span class="line">    return self;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">#pragma mark - Custom Accessors</span><br><span class="line"></span><br><span class="line">-(void)setModel:(HPMailModel *)model &#123;</span><br><span class="line">    _model = model;</span><br><span class="line">    [self render];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (UILabel *)emailLabel &#123;</span><br><span class="line">    if (!_emailLabel) &#123;</span><br><span class="line">        _emailLabel = [[UILabel alloc] init];</span><br><span class="line">        _emailLabel.font = [UIFont boldSystemFontOfSize:13.0f];</span><br><span class="line">    &#125;</span><br><span class="line">    return _emailLabel;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (UILabel *)subjectLabel &#123;</span><br><span class="line">    if (!_subjectLabel) &#123;</span><br><span class="line">        _subjectLabel = [[UILabel alloc] init];</span><br><span class="line">        _subjectLabel.font = [UIFont systemFontOfSize:13.0f];</span><br><span class="line">    &#125;</span><br><span class="line">    return _subjectLabel;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (UILabel *)snippetLabel &#123;</span><br><span class="line">    if (!_snippetLabel) &#123;</span><br><span class="line">        _snippetLabel = [[UILabel alloc] init];</span><br><span class="line">        _snippetLabel.font = [UIFont systemFontOfSize:13.0f];</span><br><span class="line">    &#125;</span><br><span class="line">    return _snippetLabel;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (UILabel *)dateLabel &#123;</span><br><span class="line">    if (!_dateLabel) &#123;</span><br><span class="line">        _dateLabel = [[UILabel alloc] init];</span><br><span class="line">        _dateLabel.font = [UIFont systemFontOfSize:13.0f];</span><br><span class="line">    &#125;</span><br><span class="line">    return _dateLabel;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (UIImageView *)statusImageView &#123;</span><br><span class="line">    if (!_statusImageView) &#123;</span><br><span class="line">        _statusImageView = [[UIImageView alloc] init];</span><br><span class="line">    &#125;</span><br><span class="line">    return _statusImageView;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (UIImageView *)attachmentImageView &#123;</span><br><span class="line">    if (!_attachmentImageView) &#123;</span><br><span class="line">        _attachmentImageView = [[UIImageView alloc] init];</span><br><span class="line">    &#125;</span><br><span class="line">    return _attachmentImageView;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (UIButton *)sectionButton &#123;</span><br><span class="line">    if (!_sectionButton) &#123;</span><br><span class="line">        _sectionButton = [UIButton buttonWithType:UIButtonTypeCustom];</span><br><span class="line">        [_sectionButton addTarget:self action:@selector(sectionButtonDidClicked:) forControlEvents:UIControlEventTouchUpInside];</span><br><span class="line">    &#125;</span><br><span class="line">    return _sectionButton;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">#pragma mark - IBActions</span><br><span class="line"></span><br><span class="line">- (void)sectionButtonDidClicked:(id)sender &#123;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">#pragma mark - Private</span><br><span class="line"></span><br><span class="line">- (void)addSubviews &#123;</span><br><span class="line">    [self.contentView addSubview:self.statusImageView];</span><br><span class="line">    [self.contentView addSubview:self.attachmentImageView];</span><br><span class="line">    [self.contentView addSubview:self.sectionButton];</span><br><span class="line">    [self.contentView addSubview:self.emailLabel];</span><br><span class="line">    [self.contentView addSubview:self.subjectLabel];</span><br><span class="line">    [self.contentView addSubview:self.snippetLabel];</span><br><span class="line">    [self.contentView addSubview:self.dateLabel];</span><br><span class="line">    </span><br><span class="line">    CGSize size = CGSizeMake(12, 12);</span><br><span class="line">    [self.statusImageView mas_makeConstraints:^(MASConstraintMaker *make) &#123;</span><br><span class="line">        make.top.mas_equalTo(self.contentView).with.offset(4);</span><br><span class="line">        make.left.mas_equalTo(self.contentView).with.offset(8);</span><br><span class="line">        make.size.mas_equalTo(size);</span><br><span class="line">    &#125;];</span><br><span class="line">    [self.attachmentImageView mas_makeConstraints:^(MASConstraintMaker *make) &#123;</span><br><span class="line">        make.top.equalTo(self.statusImageView.mas_bottom).with.offset(4);</span><br><span class="line">        make.left.equalTo(self.statusImageView);</span><br><span class="line">        make.size.mas_equalTo(size);</span><br><span class="line">    &#125;];</span><br><span class="line">    [self.sectionButton mas_makeConstraints:^(MASConstraintMaker *make) &#123;</span><br><span class="line">        make.top.equalTo(self.attachmentImageView.mas_bottom).with.offset(4);</span><br><span class="line">        make.left.equalTo(self.statusImageView);</span><br><span class="line">        make.size.mas_equalTo(size);</span><br><span class="line">    &#125;];</span><br><span class="line">    [self.emailLabel mas_makeConstraints:^(MASConstraintMaker *make) &#123;</span><br><span class="line">        make.top.equalTo(self.statusImageView);</span><br><span class="line">        make.left.equalTo(self.statusImageView.mas_right).with.offset(8);</span><br><span class="line">        make.height.mas_equalTo(16);</span><br><span class="line">    &#125;];</span><br><span class="line">    [self.subjectLabel mas_makeConstraints:^(MASConstraintMaker *make) &#123;</span><br><span class="line">        make.top.equalTo(self.emailLabel.mas_bottom).with.offset(8);</span><br><span class="line">        make.left.equalTo(self.emailLabel);</span><br><span class="line">        make.height.mas_equalTo(16);</span><br><span class="line">    &#125;];</span><br><span class="line">    [self.dateLabel mas_makeConstraints:^(MASConstraintMaker *make) &#123;</span><br><span class="line">        make.top.equalTo(self.emailLabel);</span><br><span class="line">        make.right.equalTo(self.contentView);</span><br><span class="line">        make.size.mas_equalTo(CGSizeMake(60, 16));</span><br><span class="line">        make.left.equalTo(self.subjectLabel.mas_right).with.offset(12);</span><br><span class="line">    &#125;];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)render &#123;</span><br><span class="line">    self.emailLabel.text = self.model.email;</span><br><span class="line">    self.subjectLabel.text = self.model.subject;</span><br><span class="line">    self.snippetLabel.text = self.model.snippet;</span><br><span class="line">    self.dateLabel.text= self.model.date;</span><br><span class="line">    </span><br><span class="line">    // 邮箱状态</span><br><span class="line">    UIImage *statusImage = nil;</span><br><span class="line">    switch (self.model.mailStatus) &#123;</span><br><span class="line">        case HPMailModelStatusUnread:</span><br><span class="line">            statusImage = [UIImage imageNamed:@&quot;mail_unread&quot;];</span><br><span class="line">            break;</span><br><span class="line">        case HPMailModelStatusRead:</span><br><span class="line">            statusImage = [UIImage imageNamed:@&quot;mail_read&quot;];</span><br><span class="line">            break;</span><br><span class="line">        case HPMailModelStatusReplied:</span><br><span class="line">            statusImage = [UIImage imageNamed:@&quot;mail_replied&quot;];</span><br><span class="line">            break;</span><br><span class="line">    &#125;</span><br><span class="line">    self.statusImageView.image = statusImage;</span><br><span class="line">    </span><br><span class="line">    // 是否有附件</span><br><span class="line">    UIImage *attachmentImage = nil;</span><br><span class="line">    if (self.model.hasAttachment) &#123;</span><br><span class="line">        attachmentImage = [UIImage imageNamed:@&quot;mail_attachment&quot;];</span><br><span class="line">    &#125;</span><br><span class="line">    self.attachmentImageView.image = attachmentImage;</span><br><span class="line">    </span><br><span class="line">    // 选中状态</span><br><span class="line">    UIImage *selectedImage = [UIImage imageNamed:</span><br><span class="line">        (self.model.isMailSelected ? @&quot;mail_selected&quot; : @&quot;mail_unselected&quot;)];</span><br><span class="line">    [self.sectionButton setBackgroundImage:selectedImage forState:UIControlStateNormal];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="三、直接绘制"><a href="#三、直接绘制" class="headerlink" title="三、直接绘制"></a>三、直接绘制</h2><p>直接绘制自定义视图的方案参考自 Twitter 的这篇博客：<a href="https://blog.twitter.com/engineering/en_us/a/2012/simple-strategies-for-smooth-animation-on-the-iphone.html" target="_blank" rel="noopener">Simple Strategies for Smooth Animation on the iPhone @Twitter Blog</a></p>
+<p>直接绘制自定义视图：</p>
+<ul>
+<li>创建一个继承于 <strong>UITableViewCell</strong> 的新类；</li>
+<li>使用 <code>@property</code> 属性支持细节。</li>
+<li>覆盖 <code>drawRect:</code> 方法自定义渲染元素；</li>
+</ul>
+<h3 id="HPMailDirectDrawCell——视图类"><a href="#HPMailDirectDrawCell——视图类" class="headerlink" title="HPMailDirectDrawCell——视图类"></a>HPMailDirectDrawCell——视图类</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br></pre></td><td class="code"><pre><span class="line">//  HPMailDirectDrawCell.h</span><br><span class="line">#import &lt;UIKit/UIKit.h&gt;</span><br><span class="line"></span><br><span class="line">// 邮件状态</span><br><span class="line">typedef NS_ENUM(NSUInteger, HPMailDirectDrawCellStatus) &#123;</span><br><span class="line">    HPMailDirectDrawCellStatusUnread,</span><br><span class="line">    HPMailDirectDrawCellStatusRead,</span><br><span class="line">    HPMailDirectDrawCellStatusReplied,</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> 直接绘制视图</span><br><span class="line"> */</span><br><span class="line">@interface HPMailDirectDrawCell : UITableViewCell</span><br><span class="line"></span><br><span class="line">@property (nonatomic, copy) NSString *email;   // 邮箱</span><br><span class="line">@property (nonatomic, copy) NSString *subject; // 主题</span><br><span class="line">@property (nonatomic, copy) NSString *date;    // 日期</span><br><span class="line">@property (nonatomic, copy) NSString *snippet; // 摘要</span><br><span class="line">@property (nonatomic, assign) HPMailDirectDrawCellStatus mailStatus; // 邮件状态</span><br><span class="line">@property (nonatomic, assign) BOOL hasAttachment;  // 是否有附件</span><br><span class="line">@property (nonatomic, assign) BOOL isMailSelected; // 是否已发送</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">//  HPMailDirectDrawCell.m</span><br><span class="line">#import &quot;HPMailDirectDrawCell.h&quot;</span><br><span class="line"></span><br><span class="line">@implementation HPMailDirectDrawCell</span><br><span class="line"></span><br><span class="line">#pragma mark - Lifecycle</span><br><span class="line">// 省略初始化方法...</span><br><span class="line"></span><br><span class="line">// 覆盖 drawRect 方法</span><br><span class="line">- (void)drawRect:(CGRect)rect &#123;</span><br><span class="line"></span><br><span class="line">    // 1.邮箱状态</span><br><span class="line">    UIImage *statusImage = nil;</span><br><span class="line">    switch (self.mailStatus) &#123;</span><br><span class="line">        case HPMailDirectDrawCellStatusUnread:</span><br><span class="line">            statusImage = [UIImage imageNamed:@&quot;mail_unread&quot;];</span><br><span class="line">            break;</span><br><span class="line">        case HPMailDirectDrawCellStatusRead:</span><br><span class="line">            statusImage = [UIImage imageNamed:@&quot;mail_read&quot;];</span><br><span class="line">            break;</span><br><span class="line">        case HPMailDirectDrawCellStatusReplied:</span><br><span class="line">            statusImage = [UIImage imageNamed:@&quot;mail_replied&quot;];</span><br><span class="line">            break;</span><br><span class="line">    &#125;</span><br><span class="line">    CGRect statusRect = CGRectMake(8, 4, 12, 12);</span><br><span class="line">    [statusImage drawInRect:statusRect];</span><br><span class="line">    </span><br><span class="line">    // 2.附件</span><br><span class="line">    UIImage *attachmentImage = nil;</span><br><span class="line">    if (self.hasAttachment) &#123;</span><br><span class="line">        attachmentImage = [UIImage imageNamed:@&quot;mail_attachment&quot;];</span><br><span class="line">    &#125;</span><br><span class="line">    CGRect attachmentRect = CGRectMake(8, 20, 12, 12);</span><br><span class="line">    [attachmentImage drawInRect:attachmentRect];</span><br><span class="line">    </span><br><span class="line">    // 3.邮件选中状态</span><br><span class="line">    UIImage *selectedImage = [UIImage imageNamed:</span><br><span class="line">        (self.isMailSelected ? @&quot;mail_selected&quot; : @&quot;mail_unselected&quot;)];</span><br><span class="line">    CGRect selectedRect = CGRectMake(8, 36, 12, 12);</span><br><span class="line">    [selectedImage drawInRect:selectedRect];</span><br><span class="line">    </span><br><span class="line">    // 或者使用 Core Graphics绘制矢量图像</span><br><span class="line">    </span><br><span class="line">    CGFloat fontSize = 13;</span><br><span class="line">    CGFloat width = rect.size.width;</span><br><span class="line">    CGFloat remainderWidth = width - 28;</span><br><span class="line">    </span><br><span class="line">    // 4.邮箱</span><br><span class="line">    CGFloat emailWidth = remainderWidth - 72;</span><br><span class="line">    UIFont *emailFont = [UIFont boldSystemFontOfSize:fontSize];</span><br><span class="line">    NSDictionary *attrs = @&#123;NSFontAttributeName : emailFont&#125;;</span><br><span class="line">    [self.email drawInRect:CGRectMake(28, 4, emailWidth, 16) withAttributes:attrs];</span><br><span class="line">    </span><br><span class="line">    // 5.主题、6.摘要</span><br><span class="line">    UIFont *stdFont = [UIFont systemFontOfSize:fontSize];</span><br><span class="line">    NSDictionary *attrs2 = @&#123;NSFontAttributeName : stdFont&#125;;</span><br><span class="line">    [self.subject drawInRect:CGRectMake(28, 24, remainderWidth, 16) withAttributes:attrs2];</span><br><span class="line">    [self.snippet drawInRect:CGRectMake(28, 44, remainderWidth, 16) withAttributes:attrs2];</span><br><span class="line">    </span><br><span class="line">    // 7.日期</span><br><span class="line">    UIFont *verdana = [UIFont fontWithName:@&quot;Verdana&quot; size:10];</span><br><span class="line">    NSDictionary *attrs3 = @&#123;NSFontAttributeName : verdana&#125;;</span><br><span class="line">    [self.date drawInRect:CGRectMake(width - 60, 4, 60, 16) withAttributes:attrs3];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="绘制图像的其它方法"><a href="#绘制图像的其它方法" class="headerlink" title="绘制图像的其它方法"></a>绘制图像的其它方法</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">// YYKit 中的方法，封装了可以绘制圆角的功能，最终还是调用了 drawInRect: 方法绘制图片。</span><br><span class="line">- (void)drawInRect:(CGRect)rect withContentMode:(UIViewContentMode)contentMode clipsToBounds:(BOOL)clips&#123;</span><br><span class="line">    CGRect drawRect = YYCGRectFitWithContentMode(rect, self.size, contentMode);</span><br><span class="line">    if (drawRect.size.width == 0 || drawRect.size.height == 0) return;</span><br><span class="line">    if (clips) &#123;</span><br><span class="line">        CGContextRef context = UIGraphicsGetCurrentContext();</span><br><span class="line">        if (context) &#123;</span><br><span class="line">            CGContextSaveGState(context);</span><br><span class="line">            CGContextAddRect(context, rect);</span><br><span class="line">            CGContextClip(context);</span><br><span class="line">            [self drawInRect:drawRect];</span><br><span class="line">            CGContextRestoreGState(context);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        [self drawInRect:drawRect];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>使用 Core Graphics 绘制矢量图像:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">// 获取上下文</span><br><span class="line">CGContextRef context =UIGraphicsGetCurrentContext();</span><br><span class="line">// 绘制的图片</span><br><span class="line">UIImage *image = [UIImage imageNamed:@&quot;image.png&quot;];</span><br><span class="line">// 使用Quarzt2D绘制的图片是倒置的，使用下方法设置坐标原点和显示比例来改变坐标系</span><br><span class="line">CGContextTranslateCTM(context,0.0f,self.frame.size.height);</span><br><span class="line">CGContextScaleCTM(context,1.0,-1.0);</span><br><span class="line">// 在上下文绘制图片</span><br><span class="line">CGContextDrawImage(context,CGRectMake(220,130, image.size.width, image.size.height), image.CGImage);</span><br></pre></td></tr></table></figure>
+<h2 id="四、真机测试"><a href="#四、真机测试" class="headerlink" title="四、真机测试"></a>四、真机测试</h2><blockquote>
+<p>💡 应用以 60 FPS 流畅运行的最低要求是，在 16.66 毫秒内完成向下一帧过度的全部操作。</p>
+</blockquote>
+<p>注：以下数据通过运行 iOS 11.1.2 (15B202) 系统的 iPhone 7 测试获得。</p>
+<p>测试耗时方法参考：<a href="https://gist.github.com/bignerdranch/2006587" target="_blank" rel="noopener">https://gist.github.com/bignerdranch/2006587</a></p>
+<h3 id="复合视图（NIB方式）"><a href="#复合视图（NIB方式）" class="headerlink" title="复合视图（NIB方式）"></a>复合视图（NIB方式）</h3><p>使用NIB方式创建 <strong>UITableViewCell</strong>。</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/2648731-af5a0d08816816f3.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image"></p>
+<p>控制台输出：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">2017-12-06 14:36:09.874935+0800 HighPerformanceUI[16261:3579882] [cell 0]:Time=10111458 ns</span><br><span class="line">2017-12-06 14:36:09.890794+0800 HighPerformanceUI[16261:3579882] [cell 1]:Time=8530750 ns</span><br><span class="line">2017-12-06 14:36:09.903253+0800 HighPerformanceUI[16261:3579882] [cell 2]:Time=6119000 ns</span><br><span class="line">2017-12-06 14:36:09.914309+0800 HighPerformanceUI[16261:3579882] [cell 3]:Time=6263000 ns</span><br><span class="line">2017-12-06 14:36:09.924998+0800 HighPerformanceUI[16261:3579882] [cell 4]:Time=5909041 ns</span><br><span class="line">2017-12-06 14:36:09.935583+0800 HighPerformanceUI[16261:3579882] [cell 5]:Time=5874208 ns</span><br><span class="line">2017-12-06 14:36:09.946026+0800 HighPerformanceUI[16261:3579882] [cell 6]:Time=5770791 ns</span><br><span class="line">2017-12-06 14:36:09.954495+0800 HighPerformanceUI[16261:3579882] [cell 7]:Time=4502458 ns</span><br><span class="line">2017-12-06 14:36:09.962873+0800 HighPerformanceUI[16261:3579882] [cell 8]:Time=4586708 ns</span><br><span class="line">2017-12-06 14:36:09.971758+0800 HighPerformanceUI[16261:3579882] [cell 9]:Time=4689791 ns</span><br><span class="line">2017-12-06 14:36:09.981224+0800 HighPerformanceUI[16261:3579882] [cell 10]:Time=4822166 ns</span><br><span class="line">2017-12-06 14:36:09.989914+0800 HighPerformanceUI[16261:3579882] [cell 11]:Time=5009750 ns</span><br><span class="line">2017-12-06 14:36:09.997674+0800 HighPerformanceUI[16261:3579882] [cell 12]:Time=4151583 ns</span><br><span class="line">2017-12-06 14:36:10.004306+0800 HighPerformanceUI[16261:3579882] [cell 13]:Time=3466333 ns</span><br><span class="line">2017-12-06 14:36:10.521526+0800 HighPerformanceUI[16261:3579882] -[HPMailCompositeTableViewController viewDidAppear:]</span><br><span class="line">2017-12-06 14:36:11.392751+0800 HighPerformanceUI[16261:3579882] [cell 10]:Time=808458 ns</span><br><span class="line">2017-12-06 14:36:11.541379+0800 HighPerformanceUI[16261:3579882] [cell 11]:Time=517666 ns</span><br><span class="line">2017-12-06 14:36:11.707820+0800 HighPerformanceUI[16261:3579882] [cell 12]:Time=514291 ns</span><br><span class="line">2017-12-06 14:36:12.246696+0800 HighPerformanceUI[16261:3579882] [cell 13]:Time=1041750 ns</span><br><span class="line">2017-12-06 14:36:12.293053+0800 HighPerformanceUI[16261:3579882] [cell 14]:Time=1011333 ns</span><br><span class="line">2017-12-06 14:36:12.391600+0800 HighPerformanceUI[16261:3579882] [cell 15]:Time=627208 ns</span><br><span class="line">2017-12-06 14:36:12.557976+0800 HighPerformanceUI[16261:3579882] [cell 16]:Time=656208 ns</span><br><span class="line">2017-12-06 14:36:13.093015+0800 HighPerformanceUI[16261:3579882] [cell 17]:Time=1229708 ns</span><br><span class="line">2017-12-06 14:36:13.142731+0800 HighPerformanceUI[16261:3579882] [cell 18]:Time=1018208 ns</span><br><span class="line">2017-12-06 14:36:13.209316+0800 HighPerformanceUI[16261:3579882] [cell 19]:Time=1027208 ns</span><br><span class="line">2017-12-06 14:36:13.693038+0800 HighPerformanceUI[16261:3579882] [cell 20]:Time=819666 ns</span><br><span class="line">2017-12-06 14:36:13.726195+0800 HighPerformanceUI[16261:3579882] [cell 21]:Time=1128666 ns</span><br></pre></td></tr></table></figure>
+<h4 id="测试数据："><a href="#测试数据：" class="headerlink" title="测试数据："></a>测试数据：</h4><table>
+<thead>
+<tr>
+<th>任务</th>
+<th>多次统计值（毫秒）</th>
+<th>耗时评估</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>首次初始化</td>
+<td>10.1、11.72、10.23、9.9</td>
+<td>⚠️高</td>
+</tr>
+<tr>
+<td>后续初始化</td>
+<td>3.1～7.6、3.3～8.5、3.3～8.5、3.1～8.4</td>
+<td>中</td>
+</tr>
+<tr>
+<td>滚动后的首次初始化</td>
+<td>0.75、0.74、0.58、0.42</td>
+<td>低</td>
+</tr>
+<tr>
+<td>滚动后的第二次初始化</td>
+<td>0.49、0.5、0.49、0.49</td>
+<td>低</td>
+</tr>
+<tr>
+<td>重用</td>
+<td>0.48～0.64、0.52～0.99、0.41～1.1、0.62～2.3</td>
+<td>低</td>
+</tr>
+<tr>
+<td>内存</td>
+<td>2M左右</td>
+<td>中</td>
+</tr>
+</tbody>
+</table>
+<h4 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h4><ul>
+<li>首次初始化和后续初始化相对耗时。</li>
+<li>滚动后的初始化及重用耗时较低。</li>
+<li>因为是使用的 NIB 方式创建视图，而加载 XML 格式的NIB资源会消耗些许资源，因此会有一定的内存占用。</li>
+</ul>
+<h3 id="复合视图（手写代码）"><a href="#复合视图（手写代码）" class="headerlink" title="复合视图（手写代码）"></a>复合视图（手写代码）</h3><p>使用手写代码的方式创建 <strong>UITableViewCell</strong>。</p>
+<h4 id="测试数据：-1"><a href="#测试数据：-1" class="headerlink" title="测试数据："></a>测试数据：</h4><table>
+<thead>
+<tr>
+<th>任务</th>
+<th>多次统计值（毫秒）</th>
+<th>耗时评估</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>首次初始化</td>
+<td>5.5、7.8、7.5</td>
+<td>高</td>
+</tr>
+<tr>
+<td>后续初始化</td>
+<td>3.3～5.1、3.4～7.4、3.4～7.4</td>
+<td>中</td>
+</tr>
+<tr>
+<td>滚动后的首次初始化</td>
+<td>0.87、0.98、1.2</td>
+<td>低</td>
+</tr>
+<tr>
+<td>滚动后的第二次初始化</td>
+<td>0.73、0.96、0.95</td>
+<td>低</td>
+</tr>
+<tr>
+<td>重用</td>
+<td>0.8～2.7、0.98~1.4、0.9～1.4</td>
+<td>低</td>
+</tr>
+<tr>
+<td>内存</td>
+<td>0.6M左右</td>
+<td>低</td>
+</tr>
+</tbody>
+</table>
+<h4 id="结论-1"><a href="#结论-1" class="headerlink" title="结论"></a>结论</h4><ul>
+<li>首次初始化和后续初始化耗时相对于 NIB 方式低 50%。</li>
+<li>滚动后的初始化及重用耗时，相对于NIB方式 高50%。</li>
+<li>此方式内存占用最少。</li>
+</ul>
+<h3 id="直接绘制"><a href="#直接绘制" class="headerlink" title="直接绘制"></a>直接绘制</h3><p>通过覆盖 <code>drawRect:</code> 方法直接绘制内容的方式创建  <strong>UITableViewCell</strong>。</p>
+<h4 id="测试数据"><a href="#测试数据" class="headerlink" title="测试数据"></a>测试数据</h4><table>
+<thead>
+<tr>
+<th>任务</th>
+<th>多次统计值（毫秒）</th>
+<th>耗时评估</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>首次初始化</td>
+<td>1.6、1.5、1.0、1.2、1.8</td>
+<td>低</td>
+</tr>
+<tr>
+<td>后续初始化</td>
+<td>0.9～1.2、0.87～0.93、0.87～1.0</td>
+<td>低</td>
+</tr>
+<tr>
+<td>滚动后的首次初始化</td>
+<td>0.39、0.38、0.37</td>
+<td>低</td>
+</tr>
+<tr>
+<td>滚动后的第二次初始化</td>
+<td>0.42、0.42、0.43</td>
+<td>低</td>
+</tr>
+<tr>
+<td>重用</td>
+<td>0.42～0.69、0.27～0.95、0.43～1.2</td>
+<td>低</td>
+</tr>
+<tr>
+<td>内存</td>
+<td>10M左右</td>
+<td>⚠️非常高</td>
+</tr>
+</tbody>
+</table>
+<h4 id="结论-2"><a href="#结论-2" class="headerlink" title="结论"></a>结论</h4><ul>
+<li>无论是首次初始化还是后续滚动重用，耗时都是最少的，基本在 1 毫秒左右。</li>
+<li>内存占用恐怖，将近 10M。之前也看到一篇文章讲 <code>dwawRect:</code> 方法会占据大量内存的，感兴趣的可以去看看：<a href="http://bihongbo.com/2016/01/03/memoryGhostdrawRect/" target="_blank" rel="noopener">内存恶鬼drawRect</a>。</li>
+</ul>
+<h3 id="总结：复合视图-VS-直接绘图"><a href="#总结：复合视图-VS-直接绘图" class="headerlink" title="总结：复合视图 VS 直接绘图"></a>总结：复合视图 VS 直接绘图</h3><h4 id="性能："><a href="#性能：" class="headerlink" title="性能："></a>性能：</h4><p><del>原文结论：从性能角度来看，在某些时候，直接绘图提供的性能比复合视图提供的要好一个数量级。</del></p>
+<p>我的结论：</p>
+<ul>
+<li>从<strong>耗时</strong>上看，直接绘图提供的性能确实比复合视图提供的要好很多：直接绘图耗时更低，且耗时稳定在 1毫秒左右，它的耗时波动性更小。而复合视图耗时不稳定，峰谷值差异较大，容易产生卡顿。</li>
+<li>但是，从<strong>内存占用</strong>上看，复合视图占用内存比直接绘图占用内存更少：<strong>手写代码 &lt; NIB 文件 &lt; 直接绘图</strong>。</li>
+</ul>
+<h4 id="维护："><a href="#维护：" class="headerlink" title="维护："></a>维护：</h4><p>原文结论：从代码可维护角度来看，直接绘图的代码会难以维护和发展。一旦应用稳定下来，你就可以比较明确地将复合UI换成直接绘图。</p>
+<p>我的结论：因为原文中，没有对内存占用这一项性能指标作评估，而直接绘图的内存占用不容轻易忽视。因此，是否真的要在实际项目中将复合视图替换成直接绘图还有待商榷，而优化是以代码复杂度和开发人员生产力为代价的。</p>
+<p><a href="http://wiki.c2.com/?PrematureOptimization" target="_blank" rel="noopener"><em>Premature optimization is the root of all evil</em> — DonaldKnuth</a></p>
+<h3 id="源码"><a href="#源码" class="headerlink" title="源码"></a>源码</h3><p>GitHub：<a href="https://github.com/Andy0570/HighPerformanceUI" target="_blank" rel="noopener">Andy0570/HighPerformanceUI</a></p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a href="https://blog.twitter.com/engineering/en_us/a/2012/simple-strategies-for-smooth-animation-on-the-iphone.html" target="_blank" rel="noopener">Simple Strategies for Smooth Animation on the iPhone @Twitter Blog</a></li>
+<li><a href="https://stackoverflow.com/questions/19405741/when-should-i-set-layer-shouldrasterize-to-yes" target="_blank" rel="noopener">When should I set layer.shouldRasterize to YES @stackoverflow</a></li>
+<li><a href="https://blog.ibireme.com/2015/11/12/smooth_user_interfaces_for_ios/" target="_blank" rel="noopener">iOS 保持界面流畅的技巧 @一只魔法师的工坊</a></li>
+<li><a href="http://pilky.me/36/" target="_blank" rel="noopener">Optimising Autolayout</a></li>
+</ul>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://andy0570.com/2017/11/28/NSPredicate/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="独木舟的木">
+      <meta itemprop="description" content="有时候阳光很好 有时候阳光很暗">
+      <meta itemprop="image" content="https://ws1.sinaimg.cn/large/006tNc79gy1g22m14458rj30u014xu0x.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="独木舟的木">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2017/11/28/NSPredicate/" class="post-title-link" itemprop="url">NSPredicate</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2017-11-28 17:18:00" itemprop="dateCreated datePublished" datetime="2017-11-28T17:18:00+08:00">2017-11-28</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-04-23 16:56:49" itemprop="dateModified" datetime="2019-04-23T16:56:49+08:00">2019-04-23</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Objective-C-编程/" itemprop="url" rel="index"><span itemprop="name">Objective-C 编程</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+            <span id="/2017/11/28/NSPredicate/" class="leancloud_visitors" data-flag-title="NSPredicate">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读次数：</span>
+              
+                <span class="leancloud-visitors-count"></span>
+            </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body han-init-context" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h4 id="NSPredicate-谓词"><a href="#NSPredicate-谓词" class="headerlink" title="NSPredicate 谓词"></a>NSPredicate 谓词</h4><p><strong>cocoa</strong>中提供了<strong>NSPredicate</strong>类，指定过滤器的条件。将符合条件的对象保留下来。</p>
+<p>正则表达式</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line">// 待匹配字符串</span><br><span class="line">NSString *string = @&quot;201709----201710&quot;;</span><br><span class="line"></span><br><span class="line">// --------------------------------</span><br><span class="line">// 1⃣️ NSPredicate</span><br><span class="line">// 正则表达式</span><br><span class="line">NSString *regex = @&quot;^\\d&#123;6&#125;\\D+\\d&#123;6&#125;$&quot;;</span><br><span class="line">// 创建 NSPredicate 实例对象</span><br><span class="line">NSPredicate *predicate = [NSPredicate predicateWithFormat:@&quot;SELF MATCHES %@&quot;,regex];</span><br><span class="line">// 是否匹配</span><br><span class="line">BOOL isMatch = [predicate evaluateWithObject:string];</span><br><span class="line">NSLog(@&quot;%@&quot;,isMatch ? @&quot;匹配&quot; : @&quot;不匹配&quot;);</span><br><span class="line"></span><br><span class="line">// --------------------------------</span><br><span class="line">// 2⃣️ NSString</span><br><span class="line">// 返回匹配到的第一个字符串范围</span><br><span class="line">NSRange range = [string rangeOfString:@&quot;\\d+&quot; options:NSRegularExpressionSearch];</span><br><span class="line">if (range.location != NSNotFound) &#123;</span><br><span class="line">    NSLog(@&quot;%@&quot;,[string substringWithRange:range]); // 201709</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// --------------------------------</span><br><span class="line">// 3⃣️ NSRegularExpression</span><br><span class="line">// 创建 NSRegularExpression 实例对象</span><br><span class="line">NSRegularExpression *regularExpression =</span><br><span class="line">    [NSRegularExpression regularExpressionWithPattern:regex</span><br><span class="line">                                              options:NSRegularExpressionCaseInsensitive</span><br><span class="line">                                                error:nil];</span><br><span class="line">// 1.查找第一个匹配结果，如果查找不到则返回 nil</span><br><span class="line">NSTextCheckingResult *firstMatch =</span><br><span class="line">    [regularExpression firstMatchInString:string</span><br><span class="line">                                  options:NSMatchingReportCompletion</span><br><span class="line">                                    range:NSMakeRange(0, string.length)];</span><br><span class="line">if (firstMatch) &#123;</span><br><span class="line">    // 如果匹配到结果，就打印</span><br><span class="line">    NSLog(@&quot;%@&quot;,[string substringWithRange:firstMatch.range]);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 2.查找字符串中所有的匹配结果</span><br><span class="line">NSArray *matches = [regularExpression matchesInString:string</span><br><span class="line">                                              options:NSMatchingReportProgress</span><br><span class="line">                                                range:NSMakeRange(0, string.length)];</span><br><span class="line">if (matches.count &gt; 0) &#123;</span><br><span class="line">    [matches enumerateObjectsUsingBlock:^(NSTextCheckingResult *obj, NSUInteger idx, BOOL * _Nonnull stop) &#123;</span><br><span class="line">        NSLog(@&quot;第 %lu 个结果 = %@&quot;,idx, [string substringWithRange:obj.range]);</span><br><span class="line">    &#125;];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h5 id="创建谓词"><a href="#创建谓词" class="headerlink" title="创建谓词"></a>创建谓词</h5><pre><code>// 设置谓词条件   
+NSPredicate *predicate = [NSPredicate predicateWithFormat:@&quot;age &lt;= 28&quot;];   
+for (Person *person in array) {   
+
+// 表示指定的对象是否满足谓词条件   
+if ([predicate evaluateWithObject:person]) {   
+//NSLog(@&quot;person name : %@&quot;, person.name);
+}   
+}   
+
+// 返回一个符合谓词条件的数组   
+NSArray *newArray = [array filteredArrayUsingPredicate:predicate];
+for (Person *person in newArray) {   
+NSLog(@&quot;person name : %@&quot;, [person valueForKey:@&quot;_name&quot;]);   
+}   
+</code></pre><h5 id="格式占位符"><a href="#格式占位符" class="headerlink" title="格式占位符"></a>格式占位符</h5><pre><code>// 格式占位符号
+NSPredicate *pre = [NSPredicate predicateWithFormat:@&quot; age &lt;= %d&quot;, 30];
+NSArray *array2 = [array filteredArrayUsingPredicate:pre];
+for (Person *person in array2) {
+NSLog(@&quot;person name 2 %@&quot;, [person valueForKey:@&quot;_name&quot;]);
+}
+</code></pre><h5 id="运算符"><a href="#运算符" class="headerlink" title="运算符"></a>运算符</h5><ul>
+<li>运算符号 的加⼊入 谓词不区分⼤大⼩小 &amp;&amp; AND || OR</li>
+</ul>
+<pre><code>NSPredicate *pre3 = [NSPredicate predicateWithFormat:@&quot;name &gt; &apos;bruse&apos; &amp;&amp;
+age &lt; %d&quot;, 30];
+NSArray *array4 = [array filteredArrayUsingPredicate:pre3];
+
+// 关键字 注意字符串⼀一定要添加&apos;&apos;
+NSPredicate *pre4 = [NSPredicate predicateWithFormat:@&quot;self.name IN
+{&apos;rose&apos;, &apos;bruse&apos;}&quot;];
+NSArray *array5 = [array filteredArrayUsingPredicate:pre4];
+NSLog(@&quot;person name : %@&quot;, [array5 valueForKey:@&quot;_name&quot;]);
+</code></pre><h5 id="关键字"><a href="#关键字" class="headerlink" title="关键字"></a>关键字</h5><ul>
+<li>以**开始——BEGINSWITH</li>
+</ul>
+<pre><code>// BEGINSWITH 检查某个字是否以**开头
+NSPredicate *pre5 = [NSPredicate predicateWithFormat:@&quot;self.name
+BEGINSWITH &apos;J&apos;&quot;];
+NSArray *array6 = [array filteredArrayUsingPredicate:pre5];
+NSLog(@&quot;person name : %@&quot;, [array6 valueForKey:@&quot;name&quot;]);
+</code></pre><ul>
+<li>以**结束——ENDSWITH</li>
+</ul>
+<pre><code>// ENDSWITH 检查某个字符是以**结尾
+NSPredicate *pre6 = [NSPredicate predicateWithFormat:@&quot;self.name endswith
+&apos;e&apos;&quot;];    
+NSArray *array7 = [array filteredArrayUsingPredicate:pre6];
+NSLog(@&quot;array7 : %@&quot;, [array7 valueForKey:@&quot;name&quot;]);
+</code></pre><ul>
+<li>包含——CONTAINS</li>
+</ul>
+<pre><code>// CONTAINS 检查包含某个字符
+NSPredicate *pre8 = [NSPredicate predicateWithFormat:@&quot;self.name CONTAINS
+&apos;⼩小&apos;&quot;];
+NSArray *array8 = [array filteredArrayUsingPredicate:pre8];
+NSLog(@&quot;array8 : %@&quot;, [array8 valueForKey:@&quot;name&quot;]);
+</code></pre>
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://andy0570.com/2017/11/28/iOS 编程：PDFKit/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="独木舟的木">
+      <meta itemprop="description" content="有时候阳光很好 有时候阳光很暗">
+      <meta itemprop="image" content="https://ws1.sinaimg.cn/large/006tNc79gy1g22m14458rj30u014xu0x.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="独木舟的木">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2017/11/28/iOS 编程：PDFKit/" class="post-title-link" itemprop="url">iOS 编程：PDFKit</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2017-11-28 15:22:00" itemprop="dateCreated datePublished" datetime="2017-11-28T15:22:00+08:00">2017-11-28</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-04-28 00:10:11" itemprop="dateModified" datetime="2019-04-28T00:10:11+08:00">2019-04-28</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/iOS/" itemprop="url" rel="index"><span itemprop="name">iOS</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+            <span id="/2017/11/28/iOS 编程：PDFKit/" class="leancloud_visitors" data-flag-title="iOS 编程：PDFKit">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读次数：</span>
+              
+                <span class="leancloud-visitors-count"></span>
+            </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body han-init-context" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <a id="more"></a>
+<p><a href="https://developer.apple.com/documentation/pdfkit?language=objc" target="_blank" rel="noopener">https://developer.apple.com/documentation/pdfkit?language=objc</a></p>
+<h1 id="PDFKit"><a href="#PDFKit" class="headerlink" title="PDFKit"></a>PDFKit</h1><p>在应用程序中显示和操作PDF文档。</p>
+<h1 id="Topics"><a href="#Topics" class="headerlink" title="Topics"></a>Topics</h1><h2 id="Views"><a href="#Views" class="headerlink" title="Views"></a>Views</h2><table>
+<thead>
+<tr>
+<th>属性</th>
+<th>注释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PDFView</td>
+<td>PDFView对象将PDF Kit的功能封装到单个小部件中，您可以使用Interface Builder将其添加到应用程序中。</td>
+</tr>
+<tr>
+<td>PDFThumbnailView</td>
+<td>PDFThumbnailView对象包含一组缩略图，每个缩略图代表PDF文档中的页面。</td>
+</tr>
+</tbody>
+</table>
+<h2 id="Content-Model"><a href="#Content-Model" class="headerlink" title="Content Model"></a>Content Model</h2><table>
+<thead>
+<tr>
+<th>属性</th>
+<th>注释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PDFDocument</td>
+<td>PDFDocument对象表示PDF数据或PDF文件，并定义写入，搜索和选择PDF数据的方法。</td>
+</tr>
+<tr>
+<td>PDFPage</td>
+<td>PDFPage是NSObject的子类，定义了用于呈现PDF页面的方法，并使用注释，文本和选择。</td>
+</tr>
+<tr>
+<td>PDFOutline</td>
+<td>PDFOutline对象是可以表示PDF文档结构的树结构层次结构中的元素。</td>
+</tr>
+<tr>
+<td>PDFSelection</td>
+<td>PDFSelection对象标识PDF文档中文本的连续或非连续选择的文字。</td>
+</tr>
+</tbody>
+</table>
+<h2 id="Annotations-注释"><a href="#Annotations-注释" class="headerlink" title="Annotations - 注释"></a>Annotations - 注释</h2><table>
+<thead>
+<tr>
+<th>属性</th>
+<th>注释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PDFAnnotation</td>
+<td>PDF文档中的注释。</td>
+</tr>
+<tr>
+<td>PDFAction</td>
+<td>激活PDF注释或单击大纲项目时执行的跳转操作。</td>
+</tr>
+<tr>
+<td>PDFDestination</td>
+<td>PDFDestination对象描述PDF页面上的跳转目录。</td>
+</tr>
+<tr>
+<td>PDFBorder</td>
+<td>可选的注释边框，完全在注释矩形内绘制。</td>
+</tr>
+</tbody>
+</table>
+<h2 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h2><p><a href="https://developer.apple.com/documentation/pdfkit/pdfkit_enumerations?language=objc" target="_blank" rel="noopener">PDFKit Enumerations</a></p>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
     
       
 
@@ -1918,706 +2849,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://andy0570.com/2017/11/08/MZTimerLabel——倒计时标签组件/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="独木舟的木">
-      <meta itemprop="description" content="有时候阳光很好 有时候阳光很暗">
-      <meta itemprop="image" content="https://ws1.sinaimg.cn/large/006tNc79gy1g22m14458rj30u014xu0x.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="独木舟的木">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2017/11/08/MZTimerLabel——倒计时标签组件/" class="post-title-link" itemprop="url">MZTimerLabel——倒计时标签组件</a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2017-11-08 23:52:00" itemprop="dateCreated datePublished" datetime="2017-11-08T23:52:00+08:00">2017-11-08</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2019-04-17 01:04:24" itemprop="dateModified" datetime="2019-04-17T01:04:24+08:00">2019-04-17</time>
-              
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/iOS-开源框架/" itemprop="url" rel="index"><span itemprop="name">iOS 开源框架</span></a></span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-            
-          
-
-          
-          
-            <span id="/2017/11/08/MZTimerLabel——倒计时标签组件/" class="leancloud_visitors" data-flag-title="MZTimerLabel——倒计时标签组件">
-              <span class="post-meta-divider">|</span>
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              
-                <span class="post-meta-item-text">阅读次数：</span>
-              
-                <span class="leancloud-visitors-count"></span>
-            </span>
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body han-init-context" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <ul>
-<li><a href="https://github.com/mineschan/MZTimerLabel" target="_blank" rel="noopener">GitHub：<strong>MZTimerLabel</strong></a></li>
-<li>star:1300+</li>
-</ul>
-<h1 id="MZTimerLabel"><a href="#MZTimerLabel" class="headerlink" title="MZTimerLabel"></a>MZTimerLabel</h1><p><img src="http://upload-images.jianshu.io/upload_images/2648731-87f72200d2bb9070.gif?imageMogr2/auto-orient/strip" alt="image"></p>
-<h3 id="目的"><a href="#目的" class="headerlink" title="目的"></a>目的</h3><p>MZTimerLabel 是 UILabel 的子类，它提供了使用 UILabel 作为倒计时器或者秒表（类似于Apple 的时钟App）的便捷方法，而且最少只需要<strong>2行代码</strong>。MZTimerLabel 也提供倒计时结束时的协议方法以供调用。</p>
-<h3 id="简单示例"><a href="#简单示例" class="headerlink" title="简单示例"></a>简单示例</h3><p>To use MZTimerLabel as a stopwatch and counter, you need only <strong>2 lines</strong>.<br> <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">MZTimerLabel *stopwatch = [[MZTimerLabel alloc] initWithLabel:aUILabel];</span><br><span class="line">[stopwatch start];</span><br></pre></td></tr></table></figure></p>
-<p>Easy? If you are looking for a timer, things is just similar.<br> <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">MZTimerLabel *timer = [[MZTimerLabel alloc] initWithLabel:aUILabel andTimerType:MZTimerLabelTypeTimer];</span><br><span class="line">[timer setCountDownTime:60];</span><br><span class="line">[timer start];</span><br></pre></td></tr></table></figure></p>
-<p>Now the timer will start counting from 60 to 0 ;)</p>
-<h3 id="自定义外观"><a href="#自定义外观" class="headerlink" title="自定义外观"></a>自定义外观</h3><p>As MZTimerLabel is a UILabel subclass, you can directly allocate it as a normal UILabel and customize <code>timeLabel</code> property just like usual.</p>
- <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">MZTimerLabel *redStopwatch = [[MZTimerLabel alloc] init];</span><br><span class="line">redStopwatch.frame = CGRectMake(100,50,100,20);</span><br><span class="line">redStopwatch.timeLabel.font = [UIFont systemFontOfSize:20.0f];</span><br><span class="line">redStopwatch.timeLabel.textColor = [UIColor redColor];</span><br><span class="line">[self.view addSubview:redStopwatch];</span><br><span class="line">[redStopwatch start];</span><br></pre></td></tr></table></figure>
-<p>MZTimerLabel uses <code>00:00:00 (HH:mm:ss)</code> as time format, if you prefer using another format such as including milliseconds.Your can set your time format like below.</p>
-<p><code>timerExample4.timeFormat = @&quot;HH:mm:ss SS&quot;;</code></p>
-<h3 id="Control-the-timer"><a href="#Control-the-timer" class="headerlink" title="Control the timer"></a>Control the timer</h3><p>You can start,pause,reset your timer with your custom control, set your control up and call these methods:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">-(void)start; // 开始 </span><br><span class="line">-(void)pause; // 暂停</span><br><span class="line">-(void)reset; // 重设</span><br></pre></td></tr></table></figure>
-<h4 id="Getter-and-Setters"><a href="#Getter-and-Setters" class="headerlink" title="Getter and Setters"></a>Getter and Setters</h4><p>You may control the time value and behaviours at the begining or during runtime with these properties and methods</p>
-<p>通过以下这些方法，你可以在倒计时一开始或者进行中控制时间值和行为。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">@property (assign) BOOL shouldCountBeyondHHLimit;   //see example #12</span><br><span class="line">@property (assign) BOOL resetTimerAfterFinish;      //see example #7</span><br><span class="line"></span><br><span class="line">-(void)setCountDownTime:(NSTimeInterval)time;</span><br><span class="line">-(void)setStopWatchTime:(NSTimeInterval)time;</span><br><span class="line">-(void)setCountDownToDate:(NSDate*)date;</span><br><span class="line">-(void)addTimeCountedByTime:(NSTimeInterval)timeToAdd; //see example #10, #11</span><br></pre></td></tr></table></figure>
-<p>And if you want to have information of the timer, here is how.</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">@property (assign,readonly) BOOL counting;  //see example #4-7</span><br><span class="line"></span><br><span class="line">- (NSTimeInterval)getTimeCounted;    //see example #3</span><br><span class="line">- (NSTimeInterval)getTimeRemaining;  //see example #3</span><br><span class="line">- (NSTimeInterval)getCountDownTime;</span><br></pre></td></tr></table></figure>
-<h3 id="Timer-Finish-Handling"><a href="#Timer-Finish-Handling" class="headerlink" title="Timer Finish Handling"></a>Timer Finish Handling</h3><p>Usually when you need a timer, you need to deal with it after it finished. Following are 2 examples showing how to do it using <code>delegate</code> and <code>block</code> methods.</p>
-<h4 id="代理方法"><a href="#代理方法" class="headerlink" title="代理方法"></a>代理方法</h4><p>First, set the delegate of the timer label.</p>
-<p><code>timer.delegate = self;</code></p>
-<p>And then implement <code>MZTimerLabelDelegate</code> protocol in your dedicated class</p>
-<p><code>@interface ViewController : UIViewController&lt;MZTimerLabelDelegate&gt;</code></p>
-<p>Finally, implement the delegate method <code>timerLabel:finshedCountDownTimerWithTimeWithTime:</code></p>
- <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">-(void)timerLabel:(MZTimerLabel*)timerLabel finshedCountDownTimerWithTime:(NSTimeInterval)countTime&#123;</span><br><span class="line">   //time is up, what should I do master?</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h4 id="Blocks-方法"><a href="#Blocks-方法" class="headerlink" title="Blocks 方法"></a>Blocks 方法</h4><p> Block is a very convenient way to handle the callbacks, MZTimerLabel makes your life even easier.</p>
- <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"> MZTimerLabel *timer = [[MZTimerLabel alloc] initWithLabel:aUILabel andTimerType:MZTimerLabelTypeTimer];</span><br><span class="line">[timer3 setCountDownTime:60]; </span><br><span class="line">[timer startWithEndingBlock:^(NSTimeInterval countTime) &#123;</span><br><span class="line">    //oh my gosh, it&apos;s awesome!!</span><br><span class="line">&#125;];</span><br></pre></td></tr></table></figure>
-<p> Or set it seperately</p>
- <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[timer3 setCountDownTime:60]; </span><br><span class="line">timer.endedBlock = ^(NSTimeInterval countTime) &#123;</span><br><span class="line">    //oh my gosh, it&apos;s awesome!!</span><br><span class="line">&#125;;</span><br><span class="line">[timer start];</span><br></pre></td></tr></table></figure>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://andy0570.com/2017/11/03/iOS 编程：关于 UIWebview scrollview 的 contentSize 问题/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="独木舟的木">
-      <meta itemprop="description" content="有时候阳光很好 有时候阳光很暗">
-      <meta itemprop="image" content="https://ws1.sinaimg.cn/large/006tNc79gy1g22m14458rj30u014xu0x.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="独木舟的木">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2017/11/03/iOS 编程：关于 UIWebview scrollview 的 contentSize 问题/" class="post-title-link" itemprop="url">iOS 编程：关于 UIWebview scrollview 的 contentSize 问题</a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2017-11-03 23:25:00" itemprop="dateCreated datePublished" datetime="2017-11-03T23:25:00+08:00">2017-11-03</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2019-04-18 01:10:58" itemprop="dateModified" datetime="2019-04-18T01:10:58+08:00">2019-04-18</time>
-              
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/iOS/" itemprop="url" rel="index"><span itemprop="name">iOS</span></a></span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-            
-          
-
-          
-          
-            <span id="/2017/11/03/iOS 编程：关于 UIWebview scrollview 的 contentSize 问题/" class="leancloud_visitors" data-flag-title="iOS 编程：关于 UIWebview scrollview 的 contentSize 问题">
-              <span class="post-meta-divider">|</span>
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              
-                <span class="post-meta-item-text">阅读次数：</span>
-              
-                <span class="leancloud-visitors-count"></span>
-            </span>
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body han-init-context" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <a id="more"></a>
-<p>动态改变 webview 的 frame 以达到 webview 刚好填充contentSize的效果</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 在Y方向给contentSize足够的空间</span></span><br><span class="line">_webView.scrollView.contentSize = <span class="built_in">CGSizeMake</span>(<span class="keyword">self</span>.view.bounds.size.width, MAXFLOAT);</span><br><span class="line"><span class="comment">// 加载本地HTML数据</span></span><br><span class="line">[_webView loadHTMLString:html baseURL:<span class="literal">nil</span>];</span><br><span class="line"></span><br><span class="line"><span class="comment">// web视图加载完成</span></span><br><span class="line">- (<span class="keyword">void</span>)webView:(<span class="built_in">WKWebView</span> *)webView didFinishNavigation:(<span class="built_in">WKNavigation</span> *)navigation &#123;</span><br><span class="line">    <span class="comment">// 在加载完毕之后获取webview内容所需要的空间</span></span><br><span class="line">    <span class="built_in">CGSize</span> size = [webView sizeThatFits:<span class="built_in">CGSizeMake</span>(<span class="keyword">self</span>.view.bounds.size.width, MAXFLOAT)];</span><br><span class="line">    <span class="built_in">CGRect</span> frame = <span class="built_in">CGRectMake</span>(<span class="number">0</span>, <span class="number">0</span>, size.width, size.height);</span><br><span class="line">    webView.frame = frame;</span><br><span class="line">    <span class="comment">// 调整好frame之后再调整contentSize</span></span><br><span class="line">    webView.scrollView.contentSize = <span class="built_in">CGSizeMake</span>(<span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://andy0570.com/2017/11/01/密码学/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="独木舟的木">
-      <meta itemprop="description" content="有时候阳光很好 有时候阳光很暗">
-      <meta itemprop="image" content="https://ws1.sinaimg.cn/large/006tNc79gy1g22m14458rj30u014xu0x.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="独木舟的木">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2017/11/01/密码学/" class="post-title-link" itemprop="url">密码学</a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2017-11-01 16:47:00" itemprop="dateCreated datePublished" datetime="2017-11-01T16:47:00+08:00">2017-11-01</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2019-04-18 01:02:54" itemprop="dateModified" datetime="2019-04-18T01:02:54+08:00">2019-04-18</time>
-              
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/PKI-密码学/" itemprop="url" rel="index"><span itemprop="name">PKI&密码学</span></a></span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-            
-          
-
-          
-          
-            <span id="/2017/11/01/密码学/" class="leancloud_visitors" data-flag-title="密码学">
-              <span class="post-meta-divider">|</span>
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              
-                <span class="post-meta-item-text">阅读次数：</span>
-              
-                <span class="leancloud-visitors-count"></span>
-            </span>
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body han-init-context" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <a id="more"></a>
-<p>视频笔记:加密算法之— —密码学详解</p>
-<h2 id="密码学概论-讲述密码学运用领域和使用场景"><a href="#密码学概论-讲述密码学运用领域和使用场景" class="headerlink" title="密码学概论,讲述密码学运用领域和使用场景"></a>密码学概论,讲述密码学运用领域和使用场景</h2><p>网络安全&amp;&amp;数据安全</p>
-<p>示例：控制台 —&gt;  /var/log —&gt; apache2 服务器 （明文传输数据，不安全！）</p>
-<p>原则：</p>
-<ol>
-<li><strong>在网络上不允许明文传输用户隐私信息；</strong></li>
-<li><strong>在本地不允许明文保存用户隐私信息；</strong></li>
-</ol>
-<p>加密 — 密码学</p>
-<h3 id="base64-编码"><a href="#base64-编码" class="headerlink" title="base64 编码 "></a><a href="https://en.wikipedia.org/wiki/Base64" target="_blank" rel="noopener">base64 编码 </a></h3><p>可以将<strong>二进制数据</strong>进行编码，编码成只有<strong>65个字符</strong>的<strong>文本文件</strong>（字符）！</p>
-<p>字符：0 ～9, a~z, A~Z, +/=</p>
-<p>编码后文件数据会比原有文件大1/3左右。</p>
-<h4 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h4><p>base64编码：<strong>8位的二进制ASCII编码 —&gt; 6位的base64编码</strong></p>
-<p>base64编码表：</p>
-<p>0～63，64个字符，还有 = 表示空格，总共65个字符。</p>
-<p><img src="http://upload-images.jianshu.io/upload_images/2648731-ce9a5abf9bbc4092.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt></p>
-<p>示例：</p>
-<p><img src="http://upload-images.jianshu.io/upload_images/2648731-4a9b63ce70fb6afb.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt></p>
-<p>Man 转换为 base64 编码：TWFu</p>
-<p>M 的 <a href="https://baike.baidu.com/item/ASCII/309296?fr=aladdin&amp;fromid=19660475&amp;fromtitle=ascii码表" target="_blank" rel="noopener">ASCII编码</a> 十进制为 77 ，二进制为 01001101：</p>
-<p><img src="http://upload-images.jianshu.io/upload_images/2648731-8a4afbc8714b78be.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt></p>
-<p>前6位二进制 010011 （十进制为19）在上面的base64编码表中为 T 。</p>
-<p>因此 M ➡ T 。</p>
-<h4 id="空格情况"><a href="#空格情况" class="headerlink" title="空格情况"></a>空格情况</h4><p>因为是把8个字节转换为6个字节进行编码，势必会产生位数不对应的问题。因此会使用 0 来补齐，用=表示全0的情况。（注意到base64 总会编码补齐为4个字符一组）</p>
-<p><img src="http://upload-images.jianshu.io/upload_images/2648731-2ae8f0ea2c71aa4a.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt></p>
-<p>因此，单独的 M 用base64编码 ➡ TQ==</p>
-<h3 id="Objective-C-代码"><a href="#Objective-C-代码" class="headerlink" title="Objective-C 代码"></a>Objective-C 代码</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">// base64编码</span><br><span class="line">- (NSString *)base64Encode:(NSString *)string &#123;</span><br><span class="line">    // 1.将字符串转换为二进制</span><br><span class="line">    NSData *data = [string dataUsingEncoding:NSUTF8StringEncoding];</span><br><span class="line">    // 2.二进制数据进行编码</span><br><span class="line">    return [data base64EncodedStringWithOptions:0];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// base64解码</span><br><span class="line">- (NSString *)base64Decode:(NSString *)string &#123;</span><br><span class="line">    // 1.字符串转换为二进制</span><br><span class="line">    NSData *data = [[NSData alloc] initWithBase64EncodedString:string options:0];</span><br><span class="line">    // 2.解码</span><br><span class="line">    return [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>##哈希算法\对称加密\非对称加密 算法简介</p>
-<p>上世纪70年代开始 RSA — 非对称加密算法</p>
-<p>RSA — 非对称加密算法</p>
-<ul>
-<li>公钥加密，私钥解密；</li>
-<li>私钥加密，公钥解密；</li>
-</ul>
-<p>哈希（散列）函数</p>
-<ul>
-<li>MD5</li>
-<li>SHA1\SHA256\SHA512</li>
-<li>HMAC</li>
-</ul>
-<p>对称加密算法</p>
-<ul>
-<li>DES</li>
-<li>3DES</li>
-<li>RC2、RC4</li>
-<li>AES(高级密码标准，美国国家安全局使用、Apple 钥匙串访问使用、Lastpass 使用了256位的AES密钥)，以目前现阶段计算机的运行效率，要暴力破解AES加密算法，需要上千万年。</li>
-</ul>
-<h3 id="散列函数"><a href="#散列函数" class="headerlink" title="散列函数"></a>散列函数</h3><p>算法都是公开的。</p>
-<ul>
-<li>对相同的数据加密，得到的结果是一样的。</li>
-<li>对不同的数据加密，得到的结果是定长的。（比如MD5对不同的数据加密，得到32个字符）</li>
-<li>加密之后的数据是没法解密的。（<strong>不可逆运算</strong>）</li>
-</ul>
-<h4 id="MD5加密"><a href="#MD5加密" class="headerlink" title="MD5加密"></a>MD5加密</h4><p><a href="https://github.com/jerolimov/NSHash" target="_blank" rel="noopener">GitHub源码：jerilimov/<strong>NSHash</strong></a>——NSData、NSString 的分类，添加了MD5、SHA1、SHA256、SHA512 加密算法</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">NSString *pwd = @&quot;123456&quot;;</span><br><span class="line">pwd = [pwd MD5];</span><br><span class="line">NSLog(@&quot;MD5 = %@&quot;,pwd);</span><br><span class="line">// MD5 = e10adc3949ba59abbe56e057f20f883e</span><br></pre></td></tr></table></figure>
-<p>像 MD5 这样的加密算法是<strong>无法反向解密</strong>的，但是对相同的数据加密，得到的结果是一样的。</p>
-<p>于是 <a href="http://www.cmd5.com" target="_blank" rel="noopener">CMD5</a> 利用散列函数的这种特性，将加密前的数据和加密后的数据进行映射保存，可以实现反向查询。</p>
-<p>将刚才 123456 加密后的 MD5 输入，可以反向查询出原始数据：</p>
-<p><img src="http://upload-images.jianshu.io/upload_images/2648731-485d8e0cda61ddfe.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt></p>
-<h4 id="MD5加盐：对数据先加盐，再进行MD5加密，可以增加结果的复杂度"><a href="#MD5加盐：对数据先加盐，再进行MD5加密，可以增加结果的复杂度" class="headerlink" title="MD5加盐：对数据先加盐，再进行MD5加密，可以增加结果的复杂度"></a>MD5加盐：对数据先加盐，再进行MD5加密，可以增加结果的复杂度</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">/* 盐，足够长，足够复杂，足够咸*/</span><br><span class="line">static NSString *slat = @&quot;5O9Jc!9%N^6Kd*dcS9Or$&amp;fSVWmC^xku2@Lg0xd8CL0Sl$omN6zQS7c7YrHhtwn@&quot;;</span><br><span class="line"></span><br><span class="line">NSString *pwd = @&quot;123456&quot;;</span><br><span class="line">pwd = [[pwd stringByAppendingString:slat] MD5];</span><br><span class="line">NSLog(@&quot;MD5 = %@&quot;,pwd);</span><br><span class="line">// MD5 = 04f60881265e2b240b217f8deaaa8e12</span><br></pre></td></tr></table></figure>
-<p>再将此MD5密码放到该网站上进行查询：</p>
-<p><img src="http://upload-images.jianshu.io/upload_images/2648731-21e14f89f0661e9a.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt></p>
-<blockquote>
-<p>没有查到，结果显示，被反向查询出来的难度就会加大。</p>
-</blockquote>
-<p>缺点：盐是固定的，如果盐被泄露，数据就会不安全。</p>
-<h4 id="HMAC加密"><a href="#HMAC加密" class="headerlink" title="HMAC加密"></a>HMAC加密</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br></pre></td><td class="code"><pre><span class="line">//-----------------------------------------------------</span><br><span class="line">#import &lt;Foundation/Foundation.h&gt;</span><br><span class="line"></span><br><span class="line">@interface NSString (Hash)</span><br><span class="line">- (NSString *)hmacMD5StringWithKey:(NSString *)key;</span><br><span class="line">- (NSString *)hmacSHA1StringWithKey:(NSString *)key;</span><br><span class="line">- (NSString *)hmacSHA256StringWithKey:(NSString *)key;</span><br><span class="line">- (NSString *)hmacSHA512StringWithKey:(NSString *)key;</span><br><span class="line">@end</span><br><span class="line">  </span><br><span class="line">#import &quot;NSString+Hash.h&quot;</span><br><span class="line">#import &lt;CommonCrypto/CommonHMAC.h&gt;</span><br><span class="line">@implementation NSString (Hash)</span><br><span class="line"></span><br><span class="line">- (NSString *)hmacMD5StringWithKey:(NSString *)key</span><br><span class="line">&#123;</span><br><span class="line">    return [self hmacStringUsingAlg:kCCHmacAlgMD5 withKey:key];</span><br><span class="line">&#125;</span><br><span class="line">- (NSString *)hmacSHA1StringWithKey:(NSString *)key</span><br><span class="line">&#123;</span><br><span class="line">    return [self hmacStringUsingAlg:kCCHmacAlgSHA1 withKey:key];</span><br><span class="line">&#125;</span><br><span class="line">- (NSString *)hmacSHA256StringWithKey:(NSString *)key</span><br><span class="line">&#123;</span><br><span class="line">    return [self hmacStringUsingAlg:kCCHmacAlgSHA256 withKey:key];</span><br><span class="line">&#125;</span><br><span class="line">- (NSString *)hmacSHA512StringWithKey:(NSString *)key</span><br><span class="line">&#123;</span><br><span class="line">    return [self hmacStringUsingAlg:kCCHmacAlgSHA512 withKey:key];</span><br><span class="line">&#125;</span><br><span class="line">#pragma mark - Helpers</span><br><span class="line">- (NSString *)hmacStringUsingAlg:(CCHmacAlgorithm)alg withKey:(NSString *)key</span><br><span class="line">&#123;</span><br><span class="line">    size_t size;</span><br><span class="line">    switch (alg) &#123;</span><br><span class="line">        case kCCHmacAlgMD5:</span><br><span class="line">            size = CC_MD5_DIGEST_LENGTH;</span><br><span class="line">            break;</span><br><span class="line">        case kCCHmacAlgSHA1:</span><br><span class="line">            size = CC_SHA1_DIGEST_LENGTH;</span><br><span class="line">            break;</span><br><span class="line">        case kCCHmacAlgSHA224:</span><br><span class="line">            size = CC_SHA224_DIGEST_LENGTH;</span><br><span class="line">            break;</span><br><span class="line">        case kCCHmacAlgSHA256:</span><br><span class="line">            size = CC_SHA256_DIGEST_LENGTH;</span><br><span class="line">            break;</span><br><span class="line">        case kCCHmacAlgSHA384:</span><br><span class="line">            size = CC_SHA384_DIGEST_LENGTH;</span><br><span class="line">            break;</span><br><span class="line">        case kCCHmacAlgSHA512:</span><br><span class="line">            size = CC_SHA512_DIGEST_LENGTH;</span><br><span class="line">            break;</span><br><span class="line">        default:</span><br><span class="line">            return nil;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    NSData *keyData = [key dataUsingEncoding:NSUTF8StringEncoding];</span><br><span class="line">    NSData *messageData = [self dataUsingEncoding:NSUTF8StringEncoding];</span><br><span class="line">    NSMutableData *mutableData = [NSMutableData dataWithLength:size];</span><br><span class="line">    CCHmac(alg, keyData.bytes, keyData.length, messageData.bytes, messageData.length, mutableData.mutableBytes);</span><br><span class="line">    return [self stringFromBytes:(unsigned char *)mutableData.bytes length:(int)mutableData.length];</span><br><span class="line">&#125;</span><br><span class="line">- (NSString *)stringFromBytes:(unsigned char *)bytes length:(int)length</span><br><span class="line">&#123;</span><br><span class="line">    NSMutableString *mutableString = @&quot;&quot;.mutableCopy;</span><br><span class="line">    for (int i = 0; i &lt; length; i++)</span><br><span class="line">        [mutableString appendFormat:@&quot;%02x&quot;, bytes[i]];</span><br><span class="line">    return [NSString stringWithString:mutableString];</span><br><span class="line">&#125;</span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
-<p>测试</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">// HMAC 用一个密钥加密，并且做了两次散列。</span><br><span class="line">// 在实际的开发中，密钥来自于服务器。——对应一个帐号，一个KEY</span><br><span class="line">NSString *pwd = @&quot;123456&quot;;</span><br><span class="line">pwd = [pwd hmacMD5StringWithKey:@&quot;Key&quot;];</span><br><span class="line">NSLog(@&quot;MD5 = %@&quot;,pwd);</span><br><span class="line">// MD5 = a7cac7471d2c9eb7a944e07d44d305ca</span><br></pre></td></tr></table></figure>
-<p>将此MD5密码放到该网站上查询也是查不到的。</p>
-<p>项目实际使用流程：</p>
-<ol>
-<li>服务器根据用户帐号生成KEY，发送给客户端；</li>
-<li>客户端获得KEY并保存到本地，使用KEY对数据进行HMAC加密，将加密后的数据发送给服务器；</li>
-<li>服务器对加密后对数据进行验证。</li>
-</ol>
-<p>客户端登录时，没有KEY就先根据帐号从服务器获取KEY保存到本地，再将获得的KEY对密码进行加密。</p>
-<p>防止KEY泄露，对KEY进行非对称加密、定期更换KEY。</p>
-<p>QQ设备锁：</p>
-<ul>
-<li>本地有KEY——为授权手机。</li>
-<li>本地没有KEY，未授权设备，需要允许服务器发送KEY。允许一次登录，本地不保存KEY，允许多次登录，保存KEY到本地。</li>
-<li>短信验证码登录获取KEY。</li>
-<li>申诉获取KEY。</li>
-</ul>
-<h4 id="HMAC加密-时间戳（不加秒）"><a href="#HMAC加密-时间戳（不加秒）" class="headerlink" title="HMAC加密+时间戳（不加秒）"></a>HMAC加密+时间戳（不加秒）</h4><p>之前：</p>
-<p>验证方式：HMAC密码直接匹配是否正确。</p>
-<p>现在：</p>
-<p>客户端：（HMAC密码+“201711010358”）.MD5校验</p>
-<p>服务器：</p>
-<ol>
-<li>（HMAC密码+“201711010359”）.MD5校验</li>
-<li>（HMAC密码+“201711010358”）.MD5校验</li>
-</ol>
-<p><strong>密码验证有效期最长2分钟</strong>，超过2分钟，验证失败。</p>
-<p>有经验的服务器人员，会在返回数据时，返回时间戳。</p>
-<p>登录等待时间，不要超过6秒！！！提示用户：你的网络不稳定，请稍后再试！</p>
-<p>终端测试命令：</p>
-<p><code>md5 -s &quot;string&quot; #这是 Apple 用的 openssl 标准进行的MD5加密</code></p>
-<h2 id="MD5使用场景-百度搜索引擎-拆词搜索思路-运用-以及百度云盘文件识别运用"><a href="#MD5使用场景-百度搜索引擎-拆词搜索思路-运用-以及百度云盘文件识别运用" class="headerlink" title="MD5使用场景,百度搜索引擎(拆词搜索思路)运用 以及百度云盘文件识别运用"></a>MD5使用场景,百度搜索引擎(拆词搜索思路)运用 以及百度云盘文件识别运用</h2><h4 id="搜索引擎的拆词搜索-amp-amp-词库"><a href="#搜索引擎的拆词搜索-amp-amp-词库" class="headerlink" title="搜索引擎的拆词搜索 &amp;&amp; 词库"></a>搜索引擎的拆词搜索 &amp;&amp; 词库</h4><p>无论搜索 <code>Apple Blue Sky</code>,还是搜索<code>Sky Blue Apple</code>,得到的返回结果是一样的。</p>
-<h5 id="原理-1"><a href="#原理-1" class="headerlink" title="原理"></a>原理</h5><p>先计算各个单词的MD5</p>
-<ul>
-<li>MD5 (“Apple”) = 9f6290f4436e5a2351f12e03b6433c3c</li>
-<li>MD5 (“Blue”) = 9594eec95be70e7b1710f730fdda33d9</li>
-<li>MD5 (“Sky”) = 03462a41aec357b74c89eb8d272532f7</li>
-</ul>
-<hr>
-<p>然后再对MD5值进行按位相加，得到的结果是一样的。</p>
-<p>再去搜索匹配结果的数据。</p>
-<h4 id="散列碰撞：两个不同的数据，哈希之后，得到相同的哈希值！"><a href="#散列碰撞：两个不同的数据，哈希之后，得到相同的哈希值！" class="headerlink" title="散列碰撞：两个不同的数据，哈希之后，得到相同的哈希值！"></a>散列碰撞：两个不同的数据，哈希之后，得到相同的哈希值！</h4><p>从理论的角度出发，有无限个碰撞可能！</p>
-<p>MD5 32为字符，它能表达的数据个数是有限的，而被加密的数据是无限个。 </p>
-<p>SHA512/</p>
-<p>####其他使用场景</p>
-<p>通过数据的散列值，判断数据是否相等，保存云盘数据（相同的数据在云上保存一份）。</p>
-<p>正版软件使用哈希进行文件识别。</p>
-<p>对下载后的软件安装版进行MD5校验，判断安装包是否被污染。</p>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2666,7 +2897,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">314</span>
+                    <span class="site-state-item-count">317</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -2802,11 +3033,7 @@
                     
                       
                     
-                      
-                    
-                      
-                    
-                    <span class="site-state-item-count">38</span>
+                    <span class="site-state-item-count">36</span>
                     <span class="site-state-item-name">标签</span>
                   </a>
                 </div>
