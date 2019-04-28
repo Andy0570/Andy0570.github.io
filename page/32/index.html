@@ -438,12 +438,276 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://andy0570.com/2016/08/08/Objective-C_KVO、KVC/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="独木舟的木">
+      <meta itemprop="description" content="有时候阳光很好 有时候阳光很暗">
+      <meta itemprop="image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="独木舟的木">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2016/08/08/Objective-C_KVO、KVC/" class="post-title-link" itemprop="url">Objective-C_KVO、KVC</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2016-08-08 10:48:00" itemprop="dateCreated datePublished" datetime="2016-08-08T10:48:00+08:00">2016-08-08</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-04-28 15:13:44" itemprop="dateModified" datetime="2019-04-28T15:13:44+08:00">2019-04-28</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Objective-C-编程/" itemprop="url" rel="index"><span itemprop="name">Objective-C 编程</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+            <span id="/2016/08/08/Objective-C_KVO、KVC/" class="leancloud_visitors" data-flag-title="Objective-C_KVO、KVC">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读次数：</span>
+              
+                <span class="leancloud-visitors-count"></span>
+            </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body han-init-context" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <a id="more"></a>
+<h2 id="KVC"><a href="#KVC" class="headerlink" title="KVC"></a>KVC</h2><h3 id="键值编码的基本概念"><a href="#键值编码的基本概念" class="headerlink" title="键值编码的基本概念"></a>键值编码的基本概念</h3><ol>
+<li><strong>KVC</strong> 是 <strong>KeyValue Coding</strong> 的简称，它是一种可以直接通过字符串的名字(key)来访问属性的机制。使用该机制不需要调用存取方法和变量实例就可访问对象属性。本质上讲，键-值编码定义了你的程序存取方法需要实现的样式及方法签名。</li>
+<li>在应用程序中实现键-值编码兼容性是一项重要的设计原则。存取方法可以加<br>强合适的数据封装，而键-值编码方法在多数情况下可简化程序代码。</li>
+<li>键-值编码方法在 Objective-C 非标准协议（类目）<strong>NSKeyValueCoding</strong>中被声明，默认的实现方法由 <strong>NSObject</strong> 提供，所以凡是继承自 <strong>NSObject</strong> 的类都具备 KVC 功能。</li>
+<li>键-值编码支持带有对象值的属性，同时也支持纯数值类型和结构。非对象参<br>数和返回类型会被识别并自动封装/解封。</li>
+</ol>
+<h3 id="设置和访问"><a href="#设置和访问" class="headerlink" title="设置和访问"></a>设置和访问</h3><ul>
+<li>键/值编码中的基本调用包括 <code>-valueForKey：</code> 和 <code>-setValue：forkey：</code> 这两个<br>方法，它们以字符串的形式向对象发送消息，字符串是我们关注属性的关键。</li>
+</ul>
+<p>示例1：<br><figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">BNRAppliance *a = [[BNRAppliance alloc] init];</span><br><span class="line"></span><br><span class="line">[a <span class="string">setProductName:</span>@<span class="string">"Washing Machine"</span>];</span><br><span class="line"><span class="comment">// 使用 KVC 重写以上代码</span></span><br><span class="line"> [a <span class="string">setValue:</span>@<span class="string">"Washing Machine"</span> <span class="string">forKey:</span>@<span class="string">"productName"</span>];</span><br><span class="line">        </span><br><span class="line">[a <span class="string">setVoltage:</span><span class="number">240</span>];</span><br><span class="line"><span class="comment">// 使用 KVC 重写以上代码</span></span><br><span class="line">[a <span class="string">setValue:</span>[NSNumber <span class="string">numberWithInt:</span><span class="number">240</span>] <span class="string">forKey:</span>@<span class="string">"voltage"</span>];</span><br><span class="line">        </span><br><span class="line"> NSLog(@<span class="string">"a is %@"</span>,a);</span><br><span class="line"> <span class="comment">// 使用 KVC 重写以上代码</span></span><br><span class="line"> NSLog(@<span class="string">"the product name is %@"</span>,[a <span class="string">valueForKey:</span>@<span class="string">"productName"</span>]);</span><br></pre></td></tr></table></figure></p>
+<p>示例2：<br><figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Person *<span class="keyword">jack </span>= [[Person alloc] init]<span class="comment">;</span></span><br><span class="line">NSMutableString *name = [[NSMutableString alloc] initWithFormat:@<span class="string">"jack"</span>]<span class="comment">;</span></span><br><span class="line">[<span class="keyword">jack </span>setValue:name forKey:@<span class="string">"name"</span>]<span class="comment">;</span></span><br><span class="line">NSLog(@<span class="string">"jack name : %@"</span>, [<span class="keyword">jack </span>valueForKey:@<span class="string">"name"</span>])<span class="comment">;</span></span><br></pre></td></tr></table></figure></p>
+<ul>
+<li>使用KVC，编译器会查找是否存在 <strong>setter</strong>、<strong>getter</strong> 方法，如果不存在，它将在内部查找名为 <strong>_key</strong> 或 <strong>key</strong> 的实例变量。通过 KVC，可以获取不存在<strong>getter</strong>方法的对象值，无需通过对象指针直接访问。</li>
+<li>KVC 能够在没有存取方法的情况下直接存取实例变量。</li>
+<li>⚠️非对象类型：当我们通过 <code>setValue：forKey：</code> 设置对象的值，或通过<br><code>valueForKey</code> 来获取对象的值时，如果对象的实例变量为基本数据类型（<strong>char、int、float、BOOL</strong>）时，我们需要使用 <strong>NSNumber</strong> 对象对数据进行 <strong>封装</strong>。</li>
+</ul>
+<h3 id="key路径"><a href="#key路径" class="headerlink" title="key路径"></a>key路径</h3><ul>
+<li>除了通过键设置值外，键/值编码还支持指定路径，像文件系统一样。用“点”<br>号隔开。</li>
+<li>使用 key path 可以一次性遍历复杂的对象表。</li>
+<li>注意顺序，第一个想要遍历的对象放在第一个。</li>
+</ul>
+<p>示例：<br><code>BNRDepartment. manager</code> 指向 <code>BNREmployee. emergencyContact</code> 指向 <code>BNRPerson. phoneNumber</code></p>
+<pre><code>BNRDepartment *sales = ...;
+BNREmployee *sickEmployee = [sales valueForKey:@&quot;manager&quot;];
+BNRPerson *personToCall = [sickEmployee valueForKey:@&quot;emergencyContact&quot;];
+[personToCall setValue:@&quot;555-606-0842&quot; forKey:@&quot;phoneNumber&quot;];
+
+// 使用 Key路径 重写以上代码
+BNRDepartment *sales = ...;
+[personToCall setValue:@&quot;555-606-0842&quot;
+            forKeyPath:@&quot;manager.emergencyContact.phoneNumber&quot;];
+</code></pre><h3 id="一对多的关系"><a href="#一对多的关系" class="headerlink" title="一对多的关系"></a>一对多的关系</h3><ul>
+<li>如果向 <strong>NSArray</strong> 请求一个键值，它实际上会查询数组中的每个对象来查找这个<br>键值，然后将查询结果打包到另一个数组中并返回给你。</li>
+</ul>
+<pre><code>NSArray *booksArray = [NSArray arrayWithObjects:book1, book2, nil];
+[book1 release];
+[book2 release];
+[book setValue:booksArray forKey:@&quot;relativeBooks&quot;];
+NSLog(@&quot;books 2: %@&quot;, [book valueForKeyPath:@&quot;relativeBooks.price&quot;]);
+</code></pre><h3 id="实现简单的运算"><a href="#实现简单的运算" class="headerlink" title="实现简单的运算"></a>实现简单的运算</h3><pre><code>NSString *count = [book valueForKeyPath:@&quot;relativeBooks.@count&quot;];
+NSLog(@&quot;count : %@&quot;, count);
+NSString *sum = [book valueForKeyPath:@&quot;relativeBooks.@sum._price&quot;];
+NSLog(@&quot;sum : %@&quot;, sum);
+NSString *avg = [book valueForKeyPath:@&quot;relativeBooks.@avg._price&quot;];
+NSLog(@&quot;avg : %@&quot;, avg);
+NSString *min = [book valueForKeyPath:@&quot;relativeBooks.@min._price&quot;];
+NSLog(@&quot;min : %@&quot;, min);
+NSString *max = [book valueForKeyPath:@&quot;relativeBooks.@max._price&quot;];
+NSLog(@&quot;max : %@&quot;, max);
+</code></pre><h2 id="KVO"><a href="#KVO" class="headerlink" title="KVO"></a>KVO</h2><h3 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h3><ol>
+<li><strong>Key Value Observing</strong>，直译为：基于键值的观察者。它提供一种机制，当指定的对象的属性被修改后，则对象就会接受到通知。简单的说就是每次指定的被观察对象的属性被修改后，KVO就会自动通知相应的观察者了。</li>
+<li>与 <strong>NSNotification</strong>不同，键-值观察中并没有所谓的中心对象来为所有观察者提供变化通知。取而代之地，当有变化发生时，通知被直接发送至处于观察状态的对象。<strong>NSObject</strong> 提供这种基础的键-值观察实现方法。   </li>
+<li>你可以观察任意对象属性，包括简单属性，对一或是对多关系。对多关系的观察者将会被告知发生变化的类型-也就是任意发生变化的对象。</li>
+<li>键-值观察为所有对象提供自动观察兼容性。你可以通过禁用自动观察通知并<br>实现手动通知来筛选通知。</li>
+</ol>
+<h3 id="注册观察者"><a href="#注册观察者" class="headerlink" title="注册观察者"></a>注册观察者</h3><p>为了正确接收属性的变更通知，观察对象必须首先发送一个<br><code>addObserver:forKeyPath:options:context:</code>消息至被观察对象，用以传送观察<br>对象和需要观察的属性的关键路径，以便与其注册。选项参数指定了发送变更通知时提供给观察者的信息。 使用<code>NSKeyValueObservingOptionOld</code>选项可以将<br>初始对象值 以变更字典中的一个项的形式提供给观察者。指定<br><code>NSKeyValueObservingOptionNew</code>选项可以将新的值以一个项的形式 添加至<br>变更字典。你可以使用逐位“|”这两个常量来指定接收上述两种类型的值。<br>示例：</p>
+<pre><code>BNRLogger *logger = [[BNRLogger alloc] init];
+__unused NSTimer *timer =
+            [NSTimer scheduledTimerWithTimeInterval:2.0
+                                             target:logger
+                                           selector:@selector(updateLastTime:)
+                                           userInfo:nil
+                                            repeats:YES];
+
+BNRObserver *observer = [[BNRObserver alloc] init];
+// 无论 lastTime 何时发生变化，都要通知我它改变的新值以及改变之前的旧值
+[logger addObserver:observer
+         forKeyPath:@&quot;lastTime&quot;
+            options:NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld
+            context:nil];
+
+[[NSRunLoop mainRunLoop] run];
+</code></pre><h3 id="接受变更后通知"><a href="#接受变更后通知" class="headerlink" title="接受变更后通知"></a>接受变更后通知</h3><ul>
+<li>当对象的一个被观察属性发生变动时，观察者收到一个<br><code>observeValueForKeyPath:ofObject:change:context:</code>消息。所有观察者都必须<br>实现这一方法。触发观察通知的对象和键路径、包含变更细节的字典，以及观察者<br>注册时提交的上下文指针均被提交给观察者，<code>context</code>可以为任意类型参数。<br>示例：</li>
+</ul>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)observeValueForKeyPath:(<span class="built_in">NSString</span> *)keyPath</span><br><span class="line">                      ofObject:(<span class="keyword">id</span>)object</span><br><span class="line">                        change:(<span class="built_in">NSDictionary</span>&lt;<span class="built_in">NSKeyValueChangeKey</span>,<span class="keyword">id</span>&gt; *)change</span><br><span class="line">                       context:(<span class="keyword">void</span> *)context &#123;</span><br><span class="line">    <span class="built_in">NSString</span> *oldValue = [change objectForKey:<span class="built_in">NSKeyValueChangeOldKey</span>];</span><br><span class="line">    <span class="built_in">NSString</span> *newValue = [change objectForKey:<span class="built_in">NSKeyValueChangeNewKey</span>];</span><br><span class="line">    <span class="built_in">NSLog</span>(<span class="string">@"Observed:%@ of %@ was changed from %@ to %@"</span>,</span><br><span class="line">          keyPath,object,oldValue,newValue);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="移除观察者身份"><a href="#移除观察者身份" class="headerlink" title="移除观察者身份"></a>移除观察者身份</h3><ul>
+<li>你可以发送一条指定观察方对象和键路径的<code>removeObserver:forKeyPath:</code><br>消息至被观察的对象，来移除一个键-值观察者。（当我们达到目的时）<br>示例：</li>
+</ul>
+<pre><code>[child removeObserver:self forKeyPath:@&quot;key&quot;];
+</code></pre>
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://andy0570.com/2016/08/08/Objective-C_方法调用/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="独木舟的木">
       <meta itemprop="description" content="有时候阳光很好 有时候阳光很暗">
-      <meta itemprop="image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/avatar.png">
+      <meta itemprop="image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
@@ -500,7 +764,7 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2019-04-18 00:36:04" itemprop="dateModified" datetime="2019-04-18T00:36:04+08:00">2019-04-18</time>
+                <time title="修改时间：2019-04-28 15:13:44" itemprop="dateModified" datetime="2019-04-28T15:13:44+08:00">2019-04-28</time>
               
             
           </span>
@@ -659,218 +923,12 @@ Person *p3 = [[Person alloc] initWithName:@&quot;Tom&quot; WithAge:22];
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://andy0570.com/2016/08/08/Objective-C_异常处理/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="独木舟的木">
-      <meta itemprop="description" content="有时候阳光很好 有时候阳光很暗">
-      <meta itemprop="image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/avatar.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="独木舟的木">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2016/08/08/Objective-C_异常处理/" class="post-title-link" itemprop="url">Objective-C_异常处理</a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2016-08-08 10:48:00" itemprop="dateCreated datePublished" datetime="2016-08-08T10:48:00+08:00">2016-08-08</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2019-04-18 00:36:42" itemprop="dateModified" datetime="2019-04-18T00:36:42+08:00">2019-04-18</time>
-              
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Objective-C-编程/" itemprop="url" rel="index"><span itemprop="name">Objective-C 编程</span></a></span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-            
-          
-
-          
-          
-            <span id="/2016/08/08/Objective-C_异常处理/" class="leancloud_visitors" data-flag-title="Objective-C_异常处理">
-              <span class="post-meta-divider">|</span>
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              
-                <span class="post-meta-item-text">阅读次数：</span>
-              
-                <span class="leancloud-visitors-count"></span>
-            </span>
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body han-init-context" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <a id="more"></a>
-<h4 id="异常处理"><a href="#异常处理" class="headerlink" title="异常处理"></a>异常处理</h4><hr>
-<p><strong>异常</strong>：当程序执行时，发生的某种特殊状况,打断了正常的运转流程。</p>
-<ul>
-<li>Objective-C 的异常处理语法与Java和C++类似。通过使用 <strong>NSException</strong>, <strong>NSError</strong> 以及自定义的异常处理类来处理这些异常。</li>
-<li>Objective-C 对异常的支持包括四个编译器指令: <strong>@try</strong>、<strong>@catch</strong>、<strong>@throw</strong> 以及 <strong>@finally</strong>。使用规则:              </li>
-<li>如果这句或这部分代码有可能出现问题,就把它放在<code>@try{}</code>中.</li>
-<li><code>@catch</code> 捕获异常,出现了问题后,会执行到这里,然后你就可以对错误进行另外的处理,比如记录日志或者提醒用户哪错了。</li>
-<li><code>@finally</code> 无论是否会抛出异常,这个块中的代码都会执行。 </li>
-<li><code>@throw</code>指令允许你抛出自己的异常。可以使用该指令抛出特定的异常。</li>
-</ul>
-<p><strong>异常分类:</strong></p>
-<ol>
-<li>数组越界;</li>
-<li>不能识别的方法选择器;</li>
-<li>野指针调用：指针指向销毁的对象;</li>
-</ol>
-<p>示例：</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">@try</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// @try 块中写有可能出错的代码段</span></span><br><span class="line">    <span class="built_in">NSArray</span> *array = [<span class="built_in">NSArray</span> array];</span><br><span class="line">    [array objectAtIndex:<span class="number">1</span>];  <span class="comment">//数组越界</span></span><br><span class="line"></span><br><span class="line">&#125; <span class="keyword">@catch</span> (<span class="built_in">NSException</span> *exception) &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// @catch 块内处理异常代码</span></span><br><span class="line">    <span class="built_in">NSLog</span>(<span class="string">@"捕获到异常：%@%@"</span>,exception.name, exception.reason);</span><br><span class="line"></span><br><span class="line">&#125; <span class="keyword">@finally</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//可选项，不管是否出现异常，都会执行此代码段</span></span><br><span class="line">    <span class="built_in">NSLog</span>(<span class="string">@"始终执行的代码！"</span>);</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">NSLog</span>(<span class="string">@"Hello, World!"</span>);</span><br></pre></td></tr></table></figure>
-<p>输出结果：</p>
-<blockquote>
-<p>Demo[17328:3652315] 捕获到异常：NSRangeException*** -[__NSArray0 objectAtIndex:]: index 1 beyond bounds for empty NSArray<br>Demo[17328:3652315] 始终执行的代码！<br>Demo[17328:3652315] Hello, World!</p>
-</blockquote>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://andy0570.com/2016/08/08/Objective-C_面向对象—封装、继承、多态/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="独木舟的木">
       <meta itemprop="description" content="有时候阳光很好 有时候阳光很暗">
-      <meta itemprop="image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/avatar.png">
+      <meta itemprop="image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
@@ -927,7 +985,7 @@ Person *p3 = [[Person alloc] initWithName:@&quot;Tom&quot; WithAge:22];
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2019-04-18 00:36:36" itemprop="dateModified" datetime="2019-04-18T00:36:36+08:00">2019-04-18</time>
+                <time title="修改时间：2019-04-28 15:13:44" itemprop="dateModified" datetime="2019-04-28T15:13:44+08:00">2019-04-28</time>
               
             
           </span>
@@ -1044,7 +1102,7 @@ _capcity = capicity;
 </blockquote>
 </li>
 </ul>
-<p><img src="http://upload-images.jianshu.io/upload_images/2648731-842d1057e0081625.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image"></p>
+<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071210.jpg" alt="image"></p>
 <h3 id="isKindOfClass-amp-isMemberOfClass"><a href="#isKindOfClass-amp-isMemberOfClass" class="headerlink" title="isKindOfClass:&amp;isMemberOfClass:"></a><code>isKindOfClass:</code>&amp;<code>isMemberOfClass:</code></h3><ul>
 <li><code>isKindOfClass:</code>确定一个对象是否是一个类的成员,或者是派生自该类的成员。</li>
 <li><code>isMemberOfClass:</code>确定一个对象是否是当前类的成员。</li>
@@ -1110,7 +1168,7 @@ _capcity = capicity;
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="独木舟的木">
       <meta itemprop="description" content="有时候阳光很好 有时候阳光很暗">
-      <meta itemprop="image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/avatar.png">
+      <meta itemprop="image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
@@ -1167,7 +1225,7 @@ _capcity = capicity;
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2019-04-18 00:38:42" itemprop="dateModified" datetime="2019-04-18T00:38:42+08:00">2019-04-18</time>
+                <time title="修改时间：2019-04-28 15:13:44" itemprop="dateModified" datetime="2019-04-28T15:13:44+08:00">2019-04-28</time>
               
             
           </span>
@@ -1486,7 +1544,7 @@ MSArray *array = [NSArray arrayWithContentsofFile:path];
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="独木舟的木">
       <meta itemprop="description" content="有时候阳光很好 有时候阳光很暗">
-      <meta itemprop="image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/avatar.png">
+      <meta itemprop="image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
@@ -1543,7 +1601,7 @@ MSArray *array = [NSArray arrayWithContentsofFile:path];
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2019-04-18 00:29:47" itemprop="dateModified" datetime="2019-04-18T00:29:47+08:00">2019-04-18</time>
+                <time title="修改时间：2019-04-28 15:13:44" itemprop="dateModified" datetime="2019-04-28T15:13:44+08:00">2019-04-28</time>
               
             
           </span>
@@ -1808,7 +1866,7 @@ MSArray *array = [NSArray arrayWithContentsofFile:path];
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="独木舟的木">
       <meta itemprop="description" content="有时候阳光很好 有时候阳光很暗">
-      <meta itemprop="image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/avatar.png">
+      <meta itemprop="image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
@@ -1865,7 +1923,7 @@ MSArray *array = [NSArray arrayWithContentsofFile:path];
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2019-04-18 00:36:25" itemprop="dateModified" datetime="2019-04-18T00:36:25+08:00">2019-04-18</time>
+                <time title="修改时间：2019-04-28 15:13:44" itemprop="dateModified" datetime="2019-04-28T15:13:44+08:00">2019-04-28</time>
               
             
           </span>
@@ -2164,7 +2222,7 @@ return expression;
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="独木舟的木">
       <meta itemprop="description" content="有时候阳光很好 有时候阳光很暗">
-      <meta itemprop="image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/avatar.png">
+      <meta itemprop="image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
@@ -2221,7 +2279,7 @@ return expression;
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2019-04-17 17:27:35" itemprop="dateModified" datetime="2019-04-17T17:27:35+08:00">2019-04-17</time>
+                <time title="修改时间：2019-04-28 15:13:44" itemprop="dateModified" datetime="2019-04-28T15:13:44+08:00">2019-04-28</time>
               
             
           </span>
@@ -2441,7 +2499,7 @@ return expression;
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
-              <img class="site-author-image" itemprop="image" src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/avatar.png" alt="独木舟的木">
+              <img class="site-author-image" itemprop="image" src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png" alt="独木舟的木">
             
               <p class="site-author-name" itemprop="name">独木舟的木</p>
               <div class="site-description motion-element" itemprop="description">有时候阳光很好 有时候阳光很暗</div>
