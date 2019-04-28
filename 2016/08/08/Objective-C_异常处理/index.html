@@ -108,9 +108,9 @@
     tabs: true,
     motion: {"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
     algolia: {
-      applicationID: '',
-      apiKey: '',
-      indexName: '',
+      applicationID: '0E2AON8EZF',
+      apiKey: '22fbefd84c8343239f5c04365b9728de',
+      indexName: 'MyBlogPlatform',
       hits: {"per_page":10},
       labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
     }
@@ -646,8 +646,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2016/08/08/Objective-C_SandBox&NSFileManager/" rel="next" title="Objective-C_SandBox&NSFileManager">
-                <i class="fa fa-chevron-left"></i> Objective-C_SandBox&NSFileManager
+              <a href="/2016/08/08/Objective-C_方法调用/" rel="next" title="Objective-C_方法调用">
+                <i class="fa fa-chevron-left"></i> Objective-C_方法调用
               </a>
             
           </div>
@@ -656,8 +656,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2016/08/08/Objective-C_面向对象—封装、继承、多态/" rel="prev" title="Objective-C_面向对象—封装、继承、多态">
-                Objective-C_面向对象—封装、继承、多态 <i class="fa fa-chevron-right"></i>
+              <a href="/2016/08/08/Objective-C_KVO、KVC/" rel="prev" title="Objective-C_KVO、KVC">
+                Objective-C_KVO、KVC <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -1176,10 +1176,12 @@
           if (results.length > 0) {
             var counter = results[0];
             
-              var $element = $(document.getElementById(url));
-              $element.find('.leancloud-visitors-count').text(counter.time + 1);
-            
             Counter('put', '/classes/Counter/' + counter.objectId, JSON.stringify({ time: { '__op': 'Increment', 'amount': 1 } }))
+            
+              .done(function() {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.time + 1);
+              })
             
               .fail(function ({ responseJSON }) {
                 console.log('Failed to save Visitor num, with error message: ' + responseJSON.error);
