@@ -132,7 +132,7 @@
 <meta property="og:description" content="本文主要内容：探讨密码加密和安全性。">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/wooden-shelf-with-laptop-and-notebook.jpg">
-<meta property="og:updated_time" content="2019-05-10T02:09:01.679Z">
+<meta property="og:updated_time" content="2019-05-13T08:55:18.164Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Web 开发的身份数据和安全_2.密码加密、哈希和加盐">
 <meta name="twitter:description" content="本文主要内容：探讨密码加密和安全性。">
@@ -500,7 +500,7 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2019-05-10 10:09:01" itemprop="dateModified" datetime="2019-05-10T10:09:01+08:00">2019-05-10</time>
+                <time title="修改时间：2019-05-13 16:55:18" itemprop="dateModified" datetime="2019-05-13T16:55:18+08:00">2019-05-13</time>
               
             
           </span>
@@ -546,7 +546,7 @@
                 
                   <span class="post-meta-item-text">本文字数：</span>
                 
-                <span title="本文字数">4.3k</span>
+                <span title="本文字数">4.5k</span>
               
 
               
@@ -612,15 +612,17 @@
 <li>恶意软件；（抵抗方式：短信验证、n因素认证）</li>
 <li>离线破解；</li>
 </ul>
-<h1 id="二、加盐"><a href="#二、加盐" class="headerlink" title="二、加盐"></a>二、加盐</h1><p>盐值是一种随机数据，计算密码的哈希值时用于加强数据，抵御多种攻击媒介尤其是字典攻击和彩虹表。这个随机数据（特别长）能确保生成的哈希值唯一的，即使多个用户使用相同的密码（确实有这种情况），添加唯一的盐值后能确保得到的哈希值仍是唯一的。就因为得到的哈希值是唯一的，我们才得以免受彩虹表和字典攻击的危害。</p>
+<h1 id="二、加盐"><a href="#二、加盐" class="headerlink" title="二、加盐"></a>二、加盐</h1><p>盐值是一种随机数据，计算密码的哈希值时用于加强数据，抵御多种攻击媒介尤其是字典攻击和彩虹表。这个随机数据（特别长）能确保生成的哈希值是唯一的，即使多个用户使用相同的密码（确实有这种情况），添加唯一的盐值后能确保得到的哈希值仍是唯一的。就因为得到的哈希值是唯一的，我们才得以免受彩虹表和字典攻击的危害。</p>
+<p>盐值的特点：盐值需要<span class="label info">足够长</span>、<span class="label info">不可预测</span>、<span class="label info">高度随机</span>、需要使用<span class="label info">安全的伪随机函数</span>生成，另外，还要避免使用全局的盐值。</p>
 <h3 id="生成随机盐值"><a href="#生成随机盐值" class="headerlink" title="生成随机盐值"></a>生成随机盐值</h3><p>使用 Node 原生支持的的 <a href="http://nodejs.cn/api/crypto.html#crypto_crypto_randombytes_size_callback" target="_blank" rel="noopener">crypto</a> 库生成随机盐值。</p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> crypto = <span class="built_in">require</span>(<span class="string">'crypto'</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// crypto.randomBytes() 生成 16 位强加密的伪随机数</span></span><br><span class="line">crypto.randomBytes(<span class="number">16</span>, (err, buf) =&gt; &#123;</span><br><span class="line">  <span class="keyword">if</span> (err) <span class="keyword">throw</span> err;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">`<span class="subst">$&#123;buf.length&#125;</span> bytes of random data: <span class="subst">$&#123;buf.toString(<span class="string">'hex'</span>)&#125;</span>`</span>);</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">`<span class="subst">$&#123;buf.length&#125;</span> bytes of random data: <span class="subst">$&#123;buf.toString(<span class="string">'base64'</span>)&#125;</span>`</span>);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 同步方法生成盐值</span></span><br><span class="line"><span class="keyword">const</span> buf = crypto.randomBytes(<span class="number">256</span>);</span><br></pre></td></tr></table></figure>
 <h3 id="重用盐值"><a href="#重用盐值" class="headerlink" title="重用盐值"></a>重用盐值</h3><p>用户注册账户或修改密码时应该生成并存储新的盐值和哈希值。</p>
 <h3 id="盐值的长度"><a href="#盐值的长度" class="headerlink" title="盐值的长度"></a>盐值的长度</h3><ul>
 <li>根据经验，盐值的长度应该与哈希函数的输出长度一致。</li>
-<li>PBKDF2 标准建议至少应该使用 64 位（8字节）长度的盐值。通常，多数情况下使用的是2的7次方，即128位（16字节）。</li>
+<li>PBKDF2 标准建议至少应该使用 <span class="label info">64 位（8字节）</span>长度的盐值。通常，多数情况下使用的是2的7次方，即 <span class="label info">128 位（16字节）</span>。</li>
 </ul>
-<h3 id="把盐值存储在哪？"><a href="#把盐值存储在哪？" class="headerlink" title="把盐值存储在哪？"></a>把盐值存储在哪？</h3><p>盐值可以和哈希值一起以明文形式存储在数据库中。</p>
+<h3 id="把盐值存储在哪？"><a href="#把盐值存储在哪？" class="headerlink" title="把盐值存储在哪？"></a>把盐值存储在哪？</h3><p><del>盐值可以和哈希值一起以明文形式存储在数据库中。</del></p>
+<p>salt 不能和哈希值存储在一起，不然就和没有 salt 一样，因为攻击者拖库后，构建字典非常简单，因为它能够直接看到 salt，所以一定要分开存储（比如在不同的机器上），这样即使口令密文表被拖库了，而 salt 表没有被拖库，也是相对安全的。</p>
 <h1 id="三、撒胡椒"><a href="#三、撒胡椒" class="headerlink" title="三、撒胡椒"></a>三、撒胡椒</h1><ul>
 <li>胡椒是在计算哈希值时随盐值和密码一起传入的值。</li>
 <li>使用胡椒的原因：利用额外的字符和符号加强密码的强度。</li>
@@ -653,6 +655,7 @@
 <p>遇到这些情况，符合常规的做法是为用户生成新哈希值，存储在系统中。用户提供用户名和密码请求登录时，正常比较根据输入值计算的哈希值和存储的哈希值，而不是拒绝登录。随后，为用户生成新的哈希值，替换用户记录中的旧值。</p>
 <h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
 <li><a href="https://www.cnblogs.com/lobby/p/5361789.html" target="_blank" rel="noopener">设计安全的账号系统的正确姿势</a></li>
+<li><a href="https://mp.weixin.qq.com/s/1X_aOoadk1CCBzGFC-EM3w" target="_blank" rel="noopener">如何安全存储口令？了解下 Hash 加盐的原理</a></li>
 </ul>
 
       
