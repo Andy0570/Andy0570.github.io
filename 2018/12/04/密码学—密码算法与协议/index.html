@@ -136,7 +136,7 @@
 <meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/DH%20%E5%AF%86%E9%92%A5%E5%8D%8F%E5%95%86%E7%AE%97%E6%B3%95%E7%A4%BA%E4%BE%8B%E5%9B%BE.png">
 <meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/1280px-Digital_Signature_diagram_zh-CN.svg.png">
 <meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D%E7%AE%97%E6%B3%95.png">
-<meta property="og:updated_time" content="2019-05-10T19:10:33.758Z">
+<meta property="og:updated_time" content="2019-05-13T05:53:54.524Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="密码学—密码算法与协议">
 <meta name="twitter:description" content="密码学思维导图">
@@ -504,7 +504,7 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2019-05-11 03:10:33" itemprop="dateModified" datetime="2019-05-11T03:10:33+08:00">2019-05-11</time>
+                <time title="修改时间：2019-05-13 13:53:54" itemprop="dateModified" datetime="2019-05-13T13:53:54+08:00">2019-05-13</time>
               
             
           </span>
@@ -899,12 +899,12 @@
 <h4 id="RSA-加密、解密"><a href="#RSA-加密、解密" class="headerlink" title="RSA 加密、解密"></a>RSA 加密、解密</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="built_in">echo</span> <span class="string">"hello"</span> &gt;&gt;plain.txt</span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用密钥对加密</span></span><br><span class="line">$ openssl rsautl -encrypt -inkey mykey.pem -<span class="keyword">in</span> plain.txt -out cipher.txt</span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用公钥加密，务必有 -pubin 参数表明 -inkey 参数输入的是公钥文件</span></span><br><span class="line">$ openssl rsautl -encrypt -pubin -inkey mypubkey.pem -<span class="keyword">in</span> plain.txt -out cipher.txt</span><br><span class="line"></span><br><span class="line"><span class="comment"># 解密</span></span><br><span class="line">$ openssl rsautl -decrypt -inkey mykey.pem -<span class="keyword">in</span> cipher.txt</span><br><span class="line">hello</span><br></pre></td></tr></table></figure>
 <p>rsautl 命令默认的填充机制是 <strong>PKCS#1 v1.5</strong>，可以指定使用 <strong>PKCS#1 OAPE</strong> 机制，比如：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ openssl rsautl -encrypt -inkey mykey.pem -<span class="keyword">in</span> plain.txt -out cipher.txt -oape</span><br></pre></td></tr></table></figure>
-<h4 id="OpenSSL-无法使用-RSA-加密大文件"><a href="#OpenSSL-无法使用-RSA-加密大文件" class="headerlink" title="OpenSSL 无法使用 RSA 加密大文件"></a>OpenSSL 无法使用 RSA 加密大文件</h4><p>请不要使用 OpenSSL 加密大文件，示例错误如下：</p>
+<h4 id="OpenSSL-无法使用-RSA-加密大文件"><a href="#OpenSSL-无法使用-RSA-加密大文件" class="headerlink" title="OpenSSL 无法使用 RSA 加密大文件"></a>OpenSSL 无法使用 RSA 加密大文件</h4><p>请不要使用 OpenSSL 加密大文件，错误示例如下：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 使用 genrsa 命令生成 2048 位的 RSA 密钥对（rsa_private.key）</span></span><br><span class="line">openssl genrsa -out rsa_private.key 2048</span><br><span class="line"></span><br><span class="line"><span class="comment"># 解析私钥结构，查看密钥内容</span></span><br><span class="line">openssl rsa -text -<span class="keyword">in</span> rsa_private.key</span><br><span class="line"></span><br><span class="line"><span class="comment"># 生成密钥的公钥（rsa_private.key）</span></span><br><span class="line">openssl rsa -<span class="keyword">in</span> rsa_private.key -pubout -out rsa_public.key</span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用生成的公钥加密文件</span></span><br><span class="line"><span class="comment"># -pubin 表明用纯公钥文件加密</span></span><br><span class="line"><span class="comment"># -inkey 指定密钥（rsa_private.key）</span></span><br><span class="line"><span class="comment"># -in 指定要加密的文件（test.pdf，3.2M）</span></span><br><span class="line"><span class="comment"># -out 加密后的文件（encrypted.en）</span></span><br><span class="line">openssl rsautl -encrypt -pubin -inkey rsa_public.key  -<span class="keyword">in</span> test.pdf -out encrypted.en</span><br><span class="line">RSA operation error</span><br><span class="line">4475450988:error:04FFF06E:rsa routines:CRYPTO_internal:data too large <span class="keyword">for</span> key size:/BuildRoot/Library/Caches/com.apple.xbs/Sources/libressl/libressl-22.200.4/libressl-2.6/crypto/rsa/rsa_pk1.c:151:</span><br></pre></td></tr></table></figure>
 <p>参考：<a href="https://stackoverflow.com/questions/7143514/how-to-encrypt-a-large-file-in-openssl-using-public-key" target="_blank" rel="noopener">How to encrypt a large file in openssl using public key</a></p>
 <h3 id="ECDSA-算法实践"><a href="#ECDSA-算法实践" class="headerlink" title="ECDSA 算法实践"></a>ECDSA 算法实践</h3><p>生成 ECDSA-256 密钥（.pem文件）：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 使用 secp256r1 命名曲线创建一个256位长度的 ECDSA 密钥，并使用 AES-128 位算法保存密钥。</span></span><br><span class="line">$ openssl ecparam -genkey -name secp256r1 | openssl ec -out mykey.pem -aes128</span><br></pre></td></tr></table></figure>
-<p>加密解密步骤命令同上（略）。</p>
+<p>只是生成密钥的命令不同，加密解密环节的命令和上面是一样的。</p>
 <h2 id="密钥协商算法"><a href="#密钥协商算法" class="headerlink" title="密钥协商算法"></a>密钥协商算法</h2><p>密钥协商算法解决密钥分配、存储、传输等问题。</p>
 <table>
 <thead>
@@ -1466,7 +1466,7 @@
       <i class="fa fa-coffee"></i>
     </span>
     
-    <span title="站点阅读时长">33:23</span>
+    <span title="站点阅读时长">33:24</span>
   
 </div>
 
