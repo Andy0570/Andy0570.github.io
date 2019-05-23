@@ -123,20 +123,20 @@
 
 
 
-  <meta name="description" content="💡 这一章是《Node.js 实战》笔记，但是书中的源码实现与官方文档有出入，Connect “自带”的中间件好像是需要单个独立导入才能使用。 以下仅作为记录，实际项目使用待研究验证。  Connect 自带的中间件 Connect 自带的中间件可以满足常见的Web程序开发需求：  会话管理； cookie 解析； 请求主体解析 请求日志 ...  &amp;lt;!-- more --&amp;gt; 下面">
+  <meta name="description" content="💡这一章是《Node.js 实战》笔记，但是书中的源码实现与官方文档有出入，Connect “自带”的中间件好像是需要单个独立导入才能使用。以下仅作为记录，实际项目使用待研究验证。  Connect 自带的中间件Connect 自带的中间件可以满足常见的Web程序开发需求：  会话管理； cookie 解析； 请求主体解析 请求日志 …">
 <meta name="keywords" content="Node.js">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Node.js实战_5.Connect 自带的中间件">
 <meta property="og:url" content="https://andy0570.com/2018/11/08/Node.js实战_5.Connect 自带的中间件/index.html">
 <meta property="og:site_name" content="独木舟的木">
-<meta property="og:description" content="💡 这一章是《Node.js 实战》笔记，但是书中的源码实现与官方文档有出入，Connect “自带”的中间件好像是需要单个独立导入才能使用。 以下仅作为记录，实际项目使用待研究验证。  Connect 自带的中间件 Connect 自带的中间件可以满足常见的Web程序开发需求：  会话管理； cookie 解析； 请求主体解析 请求日志 ...  &amp;lt;!-- more --&amp;gt; 下面">
+<meta property="og:description" content="💡这一章是《Node.js 实战》笔记，但是书中的源码实现与官方文档有出入，Connect “自带”的中间件好像是需要单个独立导入才能使用。以下仅作为记录，实际项目使用待研究验证。  Connect 自带的中间件Connect 自带的中间件可以满足常见的Web程序开发需求：  会话管理； cookie 解析； 请求主体解析 请求日志 …">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/075908.jpg">
 <meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/075908-1.jpg">
 <meta property="og:updated_time" content="2019-05-01T13:02:03.969Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Node.js实战_5.Connect 自带的中间件">
-<meta name="twitter:description" content="💡 这一章是《Node.js 实战》笔记，但是书中的源码实现与官方文档有出入，Connect “自带”的中间件好像是需要单个独立导入才能使用。 以下仅作为记录，实际项目使用待研究验证。  Connect 自带的中间件 Connect 自带的中间件可以满足常见的Web程序开发需求：  会话管理； cookie 解析； 请求主体解析 请求日志 ...  &amp;lt;!-- more --&amp;gt; 下面">
+<meta name="twitter:description" content="💡这一章是《Node.js 实战》笔记，但是书中的源码实现与官方文档有出入，Connect “自带”的中间件好像是需要单个独立导入才能使用。以下仅作为记录，实际项目使用待研究验证。  Connect 自带的中间件Connect 自带的中间件可以满足常见的Web程序开发需求：  会话管理； cookie 解析； 请求主体解析 请求日志 …">
 <meta name="twitter:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/075908.jpg">
 
 
@@ -582,65 +582,50 @@
 
       
         <blockquote>
-<p>💡
-这一章是《Node.js 实战》笔记，但是书中的源码实现与官方文档有出入，Connect “自带”的中间件好像是需要单个独立导入才能使用。
-以下仅作为记录，实际项目使用待研究验证。</p>
+<p>💡<br>这一章是《Node.js 实战》笔记，但是书中的源码实现与官方文档有出入，Connect “自带”的中间件好像是需要单个独立导入才能使用。<br>以下仅作为记录，实际项目使用待研究验证。</p>
 </blockquote>
-<h1>Connect 自带的中间件</h1>
-<p>Connect 自带的中间件可以满足常见的Web程序开发需求：</p>
+<h1 id="Connect-自带的中间件"><a href="#Connect-自带的中间件" class="headerlink" title="Connect 自带的中间件"></a>Connect 自带的中间件</h1><p>Connect 自带的中间件可以满足常见的Web程序开发需求：</p>
 <ul>
 <li>会话管理；</li>
 <li>cookie 解析；</li>
 <li>请求主体解析</li>
 <li>请求日志</li>
-<li>...</li>
+<li>…</li>
 </ul>
-<p>&lt;!-- more --&gt;</p>
+<a id="more"></a>
 <p>下面的这些中间件是独立呈现的，需要npm单独导入</p>
 <p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/075908.jpg" alt="Connect 中间件"></p>
 <p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/075908-1.jpg" alt="image"></p>
-<h2>解析 cookie、请求主体和查询字符串的中间件</h2>
-<h3>cookieParser()：解析HTTP cookie</h3>
-<p>Connect 的 cookie 解析器支持常规cookie、签名cookie和特殊的JSON cookie。
-req.cookies默认是用常规未签名cookie组装而成的。如果你想支持session()中间件要求的签名cookie，在创建cookieParser()实例时要传入一个加密用的字符串。</p>
-<p><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> connect = <span class="built_in">require</span>(<span class="string">'connect'</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 作为参数传给cookieParser()的秘钥用来对cookie签名和解签</span></span><br><span class="line"><span class="keyword">var</span> app = connect()</span><br><span class="line">    .use(connect.cookieParser(<span class="string">'tobi is a cook ferret'</span>)) </span><br><span class="line">    .use(<span class="function"><span class="keyword">function</span> (<span class="params">req, res</span>) </span>&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(req.cookies);</span><br><span class="line">        <span class="built_in">console</span>.log(req.signedCookies);</span><br><span class="line">        res.end(<span class="string">'hello\n'</span>);</span><br><span class="line">    &#125;)</span><br><span class="line">    .listen(<span class="number">3000</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 不带cookie</span></span><br><span class="line"><span class="comment">// curl http://localhost:3000/</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 常规cookie</span></span><br><span class="line"><span class="comment">// curl http://localhost:3000/ -H "Cookie: foo=bar, bar=baz"</span></span><br></pre></td></tr></table></figure></p>
-<h4>签名cookie</h4>
-<p>签名cookie更适合敏感数据，因为用它可以验证cookie数据的完整性，有助于防止中间人攻击。有效的签名cookie放在req.signedCookies对象中。</p>
+<h2 id="解析-cookie、请求主体和查询字符串的中间件"><a href="#解析-cookie、请求主体和查询字符串的中间件" class="headerlink" title="解析 cookie、请求主体和查询字符串的中间件"></a>解析 cookie、请求主体和查询字符串的中间件</h2><h3 id="cookieParser-：解析HTTP-cookie"><a href="#cookieParser-：解析HTTP-cookie" class="headerlink" title="cookieParser()：解析HTTP cookie"></a>cookieParser()：解析HTTP cookie</h3><p>Connect 的 cookie 解析器支持常规cookie、签名cookie和特殊的JSON cookie。<br>req.cookies默认是用常规未签名cookie组装而成的。如果你想支持session()中间件要求的签名cookie，在创建cookieParser()实例时要传入一个加密用的字符串。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> connect = <span class="built_in">require</span>(<span class="string">'connect'</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 作为参数传给cookieParser()的秘钥用来对cookie签名和解签</span></span><br><span class="line"><span class="keyword">var</span> app = connect()</span><br><span class="line">    .use(connect.cookieParser(<span class="string">'tobi is a cook ferret'</span>)) </span><br><span class="line">    .use(<span class="function"><span class="keyword">function</span> (<span class="params">req, res</span>) </span>&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(req.cookies);</span><br><span class="line">        <span class="built_in">console</span>.log(req.signedCookies);</span><br><span class="line">        res.end(<span class="string">'hello\n'</span>);</span><br><span class="line">    &#125;)</span><br><span class="line">    .listen(<span class="number">3000</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 不带cookie</span></span><br><span class="line"><span class="comment">// curl http://localhost:3000/</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 常规cookie</span></span><br><span class="line"><span class="comment">// curl http://localhost:3000/ -H "Cookie: foo=bar, bar=baz"</span></span><br></pre></td></tr></table></figure>
+<h4 id="签名cookie"><a href="#签名cookie" class="headerlink" title="签名cookie"></a>签名cookie</h4><p>签名cookie更适合敏感数据，因为用它可以验证cookie数据的完整性，有助于防止中间人攻击。有效的签名cookie放在req.signedCookies对象中。</p>
 <p>假设你设定了一个键为name，值为luna的签名cookie。cookieParser会将cookie编码为luna.PQLM0wNvqOQEObZXUkWbS5m6Wlg。每个请求中的哈希值都会检查，如果cookie完好无损地传上来，它会被解析为req.signedCookies.name:</p>
-<h4>JSON cookie</h4>
-<p>特别的JSON cookie带有前缀j:，告诉Connect它是一个串行化的JSON。 JSON cookie既可以是签名的，也可以是未签名的。</p>
-<p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl http://localhost:3000/ -H 'Cookie: foo=bar, bar=j:&#123;"foo":"bar"&#125;'</span><br></pre></td></tr></table></figure></p>
-<h4>设定出站cookie</h4>
-<p>cookieParser() 中间件没有提供任何通过 Set-Cookie 响应头向HTTP客户端写出站cookie的功能。但Connect可以通过 res.setHeader()函数写入多个Set-Cookie响应头。</p>
-<p><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> connect = <span class="built_in">require</span>(<span class="string">'connect'</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> app = connect()</span><br><span class="line">    .use(<span class="function"><span class="keyword">function</span> (<span class="params">req, res</span>) </span>&#123;</span><br><span class="line">        res.setHeader(<span class="string">'Set-Cookie'</span>, <span class="string">'foo=bar'</span>); <span class="comment">// 设定cookie：foo=bar</span></span><br><span class="line">        res.setHeader(<span class="string">'Set-Cookie'</span>, <span class="string">'tobi=ferret; Expires=Tue, 08 Jun 2021 10:18:14 GMT'</span>); <span class="comment">// 设定cookie有效期</span></span><br><span class="line">        res.end();</span><br><span class="line">    &#125;).listen(<span class="number">3000</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// curl http://localhost:3000/ --head</span></span><br></pre></td></tr></table></figure></p>
-<h3>bodyParser()：解析请求主体</h3>
-<p>bodyParser() 组件为你提供了req.body 属性，可以用来解析 JSON、x-www-form-urlencoded 和multipart/form-data请求。如果是 multipart/form-data 请求，比如文件上传，则还有req.files 对象。</p>
-<p><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> app = connect()</span><br><span class="line">    .use(connect.bodyParser())</span><br><span class="line">    .use(<span class="function"><span class="keyword">function</span>(<span class="params">req, res</span>) </span>&#123;</span><br><span class="line">        <span class="comment">// ...注册用户</span></span><br><span class="line">        res.end(<span class="string">'Registered new user: '</span> + req.body.username);</span><br><span class="line">    &#125;).listen(<span class="number">3000</span>);</span><br></pre></td></tr></table></figure></p>
+<h4 id="JSON-cookie"><a href="#JSON-cookie" class="headerlink" title="JSON cookie"></a>JSON cookie</h4><p>特别的JSON cookie带有前缀j:，告诉Connect它是一个串行化的JSON。 JSON cookie既可以是签名的，也可以是未签名的。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl http://localhost:3000/ -H 'Cookie: foo=bar, bar=j:&#123;"foo":"bar"&#125;'</span><br></pre></td></tr></table></figure>
+<h4 id="设定出站cookie"><a href="#设定出站cookie" class="headerlink" title="设定出站cookie"></a>设定出站cookie</h4><p>cookieParser() 中间件没有提供任何通过 Set-Cookie 响应头向HTTP客户端写出站cookie的功能。但Connect可以通过 res.setHeader()函数写入多个Set-Cookie响应头。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> connect = <span class="built_in">require</span>(<span class="string">'connect'</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> app = connect()</span><br><span class="line">    .use(<span class="function"><span class="keyword">function</span> (<span class="params">req, res</span>) </span>&#123;</span><br><span class="line">        res.setHeader(<span class="string">'Set-Cookie'</span>, <span class="string">'foo=bar'</span>); <span class="comment">// 设定cookie：foo=bar</span></span><br><span class="line">        res.setHeader(<span class="string">'Set-Cookie'</span>, <span class="string">'tobi=ferret; Expires=Tue, 08 Jun 2021 10:18:14 GMT'</span>); <span class="comment">// 设定cookie有效期</span></span><br><span class="line">        res.end();</span><br><span class="line">    &#125;).listen(<span class="number">3000</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// curl http://localhost:3000/ --head</span></span><br></pre></td></tr></table></figure>
+<h3 id="bodyParser-：解析请求主体"><a href="#bodyParser-：解析请求主体" class="headerlink" title="bodyParser()：解析请求主体"></a>bodyParser()：解析请求主体</h3><p>bodyParser() 组件为你提供了req.body 属性，可以用来解析 JSON、x-www-form-urlencoded 和multipart/form-data请求。如果是 multipart/form-data 请求，比如文件上传，则还有req.files 对象。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> app = connect()</span><br><span class="line">    .use(connect.bodyParser())</span><br><span class="line">    .use(<span class="function"><span class="keyword">function</span>(<span class="params">req, res</span>) </span>&#123;</span><br><span class="line">        <span class="comment">// ...注册用户</span></span><br><span class="line">        res.end(<span class="string">'Registered new user: '</span> + req.body.username);</span><br><span class="line">    &#125;).listen(<span class="number">3000</span>);</span><br></pre></td></tr></table></figure>
 <p>因为 bodyParser() 是根据 Content-Type 解析数据的，输入形式是抽象的，所以你的程序中只需要关心req.body数据对象的结果。</p>
-<h3>limit()：请求主体的限制</h3>
-<p>目的：帮助过滤巨型的请求。</p>
-<h3>query()：查询字符串解析</h3>
-<ul>
+<h3 id="limit-：请求主体的限制"><a href="#limit-：请求主体的限制" class="headerlink" title="limit()：请求主体的限制"></a>limit()：请求主体的限制</h3><p>目的：帮助过滤巨型的请求。</p>
+<h3 id="query-：查询字符串解析"><a href="#query-：查询字符串解析" class="headerlink" title="query()：查询字符串解析"></a>query()：查询字符串解析</h3><ul>
 <li>bodyParser()：解析 POST 请求</li>
 <li>query()：解析 GET 请求。</li>
 </ul>
 <p>query中间件可以将请求发送过来的查询字符串以JSON格式作为响应返回去。</p>
-<h2>实现 Web 程序核心功能的中间件</h2>
-<ul>
+<h2 id="实现-Web-程序核心功能的中间件"><a href="#实现-Web-程序核心功能的中间件" class="headerlink" title="实现 Web 程序核心功能的中间件"></a>实现 Web 程序核心功能的中间件</h2><ul>
 <li>logger()：提供灵活的请求日志;</li>
 <li>favicon()：帮你处理/favicon.ico请求（favicon 是网站的小图标）;</li>
 <li>methodOverride()：让没有能力的客户端透明地重写req.method;</li>
 <li>vhost()：在一个服务器上设置多个网站(虚拟主机);</li>
 <li>session()：管理会话数据。</li>
 </ul>
-<h2>处理 Web 程序安全的中间件</h2>
-<ul>
+<h2 id="处理-Web-程序安全的中间件"><a href="#处理-Web-程序安全的中间件" class="headerlink" title="处理 Web 程序安全的中间件"></a>处理 Web 程序安全的中间件</h2><ul>
 <li>basicAuth()：为保护数据提供了HTTP基本认证;</li>
 <li>csrf()：实现对跨站请求伪造(CSRF)攻击的防护;</li>
 <li>errorhandler()：帮你在开发过程中进行调试。</li>
 </ul>
-<h2>提供静态文件服务的中间件</h2>
-<ul>
+<h2 id="提供静态文件服务的中间件"><a href="#提供静态文件服务的中间件" class="headerlink" title="提供静态文件服务的中间件"></a>提供静态文件服务的中间件</h2><ul>
 <li>static()：将文件系统中给定根目录下的文件返回给客户端;</li>
 <li>compress()：压缩响应，很适合跟static()一起使用;</li>
 <li>directory()：当请求的是目录时，返回那个目录的列表。</li>
@@ -1007,7 +992,7 @@ req.cookies默认是用常规未签名cookie组装而成的。如果你想支持
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#undefined"><span class="nav-number">1.</span> <span class="nav-text">Connect 自带的中间件</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#undefined"><span class="nav-number">1.1.</span> <span class="nav-text">解析 cookie、请求主体和查询字符串的中间件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">1.1.1.</span> <span class="nav-text">cookieParser()：解析HTTP cookie</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#undefined"><span class="nav-number">1.1.1.1.</span> <span class="nav-text">签名cookie</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#undefined"><span class="nav-number">1.1.1.2.</span> <span class="nav-text">JSON cookie</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#undefined"><span class="nav-number">1.1.1.3.</span> <span class="nav-text">设定出站cookie</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">1.1.2.</span> <span class="nav-text">bodyParser()：解析请求主体</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">1.1.3.</span> <span class="nav-text">limit()：请求主体的限制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">1.1.4.</span> <span class="nav-text">query()：查询字符串解析</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#undefined"><span class="nav-number">1.2.</span> <span class="nav-text">实现 Web 程序核心功能的中间件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#undefined"><span class="nav-number">1.3.</span> <span class="nav-text">处理 Web 程序安全的中间件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#undefined"><span class="nav-number">1.4.</span> <span class="nav-text">提供静态文件服务的中间件</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Connect-自带的中间件"><span class="nav-number">1.</span> <span class="nav-text">Connect 自带的中间件</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#解析-cookie、请求主体和查询字符串的中间件"><span class="nav-number">1.1.</span> <span class="nav-text">解析 cookie、请求主体和查询字符串的中间件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#cookieParser-：解析HTTP-cookie"><span class="nav-number">1.1.1.</span> <span class="nav-text">cookieParser()：解析HTTP cookie</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#签名cookie"><span class="nav-number">1.1.1.1.</span> <span class="nav-text">签名cookie</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#JSON-cookie"><span class="nav-number">1.1.1.2.</span> <span class="nav-text">JSON cookie</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#设定出站cookie"><span class="nav-number">1.1.1.3.</span> <span class="nav-text">设定出站cookie</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#bodyParser-：解析请求主体"><span class="nav-number">1.1.2.</span> <span class="nav-text">bodyParser()：解析请求主体</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#limit-：请求主体的限制"><span class="nav-number">1.1.3.</span> <span class="nav-text">limit()：请求主体的限制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#query-：查询字符串解析"><span class="nav-number">1.1.4.</span> <span class="nav-text">query()：查询字符串解析</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实现-Web-程序核心功能的中间件"><span class="nav-number">1.2.</span> <span class="nav-text">实现 Web 程序核心功能的中间件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#处理-Web-程序安全的中间件"><span class="nav-number">1.3.</span> <span class="nav-text">处理 Web 程序安全的中间件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#提供静态文件服务的中间件"><span class="nav-number">1.4.</span> <span class="nav-text">提供静态文件服务的中间件</span></a></li></ol></li></ol></div>
             
 
           </div>
@@ -1042,7 +1027,7 @@ req.cookies默认是用常规未签名cookie组装而成的。如果你想支持
       <i class="fa fa-area-chart"></i>
     </span>
     
-    <span title="站点总字数">2.3m</span>
+    <span title="站点总字数">2.2m</span>
   
 
   
@@ -1051,7 +1036,7 @@ req.cookies默认是用常规未签名cookie组装而成的。如果你想支持
       <i class="fa fa-coffee"></i>
     </span>
     
-    <span title="站点阅读时长">34:07</span>
+    <span title="站点阅读时长">33:50</span>
   
 </div>
 

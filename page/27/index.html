@@ -581,55 +581,21 @@
 
       
         
-          
-            <h3><a href="http://www.seacha.com/tools/aes.html" target="_blank" rel="noopener">在线AES加解密网站</a></h3>
-<ul>
+          <h3 id="在线AES加解密网站"><a href="#在线AES加解密网站" class="headerlink" title="在线AES加解密网站"></a><a href="http://www.seacha.com/tools/aes.html" target="_blank" rel="noopener">在线AES加解密网站</a></h3><ul>
 <li>发现这个网站除了可以<strong>在线AES加解密</strong>，还有<strong>MD5在线加密</strong> 、<strong>SHA1在线加密</strong> 、<strong>Base64在线加解密</strong>  、<strong>3DES在线加解密</strong> 、<strong>中文域名在线转码</strong> 、<strong>在线生成二维码</strong> 等其它功能。</li>
 </ul>
-<h3>加密算法</h3>
-<blockquote>
-<p>iOS加密算法参考了<a href="http://www.jianshu.com/p/df828a57cb8f" target="_blank" rel="noopener">AES加密 - iOS与Java的同步实现 @WelkinXie</a>，然后根据自己的需求作了一下修改，传入的是<strong>NSDictionary</strong>类型，并且嵌套进了 <strong>NSDictionary</strong> &lt;-&gt; <strong>NSString</strong> 相互转换的两个方法。</p>
+<h3 id="加密算法"><a href="#加密算法" class="headerlink" title="加密算法"></a>加密算法</h3><blockquote>
+<p>iOS加密算法参考了<a href="http://www.jianshu.com/p/df828a57cb8f" target="_blank" rel="noopener">AES加密 - iOS与Java的同步实现 @WelkinXie</a>，然后根据自己的需求作了一下修改，传入的是<strong>NSDictionary</strong>类型，并且嵌套进了 <strong>NSDictionary</strong> <-> <strong>NSString</strong> 相互转换的两个方法。</-></p>
 </blockquote>
-<p>&lt;!-- more --&gt;</p>
-<h4>AESCipher.h</h4>
-<p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">#import &lt;Foundation/Foundation.h&gt;</span><br><span class="line"></span><br><span class="line">@interface AESCipher : NSObject</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> 加密算法</span><br><span class="line"></span><br><span class="line"> @param dictionary 待加密字典</span><br><span class="line"> @param key 密钥</span><br><span class="line"> @return 加密后字符串</span><br><span class="line"> */</span><br><span class="line">+ (NSString *)encryptAES:(NSDictionary *)dictionary key:(NSString *)key;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> 解密算法</span><br><span class="line"></span><br><span class="line"> @param content 待解密字符串</span><br><span class="line"> @param key 密钥</span><br><span class="line"> @return 解密后字典</span><br><span class="line"> */</span><br><span class="line">+ (NSDictionary *)decryptAES:(NSString *)content key:(NSString *)key;</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></table></figure></p>
-<h4>AESCiphser.m</h4>
-<ul>
-<li>需要注意的是AES加密算法中的这几个设置参数一定要和服务器端一致，否则会有各种错误。
-<ul>
-<li>密钥长度（Key Size）</li>
-<li>加密模式（Cipher Mode）</li>
-<li>填充方式（Padding）</li>
-<li>初始向量（Initialization Vector）</li>
-</ul>
-</li>
-</ul>
-<p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br></pre></td><td class="code"><pre><span class="line">#import &quot;AESCipher.h&quot;</span><br><span class="line">#import &lt;CommonCrypto/CommonCryptor.h&gt;</span><br><span class="line"></span><br><span class="line">/** 初始向量*/</span><br><span class="line">NSString *const kInitVector = @&quot;16-Bytes--String&quot;;</span><br><span class="line">/** 密钥长度：AES-128*/</span><br><span class="line">size_t const kKeySize = kCCKeySizeAES128;</span><br><span class="line"></span><br><span class="line">@implementation AESCipher</span><br><span class="line"></span><br><span class="line">#pragma mark - 加密算法</span><br><span class="line"></span><br><span class="line">+ (NSString *)encryptAES:(NSDictionary *)dictionary key:(NSString *)key &#123;</span><br><span class="line">    </span><br><span class="line">    // NSDictionary -&gt; NSString</span><br><span class="line">    NSString *content = [self convertToJsonData:dictionary];</span><br><span class="line">    </span><br><span class="line">    // 待加密数据: NSString -&gt; NSData</span><br><span class="line">    NSData *contentData = [content dataUsingEncoding:NSUTF8StringEncoding];</span><br><span class="line">    NSUInteger dataLength = contentData.length;</span><br><span class="line">    </span><br><span class="line">    // 密钥长度:kCCKeySizeAES128</span><br><span class="line">    char keyPtr[kKeySize + 1]; // 为结束符&apos;\\0&apos; +1</span><br><span class="line">    memset(keyPtr, 0, sizeof(keyPtr));</span><br><span class="line">    [key getCString:keyPtr maxLength:sizeof(keyPtr) encoding:NSUTF8StringEncoding];</span><br><span class="line">    </span><br><span class="line">    // 密文长度 &lt;= 明文长度 + BlockSize（填充数据）</span><br><span class="line">    size_t encryptSize = dataLength + kCCBlockSizeAES128;</span><br><span class="line">    void *encryptedBytes = malloc(encryptSize);</span><br><span class="line">    size_t actualOutSize = 0;</span><br><span class="line">    </span><br><span class="line">    NSData *initVector = [kInitVector dataUsingEncoding:NSUTF8StringEncoding];</span><br><span class="line">    </span><br><span class="line">    // 设置加密参数</span><br><span class="line">    // 系统默认使用 CBC 加密模式，然后指明使用 PKCS7Padding 补码方式(填充方式)</span><br><span class="line">    CCCryptorStatus cryptStatus = CCCrypt(kCCEncrypt,</span><br><span class="line">                                          kCCAlgorithmAES,</span><br><span class="line">                                          kCCOptionPKCS7Padding,</span><br><span class="line">                                          keyPtr,</span><br><span class="line">                                          kKeySize,</span><br><span class="line">                                          initVector.bytes,</span><br><span class="line">                                          contentData.bytes,</span><br><span class="line">                                          dataLength,</span><br><span class="line">                                          encryptedBytes,</span><br><span class="line">                                          encryptSize,</span><br><span class="line">                                          &amp;actualOutSize);</span><br><span class="line">    </span><br><span class="line">    if (cryptStatus == kCCSuccess) &#123;</span><br><span class="line">        // 加密结果编码方式: base64 编码</span><br><span class="line">        return [[NSData dataWithBytesNoCopy:encryptedBytes length:actualOutSize] base64EncodedStringWithOptions:NSDataBase64EncodingEndLineWithLineFeed];</span><br><span class="line">    &#125;</span><br><span class="line">    free(encryptedBytes);</span><br><span class="line">    return nil;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">#pragma mark - 解密算法</span><br><span class="line"></span><br><span class="line">+ (NSDictionary *)decryptAES:(NSString *)content key:(NSString *)key &#123;</span><br><span class="line">    // 把 base64 String 转换成 Data</span><br><span class="line">    NSData *contentData = [[NSData alloc] initWithBase64EncodedString:content options:NSDataBase64DecodingIgnoreUnknownCharacters];</span><br><span class="line">    NSUInteger dataLength = contentData.length;</span><br><span class="line">    </span><br><span class="line">    char keyPtr[kKeySize + 1];</span><br><span class="line">    memset(keyPtr, 0, sizeof(keyPtr));</span><br><span class="line">    [key getCString:keyPtr maxLength:sizeof(keyPtr) encoding:NSUTF8StringEncoding];</span><br><span class="line">    </span><br><span class="line">    size_t decryptSize = dataLength + kCCBlockSizeAES128;</span><br><span class="line">    void *decryptedBytes = malloc(decryptSize);</span><br><span class="line">    size_t actualOutSize = 0;</span><br><span class="line">    </span><br><span class="line">    NSData *initVector = [kInitVector dataUsingEncoding:NSUTF8StringEncoding];</span><br><span class="line">    </span><br><span class="line">    CCCryptorStatus cryptStatus = CCCrypt(kCCDecrypt,</span><br><span class="line">                                          kCCAlgorithmAES,</span><br><span class="line">                                          kCCOptionPKCS7Padding,</span><br><span class="line">                                          keyPtr,</span><br><span class="line">                                          kKeySize,</span><br><span class="line">                                          initVector.bytes,</span><br><span class="line">                                          contentData.bytes,</span><br><span class="line">                                          dataLength,</span><br><span class="line">                                          decryptedBytes,</span><br><span class="line">                                          decryptSize,</span><br><span class="line">                                          &amp;actualOutSize);</span><br><span class="line">    </span><br><span class="line">    if (cryptStatus == kCCSuccess) &#123;</span><br><span class="line">        NSString *content = [[NSString alloc] initWithData:[NSData dataWithBytesNoCopy:decryptedBytes length:actualOutSize] encoding:NSUTF8StringEncoding];</span><br><span class="line">        return [self dictionaryWithJsonString:content];</span><br><span class="line">    &#125;</span><br><span class="line">    free(decryptedBytes);</span><br><span class="line">    return nil;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">#pragma mark - NSDictionary &lt;-&gt; NSString</span><br><span class="line"></span><br><span class="line">// NSDictionary 转换为 NSString</span><br><span class="line">+ (NSString *)convertToJsonData:(NSDictionary *)dictionary &#123;</span><br><span class="line">    NSError *error;</span><br><span class="line">    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:dictionary options:NSJSONWritingPrettyPrinted error:&amp;error];</span><br><span class="line">    NSString *jsonString;</span><br><span class="line">    if (!jsonData) &#123;</span><br><span class="line">        NSLog(@&quot;%@&quot;,error);</span><br><span class="line">    &#125;else&#123;</span><br><span class="line">        jsonString = [[NSString alloc]initWithData:jsonData encoding:NSUTF8StringEncoding];</span><br><span class="line">    &#125;</span><br><span class="line">    NSMutableString *mutStr = [NSMutableString stringWithString:jsonString];</span><br><span class="line">    NSRange range = &#123;0,jsonString.length&#125;;</span><br><span class="line">    //去掉字符串中的空格</span><br><span class="line">    [mutStr replaceOccurrencesOfString:@&quot; &quot; withString:@&quot;&quot; options:NSLiteralSearch range:range];</span><br><span class="line">    NSRange range2 = &#123;0,mutStr.length&#125;;</span><br><span class="line">    //去掉字符串中的换行符</span><br><span class="line">    [mutStr replaceOccurrencesOfString:@&quot;\n&quot; withString:@&quot;&quot; options:NSLiteralSearch range:range2];</span><br><span class="line">    return mutStr;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// NSString 转换为 NSDictionary</span><br><span class="line">+ (NSDictionary *)dictionaryWithJsonString:(NSString *)content &#123;</span><br><span class="line">    if (content == nil) &#123;</span><br><span class="line">        return nil;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    NSData *jsonData = [content dataUsingEncoding:NSUTF8StringEncoding];</span><br><span class="line">    NSError *err;</span><br><span class="line">    NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:jsonData</span><br><span class="line">                                                        options:NSJSONReadingMutableContainers</span><br><span class="line">                                                          error:&amp;err];</span><br><span class="line">    if(err)</span><br><span class="line">    &#123;</span><br><span class="line">        NSLog(@&quot;json解析失败：%@&quot;,err);</span><br><span class="line">        return nil;</span><br><span class="line">    &#125;</span><br><span class="line">    return dic;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></table></figure></p>
-<h3>调用</h3>
-<ol>
-<li>
-<p>先在需要使用AES加密方法的文件中先导入包文件。
-<code>#import &quot;AESCipher.h&quot;</code></p>
-</li>
-<li>
-<p>设置好需要传入的<strong>NSDictionary对象</strong>和<strong>key值</strong>（一定要确保是16位的，且和服务器端一致）。
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">NSDictionary *dictionary = @&#123;</span><br><span class="line">                               @&quot;key&quot;:@&quot;value&quot;</span><br><span class="line">                                &#125;;</span><br><span class="line">NSString *key = @&quot;1234567890123456&quot;;</span><br><span class="line">NSString *cipherString = [AESCipher encryptAES:dictionary key:key];</span><br></pre></td></tr></table></figure></p>
-</li>
-<li>
-<p>解密调用时，设置一个<strong>NSDictionary对象</strong>传入需要解密的字符串接受解密后的数据。
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">NSDictionary *dictionary = [AESCipher decryptAES:cipherString key:key];</span><br></pre></td></tr></table></figure></p>
-</li>
-</ol>
-<h3>参考资料</h3>
-<ul>
-<li><a href="http://www.jianshu.com/p/df828a57cb8f" target="_blank" rel="noopener">AES加密 - iOS与Java的同步实现 @WelkinXie</a></li>
-<li><a href="https://github.com/Gurpartap/AESCrypt-ObjC" target="_blank" rel="noopener">GitHub框架：<strong>AESCrypt-ObjC</strong></a></li>
-<li><a href="http://www.jianshu.com/p/3a4f47cb86f8" target="_blank" rel="noopener">iOS数据加密方式 MD5 &amp; RSA</a></li>
-<li><a href="http://www.cnblogs.com/ming1025/p/6186171.html" target="_blank" rel="noopener">iOS开发--字典(NSDictionary)和JSON字符串(NSString)之间互转</a></li>
-<li><a href="http://www.infoq.com/cn/articles/how-to-encrypt-the-user-password-correctly" target="_blank" rel="noopener">如何正确对用户密码进行加密？</a></li>
-</ul>
-
+          <!--noindex-->
           
+            <div class="post-button text-center">
+              <a class="btn" href="/2017/01/09/iOS 编程：AES 加密算法/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          
+          <!--/noindex-->
         
       
     </div>
@@ -806,7 +772,7 @@
                 
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
-                <span title="阅读时长">28 分钟</span>
+                <span title="阅读时长">27 分钟</span>
               
             </div>
           
@@ -827,221 +793,16 @@
 
       
         
+          <p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/073511.jpg" alt="Photo by [Wesley Tingey](https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/073508.jpg) on [Unsplash](https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/073509.jpg)"></p>
+          <!--noindex-->
           
-            <p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/073511.jpg" alt="Photo by Wesley Tingey on Unsplash"></p>
-<p>&lt;!-- more --&gt;</p>
-<h2>1.获取设备相关信息</h2>
-<p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">UIDevice *device = [[UIDevice alloc] init];  </span><br><span class="line">NSString *name = device.name;                   // 获取设备所有者的名称  </span><br><span class="line">NSString *model = device.model;                 // 获取设备的型号  </span><br><span class="line">NSString *type = device.localizedModel;         // 获取本地化版本  </span><br><span class="line">NSString *systemName = device.systemName;       // 获取当前运行的系统  </span><br><span class="line">NSString *systemVersion = device.systemVersion; // 获取当前系统的版本</span><br></pre></td></tr></table></figure></p>
-<p>同上</p>
-<p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">// 获取设备所有者的名称——&quot;My iPhone&quot;</span><br><span class="line">NSString * name = [[UIDevice currentDevice] name];</span><br><span class="line"></span><br><span class="line">// 获取设备的型号——@&quot;iPhone&quot;</span><br><span class="line">NSString * model = [[UIDevice currentDevice] model];</span><br><span class="line"></span><br><span class="line">// //获取本地化版本</span><br><span class="line">NSString * localizedModel = [[UIDevice currentDevice] localizedModel];</span><br><span class="line"></span><br><span class="line">// 获取当前运行的系统名称——@&quot;iOS&quot;</span><br><span class="line">NSString * systemName = [[UIDevice currentDevice] systemName];</span><br><span class="line"></span><br><span class="line">// //获取当前系统的版本——@&quot;10.0&quot;、@&quot;11.3.1&quot;</span><br><span class="line">NSString * systemVersion = [[UIDevice currentDevice] systemVersion];</span><br></pre></td></tr></table></figure></p>
-<p><strong>注：</strong></p>
-<blockquote>
-<p>上面获取设备型号的方法 <code>NSString * model = [[UIDevice currentDevice] model];</code>只能获取 @&quot;iPhone&quot; ，想要获取到具体型号（例如@&quot;iPhone 6s Plus&quot;、@&quot;iPhone 7 (CDMA)&quot;）需要使用下面这个方法：</p>
-</blockquote>
-<p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br></pre></td><td class="code"><pre><span class="line">// 1.需要先导入包</span><br><span class="line">#import &lt;sys/utsname.h&gt;</span><br><span class="line"></span><br><span class="line">// 2.获取方法</span><br><span class="line">// 获取设备名称</span><br><span class="line">- (NSString *)deviceModel &#123;</span><br><span class="line">    struct utsname systemInfo;</span><br><span class="line">    uname(&amp;systemInfo);</span><br><span class="line">    NSString *deviceModel = [NSString stringWithCString:systemInfo.machine</span><br><span class="line">                                               encoding:NSUTF8StringEncoding];</span><br><span class="line">    </span><br><span class="line">    // 模拟器</span><br><span class="line">    if ([deviceModel isEqualToString:@&quot;i386&quot;])         return @&quot;Simulator&quot;;</span><br><span class="line">    if ([deviceModel isEqualToString:@&quot;x86_64&quot;])       return @&quot;Simulator&quot;;</span><br><span class="line">    </span><br><span class="line">    // iPhone 系列</span><br><span class="line">    if ([deviceModel isEqualToString:@&quot;iPhone1,1&quot;])    return @&quot;iPhone 1G&quot;;</span><br><span class="line">    if ([deviceModel isEqualToString:@&quot;iPhone1,2&quot;])    return @&quot;iPhone 3G&quot;;</span><br><span class="line">    if ([deviceModel isEqualToString:@&quot;iPhone2,1&quot;])    return @&quot;iPhone 3GS&quot;;</span><br><span class="line">    if ([deviceModel isEqualToString:@&quot;iPhone3,1&quot;])    return @&quot;iPhone 4 (GSM)&quot;;</span><br><span class="line">    if ([deviceModel isEqualToString:@&quot;iPhone3,2&quot;])    return @&quot;Verizon iPhone 4&quot;;</span><br><span class="line">    if ([deviceModel isEqualToString:@&quot;iPhone3,3&quot;])    return @&quot;iPhone 4 (CDMA/Verizon/Sprint)&quot;;</span><br><span class="line">    if ([deviceModel isEqualToString:@&quot;iPhone4,1&quot;])    return @&quot;iPhone 4S&quot;;</span><br><span class="line">    if ([deviceModel isEqualToString:@&quot;iPhone5,1&quot;])    return @&quot;iPhone 5&quot;;</span><br><span class="line">    if ([deviceModel isEqualToString:@&quot;iPhone5,2&quot;])    return @&quot;iPhone 5&quot;;</span><br><span class="line">    if ([deviceModel isEqualToString:@&quot;iPhone5,3&quot;])    return @&quot;iPhone 5C&quot;;</span><br><span class="line">    if ([deviceModel isEqualToString:@&quot;iPhone5,4&quot;])    return @&quot;iPhone 5C&quot;;</span><br><span class="line">    if ([deviceModel isEqualToString:@&quot;iPhone6,1&quot;])    return @&quot;iPhone 5S&quot;;</span><br><span class="line">    if ([deviceModel isEqualToString:@&quot;iPhone6,2&quot;])    return @&quot;iPhone 5S&quot;;</span><br><span class="line">    if ([deviceModel isEqualToString:@&quot;iPhone7,1&quot;])    return @&quot;iPhone 6 Plus&quot;;</span><br><span class="line">    if ([deviceModel isEqualToString:@&quot;iPhone7,2&quot;])    return @&quot;iPhone 6&quot;;</span><br><span class="line">    if ([deviceModel isEqualToString:@&quot;iPhone8,1&quot;])    return @&quot;iPhone 6s&quot;;</span><br><span class="line">    if ([deviceModel isEqualToString:@&quot;iPhone8,2&quot;])    return @&quot;iPhone 6s Plus&quot;;</span><br><span class="line">    if ([deviceModel isEqualToString:@&quot;iPhone8,4&quot;])    return @&quot;iPhone SE&quot;;</span><br><span class="line">    if ([deviceModel isEqualToString:@&quot;iPhone9,1&quot;])    return @&quot;iPhone 7 (CDMA)&quot;;</span><br><span class="line">    if ([deviceModel isEqualToString:@&quot;iPhone9,3&quot;])    return @&quot;iPhone 7 (GSM)&quot;;</span><br><span class="line">    if ([deviceModel isEqualToString:@&quot;iPhone9,2&quot;])    return @&quot;iPhone 7 Plus (CDMA)&quot;;</span><br><span class="line">    if ([deviceModel isEqualToString:@&quot;iPhone9,4&quot;])    return @&quot;iPhone 7 Plus (GSM)&quot;;</span><br><span class="line">    if ([deviceModel isEqualToString:@&quot;iPhone10,1&quot;])    return @&quot;iPhone 8 (CDMA)&quot;;</span><br><span class="line">    if ([deviceModel isEqualToString:@&quot;iPhone10,4&quot;])    return @&quot;iPhone 8 (GSM)&quot;;</span><br><span class="line">    if ([deviceModel isEqualToString:@&quot;iPhone10,2&quot;])    return @&quot;iPhone 8 Plus (CDMA)&quot;;</span><br><span class="line">    if ([deviceModel isEqualToString:@&quot;iPhone10,5&quot;])    return @&quot;iPhone 8 Plus (GSM)&quot;;</span><br><span class="line">    if ([deviceModel isEqualToString:@&quot;iPhone10,3&quot;])    return @&quot;iPhone X (CDMA)&quot;;</span><br><span class="line">    if ([deviceModel isEqualToString:@&quot;iPhone10,6&quot;])    return @&quot;iPhone X (GSM)&quot;;</span><br><span class="line">    </span><br><span class="line">    // iPod 系列</span><br><span class="line">    if ([deviceModel isEqualToString:@&quot;iPod1,1&quot;])      return @&quot;iPod Touch 1G&quot;;</span><br><span class="line">    if ([deviceModel isEqualToString:@&quot;iPod2,1&quot;])      return @&quot;iPod Touch 2G&quot;;</span><br><span class="line">    if ([deviceModel isEqualToString:@&quot;iPod3,1&quot;])      return @&quot;iPod Touch 3G&quot;;</span><br><span class="line">    if ([deviceModel isEqualToString:@&quot;iPod4,1&quot;])      return @&quot;iPod Touch 4G&quot;;</span><br><span class="line">    if ([deviceModel isEqualToString:@&quot;iPod5,1&quot;])      return @&quot;iPod Touch 5G&quot;;</span><br><span class="line">    if ([deviceModel isEqualToString:@&quot;iPod7,1&quot;])      return @&quot;iPod Touch 6G&quot;;</span><br><span class="line">    </span><br><span class="line">    // iPad 系列</span><br><span class="line">    if ([deviceModel isEqualToString:@&quot;iPad1,1&quot;])      return @&quot;iPad&quot;;</span><br><span class="line">    if ([deviceModel isEqualToString:@&quot;iPad1,2&quot;])      return @&quot;iPad 3G&quot;;</span><br><span class="line">    </span><br><span class="line">    if ([deviceModel isEqualToString:@&quot;iPad2,1&quot;])      return @&quot;iPad 2 (WiFi)&quot;;</span><br><span class="line">    if ([deviceModel isEqualToString:@&quot;iPad2,2&quot;])      return @&quot;iPad 2 (GSM)&quot;;</span><br><span class="line">    if ([deviceModel isEqualToString:@&quot;iPad2,3&quot;])      return @&quot;iPad 2 (CDMA)&quot;;</span><br><span class="line">    if ([deviceModel isEqualToString:@&quot;iPad2,4&quot;])      return @&quot;iPad 2 (32nm)&quot;;</span><br><span class="line">    if ([deviceModel isEqualToString:@&quot;iPad2,5&quot;])      return @&quot;iPad Mini (WiFi)&quot;;</span><br><span class="line">    if ([deviceModel isEqualToString:@&quot;iPad2,6&quot;])      return @&quot;iPad Mini (GSM)&quot;;</span><br><span class="line">    if ([deviceModel isEqualToString:@&quot;iPad2,7&quot;])      return @&quot;iPad Mini (CDMA)&quot;;</span><br><span class="line">    </span><br><span class="line">    if ([deviceModel isEqualToString:@&quot;iPad3,1&quot;])      return @&quot;iPad 3(WiFi)&quot;;</span><br><span class="line">    if ([deviceModel isEqualToString:@&quot;iPad3,2&quot;])      return @&quot;iPad 3(CDMA)&quot;;</span><br><span class="line">    if ([deviceModel isEqualToString:@&quot;iPad3,3&quot;])      return @&quot;iPad 3(4G)&quot;;</span><br><span class="line">    if ([deviceModel isEqualToString:@&quot;iPad3,4&quot;])      return @&quot;iPad 4 (WiFi)&quot;;</span><br><span class="line">    if ([deviceModel isEqualToString:@&quot;iPad3,5&quot;])      return @&quot;iPad 4 (4G)&quot;;</span><br><span class="line">    if ([deviceModel isEqualToString:@&quot;iPad3,6&quot;])      return @&quot;iPad 4 (CDMA)&quot;;</span><br><span class="line">    </span><br><span class="line">    if ([deviceModel isEqualToString:@&quot;iPad4,1&quot;])      return @&quot;iPad Air&quot;;</span><br><span class="line">    if ([deviceModel isEqualToString:@&quot;iPad4,2&quot;])      return @&quot;iPad Air&quot;;</span><br><span class="line">    if ([deviceModel isEqualToString:@&quot;iPad4,3&quot;])      return @&quot;iPad Air&quot;;</span><br><span class="line">    if ([deviceModel isEqualToString:@&quot;iPad4,4&quot;])      return @&quot;iPad Mini 2&quot;;</span><br><span class="line">    if ([deviceModel isEqualToString:@&quot;iPad4,5&quot;])      return @&quot;iPad Mini 2&quot;;</span><br><span class="line">    if ([deviceModel isEqualToString:@&quot;iPad4,6&quot;])      return @&quot;iPad Mini 2&quot;;</span><br><span class="line">    if ([deviceModel isEqualToString:@&quot;iPad4,7&quot;])      return @&quot;iPad Mini 3&quot;;</span><br><span class="line">    if ([deviceModel isEqualToString:@&quot;iPad4,8&quot;])      return @&quot;iPad Mini 3&quot;;</span><br><span class="line">    if ([deviceModel isEqualToString:@&quot;iPad4,9&quot;])      return @&quot;iPad Mini 3&quot;;</span><br><span class="line">    </span><br><span class="line">    if ([deviceModel isEqualToString:@&quot;iPad5,1&quot;])      return @&quot;iPad Mini 4&quot;;</span><br><span class="line">    if ([deviceModel isEqualToString:@&quot;iPad5,2&quot;])      return @&quot;iPad Mini 4&quot;;</span><br><span class="line">    if ([deviceModel isEqualToString:@&quot;iPad5,3&quot;])      return @&quot;iPad Air 2&quot;;</span><br><span class="line">    if ([deviceModel isEqualToString:@&quot;iPad5,4&quot;])      return @&quot;iPad Air 2&quot;;</span><br><span class="line">    </span><br><span class="line">    if ([deviceModel isEqualToString:@&quot;iPad6,3&quot;])      return @&quot;iPad PRO (12.9)&quot;;</span><br><span class="line">    if ([deviceModel isEqualToString:@&quot;iPad6,4&quot;])      return @&quot;iPad PRO (12.9)&quot;;</span><br><span class="line">    if ([deviceModel isEqualToString:@&quot;iPad6,7&quot;])      return @&quot;iPad PRO (9.7)&quot;;</span><br><span class="line">    if ([deviceModel isEqualToString:@&quot;iPad6,8&quot;])      return @&quot;iPad PRO (9.7)&quot;;</span><br><span class="line">    if ([deviceModel isEqualToString:@&quot;iPad6,11&quot;])      return @&quot;iPad 5&quot;;</span><br><span class="line">    if ([deviceModel isEqualToString:@&quot;iPad6,12&quot;])      return @&quot;iPad 5&quot;;</span><br><span class="line">    </span><br><span class="line">    if ([deviceModel isEqualToString:@&quot;iPad7,1&quot;])      return @&quot;iPad PRO 2 (12.9)&quot;;</span><br><span class="line">    if ([deviceModel isEqualToString:@&quot;iPad7,2&quot;])      return @&quot;iPad PRO 2 (12.9)&quot;;</span><br><span class="line">    if ([deviceModel isEqualToString:@&quot;iPad7,3&quot;])      return @&quot;iPad PRO (10.5)&quot;;</span><br><span class="line">    if ([deviceModel isEqualToString:@&quot;iPad7,4&quot;])      return @&quot;iPad PRO (10.5)&quot;;</span><br><span class="line">    </span><br><span class="line">    return deviceModel;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 3.使用方法</span><br><span class="line">// 获取移动设备名称</span><br><span class="line">NSString *deviceModel = [self deviceModelName];</span><br></pre></td></tr></table></figure></p>
-<p>具体型号和设备名称参考：<a href="https://www.theiphonewiki.com/wiki/Models" target="_blank" rel="noopener">https://www.theiphonewiki.com/wiki/Models</a></p>
-<h2>2.获取设备唯一标识符UUID</h2>
-<p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">NSString *UUIDString = [[[UIDevice currentDevice] identifierForVendor] UUIDString];</span><br></pre></td></tr></table></figure></p>
-<p><strong>注：</strong></p>
-<blockquote>
-<p>这个唯一标识符UUID也有点问题，在iOS系统升级或者APP卸载后重新安装，可能会产生获取到的UUID是不同的问题。</p>
-</blockquote>
-<p>科普文： <a href="http://www.skyfox.org/ios-uuid-udid-keychain.html" target="_blank" rel="noopener">iOS 开发之获取设备唯一标识符</a></p>
-<h3>1.关于APP从设备上卸载后重新安装引起UUID值改变的问题</h3>
-<ul>
-<li><a href="http://stackoverflow.com/questions/40753246/ios-uuid-different-for-same-app-depending-if-installed-through-xcode-or-testflig" target="_blank" rel="noopener">stackoverflow社区中的相关讨论</a>：其中有一条：在iOS设备上安装应用程序（或同一供应商的其他应用程序）时，此属性中的值保持不变。 当用户从设备中删除该供应商的所有应用程序，然后重新安装一个或多个应用程序时，该值会更改。</li>
-<li>在<a href="https://developer.apple.com/reference/uikit/uidevice/1620059-identifierforvendor" target="_blank" rel="noopener">Apple API Reference：UIDevice——identifierForVendor</a>中也可以找到这样一段描述：</li>
-</ul>
-<blockquote>
-<p>The value in this property remains the same while the app (or another app from the same vendor) is installed on the iOS device. The value changes when the user deletes all of that vendor’s apps from the device and subsequently reinstalls one or more of them. The value can also change when installing test builds using Xcode or when installing an app on a device using ad-hoc distribution. Therefore, if your app stores the value of this property anywhere, you should gracefully handle situations where the identifier changes.
-翻译：在iOS设备上安装应用程序（或同一供应商的其他应用程序）时，此属性中的值保持不变。 当用户从设备中删除该供应商的所有应用程序，然后重新安装一个或多个应用程序时，该值会更改。 使用Xcode安装测试版本时或使用ad-hoc分发在设备上安装应用程序时，该值也可能更改。 因此，如果您的应用程序要在任何位置存储此属性的值，您应该适当地处理标识符会改变的情况。</p>
-</blockquote>
-<ul>
-<li>
-<p>如果用<strong>keychain</strong>（钥匙串）来保存UUID这个方法：
-<strong>keychain</strong> 顾名思义，是钥匙串的意思，是苹果公司Mac OS中的密码管理系统。当使用UUID来作为设备的唯一标识时，获取到UUID后，如果用<strong>NSUserDefaults</strong>存储，当程序（这里指某一供应商在该设备上的所有应用程序）被卸载后重装时，再获得的UUID和之前就不同了。使用<strong>keychain</strong>存储可以保证APP被卸载重装时，UUID不会被删除，还是保存在系统的钥匙串中。所以我们可以将UUID存储到<strong>keychain</strong>里面，需要用到的时候从<strong>keychain</strong>中去取，这样可以保证UUID的唯一性。但当刷机或者升级系统后，UUID还是会改变的。
-该方法可参考的资料：</p>
-<ul>
-<li><a href="https://github.com/soffes/SAMKeychain" target="_blank" rel="noopener">SAMKeychain</a></li>
-<li><a href="http://www.jianshu.com/p/37899e767f5b" target="_blank" rel="noopener">iOS如何获取设备的唯一标识（UUID）@若锦</a> ：<a href="https://github.com/wxzwork/GetDeviceUUID" target="_blank" rel="noopener">Demo:GitHub</a></li>
-<li><a href="http://www.jianshu.com/p/572833efaac4" target="_blank" rel="noopener">iOS获取UUID，并使用keychain存储 @wooke</a></li>
-</ul>
-</li>
-<li>
-<p><a href="http://stackoverflow.com/questions/21878560/how-to-preserve-identifierforvendor-in-ios-after-uninstalling-ios-app-on-device" target="_blank" rel="noopener">stackoverflow社区中</a>有人讨论到，如果开启了iCloud 同步功能（synchronisation ），KeyChain（钥匙串）就会被同步，所有同步的设备也将获得相同的UUID。</p>
-</li>
-</ul>
-<h3>2.系统升级、还原或者刷机会导致UUID变化吗？</h3>
-<p>目前我得到的答案是：用户还原设备或刷机会导致<strong>KeyChain</strong>（钥匙串）数据被删除。系统升级还不知道，没有测过。
-stackoverflow上的讨论：[<a href="http://stackoverflow.com/questions/41651936/if-users-upgrade-ios-system-will-the-uuid-saved-in-keychain-also-been-changed-or" target="_blank" rel="noopener">If users upgrade iOS system,will the UUID saved in keyChain also been changed or deleted?</a>](http://stackoverflow.com/questions/41651936/if-users-upgrade-ios-system-will-the-uuid-saved-in-keychain-also-been-changed-or)
-如果你有答案或有相关的解决方法，不妨留言吧。</p>
-<ul>
-<li>还有一种方法是：使用设备的mac地址结合bundle标识符生成一个新的散列的唯一标识符。
-<a href="https://github.com/gekitz/UIDevice-with-UniqueIdentifier-for-iOS-5" target="_blank" rel="noopener">UIDevice-with-UniqueIdentifier-for-iOS-5</a>,但是该文档的第一行描述 <code>NOTE: this is not going to work under iOS 7</code>看来这个方法估计也是不能用的。</li>
-<li>参考:<a href="http://www.skyfox.org/ios-uuid-udid-keychain.html" target="_blank" rel="noopener">iOS开发之获取设备唯一标识符</a></li>
-</ul>
-<h2>3.为系统创建一个随机标识符</h2>
-<p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">(NSString*) createUUID  &#123;  </span><br><span class="line">    NSString *id = [[NSUserDefaults standardUserDefaults] objectForKey:@&quot;UUID&quot;];    //获取标识为&quot;UUID&quot;的值  </span><br><span class="line">    if(id == nil)  </span><br><span class="line">    &#123;  </span><br><span class="line">        if([[[UIDevice currentDevice] systemVersion] floatValue] &gt; 6.0)  </span><br><span class="line">        &#123;  </span><br><span class="line">            NSString *identifierNumber = [[NSUUID UUID] UUIDString];                //ios 6.0 之后可以使用的api  </span><br><span class="line">            [[NSUserDefaults standardUserDefaults] setObject:identifierNumber forKey:@&quot;UUID&quot;];  //保存为UUID  </span><br><span class="line">            [[NSUserDefaults standardUserDefaults] synchronize];  </span><br><span class="line">        &#125;  </span><br><span class="line">        else&#123;  </span><br><span class="line">            CFUUIDRef uuid = CFUUIDCreate(NULL);  </span><br><span class="line">            CFStringRef uuidString = CFUUIDCreateString(NULL, uuid);                    //ios6.0之前使用的api  </span><br><span class="line">            NSString *identifierNumber = [NSString stringWithFormat:@&quot;%@&quot;, uuidString];  </span><br><span class="line">            [[NSUserDefaults standardUserDefaults] setObject:identifierNumber forKey:@&quot;UUID&quot;];  </span><br><span class="line">            [[NSUserDefaults standardUserDefaults] synchronize];  </span><br><span class="line">            CFRelease(uuidString);  </span><br><span class="line">            CFRelease(uuid);  </span><br><span class="line">        &#125;  </span><br><span class="line">        return [[NSUserDefaults standardUserDefaults] objectForKey@&quot;UUID&quot;];  </span><br><span class="line">    &#125;  </span><br><span class="line">    return id;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h2>4. 获取当前屏幕分辨率的信息</h2>
-<p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">CGRect rect = [[UIScreen mainScreen] bounds];  </span><br><span class="line">CGFloat scale = [[UIScreen mainScreen].scale];  </span><br><span class="line">CGFloat width = rect.size.width * scale;  </span><br><span class="line">CGFloat height = rect.size.height * scale;</span><br></pre></td></tr></table></figure></p>
-<h2>5. 获取运营商信息</h2>
-<ul>
-<li>
-<p>需要先导入头文件</p>
-<p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">#import &lt;CoreTelephony/CTCarrier.h&gt;  </span><br><span class="line">#import &lt;CoreTelephony/CTTelephonyNetworkInfo.h&gt;</span><br></pre></td></tr></table></figure></p>
-</li>
-<li>
-<p>创建对象</p>
-<p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">CCTelephonyNetworkInfo *info = [[CTTelephonyNetworkInfo alloc] init];</span><br></pre></td></tr></table></figure></p>
-</li>
-<li>
-<p>获取运行商的名称</p>
-<p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">CTCarrier *carrier = [info subscriberCellularProvider];  </span><br><span class="line">NSString *mCarrier = [NSString stringWithFormat:@&quot;%@&quot;,[carrier carrierName]];</span><br></pre></td></tr></table></figure></p>
-</li>
-</ul>
-<h2>6.获取当前网络类型</h2>
-<p>iOS 7之后可以按照以下方式获取。方便而且类型多</p>
-<p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">NSString *mConnectType = [[NSString alloc] initWithFormat:@&quot;%@&quot;,info.currentRadioAccessTechnology];</span><br></pre></td></tr></table></figure></p>
-<p>类型有以下：</p>
-<p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">CTRadioAccessTechnologyGPRS         //介于2G和3G之间，也叫2.5G ,过度技术    </span><br><span class="line">CTRadioAccessTechnologyEdge         //EDGE为GPRS到第三代移动通信的过渡，EDGE俗称2.75G   </span><br><span class="line">CTRadioAccessTechnologyWCDMA           </span><br><span class="line">CTRadioAccessTechnologyHSDPA           //亦称为3.5G(3?G)  </span><br><span class="line">CTRadioAccessTechnologyHSUPA           //3G到4G的过度技术  </span><br><span class="line">CTRadioAccessTechnologyCDMA1x          //3G      </span><br><span class="line">CTRadioAccessTechnologyCDMAEVDORev0    //3G标准  </span><br><span class="line">CTRadioAccessTechnologyCDMAEVDORevA    </span><br><span class="line">CTRadioAccessTechnologyCDMAEVDORevB    </span><br><span class="line">CTRadioAccessTechnologyeHRPD        //电信使用的一种3G到4G的演进技术， 3.75G       </span><br><span class="line">CTRadioAccessTechnologyLTE          //接近4G</span><br></pre></td></tr></table></figure></p>
-<p><strong>注：</strong></p>
-<blockquote>
-<p>如果你使用<a href="https://github.com/AFNetworking/AFNetworking" target="_blank" rel="noopener">AFNetworking</a>框架的话，该框架中有一个检测网络状态的方法:</p>
-</blockquote>
-<p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">#pragma mark 网络状态监测</span><br><span class="line">- (void)initNetworkReachabilityManager &#123;</span><br><span class="line">    AFNetworkReachabilityManager *networkReachabilityManager = [AFNetworkReachabilityManager sharedManager];</span><br><span class="line">    [networkReachabilityManager setReachabilityStatusChangeBlock:^(AFNetworkReachabilityStatus status) &#123;</span><br><span class="line">        switch (status) &#123;</span><br><span class="line">            case AFNetworkReachabilityStatusUnknown:</span><br><span class="line">                NSLog(@&quot;网络状态检测：未知&quot;);</span><br><span class="line">                break;</span><br><span class="line">            case AFNetworkReachabilityStatusNotReachable:</span><br><span class="line">                NSLog(@&quot;网络状态检测：没有网络&quot;);</span><br><span class="line">                break;</span><br><span class="line">            case AFNetworkReachabilityStatusReachableViaWWAN:</span><br><span class="line">                NSLog(@&quot;网络状态检测：3G网络&quot;);</span><br><span class="line">                break;</span><br><span class="line">            case AFNetworkReachabilityStatusReachableViaWiFi:</span><br><span class="line">                NSLog(@&quot;网络状态检测：WiFi&quot;);</span><br><span class="line">                break;</span><br><span class="line">            default:</span><br><span class="line">                break;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;];</span><br><span class="line">    // 开启</span><br><span class="line">    [networkReachabilityManager startMonitoring];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>封装了这个方法以后在<strong>viewController.m</strong>的<figure class="highlight plain"><figcaption><span>(void)viewDidLoad```方法中调用：</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">```objective-c</span><br><span class="line">// 检测网络状态</span><br><span class="line">[self checkServerState];</span><br></pre></td></tr></table></figure></p>
-<h2>7. 获取当前信号强弱</h2>
-<p>这个貌似没有给出官方的api，但是网上有人说可以用私有的api实现，但是通不过appStore的审核，方法如下：
-利用linux下动态库显式调用api的函数。先包含头文件 <figure class="highlight plain"><figcaption><span><dlfcn.h> ```</dlfcn.h></span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br><span class="line">```objective-c</span><br><span class="line">(int) getSignalLevel  &#123;  </span><br><span class="line">//获取库句柄</span><br><span class="line">voidvoid *libHandle = dlopen(&quot;/System/Library/Frameworks/CoreTelephony.framework/CoreTelephony&quot;,RTLD_LAZY); </span><br><span class="line">//定义一个与将要获取的函数匹配的函数指针 </span><br><span class="line">int (*CTGetSignalStrength)(); </span><br><span class="line">//获取指定名称的函数  </span><br><span class="line">CTGetSignalStrength = (int(*)())dlsym(libHandle,&quot;CTGetSignalStrength&quot;);   </span><br><span class="line">  </span><br><span class="line">if(CTGetSignalStrength == NULL)  </span><br><span class="line">    return -1;  </span><br><span class="line">else&#123;  </span><br><span class="line">    int level = CTGetSignalStrength();  </span><br><span class="line">    dlclose(libHandle); //切记关闭库  </span><br><span class="line">    return level  </span><br><span class="line">    &#125;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h2>8. 播放系统声音、提醒声音和振动设备</h2>
-<ol>
-<li>需要加入<code>AudioToolbox.framework</code>框架</li>
-<li>然后导入头文件
-<code>#import &lt;AudioToolbox/AudioToolbox.h&gt;</code></li>
-<li>在需要震动的地方添加代码：</li>
-</ol>
-<p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">// 播放系统声音</span><br><span class="line">AudioServicesPlaySystemSound(1005);</span><br><span class="line"></span><br><span class="line">// 播放提醒声音</span><br><span class="line">AudioServicesPlayAlertSound(1006);</span><br><span class="line"></span><br><span class="line">// 执行震动</span><br><span class="line">AudioServicesPlaySystemSound ( kSystemSoundID_Vibrate) ;</span><br></pre></td></tr></table></figure></p>
-<p>但是貌似这个执行震动不支持传入震动时间和模式，自己去控制吧。
-附：声音文件列表参考：<a href="http://iphonedevwiki.net/index.php/AudioServices" target="_blank" rel="noopener">wiki: AudioServices</a></p>
-<h2>9. 获取电池相关信息</h2>
-<p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">@implementation BatterMonitor  </span><br><span class="line">//获取电池当前的状态，共有4种状态  </span><br><span class="line">-(NSString*) getBatteryState &#123;    </span><br><span class="line">    UIDevice *device = [UIDevice currentDevice];    </span><br><span class="line">    if (device.batteryState == UIDeviceBatteryStateUnknown) &#123;    </span><br><span class="line">        return @&quot;UnKnow&quot;;    </span><br><span class="line">    &#125;else if (device.batteryState == UIDeviceBatteryStateUnplugged)&#123;    </span><br><span class="line">        return @&quot;Unplugged&quot;;    </span><br><span class="line">    &#125;else if (device.batteryState == UIDeviceBatteryStateCharging)&#123;    </span><br><span class="line">        return @&quot;Charging&quot;;    </span><br><span class="line">    &#125;else if (device.batteryState == UIDeviceBatteryStateFull)&#123;    </span><br><span class="line">        return @&quot;Full&quot;;    </span><br><span class="line">    &#125;  </span><br><span class="line">    return nil;   </span><br><span class="line">&#125;</span><br><span class="line">   </span><br><span class="line">//获取电量的等级，0.00~1.00  </span><br><span class="line">-(float) getBatteryLevel &#123;    </span><br><span class="line">    return [UIDevice currentDevice].batteryLevel;  </span><br><span class="line">&#125;   </span><br><span class="line">  </span><br><span class="line">-(void) getBatteryInfo  &#123;  </span><br><span class="line">    NSString *state = getBatteryState();  </span><br><span class="line">    float level = getBatteryLevel()*100.0;  </span><br><span class="line">    //yourControlFunc(state, level);  //写自己要实现的获取电量信息后怎么处理  </span><br><span class="line">&#125;  </span><br><span class="line">  </span><br><span class="line">//打开对电量和电池状态的监控，类似定时器的功能  </span><br><span class="line">-(void) didLoad  &#123;  </span><br><span class="line">    [[UIDevice currentDevice] setBatteryMonitoringEnable:YES];  </span><br><span class="line">    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getBatteryInfo:) name:UIDeviceBatteryStateDidChangeNotification object:nil];  </span><br><span class="line">    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getBatteryInfo:) name:UIDeviceBatteryLevelDidChangeNotification object:nil];  </span><br><span class="line">    [NSTimer scheduledTimerWithTimeInterval:0.5f target:self selector:@selector(getBatteryInfo:) userInfo:nil repeats:YES];  </span><br><span class="line">&#125;  </span><br><span class="line">@end</span><br></pre></td></tr></table></figure></p>
-<h2>10. 获取APP相关的信息</h2>
-<p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">NSDictionary *infoDic = [[NSBundle mainBundle] infoDictionary];</span><br><span class="line"></span><br><span class="line">// 获取当前APP版本号，本地程序版本号</span><br><span class="line">NSString *appVersion = [infoDic objectForKey:@&quot;CFBundleShortVersionString&quot;];</span><br><span class="line"></span><br><span class="line">// 获取App的build版本</span><br><span class="line">NSString *appBuildVersion = [infoDic objectForKey:@&quot;CFBundleVersion&quot;];</span><br><span class="line"></span><br><span class="line">// 获取App的名称</span><br><span class="line">NSString *appName = [infoDic objectForKey:@&quot;CFBundleDisplayName&quot;];</span><br><span class="line"></span><br><span class="line">// ******************************</span><br><span class="line">// 以下四个获取方法摘自 YYCategories：</span><br><span class="line">- (NSString *)appBundleName &#123;</span><br><span class="line">    return [[NSBundle mainBundle] objectForInfoDictionaryKey:@&quot;CFBundleName&quot;];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (NSString *)appBundleID &#123;</span><br><span class="line">    return [[NSBundle mainBundle] objectForInfoDictionaryKey:@&quot;CFBundleIdentifier&quot;];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (NSString *)appVersion &#123;</span><br><span class="line">    return [[NSBundle mainBundle] objectForInfoDictionaryKey:@&quot;CFBundleShortVersionString&quot;];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (NSString *)appBuildVersion &#123;</span><br><span class="line">    return [[NSBundle mainBundle] objectForInfoDictionaryKey:@&quot;CFBundleVersion&quot;];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h2>11. 获取设备IP地址</h2>
-<p>某天服务器端的同学跑来说想获取并记录移动端的IP地址，非要在每一个请求Dictionary里再多放一个IP地址，于是Internet上找到了这个解决方法，<code>(NSDictionary *)getIPAddresses</code>可以返回一个Dictionary,里面记录着有关IP地址的所有信息：</p>
-<p><strong>Simulator</strong>的Log：
-<img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/073513.jpg" alt="模拟器"></p>
-<hr>
-<p><strong>iPhone</strong>的Log
-<img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/073520.jpg" alt="真机"></p>
-<p>可以再通过：
-<code>NSString *IP = [dict objectForKey:@&quot;en0/ipv4&quot;];</code> 来取得所需的IP地址，问题就在于<strong>Simulator</strong> 中对应IP地址的 <strong>Key</strong> 和 <strong>iPhone</strong>中对应IP地址的 <strong>Key</strong> 是不同的，正在纠结的时候Leader说获得IP地址完全没有必要让移动端的额外给，服务器本身是有方法获得这个IP地址的。。。吭哧吭哧忙活了半天原来咱白干了，好吧，删代码。。。等一下，先保存下吧！</p>
-<h3>好了，这是一段保存下来的有作用但是没有必要写的代码：</h3>
-<p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br></pre></td><td class="code"><pre><span class="line">// 需要导入的包</span><br><span class="line">#import &quot;HQLGetIPAddress.h&quot;</span><br><span class="line">#import &lt;ifaddrs.h&gt;</span><br><span class="line">#import &lt;arpa/inet.h&gt;</span><br><span class="line">#import &lt;net/if.h&gt;</span><br><span class="line"></span><br><span class="line">// 宏定义</span><br><span class="line">#define IOS_CELLULAR    @&quot;pdp_ip0&quot;</span><br><span class="line">#define IOS_WIFI        @&quot;en0&quot;</span><br><span class="line">//#define IOS_VPN       @&quot;utun0&quot;</span><br><span class="line">#define IP_ADDR_IPv4    @&quot;ipv4&quot;</span><br><span class="line">#define IP_ADDR_IPv6    @&quot;ipv6&quot;</span><br><span class="line"></span><br><span class="line">#pragma mark - 获取设备当前网络IP地址</span><br><span class="line"></span><br><span class="line">- (NSString *)getIPAddress:(BOOL)preferIPv4</span><br><span class="line">&#123;</span><br><span class="line">    NSArray *searchArray = preferIPv4 ?</span><br><span class="line">    @[ /*IOS_VPN @&quot;/&quot; IP_ADDR_IPv4, IOS_VPN @&quot;/&quot; IP_ADDR_IPv6,*/ IOS_WIFI @&quot;/&quot; IP_ADDR_IPv4, IOS_WIFI @&quot;/&quot; IP_ADDR_IPv6, IOS_CELLULAR @&quot;/&quot; IP_ADDR_IPv4, IOS_CELLULAR @&quot;/&quot; IP_ADDR_IPv6 ] :</span><br><span class="line">    @[ /*IOS_VPN @&quot;/&quot; IP_ADDR_IPv6, IOS_VPN @&quot;/&quot; IP_ADDR_IPv4,*/ IOS_WIFI @&quot;/&quot; IP_ADDR_IPv6, IOS_WIFI @&quot;/&quot; IP_ADDR_IPv4, IOS_CELLULAR @&quot;/&quot; IP_ADDR_IPv6, IOS_CELLULAR @&quot;/&quot; IP_ADDR_IPv4 ] ;</span><br><span class="line">    </span><br><span class="line">    NSDictionary *addresses = [self getIPAddresses];</span><br><span class="line">    NSLog(@&quot;addresses: %@&quot;, addresses);</span><br><span class="line">    </span><br><span class="line">    __block NSString *address;</span><br><span class="line">    [searchArray enumerateObjectsUsingBlock:^(NSString *key, NSUInteger idx, BOOL *stop)</span><br><span class="line">     &#123;</span><br><span class="line">         address = addresses[key];</span><br><span class="line">         if(address) *stop = YES;</span><br><span class="line">     &#125; ];</span><br><span class="line">    return address ? address : @&quot;0.0.0.0&quot;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">//获取所有相关IP信息</span><br><span class="line">- (NSDictionary *)getIPAddresses</span><br><span class="line">&#123;</span><br><span class="line">    NSMutableDictionary *addresses = [NSMutableDictionary dictionaryWithCapacity:8];</span><br><span class="line">    </span><br><span class="line">    // retrieve the current interfaces - returns 0 on success</span><br><span class="line">    struct ifaddrs *interfaces;</span><br><span class="line">    if(!getifaddrs(&amp;interfaces)) &#123;</span><br><span class="line">        // Loop through linked list of interfaces</span><br><span class="line">        struct ifaddrs *interface;</span><br><span class="line">        for(interface=interfaces; interface; interface=interface-&gt;ifa_next) &#123;</span><br><span class="line">            if(!(interface-&gt;ifa_flags &amp; IFF_UP) /* || (interface-&gt;ifa_flags &amp; IFF_LOOPBACK) */ ) &#123;</span><br><span class="line">                continue; // deeply nested code harder to read</span><br><span class="line">            &#125;</span><br><span class="line">            const struct sockaddr_in *addr = (const struct sockaddr_in*)interface-&gt;ifa_addr;</span><br><span class="line">            char addrBuf[ MAX(INET_ADDRSTRLEN, INET6_ADDRSTRLEN) ];</span><br><span class="line">            if(addr &amp;&amp; (addr-&gt;sin_family==AF_INET || addr-&gt;sin_family==AF_INET6)) &#123;</span><br><span class="line">                NSString *name = [NSString stringWithUTF8String:interface-&gt;ifa_name];</span><br><span class="line">                NSString *type;</span><br><span class="line">                if(addr-&gt;sin_family == AF_INET) &#123;</span><br><span class="line">                    if(inet_ntop(AF_INET, &amp;addr-&gt;sin_addr, addrBuf, INET_ADDRSTRLEN)) &#123;</span><br><span class="line">                        type = IP_ADDR_IPv4;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125; else &#123;</span><br><span class="line">                    const struct sockaddr_in6 *addr6 = (const struct sockaddr_in6*)interface-&gt;ifa_addr;</span><br><span class="line">                    if(inet_ntop(AF_INET6, &amp;addr6-&gt;sin6_addr, addrBuf, INET6_ADDRSTRLEN)) &#123;</span><br><span class="line">                        type = IP_ADDR_IPv6;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">                if(type) &#123;</span><br><span class="line">                    NSString *key = [NSString stringWithFormat:@&quot;%@/%@&quot;, name, type];</span><br><span class="line">                    addresses[key] = [NSString stringWithUTF8String:addrBuf];</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        // Free memory</span><br><span class="line">        freeifaddrs(interfaces);</span><br><span class="line">    &#125;</span><br><span class="line">    return [addresses count] ? addresses : nil;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h2>12. APP中打开一个网页</h2>
-<p>这个比较简单，直接用提供的接口openURL即可。</p>
-<p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">// APP中打开一个网页</span><br><span class="line">NSURL *url= [NSURL URLWithString:@&quot;https://www.apple.com&quot;];</span><br><span class="line">if ([[UIApplication sharedApplication] canOpenURL:url]) &#123;</span><br><span class="line">    if (@available(iOS 10.0, *)) &#123;</span><br><span class="line">        [[UIApplication sharedApplication] openURL:url options:@&#123;&#125; completionHandler:^(BOOL success) &#123;</span><br><span class="line">            if (success) &#123;</span><br><span class="line">                // 打开网页成功...</span><br><span class="line">            &#125; else &#123;</span><br><span class="line">                // 打开网页失败...</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;];</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        [[UIApplication sharedApplication] openURL:url];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h2>13. APP中打开另一个APP</h2>
-<p>打开另一个app还是可以通过openURL来实现。但是要分两种情况。第一种是启动内置的应用，一般的电话，浏览器，短信和邮件可以直接调用并添加参数，譬如：</p>
-<p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[[UIApplication sharedApplication] openURL:[NSURL URLWithString:@&quot;tel://10086&quot;]];  </span><br><span class="line">[[UIApplication sharedApplication] openURL:[NSURL URLWithString:@&quot;mailto://devprograms@apple.com&quot;]];  </span><br><span class="line">[[UIApplication sharedApplication] openURL:[NSURL URLWithString:@&quot;sms://10086&quot;]];</span><br></pre></td></tr></table></figure></p>
-<p>第二种情况是要打开自己开发的app，这种情况则要为将要打开的app注册一个URL协议。这个可以在项目的文件info.plist中注册。主要操作为：</p>
-<ul>
-<li>
-<p>Step1. 右键，选择“Add Row”</p>
-</li>
-<li>
-<p>Step2. Key值选择“URL types”</p>
-</li>
-<li>
-<p>Step3. 打开“Item 0″,然后为该key增加一个URL identifier。可以是任何值，但建议用“反域名”(例如 “com.fcplayer.testHello”)。</p>
-</li>
-<li>
-<p>Step4. 在“Item 0”下再加一行。</p>
-</li>
-<li>
-<p>Step5. 选择“URL Schemes” 作为Key。</p>
-</li>
-<li>
-<p>Step6. 输入你的URL协议名 (例如“testHello://” 应写做“testHello”)。如果有必要，你可以在这里加入多个协议。</p>
-</li>
-</ul>
-<p>其实在打开的时候只需要 <strong>URL Schemes</strong> 即可，<strong>URL identifier</strong> 是可选项。如果需要传送参数，可以在URL Schemes://添加你的参数，格式和网页开发的传递参数差不多。（又或者URL Schemes://URL identifier@添加的参数）关键是要和接收参数方定义好处理的方式。然后在需要打开的地方添加代码：</p>
-<p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">NSString *url = @&quot;URL Schemes的路径&quot;  </span><br><span class="line">[[UIApplication sharedApplication] openURL:[NSURL URLWithString:url]];</span><br></pre></td></tr></table></figure></p>
-<p>推荐阅读：<a href="https://www.jianshu.com/p/a1895c766400" target="_blank" rel="noopener">LSApplicationQueriesSchemes-- 关于 info.plist 第三方登录 添加 URL Schemes 白名单</a></p>
-<h2>14. App Store 应用分享链接</h2>
-<p>应用分享链接获取方法：</p>
-<ol>
-<li>打开 **「iTunes」**应用；</li>
-<li>进入  App Store；</li>
-<li>🔍搜索并找到你的应用；</li>
-<li>鼠标右击应用ICON图标并拷贝链接；</li>
-</ol>
-<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/073522.gif" alt></p>
-<p>以「支付宝」为例：<a href="https://itunes.apple.com/cn/app/%E6%94%AF%E4%BB%98%E5%AE%9D-%E8%AE%A9%E7%94%9F%E6%B4%BB%E6%9B%B4%E7%AE%80%E5%8D%95/id333206289?mt=8" target="_blank" rel="noopener">https://itunes.apple.com/cn/app/支付宝-让生活更简单/id333206289?mt=8</a></p>
-<p>然后就可以把这个链接<a href="https://cli.im/url?b389d0900c5894e55a68298084555384" target="_blank" rel="noopener">生成二维码</a>，扫一扫下载：
-<img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/073527.png" alt>
-图片来源：<a href="https://pixabay.com/zh/qr-%E7%A0%81-%E6%89%AB%E6%8F%8F%E4%BB%AA-%E6%9D%A1%E7%A0%81-%E6%9D%A1%E7%A0%81%E6%89%AB%E6%8F%8F%E5%99%A8-%E7%9F%A9%E9%98%B5%E7%A0%81-%E6%99%BA%E8%83%BD%E6%89%8B%E6%9C%BA-%E8%AF%BB-156717/" target="_blank" rel="noopener">pixabay</a></p>
-<h2>15. iOS 应用内跳转到 App Store</h2>
-<p>APP ID 通过类型常量定义好：</p>
-<p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">static NSString * const APPID = @&quot;333206289&quot;;</span><br></pre></td></tr></table></figure></p>
-<blockquote>
-<p>APP ID 去哪儿找，怎么设置？</p>
-<p>在 <a href="https://developer.apple.com/develop/" target="_blank" rel="noopener">iTunes Connect</a> 中新建APP后，系统会默认分配一个 ID 给你。忘记的话也可以在应用分享链接的 URL 中提取。</p>
-</blockquote>
-<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/073530.jpg" alt></p>
-<h3>一、跳转到「应用详情」页面</h3>
-<p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">NSString *urlStr = [NSString stringWithFormat:@&quot;itms-apps://itunes.apple.com/app/id%@&quot;, APPID];</span><br><span class="line">NSURL *url = [NSURL URLWithString:urlStr];</span><br><span class="line">// 跳转之前判断是否可以打开URL</span><br><span class="line">if ([[UIApplication sharedApplication] canOpenURL:url]) &#123;</span><br><span class="line">    if (@available(iOS 10.0, *)) &#123;</span><br><span class="line">        // iOS 10.0 之后使用此方法</span><br><span class="line">        [[UIApplication sharedApplication] openURL:url options:@&#123;&#125; completionHandler:nil];</span><br><span class="line">    &#125;else &#123;</span><br><span class="line">        // iOS 10.0 之前使用此方法</span><br><span class="line">        [[UIApplication sharedApplication] openURL:url];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h3>二、跳转到「评论」页面</h3>
-<p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">NSString *urlStr = [NSString stringWithFormat:@&quot;itms-apps://itunes.apple.com/WebObjects/MZStore.woa/wa/viewContentsUserReviews?type=Purple+Software&amp;id=%@&amp;pageNumber=0&amp;sortOrdering=2&amp;mt=8&quot;, APPID];</span><br><span class="line">NSURL *url = [NSURL URLWithString:urlStr];</span><br><span class="line">if ([[UIApplication sharedApplication] canOpenURL:url]) &#123;</span><br><span class="line">    if (@available(iOS 10.0, *)) &#123;</span><br><span class="line">        [[UIApplication sharedApplication] openURL:url options:@&#123;&#125; completionHandler:nil];</span><br><span class="line">    &#125;else &#123;</span><br><span class="line">        [[UIApplication sharedApplication] openURL:url];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h3>三、跳转到「撰写评论」页面</h3>
-<p>前两种方法网上已经分享泛滥了，而这个跳转方法很特别哦。</p>
-<blockquote>
-<p>💡💡💡区别：</p>
-<p>上面的方法只可以跳转到 App Store 中应用的评论页面，如果用户要评分，步骤是：</p>
-<ol>
-<li>首先跳转到评论页面；</li>
-<li>点击「撰写评论」按钮，开始评分。</li>
-</ol>
-<p>而这个方法更深入，它可以打开撰写评论页面，用户去评分的步骤是：</p>
-<ol>
-<li>直接跳转到「撰写评论」页面评分。</li>
-</ol>
-</blockquote>
-<p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">// iOS11 之后，以下链接已失效</span><br><span class="line">NSString *urlStr = [NSString stringWithFormat:@&quot;itms-apps://itunes.apple.com/WebObjects/MZStore.woa/wa/viewContentsUserReviews?type=Purple+Software&amp;id=%@&amp;action=write-review&quot;,APPID];</span><br><span class="line">[[UIApplication sharedApplication] openURL:[NSURL URLWithString:urlStr]]</span><br><span class="line"></span><br><span class="line">// 今天没事点了点App里的评论功能，发现显示“无法连接到App Store”，修复更换的URL如下（更新时间：2018年3月16日） </span><br><span class="line">NSString *urlStr = [NSString stringWithFormat:@&quot;itms-apps://itunes.apple.com/cn/app/id%@?mt=8&amp;action=write-review&quot;,APPID];</span><br><span class="line">NSURL *url = [NSURL URLWithString:urlStr];</span><br><span class="line">if ([[UIApplication sharedApplication] canOpenURL:url]) &#123;</span><br><span class="line">    if (@available(iOS 10.0, *)) &#123;</span><br><span class="line">        [[UIApplication sharedApplication] openURL:url options:@&#123;&#125; completionHandler:nil];</span><br><span class="line">    &#125;else &#123;</span><br><span class="line">        [[UIApplication sharedApplication] openURL:url];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>注意到这两个 URL 地址是不同的，以「微信」示例：</p>
-<ul>
-<li>评论页面 URL：https://itunes.apple.com/WebObjects/MZStore.woa/wa/viewContentsUserReviews?type=Purple+Software&amp;id=414478124&amp;pageNumber=0&amp;sortOrdering=2&amp;mt=8</li>
-<li>撰写批评 URL（已失效）：<s>https://itunes.apple.com/WebObjects/MZStore.woa/wa/viewContentsUserReviews?type=Purple+Software&amp;id=414478124&amp;action=write-review</s></li>
-<li>2018，新的撰写批评 URL：
-itms-apps://itunes.apple.com/cn/app/id414478124?mt=8&amp;action=write-review
-参考：<a href="https://www.jianshu.com/p/ae47e1cd9058" target="_blank" rel="noopener">iOS 11 适配之跳转 App Store 评论</a></li>
-</ul>
-<p>「微信」的去评分跳转到 App Store 就是这个效果：</p>
-<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/073541.jpg" alt></p>
-<h2>16. 应用内跳转到系统设置</h2>
-<p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">// 跳转到系统设置中本应用设置下，iOS 8.0 之后有效</span><br><span class="line">if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@&quot;8.0&quot;)) &#123;</span><br><span class="line">    </span><br><span class="line">    NSURL *url = [NSURL URLWithString:UIApplicationOpenSettingsURLString];</span><br><span class="line">	// 跳转之前先判断是否能打开URL</span><br><span class="line">    if ([[UIApplication sharedApplication] canOpenURL:url]) &#123;</span><br><span class="line">        if (@available(iOS 10.0, *)) &#123;</span><br><span class="line">            [[UIApplication sharedApplication] openURL:url options:@&#123;&#125; completionHandler:nil];</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            [[UIApplication sharedApplication] openURL:url];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h2>17. 版本更新提示</h2>
-<p>需求：每当新版本发布时，首页弹窗提示。
-流程图：
-<img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/073549.jpg" alt="image"></p>
-<p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line">// 检查版本更新</span><br><span class="line">- (void)requestVersionFromAppStore &#123;</span><br><span class="line">    // 使用 YTKNetwork 发起 POST 请求</span><br><span class="line">    // URL：https://itunes.apple.com/cn/lookup?id=836500024</span><br><span class="line">    HQLURL_Check_Version *api = [[HQLURL_Check_Version alloc] init];</span><br><span class="line">    [api startWithCompletionBlockWithSuccess:^(__kindof YTKBaseRequest * _Nonnull request) &#123;</span><br><span class="line">        // App Store 版本号</span><br><span class="line">        NSString *version = [(NSDictionary *)[(NSArray *)request.responseObject[@&quot;results&quot;] lastObject] objectForKey:@&quot;version&quot;];</span><br><span class="line">        [self checkVersionUpdate:version];</span><br><span class="line">        </span><br><span class="line">    &#125; failure:^(__kindof YTKBaseRequest * _Nonnull request) &#123;</span><br><span class="line">        // error...</span><br><span class="line">    &#125;];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)checkVersionUpdate:(NSString *)version &#123;</span><br><span class="line">    // App Store 版本号</span><br><span class="line">    NSString *formatAppStoreVersion = [version stringByReplacingOccurrencesOfString:@&quot;.&quot; withString:@&quot;&quot;];</span><br><span class="line">    </span><br><span class="line">    // 本地程序版本号</span><br><span class="line">    NSString *localVersion = [[[NSBundle mainBundle] infoDictionary] objectForKey:@&quot;CFBundleShortVersionString&quot;];</span><br><span class="line">    NSString *formatLocalVersion = [localVersion stringByReplacingOccurrencesOfString:@&quot;.&quot; withString:@&quot;&quot;];</span><br><span class="line">    </span><br><span class="line">    BOOL shouldUpdate = [formatAppStoreVersion unsignedIntValue] &gt; [formatLocalVersion unsignedIntValue];</span><br><span class="line">    if (!shouldUpdate) &#123;</span><br><span class="line">        return;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    // 弹窗提示，使用 SCLAlertView-Objective-C 框架</span><br><span class="line">    SCLAlertView *alert = [[SCLAlertView alloc] initWithNewWindow];</span><br><span class="line">    alert.horizontalButtons = YES;</span><br><span class="line">    alert.shouldDismissOnTapOutside = YES;</span><br><span class="line">    </span><br><span class="line">    // 拒绝按钮</span><br><span class="line">    SCLButton *button = [alert addButton:@&quot;残忍拒绝&quot; actionBlock:nil];</span><br><span class="line">    button.buttonFormatBlock = ^NSDictionary *&#123;</span><br><span class="line">        NSMutableDictionary *buttonConfig = [[NSMutableDictionary alloc] init];</span><br><span class="line">        buttonConfig[@&quot;backgroundColor&quot;] = [UIColor whiteColor];</span><br><span class="line">        buttonConfig[@&quot;textColor&quot;] = HexColor(@&quot;0x2866BF&quot;);</span><br><span class="line">        return buttonConfig;</span><br><span class="line">    &#125;;</span><br><span class="line">    </span><br><span class="line">    // 下载按钮</span><br><span class="line">    [alert addButton:@&quot;前往下载&quot; actionBlock:^&#123;</span><br><span class="line">        NSString *urlStr = [NSString stringWithFormat:@&quot;itms-apps://itunes.apple.com/app/id836500024&quot;];</span><br><span class="line">        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:urlStr]];</span><br><span class="line">    &#125;];</span><br><span class="line">    [alert showInfo:self title:@&quot;发现新版本&quot; subTitle:@&quot;您有新的版本可供下载&quot; closeButtonTitle:nil duration:0.0f];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>效果：
-<img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/073556.jpg" alt="image"></p>
-<h3>参考</h3>
-<ul>
-<li><a href="http://www.cocoachina.com" target="_blank" rel="noopener">iOS 如何获取设备的各种信息 @ymwm</a></li>
-<li><a href="http://blog.csdn.net/decajes/article/details/41807977" target="_blank" rel="noopener">iOS开发-获取设备名称</a></li>
-<li><a href="http://www.jianshu.com/p/0d84e6852c5a" target="_blank" rel="noopener">iOS获取设备型号和App版本号等信息（OC＋Swift）</a></li>
-<li><a href="http://www.jianshu.com/p/37899e767f5b" target="_blank" rel="noopener">iOS如何获取设备的唯一标识（UUID）</a></li>
-<li><a href="http://www.jianshu.com/p/572833efaac4" target="_blank" rel="noopener">iOS获取UUID，并使用keychain存储 @wooke</a></li>
-<li><a href="http://blog.csdn.net/luoshengkim/article/details/51135063" target="_blank" rel="noopener">iOS获取设备IP地址 @月光下的夜曲</a></li>
-<li><a href="http://www.cnblogs.com/gaoxiaoniu/p/5482623.html" target="_blank" rel="noopener">iOS开发：获取设备IP地址 @高晓牛</a></li>
-<li><a href="http://www.jianshu.com/p/b23016bb97af" target="_blank" rel="noopener">史上最全的iOS各种设备信息获取总结(iPhone8/iPhone X 已更新)</a></li>
-<li><a href="https://stackoverflow.com/questions/11197509/how-to-get-device-make-and-model-on-ios" target="_blank" rel="noopener">How to get device make and model on iOS? @stackoverflow</a></li>
-<li><a href="http://pdadb.net/index.php?m=device&amp;id=2214&amp;c=apple_ipad_wifi_a1219_64gb__apple_ipad_1,1" target="_blank" rel="noopener">http://pdadb.net</a></li>
-</ul>
-
+            <div class="post-button text-center">
+              <a class="btn" href="/2017/01/06/iOS 编程：获取设备信息、应用跳转/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
           
+          <!--/noindex-->
         
       
     </div>
@@ -1204,7 +965,7 @@ itms-apps://itunes.apple.com/cn/app/id414478124?mt=8&amp;action=write-review
                 
                   <span class="post-meta-item-text">本文字数：</span>
                 
-                <span title="本文字数">1.1k</span>
+                <span title="本文字数">1k</span>
               
 
               
@@ -1239,56 +1000,26 @@ itms-apps://itunes.apple.com/cn/app/id414478124?mt=8&amp;action=write-review
 
       
         
-          
-            <h3>导读</h3>
-<blockquote>
+          <h3 id="导读"><a href="#导读" class="headerlink" title="导读"></a>导读</h3><blockquote>
 <p>该Demo展示了一个可展开折叠的TableView，类似于QQ好友分组列表，我参考了@zhenwenming 写的博客，通过研读，在实现原理不变的前提下，少放了几个不必要的对象，自己写了一个改进版的Demo。</p>
 </blockquote>
-<h3>对比差异</h3>
-<h4>参考的Demo：</h4>
-<ul>
-<li>
-<p>博客： <a href="http://blog.csdn.net/wenmingzheng/article/details/50483502" target="_blank" rel="noopener">UITableView的折叠收缩和QQ好友分组效果 @zhenwenming</a></p>
+<h3 id="对比差异"><a href="#对比差异" class="headerlink" title="对比差异"></a>对比差异</h3><h4 id="参考的Demo："><a href="#参考的Demo：" class="headerlink" title="参考的Demo："></a>参考的Demo：</h4><ul>
+<li>博客： <a href="http://blog.csdn.net/wenmingzheng/article/details/50483502" target="_blank" rel="noopener">UITableView的折叠收缩和QQ好友分组效果 @zhenwenming</a> </li>
+<li><p><a href="https://github.com/zhengwenming/ExpandTableView" target="_blank" rel="noopener">GitHub源码</a>  </p>
 </li>
-<li>
-<p><a href="https://github.com/zhengwenming/ExpandTableView" target="_blank" rel="noopener">GitHub源码</a></p>
-</li>
-<li>
-<p>博主的Demo：</p>
-</li>
-</ul>
+<li><p>博主的Demo：</p>
 <p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071126.gif" alt></p>
-<p>&lt;!-- more --&gt;</p>
-<ul>
-<li>从 <strong>视图层次</strong>上看<br>
-通过分析代码，可以发现，该 <strong>ExpandTableView</strong> 折叠收缩的实现方式是：</li>
-<li><strong>分组名</strong>：section 1 ——&gt; 显示在 <strong>UITableView对象</strong> 的 <strong>Header View</strong> 上；</li>
-<li><strong>Header View</strong> 上 ——&gt; 用code画了一个 <strong>UIButton</strong></li>
-<li><strong>UIButton</strong> 上 ——&gt; 用code分别画了 2个<strong>UIImageView</strong> 显示左右两边的图片，一个<strong>UILabel</strong>显示文字，底部又放了一张 <strong>Line</strong> 的图片显示分割线</li>
-<li><strong>每组可展开/收缩的内容</strong>：section 11/12/13 ——&gt; 显示在 <strong>UITableView对象</strong> 的 <strong>UITableViewCell</strong> 上；然后<strong>UITableViewCell</strong>又是用Xib重新绘制了。</li>
-<li>另外，我发现，该<strong>ExpandTableView</strong>中列表视图的父视图是基于<strong>UIViewController</strong>的，<strong>TableView</strong>也是code画上去的，而我自己创建的时候就直接把父视图设置为<strong>UITableViewController</strong>,这样就不用手动创建<strong>TableView</strong>了。</li>
+</li>
 </ul>
-<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071129.jpg" alt></p>
-<h4>我写的Demo：</h4>
-<ul>
-<li><a href="https://github.com/Andy0570/HQLTableViewDemo" target="_blank" rel="noopener">GitHub源码</a></li>
-</ul>
-<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071129.gif" alt></p>
-<ul>
-<li><strong>视图层次</strong>上的优化点,</li>
-<li><strong>UIButton</strong> 上,通过设置 <strong>UIButton</strong> 自带的 <strong>ImageView</strong> 和 <strong>Label</strong> 属性设置UI，通过设置两者的偏移量让其水平左右显示。</li>
-<li><strong>Header View</strong> 底部的分割线也没有通过放图片来设置，而是通过设置 <strong>UIButton</strong> 的背景为灰色，设置 <strong>Footer View</strong> 的高度为1，巧妙的显示了分割线。</li>
-</ul>
-<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071132.jpg" alt></p>
-<h3>实现原理</h3>
-<p>该可展开折叠的 <strong>TableView</strong> 通过 <strong>Header View</strong> 上的 <strong>Button</strong> 点击来实现 ，而每组的展开/折叠状态用1/0标记并存放在Flag数组中，每按一下<strong>Button</strong>，就修改一下Flag值，然后重新加载<strong>section</strong>,就实现分组展开收缩的动作了。
-更多细节先参考源码吧： <a href="https://github.com/Andy0570/HQLTableViewDemo" target="_blank" rel="noopener">GitHub源码</a></p>
-<h3>参考文章</h3>
-<ul>
-<li><a href="http://www.jianshu.com/p/9eed61eb6a64" target="_blank" rel="noopener">TableView的cell折叠和展开</a></li>
-</ul>
-
+          <!--noindex-->
           
+            <div class="post-button text-center">
+              <a class="btn" href="/2016/12/23/iOS 编程：可展开折叠的TableViewDemo/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          
+          <!--/noindex-->
         
       
     </div>
@@ -1451,7 +1182,7 @@ itms-apps://itunes.apple.com/cn/app/id414478124?mt=8&amp;action=write-review
                 
                   <span class="post-meta-item-text">本文字数：</span>
                 
-                <span title="本文字数">36</span>
+                <span title="本文字数">34</span>
               
 
               
@@ -1488,11 +1219,9 @@ itms-apps://itunes.apple.com/cn/app/id414478124?mt=8&amp;action=write-review
         
           
             <ul>
-<li>
-<p><a href="http://www.bejson.com" target="_blank" rel="noopener">在线JSON校验格式化工具</a></p>
+<li><p><a href="http://www.bejson.com" target="_blank" rel="noopener">在线JSON校验格式化工具</a></p>
 </li>
-<li>
-<p><a href="http://blog.csdn.net/enuola/article/details/7903632/" target="_blank" rel="noopener">IOS中Json解析的四种方法</a></p>
+<li><p><a href="http://blog.csdn.net/enuola/article/details/7903632/" target="_blank" rel="noopener">IOS中Json解析的四种方法</a></p>
 </li>
 </ul>
 
@@ -1659,7 +1388,7 @@ itms-apps://itunes.apple.com/cn/app/id414478124?mt=8&amp;action=write-review
                 
                   <span class="post-meta-item-text">本文字数：</span>
                 
-                <span title="本文字数">179</span>
+                <span title="本文字数">176</span>
               
 
               
@@ -1696,20 +1425,17 @@ itms-apps://itunes.apple.com/cn/app/id414478124?mt=8&amp;action=write-review
         
           
             <p><img src="http://25.io/smaller/favicon.ico" alt="以下资源非原创，摘自各种公众号或网络，仅用于学习交流get新技能，方便日常查阅，无任何商业及侵权目的！" title="Title here"></p>
-<h3>官方原文</h3>
-<ul>
+<h3 id="官方原文"><a href="#官方原文" class="headerlink" title="官方原文"></a>官方原文</h3><ul>
 <li><a href="https://developer.apple.com/ios/human-interface-guidelines/#//apple_ref/doc/uid/TP40006556-CH27-SW1" target="_blank" rel="noopener">iOS Human Interface Guidelines</a></li>
 </ul>
-<h3>译文</h3>
-<ul>
+<h3 id="译文"><a href="#译文" class="headerlink" title="译文"></a>译文</h3><ul>
 <li><a href="http://www.woshipm.com/pd/357869.html" target="_blank" rel="noopener">译文 | iOS 10 人机界面指南 （一）</a></li>
 <li><a href="http://www.woshipm.com/ucd/363662.html" target="_blank" rel="noopener">译文 | iOS 10 人机界面指南（二）</a></li>
 <li><a href="http://www.woshipm.com/pd/411827.html" target="_blank" rel="noopener">译文｜iOS 10 人机界面指南（三）</a></li>
 <li><a href="http://www.woshipm.com/pd/411838.html" target="_blank" rel="noopener">译文｜iOS 10 人机界面指南（四）</a></li>
 <li><a href="http://www.woshipm.com/ucd/639614.html" target="_blank" rel="noopener">译文 | iOS 10 人机界面指南 （完结）</a></li>
 </ul>
-<h3>其他</h3>
-<ul>
+<h3 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h3><ul>
 <li><a href="https://isux.tencent.com/ios-10-design-trends.html" target="_blank" rel="noopener">从iOS 10设计指南变化看设计的新趋势</a></li>
 </ul>
 
@@ -1876,7 +1602,7 @@ itms-apps://itunes.apple.com/cn/app/id414478124?mt=8&amp;action=write-review
                 
                   <span class="post-meta-item-text">本文字数：</span>
                 
-                <span title="本文字数">708</span>
+                <span title="本文字数">681</span>
               
 
               
@@ -1911,57 +1637,19 @@ itms-apps://itunes.apple.com/cn/app/id414478124?mt=8&amp;action=write-review
 
       
         
-          
-            <ul>
+          <ul>
 <li>GitHub源码:<a href="https://github.com/AFNetworking/AFNetworking" target="_blank" rel="noopener">AFNetworking</a></li>
 <li>star:29800+</li>
 </ul>
-<p>&lt;!-- more --&gt;</p>
-<h3>AFNetworking 源码阅读</h3>
-<ul>
-<li>
-<p><a href="http://www.jianshu.com/p/4f8333ee3879" target="_blank" rel="noopener">AFNetworking源码——基本架构</a></p>
-</li>
-<li>
-<p><a href="http://www.jianshu.com/p/0dd08712c649" target="_blank" rel="noopener">iOS-网络编程(一)HTTP协议 @xx_cc</a></p>
-</li>
-<li>
-<p><a href="http://www.jianshu.com/p/78964aac72d5" target="_blank" rel="noopener">iOS-网络编程(二)文件上传和断点离线下载 @xx_cc</a></p>
-</li>
-<li>
-<p><a href="http://www.jianshu.com/p/d94cb6b58573" target="_blank" rel="noopener">iOS-网络编程(三)AFNetworking使用 @xx_cc</a></p>
-</li>
-</ul>
-<hr>
-<ul>
-<li><a href="http://www.jianshu.com/p/856f0e26279d" target="_blank" rel="noopener">AFNetworking到底做了什么？ @ 涂耀辉 </a></li>
-<li><a href="http://www.jianshu.com/p/f32bd79233da" target="_blank" rel="noopener">AFNetworking到底做了什么？(二)  @ 涂耀辉 </a></li>
-<li><a href="http://www.jianshu.com/p/a84237b07611" target="_blank" rel="noopener">AFNetworking之于https认证 @ 涂耀辉</a></li>
-<li><a href="http://www.jianshu.com/p/4ffeb1ba3046" target="_blank" rel="noopener">AFNetworking之UIKit扩展与缓存实现 @ 涂耀辉</a></li>
-<li><a href="http://www.jianshu.com/p/7ed7c0be15b4" target="_blank" rel="noopener">AFNetworking到底做了什么？(终)</a></li>
-</ul>
-<hr>
-<ul>
-<li><a href="http://www.superqq.com/blog/2015/01/29/ioskai-fa-xia-zai-wen-jian-su-du-ji-suan/" target="_blank" rel="noopener">iOS开发下载文件速度计算</a></li>
-<li><a href="http://www.cocoachina.com/ios/20151022/13831.html" target="_blank" rel="noopener">AFNetworking 3.0迁移指南</a></li>
-<li><a href="http://www.cocoachina.com/ios/20140829/9480.html" target="_blank" rel="noopener">AFNetworking2.0源码解析&lt;一&gt;</a></li>
-<li><a href="http://www.cocoachina.com/ios/20140904/9523.html" target="_blank" rel="noopener">AFNetworking2.0源码解析&lt;二&gt;</a></li>
-<li><a href="http://www.cocoachina.com/ios/20140916/9632.html" target="_blank" rel="noopener">AFNetworking源码解析&lt;三&gt;</a></li>
-<li><a href="http://www.cocoachina.com/ios/20141120/10265.html" target="_blank" rel="noopener">AFNetworking源码解析&lt;四&gt;</a></li>
-</ul>
-<ul>
-<li><a href="http://www.jianshu.com/p/e52b713a15c2" target="_blank" rel="noopener">AFNetworking粗解(解析) @游峰</a></li>
-<li><a href="https://github.com/SmithCaoCao/Translation/blob/master/README.md" target="_blank" rel="noopener">AFNetWorking是如何进行数据缓存的?之AFImageCache &amp; NSURLCache 详解</a></li>
-<li><a href="http://www.infoq.com/cn/articles/afn_vs_asi" target="_blank" rel="noopener">对比iOS网络组件：AFNetworking VS ASIHTTPRequest @gaosboy</a></li>
-</ul>
-<hr>
-<h3>关于SSL</h3>
-<ul>
-<li><a href="http://www.jianshu.com/p/36ddc5b009a7" target="_blank" rel="noopener">iOS 10 适配 ATS（app支持https通过App Store审核）@SN_Simon</a></li>
-<li><a href="http://www.cnblogs.com/jys509/p/5001566.html" target="_blank" rel="noopener">iOS 开发笔记-AFNetWorking https SSL认证</a></li>
-</ul>
-
+          <!--noindex-->
           
+            <div class="post-button text-center">
+              <a class="btn" href="/2016/12/14/AFNetworking 源码阅读/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          
+          <!--/noindex-->
         
       
     </div>
@@ -2159,724 +1847,16 @@ itms-apps://itunes.apple.com/cn/app/id414478124?mt=8&amp;action=write-review
 
       
         
+          <p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071159.png" alt></p>
+          <!--noindex-->
           
-            <p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071159.png" alt></p>
-<p>&lt;!-- more --&gt;</p>
-<ul>
-<li><a href="https://itunes.apple.com/cn/app/expressions/id913158085?mt=12" target="_blank" rel="noopener">App Store购买链接（¥30 价格其实还可以接受，请支持正版）</a></li>
-<li><a href="http://www.apptorium.com/expressions" target="_blank" rel="noopener">Expressions 官网</a></li>
-</ul>
-<h3>特性</h3>
-<ul>
-<li>极简化的UI界面；</li>
-<li>语法高亮显示；</li>
-<li>参考表；</li>
-<li>实时预览；</li>
-<li>正则表达式语法库提示；</li>
-<li>组突出显示；</li>
-<li>组之间轻松切换（快捷键：<code>cmd+shift+}</code> or <code>cmd+shift+{</code>）;</li>
-<li>漂亮的全屏视图；</li>
-<li>多行模式和注释；</li>
-<li>支持亮暗两种主题；</li>
-</ul>
-<h2>正则表达式</h2>
-<p>定义：<strong>正则表达式</strong>，又称规则表达式。（英语：Regular Expression，在代码中常简写为regex、regexp或RE），计算机科学的一个概念。正则表通常被用来检索、替换那些符合某个模式(规则)的文本。
-<a href="https://zh.wikipedia.org/wiki/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F" target="_blank" rel="noopener">维基百科</a>、<a href="http://baike.baidu.com/link?url=T0mre4ve9IB6k9BGHmMm9N1_xV6J-VXWKitvjZWxt4ek2e5h0AJCNBmcX1s5QloJx1BbQbRqppFNDKEmo339jOrYum9wgJGYUrs8FAs7-xLme2mLspbYQpsljkqBX5-2aTw4bjC-D9v78IkeBeqKi_" target="_blank" rel="noopener">百度百科</a></p>
-<h1>语法库</h1>
-<h2>Basic - 基本语法</h2>
-<h3>Metacharacters - 元字符</h3>
-<p>表示字符集或特殊字符。</p>
-<table>
-<thead>
-<tr>
-<th>正则表达式</th>
-<th>说明</th>
-<th>描述</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>.</td>
-<td>any character</td>
-<td>任意字符</td>
-</tr>
-<tr>
-<td>^</td>
-<td>beginning of a line</td>
-<td>一行的开始字符</td>
-</tr>
-<tr>
-<td>$</td>
-<td>end of a line</td>
-<td>一行的末尾字符</td>
-</tr>
-<tr>
-<td>\</td>
-<td>quotes special characters (* ? + [ ] ( ) { } ^ $ | \ . / )</td>
-<td>特殊字符（(* ? + [ ] ( ) { } ^ $ | \ . / )），和括号中的特殊字符配合使用，如 ? 、\\</td>
-</tr>
-<tr>
-<td>\w</td>
-<td>word</td>
-<td>所有的文字数字式字符：大小写字母、数字和下划线 (同 [a-zA-Z0-9_])</td>
-</tr>
-<tr>
-<td>\t</td>
-<td>horizontal tabulation</td>
-<td>水平制表符</td>
-</tr>
-<tr>
-<td>\n</td>
-<td>new line</td>
-<td>换行符</td>
-</tr>
-<tr>
-<td>\d</td>
-<td>any digit</td>
-<td>任何数字，同[0-9]</td>
-</tr>
-<tr>
-<td>\s</td>
-<td>white space character (\t \n \f \r \p{Z})</td>
-<td>所有空白字符(\t 制表符  \n 换行 \f 换页符 \r 回车 \p{Z})</td>
-</tr>
-<tr>
-<td>[...]</td>
-<td>match any character (or range of characters) inside the brackets. Range may be e.g. [a-z], [A-Z], [3…5], etc.</td>
-<td>括号内的任何字符（或字符范围）。 范围可以是例如。 [a-z]，[A-Z]，[3 ... 5]，等</td>
-</tr>
-<tr>
-<td>\D</td>
-<td>any character that is not a decimal digit</td>
-<td>任何非数字，同 [^0-9]</td>
-</tr>
-<tr>
-<td>\S</td>
-<td>non-white space character</td>
-<td>非空白字符</td>
-</tr>
-<tr>
-<td>\W</td>
-<td>non-word character</td>
-<td>非文字数字式字符， 同 [^a-zA-Z0-9_]</td>
-</tr>
-</tbody>
-</table>
-<h3>Operators - 运算符</h3>
-<p>运算符允许描述一个表达式（或子表达式）应如何匹配。</p>
-<table>
-<thead>
-<tr>
-<th>正则表达式</th>
-<th>说明</th>
-<th>描述</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>(...)</td>
-<td>groups expression into subexpressions</td>
-<td>将表达式分组成子表达式</td>
-</tr>
-<tr>
-<td>A|B</td>
-<td>alternation. Matches A or B</td>
-<td>交替。 匹配A或B</td>
-</tr>
-<tr>
-<td>^</td>
-<td>negation</td>
-<td>否定表达式，如[^0-9],表示匹配非数字</td>
-</tr>
-<tr>
-<td>*</td>
-<td>match 0 or more times</td>
-<td>匹配零次或者多次</td>
-</tr>
-<tr>
-<td>+</td>
-<td>match 1 or more times</td>
-<td>匹配一次或者多次</td>
-</tr>
-<tr>
-<td>?</td>
-<td>match zero or one times</td>
-<td>匹配零次或者一次</td>
-</tr>
-<tr>
-<td>{n}</td>
-<td>match exactly n times</td>
-<td>精确匹配n次</td>
-</tr>
-<tr>
-<td>{n,}</td>
-<td></td>
-<td>至少匹配n次</td>
-</tr>
-<tr>
-<td>{n,m}</td>
-<td>match at least n time and not more than m</td>
-<td>次数匹配区间，至少n次，至多m次</td>
-</tr>
-</tbody>
-</table>
-<h3>Non-capturing operators -非捕获运算符</h3>
-<table>
-<thead>
-<tr>
-<th>正则表达式</th>
-<th>说明</th>
-<th>描述</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>(?#...)</td>
-<td>Comment</td>
-<td>注释</td>
-</tr>
-<tr>
-<td>(? : ...)</td>
-<td>Subexpression must occur but it's not captured in group.</td>
-<td>子表达式必须发生，但不会在组中捕获。</td>
-</tr>
-<tr>
-<td>(? ! ...)</td>
-<td>Makes sure that the subexpression does not occur at current position. It's useful to exclude part of expression.</td>
-<td>确保在当前位置不会发生子表达式。 排除部分表达式很有用。</td>
-</tr>
-</tbody>
-</table>
-<h1>Advanced - 高级用法</h1>
-<h3>Metacharacters - 元数据</h3>
-<table>
-<thead>
-<tr>
-<th>正则表达式</th>
-<th>说明</th>
-<th>描述</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>\a</td>
-<td>Match a BELL, \u0007</td>
-<td>匹配响铃符号，\u0007</td>
-</tr>
-<tr>
-<td>\A</td>
-<td>Match at the beginning of the input.Differs from ^ in that \A will not match after a new line within the input.</td>
-<td>输入开始时匹配，与^符号不同，\A不会匹配输入后的新行</td>
-</tr>
-<tr>
-<td>\b</td>
-<td>Match if the current position is a word boundary.Boundaries occur at the transitions between word (\w) and non-word (\W) characters, with combining marks ignored.</td>
-<td>如果当前位置是字边界则匹配。边界出现在文字数字式字符（\ w）和非文字数字式字符（\ W）字符之间的转换处，组合标记被忽略。</td>
-</tr>
-<tr>
-<td>\B</td>
-<td>Match if the current position is not a word boundary.</td>
-<td>如果当前位置不是文字数字式字符边界则匹配。</td>
-</tr>
-<tr>
-<td>\cX</td>
-<td>Match a control-X character.</td>
-<td>匹配一个control-X字符。</td>
-</tr>
-<tr>
-<td>\d</td>
-<td>Match any character with the Unicode General Category of Nd (Number, Decimal Digit.)</td>
-<td>匹配任何字符与Unicode通用类别的Nd（数字，十进制数字）。</td>
-</tr>
-<tr>
-<td>\D</td>
-<td>Match any character that is not a decimal digit.</td>
-<td>匹配任何不是十进制数字的字符。</td>
-</tr>
-<tr>
-<td>\e</td>
-<td>Match an ESCAPE, \u001B.</td>
-<td>匹配ESCAPE，\ u001B。</td>
-</tr>
-<tr>
-<td>\E</td>
-<td>Terminates a \Q…\Equoted sequence.</td>
-<td>终止\ Q ... \ E引用的序列。</td>
-</tr>
-<tr>
-<td>\f</td>
-<td>Match a FORM FEED, \u000C.</td>
-<td>匹配FORM FEED，\ u000C。</td>
-</tr>
-<tr>
-<td>\G</td>
-<td>Match if the current position is at the end of the previous match.</td>
-<td>如果当前位置在上一个匹配结束时匹配。</td>
-</tr>
-<tr>
-<td>\h</td>
-<td>Match a Horizontal White Space character. They are characters with Unicode General Category of Space_Separator plus the ASCII tab (\u0009).</td>
-<td>匹配水平白色空格字符。 它们是具有Unicode通用类别Space_Separator和ASCII选项卡（\ u0009）的字符。</td>
-</tr>
-<tr>
-<td>\H</td>
-<td>Match a non-Horizontal White Space character.</td>
-<td>匹配非水平白色空格字符。</td>
-</tr>
-<tr>
-<td>\k</td>
-<td>Named Capture Back Reference.</td>
-<td>命名捕获返回参考。</td>
-</tr>
-<tr>
-<td>\n</td>
-<td>Match a line feed, \u000A.</td>
-<td>匹配换行符\ u000A。</td>
-</tr>
-<tr>
-<td>\N{unicode}</td>
-<td>Match the named character.</td>
-<td>匹配命名的字符。</td>
-</tr>
-<tr>
-<td>\p{unicode}</td>
-<td>Match any character with the specified Unicode Property.</td>
-<td>与指定的Unicode属性匹配任何字符。</td>
-</tr>
-<tr>
-<td>\P{unicode}</td>
-<td>Match any character not having the specified Unicode Property.</td>
-<td>匹配任何不具有指定Unicode属性的字符。</td>
-</tr>
-<tr>
-<td>\Q</td>
-<td>Quotes all following characters until \E.</td>
-<td>引用所有以下字符直到\ E。</td>
-</tr>
-<tr>
-<td>\r</td>
-<td>Match a carriage return, \u000D.</td>
-<td>匹配回车，\ u000D。</td>
-</tr>
-<tr>
-<td>\R</td>
-<td>Match a new line character, or the sequence CR LF.</td>
-<td>匹配新的行字符或序列CR LF。</td>
-</tr>
-<tr>
-<td>\s</td>
-<td>Match a white space character. White space is defined as [\t\n\f\r\p{Z}].</td>
-<td>匹配一个空白字符。 空格被定义为[\ t \ n \ f \ r \ p {Z}]。</td>
-</tr>
-<tr>
-<td>\S</td>
-<td>Match a non-white space character.</td>
-<td></td>
-</tr>
-<tr>
-<td>\t</td>
-<td>Match a horizontal tabulation, \u0009.</td>
-<td>匹配水平制表符，\ u0009。</td>
-</tr>
-<tr>
-<td>\uhhhh</td>
-<td>Match the character with the hex value hhhh.</td>
-<td>匹配十六进制字符hhhh。</td>
-</tr>
-<tr>
-<td>\uhhhhhhh</td>
-<td>Match the character with the hex value hhhhhhhh.Exactly eight hex digits must be provided, even though the largest Unicode code point is \U0010ffff.</td>
-<td>匹配十六进制字符hhhhhhhh。必须提供8位十六进制数字，即使最大的Unicode代码点是\ U0010ffff。</td>
-</tr>
-<tr>
-<td>\v</td>
-<td>Match a new line character.</td>
-<td>匹配一个新的行字符。</td>
-</tr>
-<tr>
-<td>\V</td>
-<td>Match a non-new line character.</td>
-<td></td>
-</tr>
-<tr>
-<td>\w</td>
-<td>Match a word character.</td>
-<td>匹配一个字符</td>
-</tr>
-<tr>
-<td>\W</td>
-<td>Match a non-word character.</td>
-<td></td>
-</tr>
-<tr>
-<td>\x{hhhh}</td>
-<td>Match the character with hex value hhhh.From one to six hex digits may be supplied.</td>
-<td>匹配十六进制字符hhhh。可提供1到6个十六进制数字。</td>
-</tr>
-<tr>
-<td>\xhh</td>
-<td>Match the character with two digit hex value hh</td>
-<td>匹配两位十六进制字符hh</td>
-</tr>
-<tr>
-<td>\X</td>
-<td>Match a Grapheme Cluster .</td>
-<td>匹配一个大写字母集</td>
-</tr>
-<tr>
-<td>\Z</td>
-<td>Match if the current position is at the end of input, but before the final line terminator, if one exists.</td>
-<td>如果当前位置在输入结尾，但在最后一行终止符之前，如果存在，则进行匹配。</td>
-</tr>
-<tr>
-<td>\z</td>
-<td>Match if the current position is at the end of input.</td>
-<td>如果当前位置在输入结束时匹配。</td>
-</tr>
-<tr>
-<td>\n</td>
-<td>Back Reference. Match whatever the nth capturing group matched. n must be a number &gt; 1 and &lt; total number of capture groups in the pattern.</td>
-<td>返回参考。 匹配任何第n个捕获组匹配。 n必须是数字&gt; 1和&lt;模式中捕获组的总数。</td>
-</tr>
-<tr>
-<td>\0ooo</td>
-<td>Match an Octal character. 'ooo' is from one to three octal digits. 0377 is the largest allowed Octal character. The leading zero is required; it distinguishes Octal constants from back references.</td>
-<td>匹配八进制字符 “ooo”是从一到三个八进制数字。 0377是允许的最大八进制字符。 领先的零是必需的; 它将八进制常量与反向引用区分开来。</td>
-</tr>
-<tr>
-<td>[...]</td>
-<td>Match any one character from the set.</td>
-<td>匹配集合中的任何一个字符。</td>
-</tr>
-<tr>
-<td>.</td>
-<td>Match any character.</td>
-<td></td>
-</tr>
-<tr>
-<td>^</td>
-<td>Match at the beginning of a line.</td>
-<td></td>
-</tr>
-<tr>
-<td>$</td>
-<td>Match at the end of a line.</td>
-<td></td>
-</tr>
-<tr>
-<td>\</td>
-<td>Quotes the following character. Characters that must be quoted to be treated as literals are * ? + [ ( ) { } ^ $ | \ .</td>
-<td>引用以下字符 必须引用被视为文字的字符是*？ + [（）{} ^ $ | \。</td>
-</tr>
-<tr>
-<td>\</td>
-<td>Quotes the following character. Characters that must be quoted to be treated as literals are [ ] \</td>
-<td>引用以下字符 ,必须引用被视为文字的字符是[] \</td>
-</tr>
-</tbody>
-</table>
-<h3>Operators - 运算符</h3>
-<table>
-<thead>
-<tr>
-<th>|</th>
-<th>Alternation. A|B matches either A or B.</th>
-<th>或者</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>*</td>
-<td>Match 0 or more times. Match as many times as possible.</td>
-<td>匹配0次以上。 匹配尽可能多的次数。</td>
-</tr>
-<tr>
-<td>+</td>
-<td>Match 1 or more times. Match as many times as possible.</td>
-<td>匹配1次以上。 匹配尽可能多的次数。</td>
-</tr>
-<tr>
-<td>？</td>
-<td>Match zero or one times. Prefer one.</td>
-<td>匹配零次或一次。 偏向于一次</td>
-</tr>
-<tr>
-<td>{n}</td>
-<td>Match exactly n times</td>
-<td>匹配n次</td>
-</tr>
-<tr>
-<td>{n,}</td>
-<td>Match at least n times. Match as many times as possible.</td>
-<td>匹配至少n次</td>
-</tr>
-<tr>
-<td>{n,m}</td>
-<td>Match between n and m times. Match as many times as possible, but not more than m.</td>
-<td>匹配n~m次</td>
-</tr>
-<tr>
-<td>*?</td>
-<td>Match 0 or more times. Match as few times as possible.</td>
-<td>加后缀 ？表示非贪婪匹配（匹配尽可能少的字符）</td>
-</tr>
-<tr>
-<td>+?</td>
-<td>Match 1 or more times.Match as few times as possible.</td>
-<td></td>
-</tr>
-<tr>
-<td>??</td>
-<td>Match zero or one times. Prefer zero.</td>
-<td></td>
-</tr>
-<tr>
-<td>{n}?</td>
-<td>Match exactly n times</td>
-<td></td>
-</tr>
-<tr>
-<td>{n,}?</td>
-<td>Match at least n time§s, but no more than required for an overall pattern match</td>
-<td></td>
-</tr>
-<tr>
-<td>{n,m}?</td>
-<td>Match between n and m times. Match as few times as possible, but not less than n.</td>
-<td></td>
-</tr>
-<tr>
-<td>*+</td>
-<td>Match 0 or more times. Match as many times as possible when first encountered, do not retry with fewer even if overall match fails (Possessive Match)</td>
-<td>匹配0次以上。 在第一次遇到时，尽可能多地匹配，即使整体匹配失败（Possessive Match）也不要重试，</td>
-</tr>
-<tr>
-<td>++</td>
-<td>Match 1 or more times. Possessive match.</td>
-<td></td>
-</tr>
-<tr>
-<td>?+</td>
-<td>Match zero or one times.  Possessive match.</td>
-<td></td>
-</tr>
-<tr>
-<td>{n}+</td>
-<td>Match exactly n times</td>
-<td></td>
-</tr>
-<tr>
-<td>{n,}+</td>
-<td>Match at least n times.  Possessive Match.</td>
-<td></td>
-</tr>
-<tr>
-<td>{n,m}+</td>
-<td>Match between n and m times. Possessive Match.</td>
-<td></td>
-</tr>
-<tr>
-<td>(...)</td>
-<td>Capturing parentheses. Range of input that matched the parenthesized subexpression is available after the match.</td>
-<td></td>
-</tr>
-<tr>
-<td>(? : ...)</td>
-<td>Non-capturing parentheses. Groups the included pattern, but does not provide capturing of matching text. Somewhat more efficient than capturing parentheses.</td>
-<td>非捕获括号。 对包含的模式进行分组，但不提供匹配文本的捕获。 比捕捉括号更有效率。</td>
-</tr>
-<tr>
-<td>(? &gt; ...)</td>
-<td>Atomic-match parentheses. First match of the parenthesized subexpression is the only one tried; if it does not lead to an overall pattern match, back up the search for a match to a position before the &quot;(?&gt;&quot;</td>
-<td></td>
-</tr>
-<tr>
-<td>(?#...)</td>
-<td>Free-format comment (?# comment ).</td>
-<td></td>
-</tr>
-<tr>
-<td>(?=...)</td>
-<td>Look-ahead assertion. True if the parenthesized pattern matches at the current input position, but does not advance the input position.</td>
-<td></td>
-</tr>
-<tr>
-<td>(?!...)</td>
-<td>Negative look-ahead assertion. True if the parenthesized pattern does not match at the current input position. Does not advance the input position.</td>
-<td></td>
-</tr>
-<tr>
-<td>(?&lt;=...)</td>
-<td>Look-behind assertion. True if the parenthesized pattern matches text preceding the current input position, with the last character of the match being the input character just before the current position. Does not alter the input position. The length of possible strings matched by the look-behind pattern must not be unbounded (no * or + operators.)</td>
-<td></td>
-</tr>
-<tr>
-<td>(?...)</td>
-<td>Negative Look-behind assertion. True if the parenthesized pattern does not match text preceding the current input position, with the last character of the match being the input character just before the current position. Does not alter the input position. The length of possible strings matched by the look-behind pattern must not be unbounded (no * or + operators.)</td>
-<td></td>
-</tr>
-<tr>
-<td>(?...)</td>
-<td>Named capture group. The are literal - they appear in the pattern.</td>
-<td></td>
-</tr>
-<tr>
-<td>(?ismwx-ismwx:…)</td>
-<td>Flag settings. Evaluate the parenthesized expression with the specified flags enabled or -disabled.</td>
-<td></td>
-</tr>
-<tr>
-<td>(?ismwx-ismwx)</td>
-<td>Flag settings. Change the flag settings. Changes apply to the portion of the pattern following the setting. For example, (?i) changes to a case insensitive match.</td>
-<td></td>
-</tr>
-</tbody>
-</table>
-<h3>Set Expressions - 设置表达式</h3>
-<table>
-<thead>
-<tr>
-<th>正则表达式</th>
-<th>说明</th>
-<th>描述</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>[abc]</td>
-<td>Match any of the characters a, b or c</td>
-<td></td>
-</tr>
-<tr>
-<td>[^abc]</td>
-<td>Negation - match any character except a, b or c</td>
-<td></td>
-</tr>
-<tr>
-<td>[A-M]</td>
-<td>Range - match any character from A to M.  The characters to include are determined by Unicode code point ordering.</td>
-<td></td>
-</tr>
-<tr>
-<td>[\u0000-\U0010ffff]</td>
-<td>Range - match all characters.</td>
-<td></td>
-</tr>
-</tbody>
-</table>
-<h3>Flags</h3>
-<table>
-<thead>
-<tr>
-<th>正则表达式</th>
-<th>说明</th>
-<th>描述</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>i</td>
-<td>If set, matching will take place in a case-insensitive manner.</td>
-<td></td>
-</tr>
-<tr>
-<td>x</td>
-<td>If set, allow use of white space and #comments within patterns</td>
-<td></td>
-</tr>
-<tr>
-<td>s</td>
-<td>If set, a &quot;.&quot; in a pattern will match a line terminator in the input text. By default, it will not. Note that a carriage-return / line-feed pair in text behave as a single line terminator, and will match a single &quot;.&quot; in a RE pattern.</td>
-<td></td>
-</tr>
-<tr>
-<td>m</td>
-<td>Control the behavior of ^and $ in a pattern. By default these will only match at the start and end, respectively, of the input text. If this flag is set, ^ and $</td>
-<td></td>
-</tr>
-<tr>
-<td>will also match at the start and end of each line within the input text.</td>
-<td>Controls the behavior of \b in a pattern. If set, word boundaries are found according to the definitions of word found in Unicode UAX 29, Text Boundaries. By default, word boundaries are identified by means of a simple classification of characters as either “word” or “non-word”, which approximates traditional regular expression behavior. The results obtained with the two options can be quite different in runs of spaces and other non-word characters.</td>
-<td></td>
-</tr>
-</tbody>
-</table>
-<h3>More - 更多</h3>
-<p>完整的正则表达式文档参考：<a href="http://userguide.icu-project.org/strings/regexp" target="_blank" rel="noopener"><strong>ICU User Guide</strong></a></p>
-<h4>贪婪匹配&amp;非贪婪匹配</h4>
-<ul>
-<li>贪婪匹配：匹配尽可能多的字符；</li>
-<li>非贪婪匹配：匹配尽可能少的字符</li>
-</ul>
-<table>
-<thead>
-<tr>
-<th>贪婪量词</th>
-<th>非贪婪量词</th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>*</td>
-<td>*?</td>
-<td></td>
-</tr>
-<tr>
-<td>+</td>
-<td>+?</td>
-<td></td>
-</tr>
-<tr>
-<td>?</td>
-<td>??</td>
-<td></td>
-</tr>
-<tr>
-<td>{n}</td>
-<td>{n}?</td>
-<td></td>
-</tr>
-<tr>
-<td>{n,}</td>
-<td>{n,}?</td>
-<td></td>
-</tr>
-<tr>
-<td>{n,m}</td>
-<td>{n,m}?</td>
-<td></td>
-</tr>
-</tbody>
-</table>
-<p>示例</p>
-<blockquote>
-<p>正则表达式：a.*z</p>
-</blockquote>
-<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071200.jpg" alt></p>
-<blockquote>
-<p>正则表达式：a.*?z</p>
-</blockquote>
-<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071201.jpg" alt></p>
-<h3>常用正则表达式</h3>
-<h4>一、校验数字的表达式</h4>
-<p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"> 1 数字：^[0-9]*$</span><br><span class="line"> 2 n位的数字：^\d&#123;n&#125;$</span><br><span class="line"> 3 至少n位的数字：^\d&#123;n,&#125;$</span><br><span class="line"> 4 m-n位的数字：^\d&#123;m,n&#125;$</span><br><span class="line"> 5 零和非零开头的数字：^(0|[1-9][0-9]*)$</span><br><span class="line"> 6 非零开头的最多带两位小数的数字：^([1-9][0-9]*)+(.[0-9]&#123;1,2&#125;)?$</span><br><span class="line"> 7 带1-2位小数的正数或负数：^(\-)?\d+(\.\d&#123;1,2&#125;)?$</span><br><span class="line"> 8 正数、负数、和小数：^(\-|\+)?\d+(\.\d+)?$</span><br><span class="line"> 9 有两位小数的正实数：^[0-9]+(.[0-9]&#123;2&#125;)?$</span><br><span class="line">10 有1~3位小数的正实数：^[0-9]+(.[0-9]&#123;1,3&#125;)?$</span><br><span class="line">11 非零的正整数：^[1-9]\d*$ 或 ^([1-9][0-9]*)&#123;1,3&#125;$ 或 ^\+?[1-9][0-9]*$</span><br><span class="line">12 非零的负整数：^\-[1-9][]0-9&quot;*$ 或 ^-[1-9]\d*$</span><br><span class="line">13 非负整数：^\d+$ 或 ^[1-9]\d*|0$</span><br><span class="line">14 非正整数：^-[1-9]\d*|0$ 或 ^((-\d+)|(0+))$</span><br><span class="line">15 非负浮点数：^\d+(\.\d+)?$ 或 ^[1-9]\d*\.\d*|0\.\d*[1-9]\d*|0?\.0+|0$</span><br><span class="line">16 非正浮点数：^((-\d+(\.\d+)?)|(0+(\.0+)?))$ 或 ^(-([1-9]\d*\.\d*|0\.\d*[1-9]\d*))|0?\.0+|0$</span><br><span class="line">17 正浮点数：^[1-9]\d*\.\d*|0\.\d*[1-9]\d*$ 或 ^(([0-9]+\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\.[0-9]+)|([0-9]*[1-9][0-9]*))$</span><br><span class="line">18 负浮点数：^-([1-9]\d*\.\d*|0\.\d*[1-9]\d*)$ 或 ^(-(([0-9]+\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\.[0-9]+)|([0-9]*[1-9][0-9]*)))$</span><br><span class="line">19 浮点数：^(-?\d+)(\.\d+)?$ 或 ^-?([1-9]\d*\.\d*|0\.\d*[1-9]\d*|0?\.0+|0)$</span><br></pre></td></tr></table></figure></p>
-<h4>二、校验字符的表达式</h4>
-<p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"> 1 汉字：^[\u4e00-\u9fa5]&#123;0,&#125;$</span><br><span class="line"> 2 英文和数字：^[A-Za-z0-9]+$ 或 ^[A-Za-z0-9]&#123;4,40&#125;$</span><br><span class="line"> 3 长度为3-20的所有字符：^.&#123;3,20&#125;$</span><br><span class="line"> 4 由26个英文字母组成的字符串：^[A-Za-z]+$</span><br><span class="line"> 5 由26个大写英文字母组成的字符串：^[A-Z]+$</span><br><span class="line"> 6 由26个小写英文字母组成的字符串：^[a-z]+$</span><br><span class="line"> 7 由数字和26个英文字母组成的字符串：^[A-Za-z0-9]+$</span><br><span class="line"> 8 由数字、26个英文字母或者下划线组成的字符串：^\w+$ 或 ^\w&#123;3,20&#125;$</span><br><span class="line"> 9 中文、英文、数字包括下划线：^[\u4E00-\u9FA5A-Za-z0-9_]+$</span><br><span class="line">10 中文、英文、数字但不包括下划线等符号：^[\u4E00-\u9FA5A-Za-z0-9]+$ 或 ^[\u4E00-\u9FA5A-Za-z0-9]&#123;2,20&#125;$</span><br><span class="line">11 可以输入含有^%&amp;&apos;,;=?$\&quot;等字符：[^%&amp;&apos;,;=?$\x22]+</span><br><span class="line">12 禁止输入含有~的字符：[^~\x22]+</span><br></pre></td></tr></table></figure></p>
-<h4>三、特殊需求表达式</h4>
-<p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"> 1 Email地址：^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$</span><br><span class="line"> 2 域名：[a-zA-Z0-9][-a-zA-Z0-9]&#123;0,62&#125;(/.[a-zA-Z0-9][-a-zA-Z0-9]&#123;0,62&#125;)+/.?</span><br><span class="line"> 3 InternetURL：[a-zA-z]+://[^\s]* 或 ^http://([\w-]+\.)+[\w-]+(/[\w-./?%&amp;=]*)?$</span><br><span class="line"> 4 手机号码：^(13[0-9]|14[0-9]|15[0-9]|166|17[0-9]|18[0-9]|19[8|9])\d&#123;8&#125;$</span><br><span class="line"> 5 电话号码(&quot;XXX-XXXXXXX&quot;、&quot;XXXX-XXXXXXXX&quot;、&quot;XXX-XXXXXXX&quot;、&quot;XXX-XXXXXXXX&quot;、&quot;XXXXXXX&quot;和&quot;XXXXXXXX)：^(\(\d&#123;3,4&#125;-)|\d&#123;3.4&#125;-)?\d&#123;7,8&#125;$ </span><br><span class="line"> 6 国内电话号码(0511-4405222、021-87888822)：\d&#123;3&#125;-\d&#123;8&#125;|\d&#123;4&#125;-\d&#123;7&#125; </span><br><span class="line"> 7 18位身份证号码(数字、字母x结尾)：^((\d&#123;18&#125;)|([0-9x]&#123;18&#125;)|([0-9X]&#123;18&#125;))$</span><br><span class="line"> 8 帐号是否合法(字母开头，允许5-16字节，允许字母数字下划线)：^[a-zA-Z][a-zA-Z0-9_]&#123;4,15&#125;$</span><br><span class="line"> 9 密码(以字母开头，长度在6~18之间，只能包含字母、数字和下划线)：^[a-zA-Z]\w&#123;5,17&#125;$</span><br><span class="line">10 强密码(必须包含大小写字母和数字的组合，不能使用特殊字符，长度在8-10之间)：^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).&#123;8,10&#125;$  </span><br><span class="line">11 日期格式：^\d&#123;4&#125;-\d&#123;1,2&#125;-\d&#123;1,2&#125;</span><br><span class="line">12 一年的12个月(01～09和1～12)：^(0?[1-9]|1[0-2])$</span><br><span class="line">13 一个月的31天(01～09和1～31)：^((0?[1-9])|((1|2)[0-9])|30|31)$ </span><br><span class="line">14 钱的输入格式：</span><br><span class="line">15    1.有四种钱的表示形式我们可以接受:&quot;10000.00&quot; 和 &quot;10,000.00&quot;, 和没有 &quot;分&quot; 的 &quot;10000&quot; 和 &quot;10,000&quot;：^[1-9][0-9]*$ </span><br><span class="line">16    2.这表示任意一个不以0开头的数字,但是,这也意味着一个字符&quot;0&quot;不通过,所以我们采用下面的形式：^(0|[1-9][0-9]*)$ </span><br><span class="line">17    3.一个0或者一个不以0开头的数字.我们还可以允许开头有一个负号：^(0|-?[1-9][0-9]*)$ </span><br><span class="line">18    4.这表示一个0或者一个可能为负的开头不为0的数字.让用户以0开头好了.把负号的也去掉,因为钱总不能是负的吧.下面我们要加的是说明可能的小数部分：^[0-9]+(.[0-9]+)?$ </span><br><span class="line">19    5.必须说明的是,小数点后面至少应该有1位数,所以&quot;10.&quot;是不通过的,但是 &quot;10&quot; 和 &quot;10.2&quot; 是通过的：^[0-9]+(.[0-9]&#123;2&#125;)?$ </span><br><span class="line">20    6.这样我们规定小数点后面必须有两位,如果你认为太苛刻了,可以这样：^[0-9]+(.[0-9]&#123;1,2&#125;)?$ </span><br><span class="line">21    7.这样就允许用户只写一位小数.下面我们该考虑数字中的逗号了,我们可以这样：^[0-9]&#123;1,3&#125;(,[0-9]&#123;3&#125;)*(.[0-9]&#123;1,2&#125;)?$ </span><br><span class="line">22    8.1到3个数字,后面跟着任意个 逗号+3个数字,逗号成为可选,而不是必须：^([0-9]+|[0-9]&#123;1,3&#125;(,[0-9]&#123;3&#125;)*)(.[0-9]&#123;1,2&#125;)?$ </span><br><span class="line">23    备注：这就是最终结果了,别忘了&quot;+&quot;可以用&quot;*&quot;替代如果你觉得空字符串也可以接受的话(奇怪,为什么?)最后,别忘了在用函数时去掉去掉那个反斜杠,一般的错误都在这里</span><br><span class="line">24 xml文件：^([a-zA-Z]+-?)+[a-zA-Z0-9]+\\.[x|X][m|M][l|L]$</span><br><span class="line">25 中文字符的正则表达式：[\u4e00-\u9fa5]</span><br><span class="line">26 双字节字符：[^\x00-\xff]    (包括汉字在内，可以用来计算字符串的长度(一个双字节字符长度计2，ASCII字符计1))</span><br><span class="line">27 空白行的正则表达式：\n\s*\r    (可以用来删除空白行)</span><br><span class="line">28 HTML标记的正则表达式：&lt;(\S*?)[^&gt;]*&gt;.*?&lt;/\1&gt;|&lt;.*? /&gt;    (网上流传的版本太糟糕，上面这个也仅仅能部分，对于复杂的嵌套标记依旧无能为力)</span><br><span class="line">29 首尾空白字符的正则表达式：^\s*|\s*$或(^\s*)|(\s*$)    (可以用来删除行首行尾的空白字符(包括空格、制表符、换页符等等)，非常有用的表达式)</span><br><span class="line">30 腾讯QQ号：[1-9][0-9]&#123;4,&#125;    (腾讯QQ号从10000开始)</span><br><span class="line">31 中国邮政编码：[1-9]\d&#123;5&#125;(?!\d)    (中国邮政编码为6位数字)</span><br><span class="line">32 IP地址：\d+\.\d+\.\d+\.\d+    (提取IP地址时有用)</span><br><span class="line">33 IP地址：((?:(?:25[0-5]|2[0-4]\\d|[01]?\\d?\\d)\\.)&#123;3&#125;(?:25[0-5]|2[0-4]\\d|[01]?\\d?\\d))    (由@飞龙三少 提供,感谢共享)</span><br></pre></td></tr></table></figure></p>
-<h3>参考</h3>
-<ul>
-<li><a href="http://www.jianshu.com/p/ac2596be9606" target="_blank" rel="noopener">《系统地学习正则表达式(一)：基础篇》 @iOS_小松哥</a></li>
-<li><a href="http://www.jianshu.com/p/555f85023a7f" target="_blank" rel="noopener">《系统地学习正则表达式(二)：进阶篇》  @iOS_小松哥</a></li>
-<li>PDF下载：<a href="http://sinastorage.com/ishare.down.sina.com.cn/21056001.pdf?ssig=tioDtwtJO%2B&amp;Expires=1486656458&amp;KID=sina,ishare&amp;ip=&amp;fn=%E7%B2%BE%E9%80%9A%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F.pdf" target="_blank" rel="noopener">精通正则表达式 （第三版）简体中文版By Jeffrey E. F. Friedl </a></li>
-<li><a href="http://www.cnblogs.com/zxin/archive/2013/01/26/2877765.html" target="_blank" rel="noopener">最全的常用正则表达式大全——包括校验数字、字符、一些特殊的需求等等</a></li>
-<li><a href="http://www.cr173.com/html/19109_all.html" target="_blank" rel="noopener">最全的常用正则表达式大全分享</a></li>
-<li><a href="http://www.jianshu.com/p/e7bb97218946" target="_blank" rel="noopener">知道这20个正则表达式，能让你少写1,000行代码</a></li>
-<li><a href="http://sonnewilling.com/blog/2012/01/15/chang-yong-zheng-ze-biao-da-shi-zhuan/" target="_blank" rel="noopener">常用正则表达式(转)</a></li>
-</ul>
-
+            <div class="post-button text-center">
+              <a class="btn" href="/2016/12/12/Expressions - 正则表达式工具/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
           
+          <!--/noindex-->
         
       
     </div>
@@ -3039,7 +2019,7 @@ itms-apps://itunes.apple.com/cn/app/id414478124?mt=8&amp;action=write-review
                 
                   <span class="post-meta-item-text">本文字数：</span>
                 
-                <span title="本文字数">8.5k</span>
+                <span title="本文字数">8.4k</span>
               
 
               
@@ -3074,21 +2054,23 @@ itms-apps://itunes.apple.com/cn/app/id414478124?mt=8&amp;action=write-review
 
       
         
-          
-            <ul>
+          <ul>
 <li>GitHub源码：<a href="https://github.com/gsdios/SDCycleScrollView" target="_blank" rel="noopener">SDCycleScrollView</a></li>
 <li>star：4100+</li>
 </ul>
 <blockquote>
-<pre><code>                            ⭐️⭐️⭐️ 
-</code></pre>
+<pre><code>⭐️⭐️⭐️ 
+</code></pre><p>以下内容来源于官方源码、 README 文档、测试 Demo或个人使用总结 ！</p>
 </blockquote>
-<p>以下内容来源于官方源码、 README 文档、测试 Demo或个人使用总结 ！</p>
-<p>&lt;!-- more --&gt;</p>
-<p>Demo用法：</p>
-<p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br></pre></td><td class="code"><pre><span class="line">//</span><br><span class="line">//  ViewController.m</span><br><span class="line">//  SDCycleScrollView</span><br><span class="line">//</span><br><span class="line">//  Created by aier on 15-3-22.</span><br><span class="line">//  Copyright (c) 2015年 GSD. All rights reserved.</span><br><span class="line">//</span><br><span class="line"></span><br><span class="line">/*</span><br><span class="line"> </span><br><span class="line"> *********************************************************************************</span><br><span class="line"> *</span><br><span class="line"> * 🌟🌟🌟 新建SDCycleScrollView交流QQ群：185534916 🌟🌟🌟</span><br><span class="line"> *</span><br><span class="line"> * 在您使用此自动轮播库的过程中如果出现bug请及时以以下任意一种方式联系我们，我们会及时修复bug并</span><br><span class="line"> * 帮您解决问题。</span><br><span class="line"> * 新浪微博:GSD_iOS</span><br><span class="line"> * Email : gsdios@126.com</span><br><span class="line"> * GitHub: https://github.com/gsdios</span><br><span class="line"> *</span><br><span class="line"> * 另（我的自动布局库SDAutoLayout）：</span><br><span class="line"> *  一行代码搞定自动布局！支持Cell和Tableview高度自适应，Label和ScrollView内容自适应，致力于</span><br><span class="line"> *  做最简单易用的AutoLayout库。</span><br><span class="line"> * 视频教程：http://www.letv.com/ptv/vplay/24038772.html</span><br><span class="line"> * 用法示例：https://github.com/gsdios/SDAutoLayout/blob/master/README.md</span><br><span class="line"> * GitHub：https://github.com/gsdios/SDAutoLayout</span><br><span class="line"> *********************************************************************************</span><br><span class="line"> </span><br><span class="line"> */</span><br><span class="line"></span><br><span class="line">#import &quot;ViewController.h&quot;</span><br><span class="line">#import &quot;SDCycleScrollView.h&quot;</span><br><span class="line"></span><br><span class="line">@interface ViewController () &lt;SDCycleScrollViewDelegate&gt;</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">@implementation ViewController</span><br><span class="line"></span><br><span class="line">- (void)viewDidLoad &#123;</span><br><span class="line">    [super viewDidLoad];</span><br><span class="line">    </span><br><span class="line">    self.view.backgroundColor = [UIColor colorWithRed:0.98 green:0.98 blue:0.98 alpha:0.99];</span><br><span class="line">    UIImageView *backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@&quot;005.jpg&quot;]];</span><br><span class="line">    backgroundView.frame = self.view.bounds;</span><br><span class="line">    [self.view addSubview:backgroundView];</span><br><span class="line">    </span><br><span class="line">    UIScrollView *demoContainerView = [[UIScrollView alloc] initWithFrame:self.view.frame];</span><br><span class="line">    demoContainerView.contentSize = CGSizeMake(self.view.frame.size.width, 1200);</span><br><span class="line">    [self.view addSubview:demoContainerView];</span><br><span class="line">    </span><br><span class="line">    self.title = @&quot;轮播Demo&quot;;</span><br><span class="line"></span><br><span class="line">    </span><br><span class="line">    // 情景一：采用本地图片实现</span><br><span class="line">    NSArray *imageNames = @[@&quot;h1.jpg&quot;,</span><br><span class="line">                            @&quot;h2.jpg&quot;,</span><br><span class="line">                            @&quot;h3.jpg&quot;,</span><br><span class="line">                            @&quot;h4.jpg&quot;,</span><br><span class="line">                            @&quot;h7&quot; // 本地图片请填写全名</span><br><span class="line">                            ];</span><br><span class="line">    </span><br><span class="line">    // 情景二：采用网络图片实现</span><br><span class="line">    NSArray *imagesURLStrings = @[</span><br><span class="line">                           @&quot;https://ss2.baidu.com/-vo3dSag_xI4khGko9WTAnF6hhy/super/whfpf%3D425%2C260%2C50/sign=a4b3d7085dee3d6d2293d48b252b5910/0e2442a7d933c89524cd5cd4d51373f0830200ea.jpg&quot;,</span><br><span class="line">                           @&quot;https://ss0.baidu.com/-Po3dSag_xI4khGko9WTAnF6hhy/super/whfpf%3D425%2C260%2C50/sign=a41eb338dd33c895a62bcb3bb72e47c2/5fdf8db1cb134954a2192ccb524e9258d1094a1e.jpg&quot;,</span><br><span class="line">                           @&quot;http://c.hiphotos.baidu.com/image/w%3D400/sign=c2318ff84334970a4773112fa5c8d1c0/b7fd5266d0160924c1fae5ccd60735fae7cd340d.jpg&quot;</span><br><span class="line">                           ];</span><br><span class="line">    </span><br><span class="line">    // 情景三：图片配文字</span><br><span class="line">    NSArray *titles = @[@&quot;新建交流QQ群：185534916 &quot;,</span><br><span class="line">                        @&quot;感谢您的支持，如果下载的&quot;,</span><br><span class="line">                        @&quot;如果代码在使用过程中出现问题&quot;,</span><br><span class="line">                        @&quot;您可以发邮件到gsdios@126.com&quot;</span><br><span class="line">                        ];</span><br><span class="line">    </span><br><span class="line">    CGFloat w = self.view.bounds.size.width;</span><br><span class="line">    </span><br><span class="line">    </span><br><span class="line"></span><br><span class="line">// &gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; demo轮播图1 &gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;</span><br><span class="line">    </span><br><span class="line">    // 本地加载 --- 创建不带标题的图片轮播器</span><br><span class="line">    CGRect rect1 = CGRectMake(0, 64, w, 180);</span><br><span class="line">    SDCycleScrollView *cycleScrollView = [SDCycleScrollView</span><br><span class="line">                                          cycleScrollViewWithFrame:rect1</span><br><span class="line">                                          shouldInfiniteLoop:YES</span><br><span class="line">                                          imageNamesGroup:imageNames];</span><br><span class="line">    cycleScrollView.delegate = self;</span><br><span class="line">    cycleScrollView.pageControlStyle = SDCycleScrollViewPageContolStyleAnimated;</span><br><span class="line">    [demoContainerView addSubview:cycleScrollView];</span><br><span class="line">    cycleScrollView.scrollDirection = UICollectionViewScrollDirectionVertical;</span><br><span class="line">    //         --- 轮播时间间隔，默认1.0秒，可自定义</span><br><span class="line">    cycleScrollView.autoScrollTimeInterval = 4.0;</span><br><span class="line">    </span><br><span class="line">    </span><br><span class="line">// &gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; demo轮播图2 &gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;</span><br><span class="line">    </span><br><span class="line">    // 网络加载 --- 创建带标题的图片轮播器</span><br><span class="line">    CGRect rect2 = CGRectMake(0, 280, w, 180);</span><br><span class="line">    UIImage *image2 = [UIImage imageNamed:@&quot;placeholder&quot;];</span><br><span class="line">    SDCycleScrollView *cycleScrollView2 = [SDCycleScrollView</span><br><span class="line">                                           cycleScrollViewWithFrame:rect2</span><br><span class="line">                                           delegate:self</span><br><span class="line">                                           placeholderImage:image2];</span><br><span class="line">    </span><br><span class="line">    cycleScrollView2.pageControlAliment = SDCycleScrollViewPageContolAlimentRight;</span><br><span class="line">    cycleScrollView2.titlesGroup = titles;</span><br><span class="line">    cycleScrollView2.currentPageDotColor = [UIColor whiteColor]; // 自定义分页控件小圆标颜色</span><br><span class="line">    [demoContainerView addSubview:cycleScrollView2];</span><br><span class="line">    </span><br><span class="line">    //         --- 模拟加载延迟</span><br><span class="line">    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^&#123;</span><br><span class="line">        cycleScrollView2.imageURLStringsGroup = imagesURLStrings;</span><br><span class="line">    &#125;);</span><br><span class="line">    </span><br><span class="line">    /*</span><br><span class="line">     block监听点击方式</span><br><span class="line">     </span><br><span class="line">     cycleScrollView2.clickItemOperationBlock = ^(NSInteger index) &#123;</span><br><span class="line">        NSLog(@&quot;&gt;&gt;&gt;&gt;&gt;  %ld&quot;, (long)index);</span><br><span class="line">     &#125;;</span><br><span class="line">     </span><br><span class="line">     */</span><br><span class="line">    </span><br><span class="line">    </span><br><span class="line">// &gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; demo轮播图3 &gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;</span><br><span class="line">    </span><br><span class="line">    // 网络加载 --- 创建自定义图片的pageControlDot的图片轮播器</span><br><span class="line">    CGRect rect3 = CGRectMake(0, 500, w, 180);</span><br><span class="line">    UIImage *image3 = [UIImage imageNamed:@&quot;placeholder&quot;];</span><br><span class="line">    SDCycleScrollView *cycleScrollView3 = [SDCycleScrollView</span><br><span class="line">                                           cycleScrollViewWithFrame:rect3</span><br><span class="line">                                           delegate:self</span><br><span class="line">                                           placeholderImage:image3];</span><br><span class="line">    cycleScrollView3.currentPageDotImage = [UIImage imageNamed:@&quot;pageControlCurrentDot&quot;];</span><br><span class="line">    cycleScrollView3.pageDotImage = [UIImage imageNamed:@&quot;pageControlDot&quot;];</span><br><span class="line">    cycleScrollView3.imageURLStringsGroup = imagesURLStrings;</span><br><span class="line">    </span><br><span class="line">    [demoContainerView addSubview:cycleScrollView3];</span><br><span class="line">    </span><br><span class="line">// &gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; demo轮播图4 &gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;</span><br><span class="line">    </span><br><span class="line">    // 网络加载 --- 创建只上下滚动展示文字的轮播器</span><br><span class="line">    // 由于模拟器的渲染问题，如果发现轮播时有一条线不必处理，模拟器放大到100%或者真机调试是不会出现那条线的</span><br><span class="line">    CGRect rect4 = CGRectMake(0, 750, w, 40);</span><br><span class="line">    SDCycleScrollView *cycleScrollView4 = [SDCycleScrollView</span><br><span class="line">                                           cycleScrollViewWithFrame:rect4</span><br><span class="line">                                           delegate:self</span><br><span class="line">                                           placeholderImage:nil];</span><br><span class="line">    cycleScrollView4.scrollDirection = UICollectionViewScrollDirectionVertical;</span><br><span class="line">    cycleScrollView4.onlyDisplayText = YES;</span><br><span class="line">    </span><br><span class="line">    NSMutableArray *titlesArray = [NSMutableArray new];</span><br><span class="line">    [titlesArray addObject:@&quot;纯文字上下滚动轮播&quot;];</span><br><span class="line">    [titlesArray addObject:@&quot;纯文字上下滚动轮播 -- demo轮播图4&quot;];</span><br><span class="line">    [titlesArray addObjectsFromArray:titles];</span><br><span class="line">    cycleScrollView4.titlesGroup = [titlesArray copy];</span><br><span class="line">    </span><br><span class="line">    [demoContainerView addSubview:cycleScrollView4];</span><br><span class="line">    </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)viewWillAppear:(BOOL)animated</span><br><span class="line">&#123;</span><br><span class="line">    [super viewWillAppear:animated];</span><br><span class="line">    </span><br><span class="line">    // 如果你发现你的CycleScrollview会在viewWillAppear时图片卡在中间位置，你可以调用此方法调整图片位置</span><br><span class="line">//    [你的CycleScrollview adjustWhenControllerViewWillAppera];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">#pragma mark - SDCycleScrollViewDelegate</span><br><span class="line"></span><br><span class="line">- (void)cycleScrollView:(SDCycleScrollView *)cycleScrollView didSelectItemAtIndex:(NSInteger)index</span><br><span class="line">&#123;</span><br><span class="line">    NSLog(@&quot;---点击了第%ld张图片&quot;, (long)index);</span><br><span class="line">    </span><br><span class="line">    [self.navigationController pushViewController:[NSClassFromString(@&quot;DemoVCWithXib&quot;) new] animated:YES];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">/*</span><br><span class="line"> </span><br><span class="line">// 滚动到第几张图回调</span><br><span class="line">- (void)cycleScrollView:(SDCycleScrollView *)cycleScrollView didScrollToIndex:(NSInteger)index</span><br><span class="line">&#123;</span><br><span class="line">    NSLog(@&quot;&gt;&gt;&gt;&gt;&gt;&gt; 滚动到第%ld张图&quot;, (long)index);</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"> */</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></table></figure></p>
-
+          <!--noindex-->
           
+            <div class="post-button text-center">
+              <a class="btn" href="/2016/12/09/SDCycleScrollView——无限循环图片、文字轮播器/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          
+          <!--/noindex-->
         
       
     </div>
@@ -3495,74 +2477,24 @@ itms-apps://itunes.apple.com/cn/app/id414478124?mt=8&amp;action=write-review
 
       
         
-          
-            <ul>
+          <ul>
 <li>GitHub源码:<a href="https://github.com/hackiftekhar/IQKeyboardManager" target="_blank" rel="noopener">IQKeyboardManager</a></li>
 <li>star:8000+</li>
 </ul>
 <blockquote>
-<pre><code>                            ⭐️⭐️⭐️ 
-</code></pre>
+<pre><code>⭐️⭐️⭐️ 
+</code></pre><p>以下内容来源于官方源码、 README 文档、测试 Demo或个人使用总结 ！</p>
 </blockquote>
-<p>以下内容来源于官方源码、 README 文档、测试 Demo或个人使用总结 ！</p>
 <p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071153.png" alt="IQKeyboardManager"></p>
-<p>&lt;!-- more --&gt;</p>
-<p>官方描述：通常在开发应用程序时，我们遇到了一个问题，iPhone键盘向上滑动并覆盖 <strong>UITextField / UITextView</strong>。 <strong>IQKeyboardManager</strong> 允许您防止键盘向上滑动就会覆盖 <strong>UITextField / UITextView</strong> 的问题，而不需要您输入任何代码，并且不需要额外的设置。 要使用<strong>IQKeyboardManager</strong>，您只需要向项目中添加源文件。</p>
-<h4>启用/禁用管理键盘和textField之间的距离。</h4>
-<p><strong>默认全局开启</strong>，只要把框架放入项目中就能自动开启，甚至不需要 <figure class="highlight plain"><figcaption><span>导入，厉害了。</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure></p>
-<p>/**
-Enable/disable managing distance between keyboard and textField. Default is YES(Enabled when class loads in <code>+(void)load</code> method).
-*/
-@property(nonatomic, assign, getter = isEnabled) BOOL enable;
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">使用：</span><br></pre></td></tr></table></figure></p>
-<ul>
-<li>
-<p>(BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-// 全局禁用管理键盘和textField之间的距离。
-[IQKeyboardManager sharedManager].enable = NO;
-}
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">#### 添加手势，当键盘被弹出后，点击屏幕背景收起键盘。</span><br><span class="line">**方法一：** 如果不使用该框架实现的方式：</span><br><span class="line">  1. 在 ```viewDidLoad:```方法中添加以下代码：</span><br></pre></td></tr></table></figure></p>
-<p>//添加手势，点击屏幕其他区域收起键盘的操作
-UITapGestureRecognizer *gesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hidenkeyboard)];
-gesture.numberOfTapsRequired = 1;
-[self.view addGestureRecognizer:gesture];
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">2. 然后添加需要实现的```hidenkeyboard```方法：</span><br></pre></td></tr></table></figure></p>
-<p>//隐藏键盘的方法</p>
-<ul>
-<li>(void)hidenkeyboard {
-//设置所有需要用到键盘的输入文本框放弃第一响应者状态
-[self.view endEditing:YES];</li>
-</ul>
-<p><s>[self.account resignFirstResponder]; //用户名输入框</s>
-<s>[self.password resignFirstResponder];//密码输入框</s>
-}
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">**方法二：** 使用框架的实现方式，一行代码解决</span><br><span class="line">```[IQKeyboardManager sharedManager].shouldResignOnTouchOutside = YES;</span><br></pre></td></tr></table></figure></p>
-</li>
-</ul>
-<h4>隐藏键盘上的工具条</h4>
-<ul>
-<li>全局设置</li>
-</ul>
-<p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[IQKeyboardManager sharedManager].enableAutoToolbar = NO;</span><br></pre></td></tr></table></figure></p>
-<ul>
-<li>当某个特定输入框不需要键盘上的工具条时：</li>
-</ul>
-<p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">textField.inputAccessoryView = [[UIView alloc] init];</span><br></pre></td></tr></table></figure></p>
-<ul>
-<li>在键盘上方显示工具条，不显示文本输入框占位符文字</li>
-</ul>
-<p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[IQKeyboardManager sharedManager].enableAutoToolbar = YES;</span><br><span class="line">[IQKeyboardManager sharedManager].shouldShowTextFieldPlaceholder = NO;</span><br></pre></td></tr></table></figure></p>
-<ul>
-<li>设置某个视图上所有的输入框不需要工具条</li>
-</ul>
-<p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">- (void)viewWillAppear:(BOOL)animated &#123;</span><br><span class="line">    [super viewWillAppear:animated];</span><br><span class="line">    [[IQKeyboardManager sharedManager] setEnableAutoToolbar:NO];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)viewWillDisappear:(BOOL)animated &#123;</span><br><span class="line">    [super viewWillDisappear:animated];</span><br><span class="line">    [[IQKeyboardManager sharedManager] setEnableAutoToolbar:YES];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h3>参考</h3>
-<ul>
-<li><a href="http://www.jianshu.com/p/01c0682003a9" target="_blank" rel="noopener">iOS开发第三方库一 IQKeyboardManager @豆志昂扬</a></li>
-<li><a href="https://github.com/hackiftekhar/IQKeyboardManager/blob/master/PROPERTIES%20%26%20FUNCTIONS.md" target="_blank" rel="noopener">Properties and functions usage</a></li>
-</ul>
-
+          <!--noindex-->
           
+            <div class="post-button text-center">
+              <a class="btn" href="/2016/12/06/IQKeyboardManager——防止弹出的键盘遮住输入文本框/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          
+          <!--/noindex-->
         
       
     </div>
@@ -3887,7 +2819,7 @@ gesture.numberOfTapsRequired = 1;
       <i class="fa fa-area-chart"></i>
     </span>
     
-    <span title="站点总字数">2.3m</span>
+    <span title="站点总字数">2.2m</span>
   
 
   
@@ -3896,7 +2828,7 @@ gesture.numberOfTapsRequired = 1;
       <i class="fa fa-coffee"></i>
     </span>
     
-    <span title="站点阅读时长">34:07</span>
+    <span title="站点阅读时长">33:50</span>
   
 </div>
 
