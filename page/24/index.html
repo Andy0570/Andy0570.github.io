@@ -546,7 +546,7 @@
                 
                   <span class="post-meta-item-text">本文字数：</span>
                 
-                <span title="本文字数">5.3k</span>
+                <span title="本文字数">5.4k</span>
               
 
               
@@ -581,20 +581,45 @@
 
       
         
-          <blockquote>
+          
+            <blockquote>
 <p>本文简单介绍两个使用示例及代码。</p>
 </blockquote>
-<h3 id="示例一"><a href="#示例一" class="headerlink" title="示例一"></a>示例一</h3><p><strong>代码方式</strong> 创建 <strong>UITabBarController</strong> ,在 <strong>UITabBarController</strong> 控件上放两个视图控制器。</p>
-<h3 id="Demo"><a href="#Demo" class="headerlink" title="Demo:"></a>Demo:</h3><p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071610.gif" alt="image"></p>
-          <!--noindex-->
+<h3>示例一</h3>
+<p><strong>代码方式</strong> 创建 <strong>UITabBarController</strong> ,在 <strong>UITabBarController</strong> 控件上放两个视图控制器。</p>
+<h3>Demo:</h3>
+<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071610.gif" alt="image"></p>
+<p>&lt;!-- more --&gt;</p>
+<h3>文档组织结构</h3>
+<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071611.jpg" alt="image"></p>
+<h3>实现步骤</h3>
+<ul>
+<li>
+<p>1️⃣ 新建两个父类为 <strong>UIViewController</strong> 的带xib的视图控制器，<strong>MainViewController</strong> 和 <strong>LoginViewController</strong></p>
+</li>
+<li>
+<p>2️⃣ <strong>AppDelegate.h</strong>:</p>
+</li>
+</ul>
+<p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">#import &lt;UIKit/UIKit.h&gt;</span><br><span class="line">// 导入创建的视图控制器头文件</span><br><span class="line">#import &quot;MainViewController.h&quot;</span><br><span class="line">#import &quot;LoginViewController.h&quot;</span><br><span class="line"></span><br><span class="line">@interface AppDelegate : UIResponder &lt;UIApplicationDelegate&gt;</span><br><span class="line"></span><br><span class="line">@property (strong, nonatomic) UIWindow *window;</span><br><span class="line"></span><br><span class="line">// 添加选项卡控制器属性，用来展示组合并展示创建的两个视图控制器</span><br><span class="line">@property (strong, nonatomic) UITabBarController *tabBarController;</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></table></figure></p>
+<ul>
+<li>3️⃣ <strong>AppDelegate.m</strong></li>
+</ul>
+<p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions &#123;</span><br><span class="line">    </span><br><span class="line">    // 创建 Window</span><br><span class="line">    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];</span><br><span class="line">    </span><br><span class="line">    // 实例化视图控制器对象</span><br><span class="line">    UIViewController *mainViewController = [[MainViewController alloc] initWithNibName:@&quot;MainViewController&quot; bundle:nil];</span><br><span class="line">    UIViewController *loginViewController = [[LoginViewController alloc] initWithNibName:@&quot;LoginViewController&quot; bundle:nil];</span><br><span class="line">    </span><br><span class="line">    // 初始化选项卡视图控制器</span><br><span class="line">    self.tabBarController = [[UITabBarController alloc] init];</span><br><span class="line">    </span><br><span class="line">    // 将两个视图控制器以数组的方法指定给选项卡视图控制器</span><br><span class="line">    NSArray *viewControllerArrays = [NSArray arrayWithObjects:mainViewController,loginViewController, nil];</span><br><span class="line">    self.tabBarController.viewControllers = viewControllerArrays;</span><br><span class="line">    </span><br><span class="line">    // 设置选项卡视图控制器为当前窗口的根视图控制器</span><br><span class="line">    self.window.rootViewController  = _tabBarController;</span><br><span class="line">    </span><br><span class="line">    self.window.backgroundColor = [UIColor whiteColor];</span><br><span class="line">    // 设置 Window 为主窗口并显示</span><br><span class="line">    [self.window makeKeyAndVisible];</span><br><span class="line">    </span><br><span class="line">    return YES;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<ul>
+<li>4️⃣ 设置每个视图控制器标签的标题和图标</li>
+</ul>
+<p>MainViewController.m</p>
+<p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">  - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil &#123;</span><br><span class="line">    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];</span><br><span class="line">    if (self) &#123;</span><br><span class="line">        self.title = @&quot;主页&quot;;</span><br><span class="line">        self.tabBarItem.image = [UIImage imageNamed:@&quot;1&quot;];</span><br><span class="line">        [self.view setBackgroundColor:[UIColor whiteColor]];</span><br><span class="line">    &#125;</span><br><span class="line">    return self;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>LoginViewController.m</p>
+<p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">  - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil &#123;</span><br><span class="line">    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];</span><br><span class="line">    if (self) &#123;</span><br><span class="line">        self.title = @&quot;登录&quot;;</span><br><span class="line">        self.tabBarItem.image = [UIImage imageNamed:@&quot;4&quot;];</span><br><span class="line">        [self.view setBackgroundColor:backgroundColor];</span><br><span class="line">    &#125;</span><br><span class="line">    return self;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<ul>
+<li>完成。</li>
+</ul>
+<h3>示例二：自定义  UITabBarController 子类对象：</h3>
+<p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line">- (instancetype)init &#123;</span><br><span class="line">    self = [super init];</span><br><span class="line">    if (self) &#123;</span><br><span class="line">        // 设置背景颜色和大小</span><br><span class="line">        self.view.backgroundColor = COLOR_BACKGROUND;</span><br><span class="line">        self.view.frame = CGRectMake(0, 0, kScreenWidth, kScreenHeight);</span><br><span class="line">        </span><br><span class="line">        [self setViewControllers];</span><br><span class="line">    &#125;</span><br><span class="line">    return self;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">/*</span><br><span class="line"> * 视图堆栈结构：</span><br><span class="line"> * UITabBarController - UINavigationController - UIViewController （首页）</span><br><span class="line"> *                    - UINavigationController - UIViewController （资讯）</span><br><span class="line"> *                    - UINavigationController - UIViewController （我的）</span><br><span class="line"> *</span><br><span class="line"> */</span><br><span class="line">- (void)setViewControllers &#123;</span><br><span class="line">    // 首页 TabBar</span><br><span class="line">    UIViewController *mainViewController = [self renderTabBarItem:[[HQLMainViewController alloc] init] title:@&quot;首页&quot; imageNamed:@&quot;tab_home_normal&quot; selectedImageNamed:@&quot;tab_home_selected&quot;];</span><br><span class="line">    HQLNavigationController *mainNavigationController = [[HQLNavigationController alloc] initWithRootViewController:mainViewController];</span><br><span class="line">    </span><br><span class="line">    // 资讯 TabBar</span><br><span class="line">    UIViewController *secondViewController = [self renderTabBarItem:[[HQLSecondViewController alloc] init] title:@&quot;资讯&quot; imageNamed:@&quot;tab_news_normal&quot; selectedImageNamed:@&quot;tab_news_selected&quot;];</span><br><span class="line">    HQLNavigationController *secondNavigationController = [[HQLNavigationController alloc] initWithRootViewController:secondViewController];</span><br><span class="line">    </span><br><span class="line">    // 我的 Tabbar</span><br><span class="line">    UIViewController *thirdViewController = [self renderTabBarItem:[[HQLThirdViewController alloc] initWithStyle:UITableViewStyleGrouped] title:@&quot;我的&quot; imageNamed:@&quot;tab_mine_normal&quot; selectedImageNamed:@&quot;tab_mine_selected&quot;];</span><br><span class="line">    HQLNavigationController *thirdNavigationController = [[HQLNavigationController alloc] initWithRootViewController:thirdViewController];</span><br><span class="line">    </span><br><span class="line">    self.viewControllers = @[mainNavigationController,secondNavigationController,thirdNavigationController];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (UIViewController *)renderTabBarItem:(UIViewController *)viewController</span><br><span class="line">                                 title:(NSString *)title</span><br><span class="line">                            imageNamed:(NSString *)normalImgName</span><br><span class="line">                    selectedImageNamed:(NSString *)selectedImgName &#123;</span><br><span class="line">    </span><br><span class="line">    viewController.title = title;</span><br><span class="line">    </span><br><span class="line">    UIImage *normalImage = [[UIImage imageNamed:normalImgName] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];</span><br><span class="line">    UIImage *selectedImage = [[UIImage imageNamed:selectedImgName] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];</span><br><span class="line">    viewController.tabBarItem = [[UITabBarItem alloc] initWithTitle:title image:normalImage selectedImage:selectedImage];</span><br><span class="line">    [viewController.tabBarItem setTitleTextAttributes:@&#123;NSForegroundColorAttributeName: COLOR_THEME&#125;</span><br><span class="line">                                             forState:UIControlStateSelected];</span><br><span class="line">    return viewController;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+
           
-            <div class="post-button text-center">
-              <a class="btn" href="/2017/03/15/UITabBarController（二）/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          
-          <!--/noindex-->
         
       
     </div>
@@ -792,7 +817,9 @@
 
       
         
-          <h3 id="GitHub-第三方框架"><a href="#GitHub-第三方框架" class="headerlink" title="GitHub 第三方框架"></a>GitHub 第三方框架</h3><p>做类似于闲鱼的TabBar，可参考的几个框架：</p>
+          
+            <h3>GitHub 第三方框架</h3>
+<p>做类似于闲鱼的TabBar，可参考的几个框架：</p>
 <ul>
 <li><a href="https://github.com/ChenYilong/CYLTabBarController" target="_blank" rel="noopener">CYLTabBarController【低耦合集成 TabBarController】</a></li>
 <li><a href="https://github.com/NoCodeNoWife/LLRiseTabBar-iOS" target="_blank" rel="noopener">LLRiseTabBar-iOS</a></li>
@@ -800,15 +827,70 @@
 <li><a href="https://github.com/axclogo/AxcAE_TabBar" target="_blank" rel="noopener">AxcAE_TabBar</a></li>
 <li><a href="https://github.com/Ramotion/animated-tab-bar" target="_blank" rel="noopener">animated-tab-bar</a> Swift</li>
 </ul>
-          <!--noindex-->
+<p>&lt;!-- more --&gt;</p>
+<h3>UITabBarController 原生使用方法</h3>
+<p><strong>UITabBarController</strong> 对象可以保存一组视图控制器。此外，<strong>UITabBarController</strong> 对象还会在屏幕底部显示一个标签栏（tab bar），标签栏会有多个标签项（tab item）,分别对应 <strong>UITabBarController</strong> 对象所保存的每一个视图控制器。单击某个标签项，<strong>UITabBarController</strong> 对象就会显示该标签项所对应的视图控制器的视图。</p>
+<p>Demo：
+<img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072444.gif" alt="带标题和图标的标签项"></p>
+<h2>创建UITabBarController对象</h2>
+<p>在AppDelegate.m文件中创建<strong>UITabBarController</strong>对象：</p>
+<p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">// 保存一组视图控制器，使应用能够在两个视图控制器的对象之间自由的切换    </span><br><span class="line">HQLHyponsisViewController *hvc = [[HQLHyponsisViewController alloc]init];</span><br><span class="line">HQLReminderViewController *rvc = [[HQLReminderViewController alloc] init];</span><br><span class="line"></span><br><span class="line">UITabBarController *tabBarController =[[UITabBarController alloc]init];</span><br><span class="line">// 将两个创建的视图控制器加入该对象</span><br><span class="line">tabBarController.viewControllers = @[hvc,rvc];</span><br><span class="line">self.window.rootViewController =tabBarController;</span><br></pre></td></tr></table></figure></p>
+<h2>设置标签项</h2>
+<p>分别在每个ViewControl中的.m文件中覆写视图控制器的指定初始化方法</p>
+<h3>左边的视图控制器：</h3>
+<p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">    - (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil &#123;</span><br><span class="line"></span><br><span class="line">    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];</span><br><span class="line">    if (self) &#123;</span><br><span class="line">        //设置标签页的标题</span><br><span class="line">        self.tabBarItem.title = @&quot;Hypontize&quot;;</span><br><span class="line">        </span><br><span class="line">        //从图像文件创建一个UIImage对象</span><br><span class="line">        //在 Retina 显示屏上会加载 Hypno@2X.png 而不是 Hypno.png</span><br><span class="line">        UIImage *i =[UIImage imageNamed:@&quot;Hypno.png&quot;];</span><br><span class="line">        </span><br><span class="line">        //将UIImage对象赋给标签项的image属性</span><br><span class="line">        self.tabBarItem.image = i;</span><br><span class="line">    &#125;</span><br><span class="line">    return self;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>##右边的视图控制器</p>
+<p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">    - (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil &#123;</span><br><span class="line">    </span><br><span class="line">    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];</span><br><span class="line">    if (self) &#123;</span><br><span class="line">        //获取tabBarItem属性所是向的UITabBarItem对象</span><br><span class="line">        UITabBarItem *tbi = self.tabBarItem;</span><br><span class="line">        //设置UITabBarItem对象的标题</span><br><span class="line">        tbi.title = @&quot;Reminder&quot;;</span><br><span class="line">        </span><br><span class="line">        //从图像文件创建一个UIImage对象</span><br><span class="line">        UIImage *i =[UIImage imageNamed:@&quot;Time.png&quot;];</span><br><span class="line">        //将UIImage对象赋给标签项的image属性</span><br><span class="line">        tbi.image = i;</span><br><span class="line">    &#125;</span><br><span class="line">    return self;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2>另一种设置方式是创建一个TabBarController子类对象，所有子视图的标签项在该.m文件中设置。</h2>
+<blockquote>
+<p>💡TabBarController 和各 ViewController 之间可以通过 StoryBoard 的方式连接。</p>
+</blockquote>
+<p>Demo：</p>
+<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072444-1.gif" alt="Demo演示"></p>
+<p>在tabBarController.m文件中设置如下：
+- (void)viewDidLoad {
+[super viewDidLoad];</p>
+<pre><code>self.tabBar.backgroundColor = [UIColor whiteColor];
+
+//设置UITabBarItem的标题和图片
+//首页
+UITabBarItem *item1 = self.tabBar.items [0];
+item1.title = @&quot;首页&quot;;
+item1.image = [[UIImage imageNamed:@&quot;guide_home_nm&quot;] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+item1.selectedImage = [[UIImage imageNamed:@&quot;guide_home_on&quot;] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+
+//资讯
+UITabBarItem *item2 = self.tabBar.items [1];
+item2.title = @&quot;资讯&quot;;
+item2.image = [[UIImage imageNamed:@&quot;guide_information_nm&quot;] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+item2.selectedImage = [[UIImage imageNamed:@&quot;guide_information_on&quot;] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+
+//我的
+UITabBarItem *item3 = self.tabBar.items [2];
+item3.title = @&quot;我的&quot;;
+item3.image = [[UIImage imageNamed:@&quot;guide_personal_nm&quot;] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+item3.selectedImage = [[UIImage imageNamed:@&quot;guide_personal_on&quot;] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+
+//标签栏背景色
+[[UITabBar appearance] setBarTintColor:[UIColor whiteColor]];
+
+//字体色
+//正常字体色
+[[UITabBarItem appearance] setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:[UIColor grayColor],NSForegroundColorAttributeName, nil] forState:UIControlStateNormal];
+//被选中时的字体色
+[[UITabBarItem appearance] setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:[UIColor orangeColor],NSForegroundColorAttributeName, nil] forState:UIControlStateSelected];   
+}
+</code></pre>
+<h2>视图控制器的设置，以及 TabBar 标签的设置全部采用代码方式设置在同一个 TabBarController 子类类中：</h2>
+<p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line">- (instancetype)init &#123;</span><br><span class="line">    self = [super init];</span><br><span class="line"></span><br><span class="line">    if (self) &#123;</span><br><span class="line">        // 设置背景颜色和大小</span><br><span class="line">        self.view.backgroundColor = COLOR_RGB(245, 245, 245);</span><br><span class="line">        self.view.frame = CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);</span><br><span class="line"></span><br><span class="line">        [self initControllers];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    return self;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)initControllers &#123;</span><br><span class="line">    // 电影tabbar</span><br><span class="line">    TPPViewController *filmViewController = [self renderTabBarItem:[[TPPFilmViewController alloc] init] title:@&quot;电影&quot; imageNamed:@&quot;film_normal.png&quot; selectedImageNamed:@&quot;film_selected.png&quot;];</span><br><span class="line">    TPPNavigationController *filmNavigationController = [[TPPNavigationController alloc] initWithRootViewController:filmViewController];</span><br><span class="line"></span><br><span class="line">    // 影院tabbar</span><br><span class="line">    TPPViewController *cinemaViewController = [self renderTabBarItem:[[TPPCinemaViewController alloc] init] title:@&quot;影院&quot; imageNamed:@&quot;cinema_normal.png&quot; selectedImageNamed:@&quot;cinema_selected.png&quot;];</span><br><span class="line">    TPPNavigationController *cinemaNavigationController = [[TPPNavigationController alloc] initWithRootViewController:cinemaViewController];</span><br><span class="line"></span><br><span class="line">    // 演出tabbar</span><br><span class="line">    TPPViewController *damaiViewController = [self renderTabBarItem:[[TPPDamaiViewController alloc] init] title:@&quot;演出&quot; imageNamed:@&quot;damai_normal.png&quot; selectedImageNamed:@&quot;damai_selected.png&quot;];</span><br><span class="line">    TPPNavigationController *damaiNavigationController = [[TPPNavigationController alloc] initWithRootViewController:damaiViewController];</span><br><span class="line"></span><br><span class="line">    // 发现tabbar</span><br><span class="line">    TPPViewController *discoveryViewController = [self renderTabBarItem:[[TPPDiscoveryViewController alloc] init] title:@&quot;发现&quot; imageNamed:@&quot;discovery_normal.png&quot; selectedImageNamed:@&quot;discovery_selected.png&quot;];</span><br><span class="line">    TPPNavigationController *discoveryNavigationController = [[TPPNavigationController alloc] initWithRootViewController:discoveryViewController];</span><br><span class="line"></span><br><span class="line">    // 我的tabbar</span><br><span class="line">    TPPViewController *mineViewController = [self renderTabBarItem:[[TPPMineViewController alloc] init] title:@&quot;我的&quot; imageNamed:@&quot;mine_normal.png&quot; selectedImageNamed:@&quot;mine_selected.png&quot;];</span><br><span class="line">    TPPNavigationController *mineNavigationController = [[TPPNavigationController alloc] initWithRootViewController:mineViewController];</span><br><span class="line"></span><br><span class="line">    self.viewControllers = @[filmNavigationController, cinemaNavigationController, damaiNavigationController, discoveryNavigationController, mineNavigationController];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">#pragma mark - Public</span><br><span class="line"></span><br><span class="line">- (TPPViewController *)renderTabBarItem:(TPPViewController *)viewController</span><br><span class="line">                               title:(NSString *)title</span><br><span class="line">                          imageNamed:(NSString *)imageNamed</span><br><span class="line">                  selectedImageNamed:(NSString *)selectedImageNamed &#123;</span><br><span class="line">    // 📝 设置导航栏的标题为 TabBar 标题</span><br><span class="line">    viewController.title = title;</span><br><span class="line">    // 📝 设置导航栏 TabBar</span><br><span class="line">    viewController.tabBarItem = [[UITabBarItem alloc] initWithTitle:title image:[UIImage imageNamed:imageNamed] selectedImage:[[UIImage imageNamed:selectedImageNamed] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]];</span><br><span class="line">    // 📝 设置导航栏被选中时的字体</span><br><span class="line">    [viewController.tabBarItem setTitleTextAttributes:@&#123;NSForegroundColorAttributeName: COLOR_RGB(255, 81, 103)&#125; forState:UIControlStateSelected];</span><br><span class="line"></span><br><span class="line">    return viewController;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3>去掉TabBar上部的黑色线条</h3>
+<p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">// 去掉TabBar上部的黑色线条,设置TabBar透明背景</span><br><span class="line">[[UITabBar appearance] setBackgroundImage:[UIImage imageWithColor:[UIColor clearColor]]];</span><br><span class="line">[[UITabBar appearance] setShadowImage:[UIImage new]];</span><br><span class="line"></span><br><span class="line">UIView *topLineView = [[UIView alloc] init];</span><br><span class="line">topLineView.frame = CGRectMake(0, 0, CGRectGetWidth(self.tabBar.bounds), 1);</span><br><span class="line">topLineView.backgroundColor = [UIColor colorWithWhite:0.966 alpha:1.000];</span><br><span class="line">[self.tabBar addSubview:topLineView];</span><br></pre></td></tr></table></figure></p>
+<h3>参考</h3>
+<ul>
+<li><a href="http://www.cnblogs.com/wendingding/p/3775488.html" target="_blank" rel="noopener">OS开发UI篇—UITabBarController简单介绍 @文顶顶</a></li>
+</ul>
+
           
-            <div class="post-button text-center">
-              <a class="btn" href="/2017/03/15/UITabBarController（一）/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          
-          <!--/noindex-->
         
       
     </div>
@@ -971,7 +1053,7 @@
                 
                   <span class="post-meta-item-text">本文字数：</span>
                 
-                <span title="本文字数">3.2k</span>
+                <span title="本文字数">3.3k</span>
               
 
               
@@ -1006,23 +1088,46 @@
 
       
         
-          <ul>
+          
+            <ul>
 <li>GitHub地址：<a href="https://github.com/tingxins/TXScrollLabelView" target="_blank" rel="noopener">TXScrollLabelView</a></li>
 <li>star: 400+</li>
 </ul>
 <blockquote>
-<pre><code>⭐️⭐️⭐️ 
-</code></pre><p>以下内容来源于官方源码、 README 文档、测试 Demo或个人使用总结 ！</p>
+<pre><code>                            ⭐️⭐️⭐️ 
+</code></pre>
 </blockquote>
-          <!--noindex-->
+<p>以下内容来源于官方源码、 README 文档、测试 Demo或个人使用总结 ！</p>
+<p>&lt;!-- more --&gt;</p>
+<h3>用法</h3>
+<p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">/** Step1: 滚动文字 */</span><br><span class="line">NSString *scrollTitle = @&quot;xxxxxx&quot;;</span><br><span class="line"></span><br><span class="line">/** Step2: 创建 ScrollLabelView */</span><br><span class="line">TXScrollLabelView *scrollLabelView = [TXScrollLabelView scrollWithTitle:scrollTitle type:TXScrollLabelViewTypeFlipNoRepeat velocity:velocity options:UIViewAnimationOptionCurveEaseInOut];</span><br><span class="line"></span><br><span class="line">/** Step3: 设置代理进行回调(Optional) */</span><br><span class="line">scrollLabelView.scrollLabelViewDelegate = self;</span><br><span class="line"></span><br><span class="line">/** Step4: 布局(Required) */</span><br><span class="line">scrollLabelView.frame = CGRectMake(50, 100, 300, 30);</span><br><span class="line">[self.view addSubview:scrollLabelView];</span><br><span class="line"></span><br><span class="line">/** Step5: 开始滚动(Start scrolling!) */</span><br><span class="line">[scrollLabelView beginScrolling];</span><br></pre></td></tr></table></figure></p>
+<p>Demo:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">    // 滚动Label</span><br><span class="line">    // step1:获取滚动内容</span><br><span class="line">    NSString *scrollTitle = @&quot;恭喜 XXX 网上商城隆重上线！&quot;;</span><br><span class="line">    // step2:创建scrollLabelView对象</span><br><span class="line">    TXScrollLabelView *scrollLabelView = [TXScrollLabelView scrollWithTitle:scrollTitle type:TXScrollLabelViewTypeFlipRepeat velocity:3 options:UIViewAnimationOptionTransitionNone];</span><br><span class="line">    scrollLabelView.backgroundColor = [UIColor clearColor];</span><br><span class="line">    scrollLabelView.scrollTitleColor = [UIColor blackColor];</span><br><span class="line">    // step3:设置代理进行回调（Optional）</span><br><span class="line">//    scrollLabelView.scrollLabelViewDelegate = self;</span><br><span class="line">    // step4:布局</span><br><span class="line">    scrollLabelView.frame = CGRectMake(31, 31, 240, 21);</span><br><span class="line">    [self.view addSubview:scrollLabelView];</span><br><span class="line">//    [scrollLabelView mas_makeConstraints:^(MASConstraintMaker *make) &#123;</span><br><span class="line">//        make.top.equalTo(speakerImage.mas_top);</span><br><span class="line">//        make.left.equalTo(speakerImage.mas_right).with.offset(0);</span><br><span class="line">//        make.size.mas_equalTo(CGSizeMake(240, 21));</span><br><span class="line">//    &#125;];</span><br><span class="line">    // step5:开始滚动</span><br><span class="line">    [scrollLabelView beginScrolling];</span><br></pre></td></tr></table></figure></p>
+<h3>其他</h3>
+<ul>
+<li>
+<p><a href="https://github.com/dsxNiubility/Wonderful" target="_blank" rel="noopener">Wonderful</a><br>
+这个框架里也有跑马灯的两个类，提取出来使用对于整个APP来说相比于这个框架更轻量简介些。</p>
+</li>
+<li>
+<p>使用：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">CGRect rect = CGRectMake(31,31, 240, 21);</span><br><span class="line">SXHeadLine *headline = [[SXHeadLine alloc] initWithFrame:rect];</span><br><span class="line">headline.messageArray = @[@&quot;恭喜 XXX 网上商城隆重上线！！&quot;];</span><br><span class="line">[headline setScrollDuration:0.5 stayDuration:3.0];</span><br><span class="line">[headline changeTapMarqueeAction:^(NSInteger index) &#123;</span><br><span class="line">        // 处理点击事件</span><br><span class="line">    &#125;];</span><br><span class="line">[headline start];</span><br><span class="line">[self.view addSubview:headline];</span><br></pre></td></tr></table></figure></p>
+</li>
+<li>
+<p><a href="https://github.com/gsdios/SDCycleScrollView" target="_blank" rel="noopener">SDCycleScrollView</a>
+⚠️最近又发现，无限轮播器的这个框架也有类似跑马灯的效果，它是在循环的时候不显示图片，只循环显示文字。</p>
+</li>
+<li>
+<p>使用：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">// &gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; demo轮播图4 &gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;</span><br><span class="line">    </span><br><span class="line">    // 网络加载 --- 创建只上下滚动展示文字的轮播器</span><br><span class="line">    // 由于模拟器的渲染问题，如果发现轮播时有一条线不必处理，模拟器放大到100%或者真机调试是不会出现那条线的</span><br><span class="line">    SDCycleScrollView *cycleScrollView4 = [SDCycleScrollView</span><br><span class="line">                                           cycleScrollViewWithFrame:CGRectMake(0, 750, w, 40)</span><br><span class="line">                                           delegate:self</span><br><span class="line">                                           placeholderImage:nil];</span><br><span class="line">    cycleScrollView4.scrollDirection = UICollectionViewScrollDirectionVertical;</span><br><span class="line">    cycleScrollView4.onlyDisplayText = YES;</span><br><span class="line">    </span><br><span class="line">    NSMutableArray *titlesArray = [NSMutableArray new];</span><br><span class="line">    [titlesArray addObject:@&quot;纯文字上下滚动轮播&quot;];</span><br><span class="line">    [titlesArray addObject:@&quot;纯文字上下滚动轮播 -- demo轮播图4&quot;];</span><br><span class="line">    [titlesArray addObjectsFromArray:titles];</span><br><span class="line">    cycleScrollView4.titlesGroup = [titlesArray copy];</span><br><span class="line">    </span><br><span class="line">    [demoContainerView addSubview:cycleScrollView4];</span><br></pre></td></tr></table></figure></p>
+</li>
+</ul>
+<h3>参考</h3>
+<ul>
+<li><a href="http://www.jianshu.com/p/8f1f1b1ee814" target="_blank" rel="noopener">iOS 跑马灯之 TXScrollLabelView</a></li>
+</ul>
+
           
-            <div class="post-button text-center">
-              <a class="btn" href="/2017/03/13/TXScrollLabelView——类似跑马灯的滚动视图框架/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          
-          <!--/noindex-->
         
       
     </div>
@@ -1220,7 +1325,8 @@
 
       
         
-          <ul>
+          
+            <ul>
 <li>GitHub地址：<a href="https://github.com/bennyguitar/Colours" target="_blank" rel="noopener">Colours</a></li>
 <li>star: 2800+</li>
 </ul>
@@ -1228,15 +1334,159 @@
 <p><strong>Colours</strong> 颜色库包含一套漂亮的预定义颜色集和一系列颜色方法，可以简化颜色搭配相关的开发工作，使你的 iOS / OSX 开发更轻松。</p>
 </blockquote>
 <p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072001.png" alt></p>
-          <!--noindex-->
+<p>&lt;!-- more --&gt;</p>
+<blockquote>
+<p>下文是我对官方 <strong>READ.ME</strong> 文档的翻译。</p>
+</blockquote>
+<h2>安装</h2>
+<p>把 <strong>Colours.h</strong> 和 <strong>Colours.m</strong> 文件拖进你的工程里,在需要的地方引入头文件即可:</p>
+<p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#import &quot;Colours.h&quot;</span><br></pre></td></tr></table></figure></p>
+<p><strong>CocoaPods</strong></p>
+<p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pod &apos;Colours&apos;</span><br></pre></td></tr></table></figure></p>
+<p>或者 <strong>Swift</strong> 版本的：</p>
+<p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pod &apos;Colours/Swift&apos;</span><br></pre></td></tr></table></figure></p>
+<p><strong>NSColor</strong></p>
+<p>Colours 支持 <strong>NSColor</strong> ,只需要将 <strong>AppKit</strong> 框架导入到项目中（对于新的应用程序是这样的），然后你就可以使用了。<strong>UIColor</strong> 和 <strong>NSColor</strong> 的方法是一样的。<strong>NSColor</strong>是用于OS X 桌面应用开发，<strong>UIColor</strong> 是用于iOS 手机应用开发。</p>
+<p><strong>Swift</strong></p>
+<p>Colours 的 Swift 版本现在基本包含了 Objective-C 版本的一切除了以下内容：</p>
+<ul>
+<li>颜色组件 <strong>Dcitionary</strong>（使用 tuples 代替）</li>
+<li>排序/比较颜色</li>
+<li>颜色值之间的距离</li>
+</ul>
+<p>并且，tuples 也用来代替了颜色组件的字典和数组。因此，你将使用<code>someRedColor.rgba()</code>方法代替<code>[someRedColor rgbaArray]</code>方法，该方法给你了包含四个 <code>CFFloats</code>类型的元值，例如<code>(1.0, 0.0, 0.0, 1.0)</code>。想要只得到一个红色值，你应该这样写<code>someRedColor.rgba().r</code>。</p>
+<h2>目录</h2>
+<ul>
+<li>调色板</li>
+<li>使用预定义的颜色</li>
+<li>颜色辅助方法
+<ul>
+<li>十六进制字符串</li>
+<li>RGBA</li>
+<li>HSBA</li>
+<li>CIELAB</li>
+<li>CMYK</li>
+<li>颜色组件</li>
+<li>调暗／调亮组件</li>
+<li>黑色或白色对比色</li>
+<li>互补颜色</li>
+</ul>
+</li>
+<li>两个颜色值之间的距离</li>
+<li>生成颜色方案</li>
+<li>Android</li>
+<li>Xamarin</li>
+<li>Reap What I Sow!</li>
+</ul>
+<h2>调色板</h2>
+<p>一系列预定义颜色。</p>
+<p>参考：<a href="https://github.com/bennyguitar/Colours" target="_blank" rel="noopener">Colours</a></p>
+<h2>使用预定义的颜色</h2>
+<p>Colours 被设置成和使用 Apple 预设的系统颜色方法一样使用。例如，想要得到鲜红色，输入<code>[UIColor redColor]</code>.无需太多变化，虽然没有使用<code>colorWithRed:green:blue:alpha:</code>方法并且定制出该颜色来。于是，我自由地创建了100种颜色，使用的方式与Apple在iOS中使用的相同。所以，想要替代早期的红色颜色例子，只需要替换成上面的巨型调色板中的一种颜色，就像<code>[UIColor indigoColor]</code>。</p>
+<h2>颜色辅助方法</h2>
+<p>除了不遗余力地给你一大堆颜色的列表，这个类别还给你提供了一些允许不同颜色操作和转换的方法。 以下是你如何使用这些的方法：</p>
+<h4>十六进制字符串（HexString）</h4>
+<p>你可以使用以下方法将常用的十六进制颜色字符串（啊哈，谢谢CSS）转换为 <strong>UIColor</strong>，反之亦然。</p>
+<p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">UIColor *newColor = [UIColor colorFromHexString:@&quot;#f587e4&quot;];</span><br><span class="line">NSString *hexString = [newColor hexString];</span><br></pre></td></tr></table></figure></p>
+<h4>RGBA</h4>
+<p><strong>UIColor 的RGBA数组</strong></p>
+<p>color - &gt; array 方法创建一个表示RGBA颜色值的4个 <strong>NSNumbers</strong> 的数组。 这些不在0-255范围内，而是在0-1范围内归一化。 所以如果你的R是230，那么它将在数组中表示为0.902。</p>
+<p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">NSArray *colorArray = [[UIColor seafoamColor] rgbaArray];</span><br><span class="line">UIColor *newColor = [UIColor colorFromRGBAArray:colorArray];</span><br></pre></td></tr></table></figure></p>
+<p><strong>UIColor 的RGBA字典</strong></p>
+<p>类似于上面的数组方法，它返回一个包含 <strong>NSNumbers</strong> 的 <strong>NSDictionary</strong> 字典。 静态键用于访问字典中的不同颜色组件。 这允许你使用返回的字典更快地自动更正。</p>
+<ul>
+<li><code>kColoursRGBA_R</code></li>
+<li><code>kColoursRGBA_G</code></li>
+<li><code>kColoursRGBA_B</code></li>
+<li><code>kColoursRGBA_A</code></li>
+</ul>
+<p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">NSDictionary *colorDict = [[UIColor seafoamColor] rgbaDictionary];</span><br><span class="line">UIColor *newColor = [UIColor colorFromRGBADictionary:colorDict];</span><br><span class="line"></span><br><span class="line">// 你也可以像这样获得一个单一的组件</span><br><span class="line">NSNumber *r = colorDict[kColoursRGBA_R];</span><br></pre></td></tr></table></figure></p>
+<h4>HSBA</h4>
+<p>像上面的 RGBA 方法一样，您还可以从 <strong>UIColor</strong> 获取色调（Hue），饱和度（Saturation）和亮度值（Brightness），并从中创建 数组 或 字典，反之亦然。 返回的 colorDictionary 也使用静态键，如此方法的RGBA 版本。 以下是使用的：</p>
+<ul>
+<li><code>kColoursHSBA_H</code></li>
+<li><code>kColoursHSBA_S</code></li>
+<li><code>kColoursHSBA_B</code></li>
+<li><code>kColoursHSBA_A</code></li>
+</ul>
+<p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">NSArray *colorArray = [[UIColor seafoamColor] hsbaArray];</span><br><span class="line">NSDictionary *colorDict = [[UIColor seafoamColor] hsbaDictionary];</span><br><span class="line"></span><br><span class="line">UIColor *newColor1 = [UIColor colorFromHSBAArray:colorArray];</span><br><span class="line">UIColor *newColor2 = [UIColor colorFromHSBADictionary:colorDictionary];</span><br></pre></td></tr></table></figure></p>
+<h4>CIELAB</h4>
+<p>像上述 RGBA 方法一样，您还可以从 <strong>UIColor</strong> 获取CIE_Lightness，CIE_a和CIE_b值，并从中创建数组或字典，反之亦然。 返回的 colorDictionary 也使用静态键，如此方法的 RGBA 版本。 以下是使用的：</p>
+<ul>
+<li><code>kColoursCIE_L</code></li>
+<li><code>kColoursCIE_A</code></li>
+<li><code>kColoursCIE_B</code></li>
+<li><code>kColoursCIE_alpha</code></li>
+</ul>
+<p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">NSArray *colorArray = [[UIColor seafoamColor] CIE_LabArray];</span><br><span class="line">NSDictionary *colorDict = [[UIColor seafoamColor] CIE_LabDictionary];</span><br><span class="line"></span><br><span class="line">UIColor *newColor1 = [UIColor colorFromCIE_LabArray:colorArray];</span><br><span class="line">UIColor *newColor2 = [UIColor colorFromCIE_LabDictionary:colorDictionary];</span><br></pre></td></tr></table></figure></p>
+<h4>CMYK</h4>
+<p>像上面的 RGBA 方法一样，您也可以从 <strong>UIColor</strong> 获取CMYKY值，并从中创建一个数组或字典，反之亦然。 返回的colorDictionary 也使用静态键，如此方法的 RGBA 版本。 以下是使用的：</p>
+<ul>
+<li><code>kColoursCMYK_C</code></li>
+<li><code>kColoursCMYK_M</code></li>
+<li><code>kColoursCMYK_Y</code></li>
+<li><code>kColoursCMYK_K</code></li>
+</ul>
+<p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">NSArray *colorArray = [[UIColor seafoamColor] cmykArray];</span><br><span class="line">NSDictionary *colorDict = [[UIColor seafoamColor] cmykDictionary];</span><br><span class="line"></span><br><span class="line">UIColor *newColor1 = [UIColor colorFromCMYKArray:colorArray];</span><br><span class="line">UIColor *newColor2 = [UIColor colorFromCMYKDictionary:colorDictionary];</span><br></pre></td></tr></table></figure></p>
+<h4>颜色组件</h4>
+<p>该方法从上方返回包含每个键（RGBA，HSBA，CIE_LAB，CMYK）的值的字典。 这意味着您可以从同一来源获取色调值和亮度值。 以下是您如何使用此功能：</p>
+<p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">NSDictionary *components = [someColor colorComponents];</span><br><span class="line">CGFloat H = components[kColoursHSBA_H];</span><br><span class="line">CGFloat L = components[kColoursCIE_L];</span><br></pre></td></tr></table></figure></p>
+<p>您还可以通过在 <strong>UIColor</strong> 上调用以下任何方法来检索单个值而不是整个字典。 获得一种颜色的所有值，而不是仅检索一个颜色，这将显着更慢。 如果需要多个，请从上面调用特定的数组或字典方法。</p>
+<p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">CGFloat R = [[UIColor tomatoColor] red];</span><br><span class="line">CGFloat G = [[UIColor tomatoColor] green];</span><br><span class="line">CGFloat B = [[UIColor tomatoColor] blue];</span><br><span class="line">CGFloat H = [[UIColor tomatoColor] hue];</span><br><span class="line">CGFloat S = [[UIColor tomatoColor] saturation];</span><br><span class="line">CGFloat B = [[UIColor tomatoColor] brightness];</span><br><span class="line">CGFloat CIE_L = [[UIColor tomatoColor] CIE_Lightness];</span><br><span class="line">CGFloat CIE_A = [[UIColor tomatoColor] CIE_a];</span><br><span class="line">CGFloat CIE_B = [[UIColor tomatoColor] CIE_b];</span><br><span class="line">CGFloat alpha = [[UIColor tomatoColor] alpha];</span><br></pre></td></tr></table></figure></p>
+<h4>调暗／调亮组件</h4>
+<p>你可以使用这些方法使颜色变暗或变亮。 唯一的参数是从0 - &gt; 1的百分比浮点数，因此25％较浅的颜色将使用参数0.25。</p>
+<p><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">UIColor</span> *lighterColor = [[<span class="built_in">UIColor</span> seafoamColor] lighten:<span class="number">0.25</span>f];</span><br><span class="line"><span class="built_in">UIColor</span> *darkerColor = [[<span class="built_in">UIColor</span> seafoamColor] darken:<span class="number">0.25</span>f];</span><br></pre></td></tr></table></figure></p>
+<h4>黑色或白色对比色</h4>
+<p>很多时候，您可能希望将文本放置在某种颜色的视图之上，并且您希望确保它在外观上看起来很好。 使用这种方法，您将返回白色或黑色，具体取决于它们之间的对比度。 以下是您如何使用此功能：</p>
+<p><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">UIColor</span> *contrastingColor = [[<span class="built_in">UIColor</span> seafoamColor] blackOrWhiteContrastingColor];</span><br></pre></td></tr></table></figure></p>
+<h4>互补颜色</h4>
+<p>This method will create a UIColor instance that is the exact opposite color from another UIColor on the color wheel. The same saturation and brightness are preserved, just the hue is changed.</p>
+<p>该方法将创建一个在色值上与另一个 <strong>UIColor</strong> 完全相反的颜色的 <strong>UIColor</strong> 实例。 相同的饱和度和亮度被保留，只是色调被改变。</p>
+<p><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">UIColor</span> *complementary = [[<span class="built_in">UIColor</span> seafoamColor] complementaryColor];</span><br></pre></td></tr></table></figure></p>
+<h2>两个颜色值之间的距离</h2>
+<p><code>5.1.0 +</code></p>
+<p>Detecting a difference in two colors is not as trivial as it sounds. One's first instinct is to go for a difference in RGB values, leaving you with a sum of the differences of each point. It looks great! Until you actually start comparing colors. Why do these two reds have a different distance than these two blues <em>in real life</em> vs computationally? Human visual perception is next in the line of things between a color and your brain. Some colors are just perceived to have larger variants inside of their respective areas than others, so we need a way to model this human variable to colors. Enter CIELAB. This color formulation is supposed to be this model. So now we need to standardize a unit of distance between any two colors that works independent of how humans visually perceive that distance. Enter CIE76,94,2000. These are methods that use user-tested data and other mathematically and statistically significant correlations to output this info. You can read the wiki articles below to get a better understanding historically of how we moved to newer and better color distance formulas, and what their respective pros/cons are.</p>
+<p><strong>找出距离</strong></p>
+<p><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">CGFloat</span> distance = [someColor distanceFromColor:someOtherColor type:ColorDistanceCIE94];</span><br><span class="line"><span class="built_in">BOOL</span> isNoticablySimilar = distance &lt; threshold;</span><br></pre></td></tr></table></figure></p>
+<p><strong>引用</strong></p>
+<ul>
+<li><a href="http://en.wikipedia.org/wiki/Color_difference" target="_blank" rel="noopener">Color Difference</a></li>
+<li><a href="http://en.wikipedia.org/wiki/Just_noticeable_difference" target="_blank" rel="noopener">Just Noticeable Difference</a></li>
+<li><a href="http://en.wikipedia.org/wiki/CIELAB" target="_blank" rel="noopener">CIELAB Specification</a></li>
+</ul>
+<h2>生成颜色方案</h2>
+<p>您可以使用以下方法创建一个基于 <strong>UIColor</strong> 的5色方案。 它包含一个 <strong>UIColor</strong> 和Color中定义的 <strong>ColorScheme</strong> 类型之一。 它返回一个4个新的UIColor对象的 <strong>NSArray</strong> 数组来创建一个相当不错的配色方案，以补充您传入的根颜色。</p>
+<p><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">NSArray</span> *colorScheme = [color colorSchemeOfType:ColorSchemeType];</span><br></pre></td></tr></table></figure></p>
+<p><strong>ColorSchemeTypes 颜色方案类型</strong></p>
+<ul>
+<li>ColorSchemeAnalagous —— 类似颜色方案</li>
+<li>ColorSchemeMonochromatic —— 单色颜色方案</li>
+<li>ColorSchemeTriad —— 三色方案</li>
+<li>ColorSchemeComplementary —— 互补配色方案</li>
+</ul>
+<p>以下是基于<code>[UIColor seafoamColor]</code>的颜色方案开始的不同示例:</p>
+<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072003.png" alt="seafoamColor"></p>
+<p><strong>ColorSchemeAnalagous</strong></p>
+<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072007.png" alt="Analagous"></p>
+<p><strong>ColorSchemeMonochromatic</strong></p>
+<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072011-1.png" alt="Monochromatic"></p>
+<p><strong>ColorSchemeTriad</strong></p>
+<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072016.png" alt="Triad"></p>
+<p><strong>ColorSchemeComplementary</strong></p>
+<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072027.png" alt="Complementary"></p>
+<h2>Android</h2>
+<p>My friend, <a href="https://github.com/MatthewYork" target="_blank" rel="noopener">Matt York</a> ported a version of this repository over to Android, so you can use these exact same colors and color methods in your Android apps as well. You can find it here: <a href="https://github.com/MatthewYork/Colours" target="_blank" rel="noopener">Colours for Android</a>.</p>
+<h2>Xamarin</h2>
+<p><a href="https://github.com/akamud/" target="_blank" rel="noopener">akamud</a> has graciously ported this library as a Xamarin Android component, which can be found at <a href="https://github.com/akamud/Colours" target="_blank" rel="noopener">https://github.com/akamud/Colours</a>. An iOS Xamarin component is in the works as well.</p>
+<h1>Reap What I Sow!</h1>
+<p>This project is distributed under the standard MIT License. Please use this and twist it in whatever fashion you wish - and recommend any cool changes to help the code.</p>
+<p><a href="https://bitdeli.com/free" title="Bitdeli Badge" target="_blank" rel="noopener"><img src="https://d2weczhvl823v0.cloudfront.net/bennyguitar/colours/trend.png" alt="Bitdeli Badge"></a></p>
+<h1>参考</h1>
+<ul>
+<li><a href="http://hao.jobbole.com/colours-ios/" target="_blank" rel="noopener">Colours颜色库：包含100种预定义的颜色和方法@伯乐在线</a></li>
+</ul>
+
           
-            <div class="post-button text-center">
-              <a class="btn" href="/2017/03/12/Colours——一套漂亮的预定义颜色库和方法/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          
-          <!--/noindex-->
         
       
     </div>
@@ -1604,7 +1854,7 @@
                 
                   <span class="post-meta-item-text">本文字数：</span>
                 
-                <span title="本文字数">7.9k</span>
+                <span title="本文字数">8.3k</span>
               
 
               
@@ -1618,7 +1868,7 @@
                 
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
-                <span title="阅读时长">7 分钟</span>
+                <span title="阅读时长">8 分钟</span>
               
             </div>
           
@@ -1639,26 +1889,165 @@
 
       
         
-          <ul>
+          
+            <ul>
 <li>GitHub地址：<a href="https://github.com/dsxNiubility/Wonderful" target="_blank" rel="noopener">Wonderful</a></li>
 <li>star: 700+</li>
 </ul>
 <blockquote>
-<pre><code>⭐️⭐️⭐️ 
-</code></pre><p>以下内容来源于官方源码、 README 文档、测试 Demo或个人使用总结 ！</p>
+<pre><code>                            ⭐️⭐️⭐️ 
+</code></pre>
 </blockquote>
-<h1 id="Wonderful"><a href="#Wonderful" class="headerlink" title="Wonderful"></a>Wonderful</h1><p><a href="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/074235.jpg" target="_blank" rel="noopener"><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/074229.jpg" alt></a><br><a href="https://en.wikipedia.org/wiki/Objective-C" target="_blank" rel="noopener"><img src="http://img.shields.io/badge/language-OC-yellow.svg?style=flat" alt></a><br><a href="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/074253.jpg" target="_blank" rel="noopener"><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/074237.jpg" alt></a><br><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/074255.jpg" alt></p>
+<p>以下内容来源于官方源码、 README 文档、测试 Demo或个人使用总结 ！</p>
+<h1>Wonderful</h1>
+<p><a href="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/074235.jpg" target="_blank" rel="noopener"><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/074229.jpg" alt></a>
+<a href="https://en.wikipedia.org/wiki/Objective-C" target="_blank" rel="noopener"><img src="http://img.shields.io/badge/language-OC-yellow.svg?style=flat" alt></a>
+<a href="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/074253.jpg" target="_blank" rel="noopener"><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/074237.jpg" alt></a>
+<img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/074255.jpg" alt></p>
 <pre><code>一个关于色彩的库
-</code></pre><p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/074326.png" alt="image"></p>
-          <!--noindex-->
+</code></pre>
+<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/074326.png" alt="image"></p>
+<p>&lt;!-- more --&gt;</p>
+<h4>ChangeLog 1.2.1</h4>
+<p>1.2.1版本修复了：</p>
+<p>有marquee或是headline组件的页面，后台回到前台偶现错乱的问题</p>
+<p>有marquee或是headline组件的页面，停留在当前页面，锁屏解锁偶现错乱的问题</p>
+<p>允许marquee在运行中修改文字</p>
+<p>####Demo程序截图</p>
+<p>建议使用iPhone6运行Demo程序
+<img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/074340.png" alt="Drawing">&lt;br /&gt;</p>
+<hr>
+<p>####一、UIColor+Wonderful
+1.这个分类里扩充了更多的颜色扩展，以后随手写个小Demo再也不需要redColor buleColor了。</p>
+<pre><code>self.view.backgroundColor = [UIColor khakiColor];
+self.view.backgroundColor = [UIColor chocolateColor];
+</code></pre>
+<p>2.平均每个色系有10种颜色，不仅可以使用名称直接敲出，还能使用颜色阶梯的宏敲出，在你想不起词的时候更加方便。 宏从1～10是颜色渐深，可以根据自己的感觉使用浅一级的宏或深一级的宏。&lt;br /&gt;</p>
+<pre><code>self.view.backgroundColor = Wonderful_YelloeColor4;
+self.view.backgroundColor = Wonderful_BrownColor4;
+</code></pre>
+<p>&lt;br /&gt;
+<img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/074352.png" alt="Drawing">
+<img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/074405.png" alt="Drawing">&lt;br /&gt;</p>
+<hr>
+<p>####二、UIColor+Separate
+1.提供颜色分离方案，可以将任何颜色的rgb喝alpha的值取出。&lt;br /&gt;</p>
+<pre><code>UIColor *testC = [UIColor salmonColor];
+float r= [testC red];
+float g= [testC green];
+float b= [testC blue];
+float alpha= [testC alpha];
+NSLog(@&quot;******  %f,%f,%f,%f&quot;,r,g,b,alpha);
+</code></pre>
+<p>2.可以通过一个颜色算出此颜色的反色，使得背景无论被用户设置成什么色，文字颜色都是背景的反色。&lt;br /&gt;</p>
+<pre><code>self.showLbl1.backgroundColor = [UIColor peachRed];
+self.showLbl1.textColor = [[UIColor peachRed]reverseColor];
+</code></pre>
+<p>3.也可以直接打印这个颜色的各项详细数值。&lt;br /&gt;</p>
+<pre><code>[[UIColor salmonColor]printDetail];
+// 打印结果
+This Color's Red:250, Green:128, Blue:114, Alpha:1
+decimal red:0.9804 green:0.5020 blue:0.4471
+Hexadecimal 0xfa8072
+</code></pre>
+<p>4.提供了颜色微调方案，可以让一个已知颜色的rgb的某值上升或下降若干，可用于不管背景是什么色，边框都比背景深20。 也可以将认可颜色的详细值打印出来。&lt;br /&gt;</p>
+<pre><code>UIColor *navColor = [[UIColor redColor]up:SXColorTypeBlue num:30]; // 在红色上把蓝色色值提高30
+UIColor *barColor = [[UIColor blueColor]up:1 num:140]; // 可以直接用枚举对应的tag
+UIColor *bgColor = [[UIColor blackColor]down:SXColorTypeAlpha num:10]; // 取一个比黑色稍微淡的颜色
+UIColor *lineColor = [bgColor up:3 num:20]; // 不管背景是什么颜色 线都比背景浅20.
+</code></pre>
+<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/074415.gif" alt="image">&lt;br /&gt;</p>
+<hr>
+<p>####三、SXColorGradientView
+1.颜色渐变的view，可以设置任何颜色到透明的过渡。&lt;br /&gt;</p>
+<pre><code>SXColorGradientView *grv1 = [SXColorGradientView createWithColor:[UIColor paleGreen] frame:CGRectMake(10, 10, 80, 30) visible:YES direction:SXColorGradientToRight];
+</code></pre>
+<p>2.也可以设置两个颜色相互过渡。&lt;br /&gt;</p>
+<pre><code>SXColorGradientView *grv3 = [SXColorGradientView createWithFromColor:[UIColor peruColor] toColor:[UIColor ghostWhite] frame:CGRectMake(10, 50, 80, 30) direction:SXColorGradientToRight];
+</code></pre>
+<p>3.可以设置向上下左右四个过渡的方向。&lt;br /&gt;</p>
+<pre><code>typedef NS_ENUM(NSInteger, SXColorGradientDirection) {
+	SXColorGradientToTop = 1,
+	SXColorGradientToLeft = 2,
+	SXColorGradientToBottom = 3,
+	SXColorGradientToRight = 4,
+};
+</code></pre>
+<p>4.支持增加传入一个数组，然后搭建一个多个颜色过渡的view。&lt;br /&gt;
+<img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/074420.png" alt="Drawing">&lt;br /&gt;</p>
+<hr>
+<h4>四、SXMarquee</h4>
+<p>1.实现任何样式的跑马灯。&lt;br /&gt;
+跑马灯方法：</p>
+<p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">- (instancetype)initWithFrame:(CGRect)frame</span><br><span class="line">                        speed:(SXMarqueeSpeedLevel)speed</span><br><span class="line">                          Msg:(NSString *)msg</span><br><span class="line">                      bgColor:(UIColor *)bgColor</span><br><span class="line">                     txtColor:(UIColor *)txtColor;</span><br><span class="line"></span><br><span class="line">// 点击动作，默认点击停止</span><br><span class="line">- (void)changeTapMarqueeAction:(void(^)())action;</span><br><span class="line"></span><br><span class="line">// 改变字体大小</span><br><span class="line">- (void)changeMarqueeLabelFont:(UIFont *)font;</span><br><span class="line"></span><br><span class="line">- (void)start;</span><br><span class="line"></span><br><span class="line">- (void)stop;</span><br><span class="line"></span><br><span class="line">- (void)restart;</span><br></pre></td></tr></table></figure></p>
+<p>Demo:</p>
+<pre><code>SXMarquee *mar = [[SXMarquee alloc] initWithFrame:CGRectMake(20, 255, 335, 35)
+                                            speed:4
+                                              Msg:@&quot;重大活动，天猫的双十一，然而并没卵用&quot;
+                                          bgColor:[UIColor salmonColor]
+                                         txtColor:[UIColor whiteColor]];
+// 默认字体：[UIFont fontWithName:@&quot;HelveticaNeue&quot; size:14.0f]
+[mar changeMarqueeLabelFont:[UIFont systemFontOfSize:26]];
+// 添加点击事件,源码实现方式：在该视图上添加了一个按钮
+[mar changeTapMarqueeAction:^{
+    UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@&quot;点击事件&quot; message:@&quot;可以设置弹窗，当然也能设置别的&quot; delegate:self cancelButtonTitle:@&quot;取消&quot; otherButtonTitles:@&quot;确定&quot;, nil];
+    [alert show];
+}];
+[mar start];
+</code></pre>
+<p>2.跑马灯的背景可以设置任何颜色，这个是基于颜色过渡view做的。&lt;br /&gt;</p>
+<p>3.跑马灯可以实现点击拖动，或者绑定更多点击事件。&lt;br /&gt;</p>
+<h6>📌 源码解析</h6>
+<p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line">/*</span><br><span class="line"> // Label 的宽度是根据字符串长度计算而来</span><br><span class="line"> UIFont *fnt = [UIFont fontWithName:@&quot;HelveticaNeue&quot; size:14.0f];</span><br><span class="line"> CGSize msgSize = [_marqueeLbl.text sizeWithAttributes:@&#123;NSFontAttributeName:fnt&#125;];</span><br><span class="line"> */</span><br><span class="line"></span><br><span class="line">#pragma mark - 核心动画</span><br><span class="line">- (void)moveAction &#123;</span><br><span class="line">    // 以 Label 的中心点运动</span><br><span class="line">    // 贝塞尔曲线 起点</span><br><span class="line">    CGPoint fromPoint = CGPointMake(self.frame.size.width + self.marqueeLbl.frame.size.width/2, self.frame.size.height/2);</span><br><span class="line">    // 贝塞尔曲线 终点</span><br><span class="line">    CGPoint toPoint = CGPointMake(-self.marqueeLbl.frame.size.width/2, self.frame.size.height/2);</span><br><span class="line">    </span><br><span class="line">    self.marqueeLbl.center = fromPoint;</span><br><span class="line">    UIBezierPath *movePath = [UIBezierPath bezierPath];</span><br><span class="line">    [movePath moveToPoint:fromPoint];</span><br><span class="line">    [movePath addLineToPoint:toPoint];</span><br><span class="line">    </span><br><span class="line">    // 创建动画实例</span><br><span class="line">    CAKeyframeAnimation *moveAnim = [CAKeyframeAnimation animationWithKeyPath:@&quot;position&quot;];</span><br><span class="line">    // 设置动画路径</span><br><span class="line">    moveAnim.path = movePath.CGPath;</span><br><span class="line">    // 完成后移除</span><br><span class="line">    moveAnim.removedOnCompletion = YES;</span><br><span class="line">    // 设置延迟</span><br><span class="line">    moveAnim.duration = self.marqueeLbl.frame.size.width * self.speedLevel * 0.01;</span><br><span class="line">    // 委托协议，动画完成后重复该动画</span><br><span class="line">    moveAnim.delegate = self;</span><br><span class="line">    // 在图层上添加动画</span><br><span class="line">    [self.marqueeLbl.layer addAnimation:moveAnim forKey:nil];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">#pragma mark - CAAnimationDelegate</span><br><span class="line"></span><br><span class="line">- (void)animationDidStop:(CAAnimation *)anim finished:(BOOL)flag&#123;</span><br><span class="line">    if (flag) &#123;</span><br><span class="line">        [self moveAction];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h5>SXHeadLine</h5>
+<p>方法：
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">- (void)setBgColor:(UIColor *)bgColor</span><br><span class="line">         textColor:(UIColor *)textColor</span><br><span class="line">          textFont:(UIFont *)textFont;</span><br><span class="line"></span><br><span class="line">// 设置时间间隔</span><br><span class="line">- (void)setScrollDuration:(NSTimeInterval)scrollDuration</span><br><span class="line">             stayDuration:(NSTimeInterval)stayDuration;</span><br><span class="line"></span><br><span class="line">// 改变点击动作，默认点击停止</span><br><span class="line">- (void)changeTapMarqueeAction:(actionBlock)action;</span><br><span class="line"></span><br><span class="line">- (void)start;</span><br><span class="line"></span><br><span class="line">- (void)stop;</span><br></pre></td></tr></table></figure></p>
+<p>Demo:</p>
+<pre><code>SXHeadLine *headLine3 = [[SXHeadLine alloc]initWithFrame:CGRectMake(100, 530, 250, 30)];
+headLine3.messageArray = @[@&quot;1、库里43分，勇士吊打骑士&quot;,@&quot;2、伦纳德死亡缠绕詹姆斯，马刺大胜骑士&quot;,@&quot;3、乐福致命失误，骑士惨遭5连败&quot;,@&quot;4、五小阵容发威，雄鹿吊打骑士&quot;, @&quot;5、天猫的双十一，然而并没卵用&quot;];
+[headLine3 setBgColor:[UIColor whiteColor] textColor:[UIColor orangeRed] textFont:[UIFont systemFontOfSize:13]];
+[headLine3 setScrollDuration:0.5 stayDuration:3];
+headLine3.hasGradient = YES;
+
+[headLine3 changeTapMarqueeAction:^(NSInteger index) {
+    
+    NSLog(@&quot;你点击了第 %ld 个button！内容：%@&quot;, index, headLine3.messageArray[index]);
+    
+}];
+[headLine3 start];
+</code></pre>
+<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/074434.gif" alt="image">&lt;br /&gt;</p>
+<p>####五、SXColorLabel
+1.把text里重要的内容用特殊符号包起来，就会特殊显示&lt;br /&gt;</p>
+<p>2.如果用&lt;&gt;包起来，就会显示高亮颜色。如果用[]包起来，就会显示高亮的字体。</p>
+<pre><code>lbl.text = @&quot;例1：今天要记得通知&lt;Peter&gt;和&lt;Robin&gt;去开会。&quot;;
+lbl2.text = @&quot;例2：礼物很有[粪]量，你会大吃一[斤]！&quot;;
+</code></pre>
+<p>3.这个高亮颜色和高亮字体可以自行设置。</p>
+<pre><code>// 高亮颜色
+[SXColorLabel setAnotherColor:[UIColor salmonColor]];
+// 高亮字体大小
+[SXColorLabel setAnotherFont:[UIFont boldSystemFontOfSize:18]];
+</code></pre>
+<p>4.两者也可以混合使用。 高亮的字体里有高亮颜色。</p>
+<pre><code>lbl3.text = @&quot;例3：一定要：[通知&lt;Peter&gt;和&lt;Robin&gt;去开会]&quot;;
+</code></pre>
+<p>完整方法：</p>
+<pre><code>SXColorLabel *sxlbl3 = [[SXColorLabel alloc]initWithFrame:CGRectMake(40, 200, 350, 30)];
+sxlbl3.anotherColor = [UIColor salmonColor];
+sxlbl3.anotherFont = [UIFont systemFontOfSize:14];
+sxlbl3.text = @&quot;一定要：[通知&lt;Peter&gt;和&lt;Robin&gt;去开会]&quot;;
+[self.bodyView addSubview:sxlbl3];
+</code></pre>
+<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/074449.png" alt="Drawing">&lt;br /&gt;</p>
+<h5>📌 源码解析</h5>
+<p>在同一个 Label 中设置不同字体颜色的方法参考如下，源码中只是在字符串中放了标记符号&lt;&gt;、[]、遍历删除这些标记符号的同时将他们的范围、长度记录下来设置不同的字体和颜色。
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">- (UILabel *)titleLabel &#123;</span><br><span class="line">    if (!_titleLabel) &#123;</span><br><span class="line">        _titleLabel = [[UILabel alloc] initWithFrame:CGRectMake((MaxX(self.imageView)+10), MinY(self.imageView), 245, 40)];</span><br><span class="line">        _titleLabel.numberOfLines = 2;</span><br><span class="line">        _titleLabel.lineBreakMode = NSLineBreakByWordWrapping;</span><br><span class="line">        _titleLabel.font = [UIFont systemFontOfSize:16];</span><br><span class="line">        </span><br><span class="line">        NSString *strPrice = [NSString stringWithFormat:@&quot;%d元 - %d元&quot;, (int)self.data.minPrice, (int)self.data.maxPrice];</span><br><span class="line">        NSString *strTitle = self.data.title;</span><br><span class="line">        NSMutableAttributedString *string = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:@&quot;%@ %@&quot;, strTitle, strPrice]];</span><br><span class="line">        [string setAttributes:@&#123;NSForegroundColorAttributeName: COLOR_RGB(34, 34, 39)&#125; range:NSMakeRange(0, strTitle.length)];</span><br><span class="line">        [string setAttributes:@&#123;NSForegroundColorAttributeName: COLOR_RGB(255, 77, 100)&#125; range:NSMakeRange((strTitle.length+1), strPrice.length)];</span><br><span class="line">        _titleLabel.attributedText = string;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    return _titleLabel;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><em>旧版demo</em>&lt;br /&gt;
+<em>颜色列表</em>&lt;br /&gt;
+<img src="https://github.com/dsxNiubility/Wonderful/raw/master/screenshots/002.gif" alt="image"></p>
+
           
-            <div class="post-button text-center">
-              <a class="btn" href="/2017/03/09/Wonderful——一个关于色彩的库/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          
-          <!--/noindex-->
         
       
     </div>
@@ -1860,8 +2249,9 @@
             <ul>
 <li>15分钟支付倒计时</li>
 </ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">// 支付倒计时</span><br><span class="line">- (void)secondsCountDown:(UILabel *)label &#123;</span><br><span class="line">    __block int timeout = 900;</span><br><span class="line">    dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);</span><br><span class="line">    dispatch_source_t _timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, queue);</span><br><span class="line">    dispatch_source_set_timer(_timer, dispatch_walltime(NULL, 0), 1.0*NSEC_PER_SEC, 0);//每秒执行</span><br><span class="line">    dispatch_source_set_event_handler(_timer, ^&#123;</span><br><span class="line">        if (timeout&lt;=0) &#123;</span><br><span class="line">            dispatch_source_cancel(_timer);</span><br><span class="line">            dispatch_async(dispatch_get_main_queue(), ^&#123;</span><br><span class="line">                // 隐藏密码输入界面，禁用支付按钮</span><br><span class="line">                [MBProgressHUD showMessage:@&quot;付款超时，请返回重新选择座位&quot;];</span><br><span class="line">            &#125;);</span><br><span class="line">        &#125;else &#123;</span><br><span class="line">            int minutes = timeout/60;</span><br><span class="line">            int seconds = timeout%60;</span><br><span class="line">            NSString *strTime = [NSString stringWithFormat:@&quot;%d 分 %d 秒&quot;, minutes, seconds];</span><br><span class="line">            dispatch_async(dispatch_get_main_queue(), ^&#123;</span><br><span class="line">                label.text = [NSString stringWithFormat:@&quot;请在 %@ 内完成付款，晚了座位就没有了哦&quot;,strTime];</span><br><span class="line">            &#125;);</span><br><span class="line">            timeout--;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">    dispatch_resume(_timer);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><ul>
+<p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">// 支付倒计时</span><br><span class="line">- (void)secondsCountDown:(UILabel *)label &#123;</span><br><span class="line">    __block int timeout = 900;</span><br><span class="line">    dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);</span><br><span class="line">    dispatch_source_t _timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, queue);</span><br><span class="line">    dispatch_source_set_timer(_timer, dispatch_walltime(NULL, 0), 1.0*NSEC_PER_SEC, 0);//每秒执行</span><br><span class="line">    dispatch_source_set_event_handler(_timer, ^&#123;</span><br><span class="line">        if (timeout&lt;=0) &#123;</span><br><span class="line">            dispatch_source_cancel(_timer);</span><br><span class="line">            dispatch_async(dispatch_get_main_queue(), ^&#123;</span><br><span class="line">                // 隐藏密码输入界面，禁用支付按钮</span><br><span class="line">                [MBProgressHUD showMessage:@&quot;付款超时，请返回重新选择座位&quot;];</span><br><span class="line">            &#125;);</span><br><span class="line">        &#125;else &#123;</span><br><span class="line">            int minutes = timeout/60;</span><br><span class="line">            int seconds = timeout%60;</span><br><span class="line">            NSString *strTime = [NSString stringWithFormat:@&quot;%d 分 %d 秒&quot;, minutes, seconds];</span><br><span class="line">            dispatch_async(dispatch_get_main_queue(), ^&#123;</span><br><span class="line">                label.text = [NSString stringWithFormat:@&quot;请在 %@ 内完成付款，晚了座位就没有了哦&quot;,strTime];</span><br><span class="line">            &#125;);</span><br><span class="line">            timeout--;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">    dispatch_resume(_timer);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3>参考</h3>
+<ul>
 <li><a href="http://www.cnblogs.com/siwenss/p/6428903.html" target="_blank" rel="noopener">iOS中常用的验证码倒计时, 支付半小时倒计时.</a></li>
 </ul>
 
@@ -2028,7 +2418,7 @@
                 
                   <span class="post-meta-item-text">本文字数：</span>
                 
-                <span title="本文字数">789</span>
+                <span title="本文字数">800</span>
               
 
               
@@ -2064,25 +2454,36 @@
       
         
           
-            <h4 id="NSMutableString"><a href="#NSMutableString" class="headerlink" title="NSMutableString"></a>NSMutableString</h4><hr>
+            <h4>NSMutableString</h4>
+<hr>
 <ul>
 <li><strong>NSString</strong> 字符串的内容定义以后无法修改,是不可变的。</li>
 <li><strong>NSMutableString</strong> 是可变字符串,可以修改字符串中的内容.</li>
 <li><strong>NSMutableString</strong> 继承自 <strong>NSString</strong>, <strong>NSString</strong> 所有的方法都能使用.</li>
 </ul>
-<h5 id="创建字符串"><a href="#创建字符串" class="headerlink" title="创建字符串"></a>创建字符串</h5><pre><code>//initWithString
+<h5>创建字符串</h5>
+<pre><code>//initWithString
 NSMutableString *ms2 = [[NSMutableString alloc] initWithString:@&quot;abcdefg&quot;];
 
 //stringWithFormat:父类类方法创建
 NSMutableString *ms3 = [NSMutableString stringWithFormat:@&quot;abcdefg&quot; ];
-</code></pre><h5 id="插入字符串"><a href="#插入字符串" class="headerlink" title="插入字符串"></a>插入字符串</h5><pre><code>[ms3 insertString:@&quot;插入字符&quot; atIndex:1]; //@&quot;a插入字符bcdefg&quot;
-</code></pre><h5 id="追加字符串"><a href="#追加字符串" class="headerlink" title="追加字符串"></a>追加字符串</h5><pre><code>[ms3 appendString:@&quot;对象&quot;]; //@&quot;abcdefg对象&quot;
-</code></pre><h5 id="删除修改字符串"><a href="#删除修改字符串" class="headerlink" title="删除修改字符串"></a>删除修改字符串</h5><pre><code>NSRange rg = NSMakeRange(3,4);
+</code></pre>
+<h5>插入字符串</h5>
+<pre><code>[ms3 insertString:@&quot;插入字符&quot; atIndex:1]; //@&quot;a插入字符bcdefg&quot;
+</code></pre>
+<h5>追加字符串</h5>
+<pre><code>[ms3 appendString:@&quot;对象&quot;]; //@&quot;abcdefg对象&quot;
+</code></pre>
+<h5>删除修改字符串</h5>
+<pre><code>NSRange rg = NSMakeRange(3,4);
 NSRange rg = [ms3 rangeOfString:@&quot;字符&quot;]; //同上，原@“a插入字符bcdefg”
 [ms3 deleteCharactersInRange:rg];  //@“a插入bcdefg”
-</code></pre><h5 id="替换字符串"><a href="#替换字符串" class="headerlink" title="替换字符串"></a>替换字符串</h5><pre><code>NSRange rg3 = [ms3 rangeOfString:@&quot;字符&quot;];
+</code></pre>
+<h5>替换字符串</h5>
+<pre><code>NSRange rg3 = [ms3 rangeOfString:@&quot;字符&quot;];
 [ms3 replaceCharactersInRange:rg3 withString:@&quot;字母&quot;]; //字符——&gt;字母
 </code></pre>
+
           
         
       
@@ -2246,7 +2647,7 @@ NSRange rg = [ms3 rangeOfString:@&quot;字符&quot;]; //同上，原@“a插入�
                 
                   <span class="post-meta-item-text">本文字数：</span>
                 
-                <span title="本文字数">2.8k</span>
+                <span title="本文字数">3.6k</span>
               
 
               
@@ -2281,23 +2682,78 @@ NSRange rg = [ms3 rangeOfString:@&quot;字符&quot;]; //同上，原@“a插入�
 
       
         
-          <h1 id="NSMutableArray"><a href="#NSMutableArray" class="headerlink" title="NSMutableArray"></a>NSMutableArray</h1><h3 id="推荐阅读"><a href="#推荐阅读" class="headerlink" title="推荐阅读"></a>推荐阅读</h3><ul>
-<li><p><a href="http://www.jianshu.com/p/ed2030920ec4" target="_blank" rel="noopener">iOS实录12：NSMutableArray使用中忽视的问题</a></p>
+          
+            <h1>NSMutableArray</h1>
+<h3>推荐阅读</h3>
+<ul>
+<li>
+<p><a href="http://www.jianshu.com/p/ed2030920ec4" target="_blank" rel="noopener">iOS实录12：NSMutableArray使用中忽视的问题</a></p>
 </li>
-<li><p><strong>NSMutableArray</strong> 是可变数组,数组中存储空间是可以动态修改，可以添加、删除或对指针重新进行排序。</p>
+<li>
+<p><strong>NSMutableArray</strong> 是可变数组,数组中存储空间是可以动态修改，可以添加、删除或对指针重新进行排序。</p>
 </li>
-<li><strong>NSMutableArray</strong> 继承于 <strong>NSArray</strong>, <strong>NSArray</strong> 的方法都可以使用,。</li>
+<li>
+<p><strong>NSMutableArray</strong> 继承于 <strong>NSArray</strong>, <strong>NSArray</strong> 的方法都可以使用,。</p>
+</li>
 </ul>
-<h2 id="数组的创建"><a href="#数组的创建" class="headerlink" title="数组的创建"></a>数组的创建</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">Person *p1 = [[Person alloc] init];</span><br><span class="line">Person *p2 = [[Person alloc] init];</span><br><span class="line">Person *p3 = [[Person alloc] init];</span><br><span class="line"> </span><br><span class="line">//1.初始化时添加元素</span><br><span class="line">NSMutableArray *mArray1 = [[NSMutableArray alloc] initWithObjects:p1,p2,p3, nil];</span><br><span class="line"></span><br><span class="line">//2.创建空数组，再往里面添加</span><br><span class="line">NSMutableArray *mArray2 = [[NSMutableArray alloc] init];</span><br><span class="line">// 类方法</span><br><span class="line">NSMutableArray *mArray21 = [NSMutableArray array];</span><br><span class="line"></span><br><span class="line">//3.创建数组时，同时为数组分配3个存储空间，当3个空间全满之后，会自动扩展空间。</span><br><span class="line">NSMutableArray *mArray1 = [[NSMutableArray alloc] initWithCapacity:3];</span><br></pre></td></tr></table></figure>
-          <!--noindex-->
+<h2>数组的创建</h2>
+<p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">Person *p1 = [[Person alloc] init];</span><br><span class="line">Person *p2 = [[Person alloc] init];</span><br><span class="line">Person *p3 = [[Person alloc] init];</span><br><span class="line"> </span><br><span class="line">//1.初始化时添加元素</span><br><span class="line">NSMutableArray *mArray1 = [[NSMutableArray alloc] initWithObjects:p1,p2,p3, nil];</span><br><span class="line"></span><br><span class="line">//2.创建空数组，再往里面添加</span><br><span class="line">NSMutableArray *mArray2 = [[NSMutableArray alloc] init];</span><br><span class="line">// 类方法</span><br><span class="line">NSMutableArray *mArray21 = [NSMutableArray array];</span><br><span class="line"></span><br><span class="line">//3.创建数组时，同时为数组分配3个存储空间，当3个空间全满之后，会自动扩展空间。</span><br><span class="line">NSMutableArray *mArray1 = [[NSMutableArray alloc] initWithCapacity:3];</span><br></pre></td></tr></table></figure></p>
+<p>&lt;!-- more --&gt;</p>
+<h2>addObject:添加元素</h2>
+<p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[mArray1 addObject:p1];</span><br></pre></td></tr></table></figure></p>
+<h2>count:取得数组元素个数</h2>
+<p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">NSLog(@&quot;%ld&quot;,[mArray1 count]);</span><br></pre></td></tr></table></figure></p>
+<h2>将数组 mArray2 中所有元素全部追加到 mArray1 中</h2>
+<p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[mArray1 addObjectsFromArray:mArray2];</span><br></pre></td></tr></table></figure></p>
+<h2>指定位置插入元素</h2>
+<p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[mArray1 insertObject:@&quot;hello&quot; atIndex:0];</span><br></pre></td></tr></table></figure></p>
+<h2>替换元素</h2>
+<p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[mArray1 replaceObjectAtIndex:0 withObject:@&quot;替换的元素&quot;];</span><br></pre></td></tr></table></figure></p>
+<h2>索引0和索引3上的元素调换，可用于排序。</h2>
+<p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[mArray1 exchangeObjectAtIndex:0 withObjectAtIndex:3];</span><br></pre></td></tr></table></figure></p>
+<p>实例：
+获取到的 NSMutableArray 类型的数据需要逆序显示到 UITableView 上，之前用的方法是在索引上动手脚: <code>NSUInteger index = self.dateSourceArray.count - indexPath.row - 1;</code>,缺点是在 <code>tableView:cellForRowAtIndexPath:</code> 和   <code>tableView:didSelectRowAtIndexPath:</code> 都要先获取反向索引值再获取数据。参考 YYKit 的源码中的方法，直接在数据源上做处理：<code>[self.dateSourceArray reverse];</code></p>
+<p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">// 反转数组，摘自 YYCategories </span><br><span class="line">- (void)reverse &#123;</span><br><span class="line">    NSUInteger count = self.count;</span><br><span class="line">    int mid = floor(count / 2.0);</span><br><span class="line">    for (NSUInteger i = 0; i &lt; mid; i++) &#123;</span><br><span class="line">        [self exchangeObjectAtIndex:i withObjectAtIndex:(count - (i + 1))];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2>删除元素</h2>
+<p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">//1&gt;根据下标删除元素</span><br><span class="line">[mArray1 removeObjectAtIndex:0];</span><br><span class="line"></span><br><span class="line">//2&gt;删除指定的对象</span><br><span class="line">[mArray1 removeObject:@“hello”];</span><br><span class="line"></span><br><span class="line">//3&gt;删除最后一个元素</span><br><span class="line">[mArray1 removeLastObject];</span><br><span class="line"></span><br><span class="line">//4&gt;删除所有元素</span><br><span class="line">[mArray1 removeAllObjects];</span><br></pre></td></tr></table></figure></p>
+<p>Tips：<a href="https://github.com/ibireme/YYKit" target="_blank" rel="noopener">YYKit</a> 框架中针对数组添加了几个很实用的扩展方法，列几个随意感受下：</p>
+<p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">// 以下摘自 NSArray+YYAdd.h</span><br><span class="line"></span><br><span class="line">// 返回数组中的随机一个元素</span><br><span class="line">- (nullable id)randomObject;</span><br><span class="line"></span><br><span class="line">// 返回指定位置的元素，如果为空或者数组越界就会返回 nil</span><br><span class="line">- (nullable id)objectOrNilAtIndex:(NSUInteger)index;</span><br><span class="line"></span><br><span class="line">// 删除第一个对象</span><br><span class="line">- (void)removeFirstObject;</span><br><span class="line"></span><br><span class="line">// 删除最后一个对象</span><br><span class="line">- (void)removeLastObject;</span><br><span class="line"></span><br><span class="line">// 返回并删除第一个对象</span><br><span class="line">- (nullable id)popFirstObject;</span><br><span class="line"></span><br><span class="line">// 返回并删除最后一个对象</span><br><span class="line">- (nullable id)popLastObject;</span><br></pre></td></tr></table></figure></p>
+<h3>排序</h3>
+<p>使用给定的排序描述符数组对接收方进行排序:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">- (void)sortUsingDescriptors:(NSArray&lt;NSSortDescriptor *&gt; *)sortDescriptors;</span><br></pre></td></tr></table></figure></p>
+<p>例：</p>
+<blockquote>
+<p>排序前：BMITime[5045:651300] employees: (
+&quot;&lt;Employee 0: $0 in assets&gt;&quot;,
+&quot;&lt;Employee 1: $503 in assets&gt;&quot;,
+&quot;&lt;Employee 2: $469 in assets&gt;&quot;,
+&quot;&lt;Employee 3: $768 in assets&gt;&quot;,
+&quot;&lt;Employee 4: $0 in assets&gt;&quot;,
+&quot;&lt;Employee 5: $836 in assets&gt;&quot;,
+&quot;&lt;Employee 6: $819 in assets&gt;&quot;,
+&quot;&lt;Employee 7: $384 in assets&gt;&quot;,
+&quot;&lt;Employee 8: $0 in assets&gt;&quot;,
+&quot;&lt;Employee 9: $486 in assets&gt;&quot;
+)</p>
+</blockquote>
+<p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">//  先根据 valueOfAssets 属性进行 升序 排序</span><br><span class="line"> NSSortDescriptor *voa = [NSSortDescriptor sortDescriptorWithKey:@&quot;valueOfAssets&quot; ascending:YES];</span><br><span class="line">// 如果某两个对象的 valueOfAssets 属性相同，再根据 employeeID 属性 升序 排序</span><br><span class="line">NSSortDescriptor *eid = [NSSortDescriptor sortDescriptorWithKey:@&quot;employeeID&quot; ascending:YES];</span><br><span class="line">        </span><br><span class="line">[employees sortUsingDescriptors:@[voa,eid]];</span><br></pre></td></tr></table></figure></p>
+<p>结果：</p>
+<blockquote>
+<p>BMITime[5010:648085] employees: (
+&quot;&lt;Employee 0: $0 in assets&gt;&quot;,
+&quot;&lt;Employee 4: $0 in assets&gt;&quot;,
+&quot;&lt;Employee 8: $0 in assets&gt;&quot;,
+&quot;&lt;Employee 7: $384 in assets&gt;&quot;,
+&quot;&lt;Employee 2: $469 in assets&gt;&quot;,
+&quot;&lt;Employee 9: $486 in assets&gt;&quot;,
+&quot;&lt;Employee 1: $503 in assets&gt;&quot;,
+&quot;&lt;Employee 3: $768 in assets&gt;&quot;,
+&quot;&lt;Employee 6: $819 in assets&gt;&quot;,
+&quot;&lt;Employee 5: $836 in assets&gt;&quot;
+)</p>
+</blockquote>
+
           
-            <div class="post-button text-center">
-              <a class="btn" href="/2017/03/05/《Objective-C 编程》17.NSMutableArray/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          
-          <!--/noindex-->
         
       
     </div>
@@ -2495,7 +2951,9 @@ NSRange rg = [ms3 rangeOfString:@&quot;字符&quot;]; //同上，原@“a插入�
 
       
         
-          <h3 id="变量命名规范"><a href="#变量命名规范" class="headerlink" title="变量命名规范"></a>变量命名规范</h3><p>名称必须以<strong>字母</strong>或<strong>下划线</strong>（_）开头，之后可以是任何（大写或小写）字母、下划线或者0～9之间的数字组合。</p>
+          
+            <h3>变量命名规范</h3>
+<p>名称必须以<strong>字母</strong>或<strong>下划线</strong>（_）开头，之后可以是任何（大写或小写）字母、下划线或者0～9之间的数字组合。</p>
 <p>合法名称：</p>
 <ul>
 <li>price、isEqual、_number、myBook、abc_AE86、</li>
@@ -2510,17 +2968,27 @@ NSRange rg = [ms3 rangeOfString:@&quot;字符&quot;]; //同上，原@“a插入�
 <p>规范的变量名命名方式：</p>
 <ul>
 <li>小写字母开头。</li>
-<li>名称中的新单词用大写字母开头。<br>例：currentDate、businessType、name、idNumber、</li>
+<li>名称中的新单词用大写字母开头。
+例：currentDate、businessType、name、idNumber、</li>
 </ul>
-          <!--noindex-->
+<p>&lt;!-- more --&gt;</p>
+<h3>变量</h3>
+<ul>
+<li>执行中的程序需要空间保存数据，以供将来使用；</li>
+<li>能够保存数据的空间称为<strong>变量</strong>，每个变量都有名称和类型；</li>
+<li><strong>声明</strong>类型和名称，可以为程序创建新的变量。</li>
+</ul>
+<p>为什么要给变量声明类型？</p>
+<ol>
+<li>有了变量类型信息，编译器才能替你检查代码、报告潜在的错误或问题。</li>
+<li>有了变量类型信息，编译器才知道要为相应的变量保留多少存储空间。</li>
+</ol>
+<p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;stdio.h&gt;</span><br><span class="line"></span><br><span class="line">int main(int argc, const char * argv[]) &#123;</span><br><span class="line">    </span><br><span class="line">    // 声明变量，变量名为weight,类型是float</span><br><span class="line">    float weight;</span><br><span class="line">    </span><br><span class="line">    // 为weight变量赋值</span><br><span class="line">    weight = 14.2;</span><br><span class="line">    </span><br><span class="line">    // 向控制台输出weight变量，以便查看</span><br><span class="line">    // 打印：The turkey weights 14.200000.</span><br><span class="line">    printf(&quot;The turkey weights %f.\n&quot;,weight);</span><br><span class="line">    </span><br><span class="line">    // 再声明一个类型为float的变量</span><br><span class="line">    float cookingTime;</span><br><span class="line">    </span><br><span class="line">    // 计算烤制时间，将结果赋给cookingTime变量</span><br><span class="line">    cookingTime = 15.0 + 15.0 * weight;</span><br><span class="line">    </span><br><span class="line">    // 向控制台数输出cookingTime变量，以便查看</span><br><span class="line">    // 打印：Cook it for 228.000000 minutes.</span><br><span class="line">    printf(&quot;Cook it for %f minutes.\n&quot;,cookingTime);</span><br><span class="line">    </span><br><span class="line">    // -----------------练习:TwoFloats------------------------</span><br><span class="line">    </span><br><span class="line">    printf(&quot;---TwoFloats--- \n&quot;);</span><br><span class="line">    float a = 3.14;</span><br><span class="line">    float b = 42.0;</span><br><span class="line">    double sum = a + b ;</span><br><span class="line">    printf(&quot;sum = %f \n&quot;,sum); // 打印：sum = 45.139999</span><br><span class="line">    printf(&quot;sum = %.f \n&quot;,sum); // 打印：sum = 45</span><br><span class="line">    printf(&quot;sum = %.2f \n&quot;,sum); // 打印：sum = 45.14</span><br><span class="line">    </span><br><span class="line">    // 函数结束，返回0表示成功</span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3>附：C语言保留关键字</h3>
+<p>——摘自<a href="https://zh.wikipedia.org/wiki/C%E8%AF%AD%E8%A8%80#.E5.9C.A8C.E8.AA.9E.E8.A8.80.E4.B8.AD.E7.9A.84.E8.BF.90.E7.AE.97.E7.AC.A6.E5.8F.B7" target="_blank" rel="noopener">维基百科</a>
+<img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/073854.jpg" alt="image"></p>
+
           
-            <div class="post-button text-center">
-              <a class="btn" href="/2017/03/05/《Objective-C 编程》3.变量与类型/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          
-          <!--/noindex-->
         
       
     </div>
@@ -2845,7 +3313,7 @@ NSRange rg = [ms3 rangeOfString:@&quot;字符&quot;]; //同上，原@“a插入�
       <i class="fa fa-area-chart"></i>
     </span>
     
-    <span title="站点总字数">2.2m</span>
+    <span title="站点总字数">2.3m</span>
   
 
   
@@ -2854,7 +3322,7 @@ NSRange rg = [ms3 rangeOfString:@&quot;字符&quot;]; //同上，原@“a插入�
       <i class="fa fa-coffee"></i>
     </span>
     
-    <span title="站点阅读时长">33:50</span>
+    <span title="站点阅读时长">34:07</span>
   
 </div>
 

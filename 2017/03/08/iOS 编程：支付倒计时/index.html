@@ -581,8 +581,9 @@
         <ul>
 <li>15分钟支付倒计时</li>
 </ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">// 支付倒计时</span><br><span class="line">- (void)secondsCountDown:(UILabel *)label &#123;</span><br><span class="line">    __block int timeout = 900;</span><br><span class="line">    dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);</span><br><span class="line">    dispatch_source_t _timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, queue);</span><br><span class="line">    dispatch_source_set_timer(_timer, dispatch_walltime(NULL, 0), 1.0*NSEC_PER_SEC, 0);//每秒执行</span><br><span class="line">    dispatch_source_set_event_handler(_timer, ^&#123;</span><br><span class="line">        if (timeout&lt;=0) &#123;</span><br><span class="line">            dispatch_source_cancel(_timer);</span><br><span class="line">            dispatch_async(dispatch_get_main_queue(), ^&#123;</span><br><span class="line">                // 隐藏密码输入界面，禁用支付按钮</span><br><span class="line">                [MBProgressHUD showMessage:@&quot;付款超时，请返回重新选择座位&quot;];</span><br><span class="line">            &#125;);</span><br><span class="line">        &#125;else &#123;</span><br><span class="line">            int minutes = timeout/60;</span><br><span class="line">            int seconds = timeout%60;</span><br><span class="line">            NSString *strTime = [NSString stringWithFormat:@&quot;%d 分 %d 秒&quot;, minutes, seconds];</span><br><span class="line">            dispatch_async(dispatch_get_main_queue(), ^&#123;</span><br><span class="line">                label.text = [NSString stringWithFormat:@&quot;请在 %@ 内完成付款，晚了座位就没有了哦&quot;,strTime];</span><br><span class="line">            &#125;);</span><br><span class="line">            timeout--;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">    dispatch_resume(_timer);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><ul>
+<p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">// 支付倒计时</span><br><span class="line">- (void)secondsCountDown:(UILabel *)label &#123;</span><br><span class="line">    __block int timeout = 900;</span><br><span class="line">    dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);</span><br><span class="line">    dispatch_source_t _timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, queue);</span><br><span class="line">    dispatch_source_set_timer(_timer, dispatch_walltime(NULL, 0), 1.0*NSEC_PER_SEC, 0);//每秒执行</span><br><span class="line">    dispatch_source_set_event_handler(_timer, ^&#123;</span><br><span class="line">        if (timeout&lt;=0) &#123;</span><br><span class="line">            dispatch_source_cancel(_timer);</span><br><span class="line">            dispatch_async(dispatch_get_main_queue(), ^&#123;</span><br><span class="line">                // 隐藏密码输入界面，禁用支付按钮</span><br><span class="line">                [MBProgressHUD showMessage:@&quot;付款超时，请返回重新选择座位&quot;];</span><br><span class="line">            &#125;);</span><br><span class="line">        &#125;else &#123;</span><br><span class="line">            int minutes = timeout/60;</span><br><span class="line">            int seconds = timeout%60;</span><br><span class="line">            NSString *strTime = [NSString stringWithFormat:@&quot;%d 分 %d 秒&quot;, minutes, seconds];</span><br><span class="line">            dispatch_async(dispatch_get_main_queue(), ^&#123;</span><br><span class="line">                label.text = [NSString stringWithFormat:@&quot;请在 %@ 内完成付款，晚了座位就没有了哦&quot;,strTime];</span><br><span class="line">            &#125;);</span><br><span class="line">            timeout--;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">    dispatch_resume(_timer);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3>参考</h3>
+<ul>
 <li><a href="http://www.cnblogs.com/siwenss/p/6428903.html" target="_blank" rel="noopener">iOS中常用的验证码倒计时, 支付半小时倒计时.</a></li>
 </ul>
 
@@ -947,7 +948,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#参考"><span class="nav-number">1.</span> <span class="nav-text">参考</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">1.</span> <span class="nav-text">参考</span></a></li></ol></div>
             
 
           </div>
@@ -982,7 +983,7 @@
       <i class="fa fa-area-chart"></i>
     </span>
     
-    <span title="站点总字数">2.2m</span>
+    <span title="站点总字数">2.3m</span>
   
 
   
@@ -991,7 +992,7 @@
       <i class="fa fa-coffee"></i>
     </span>
     
-    <span title="站点阅读时长">33:50</span>
+    <span title="站点阅读时长">34:07</span>
   
 </div>
 

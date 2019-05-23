@@ -123,19 +123,19 @@
 
 
 
-  <meta name="description" content="在网络流和文件的操作中，需要处理大量的二进制数据，JavaScript自有的字符串数据类型无法满足需求（注：ECAMScript 2015 引入了 TypedArray），Buffer 对象应运而生，以提供对二进制数据的操作。 官方文档：Node.js Buffer API Buffer 结构Buffer 是一个类似于 Array 的对象，但它主要用于操作字节。Buffer 的运用场景：文件I/O">
+  <meta name="description" content="在网络流和文件的操作中，需要处理大量的二进制数据，JavaScript自有的字符串数据类型无法满足需求（注：ECAMScript 2015 引入了 TypedArray），Buffer 对象应运而生，以提供对二进制数据的操作。 官方文档：Node.js Buffer API Buffer 结构 Buffer 是一个类似于 Array 的对象，但它主要用于操作字节。 Buffer 的运用场景：文件I">
 <meta name="keywords" content="Node.js">
 <meta property="og:type" content="article">
 <meta property="og:title" content="深入浅出Node.js_Buffer">
 <meta property="og:url" content="https://andy0570.com/2018/10/28/深入浅出Node.js_Buffer/index.html">
 <meta property="og:site_name" content="独木舟的木">
-<meta property="og:description" content="在网络流和文件的操作中，需要处理大量的二进制数据，JavaScript自有的字符串数据类型无法满足需求（注：ECAMScript 2015 引入了 TypedArray），Buffer 对象应运而生，以提供对二进制数据的操作。 官方文档：Node.js Buffer API Buffer 结构Buffer 是一个类似于 Array 的对象，但它主要用于操作字节。Buffer 的运用场景：文件I/O">
+<meta property="og:description" content="在网络流和文件的操作中，需要处理大量的二进制数据，JavaScript自有的字符串数据类型无法满足需求（注：ECAMScript 2015 引入了 TypedArray），Buffer 对象应运而生，以提供对二进制数据的操作。 官方文档：Node.js Buffer API Buffer 结构 Buffer 是一个类似于 Array 的对象，但它主要用于操作字节。 Buffer 的运用场景：文件I">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/075314.jpg">
 <meta property="og:updated_time" content="2019-05-01T12:45:20.417Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="深入浅出Node.js_Buffer">
-<meta name="twitter:description" content="在网络流和文件的操作中，需要处理大量的二进制数据，JavaScript自有的字符串数据类型无法满足需求（注：ECAMScript 2015 引入了 TypedArray），Buffer 对象应运而生，以提供对二进制数据的操作。 官方文档：Node.js Buffer API Buffer 结构Buffer 是一个类似于 Array 的对象，但它主要用于操作字节。Buffer 的运用场景：文件I/O">
+<meta name="twitter:description" content="在网络流和文件的操作中，需要处理大量的二进制数据，JavaScript自有的字符串数据类型无法满足需求（注：ECAMScript 2015 引入了 TypedArray），Buffer 对象应运而生，以提供对二进制数据的操作。 官方文档：Node.js Buffer API Buffer 结构 Buffer 是一个类似于 Array 的对象，但它主要用于操作字节。 Buffer 的运用场景：文件I">
 <meta name="twitter:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/075314.jpg">
 
 
@@ -582,55 +582,68 @@
       
         <p>在网络流和文件的操作中，需要处理大量的二进制数据，JavaScript自有的字符串数据类型无法满足需求（注：ECAMScript 2015 引入了 <strong><a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/TypedArray" target="_blank" rel="noopener">TypedArray</a></strong>），Buffer 对象应运而生，以提供对<strong>二进制数据</strong>的操作。</p>
 <p>官方文档：<a href="http://nodejs.cn/api/buffer.html" target="_blank" rel="noopener">Node.js Buffer API</a></p>
-<h2 id="Buffer-结构"><a href="#Buffer-结构" class="headerlink" title="Buffer 结构"></a>Buffer 结构</h2><p>Buffer 是一个类似于 Array 的对象，但它主要用于操作<strong>字节</strong>。<br>Buffer 的运用场景：<strong>文件I/O</strong>、<strong>网络I/O</strong>。<br>Buffer 是二进制数据，字符串与Buffer之间存在编码关系。</p>
-<a id="more"></a>
-<h3 id="模块结构"><a href="#模块结构" class="headerlink" title="模块结构"></a>模块结构</h3><p>Buffer 中，性能相关部分，使用C++实现；非性能相关部分，使用JavaScript实现。</p>
+<h2>Buffer 结构</h2>
+<p>Buffer 是一个类似于 Array 的对象，但它主要用于操作<strong>字节</strong>。
+Buffer 的运用场景：<strong>文件I/O</strong>、<strong>网络I/O</strong>。
+Buffer 是二进制数据，字符串与Buffer之间存在编码关系。</p>
+<p>&lt;!-- more --&gt;</p>
+<h3>模块结构</h3>
+<p>Buffer 中，性能相关部分，使用C++实现；非性能相关部分，使用JavaScript实现。</p>
 <p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/075314.jpg" alt="image"></p>
 <ul>
 <li>Buffer 所占用的内存不是通过 V8 分配的，属于==堆外内存==。</li>
 <li>Node 在进程启动时已经加载了 Buffer，并将其放在了全局对象（global）上。所以在使用 Buffer 时，无须通过 <code>require()</code> 即可直接使用。</li>
 </ul>
-<h3 id="Buffer-对象"><a href="#Buffer-对象" class="headerlink" title="Buffer 对象"></a>Buffer 对象</h3><p>Buffer 对象类似于数组，它的元素为 16 进制的两位数，即0到255的数值。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> str = <span class="string">'深入浅出 node.js'</span>;</span><br><span class="line"><span class="keyword">var</span> buf = Buffer.from(str, <span class="string">'utf-8'</span>);</span><br><span class="line"><span class="built_in">console</span>.log(buf); <span class="comment">// &lt;Buffer e6 b7 b1 e5 85 a5 e6 b5 85 e5 87 ba 20 6e 6f 64 65 2e 6a 73&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> buf2 = Buffer.alloc(<span class="number">100</span>);</span><br><span class="line"><span class="comment">// 通过 length 获取长度</span></span><br><span class="line"><span class="built_in">console</span>.log(buf2.length); <span class="comment">// 100</span></span><br><span class="line"><span class="comment">// 通过下标访问元素、赋值</span></span><br><span class="line"><span class="built_in">console</span>.log(buf2[<span class="number">10</span>]); <span class="comment">// 0</span></span><br></pre></td></tr></table></figure>
+<h3>Buffer 对象</h3>
+<p>Buffer 对象类似于数组，它的元素为 16 进制的两位数，即0到255的数值。</p>
+<p><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> str = <span class="string">'深入浅出 node.js'</span>;</span><br><span class="line"><span class="keyword">var</span> buf = Buffer.from(str, <span class="string">'utf-8'</span>);</span><br><span class="line"><span class="built_in">console</span>.log(buf); <span class="comment">// &lt;Buffer e6 b7 b1 e5 85 a5 e6 b5 85 e5 87 ba 20 6e 6f 64 65 2e 6a 73&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> buf2 = Buffer.alloc(<span class="number">100</span>);</span><br><span class="line"><span class="comment">// 通过 length 获取长度</span></span><br><span class="line"><span class="built_in">console</span>.log(buf2.length); <span class="comment">// 100</span></span><br><span class="line"><span class="comment">// 通过下标访问元素、赋值</span></span><br><span class="line"><span class="built_in">console</span>.log(buf2[<span class="number">10</span>]); <span class="comment">// 0</span></span><br></pre></td></tr></table></figure></p>
 <p>给元素的赋值（0～255）规则：</p>
 <ul>
 <li>赋值&lt;0，逐次加256；</li>
 <li>赋值&gt;255，逐次减256；</li>
 <li>有小数，舍弃小数部分；</li>
 </ul>
-<h3 id="Buffer-内存分配"><a href="#Buffer-内存分配" class="headerlink" title="Buffer 内存分配"></a>Buffer 内存分配</h3><ul>
-<li><p>Buffer 对象的内存分配是在 Node 的 C++ 层面上实现的内存申请。</p>
+<h3>Buffer 内存分配</h3>
+<ul>
+<li>
+<p>Buffer 对象的内存分配是在 Node 的 C++ 层面上实现的内存申请。</p>
 </li>
-<li><p>Node采用了 slab 分配机制，slab 是一种动态内存管理机制。slab 是一块申请好的固定大小的内存区域，slab的3种状态：</p>
+<li>
+<p>Node采用了 slab 分配机制，slab 是一种动态内存管理机制。slab 是一块申请好的固定大小的内存区域，slab的3种状态：</p>
 <ul>
 <li>full：完全分配状态；</li>
 <li>partial：部分分配状态；</li>
 <li>empty：没有被分配状态；</li>
 </ul>
 </li>
-<li>Node 以 8KB 来区分 Buffer 是大对象还是小对象。</li>
+<li>
+<p>Node 以 8KB 来区分 Buffer 是大对象还是小对象。</p>
+</li>
 </ul>
 <p>简单而言，真正的内存是在 Node 的 C++ 层面提供的，JavaScript 层面只是使用它。</p>
 <ul>
 <li>当进行小而频繁的 Buffer 操作时，采用 slab 的机制进行预先申请和事后分配，使得 JavaScript 到操作系统之间不必有过多的内存申请方面的系统调用。</li>
 <li>对于大块的 Buffer 而言，则直接使用 C++ 层面提供的内存，而无需细腻的分配操作。</li>
 </ul>
-<h2 id="Buffer-的转换"><a href="#Buffer-的转换" class="headerlink" title="Buffer 的转换"></a>Buffer 的转换</h2><p>Buffer 对象可以与字符串之间相互转换。</p>
+<h2>Buffer 的转换</h2>
+<p>Buffer 对象可以与字符串之间相互转换。</p>
 <p>支持的字符串编码类型有：ASCII、UTF-8、UTF-16LE/UCS-2、Base64、Latin1、Binary、Hex。</p>
 <p>判断编码是否支持转换：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Buffer.isEncoding(ecoding); <span class="comment">// true/false</span></span><br></pre></td></tr></table></figure>
+<p><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Buffer.isEncoding(ecoding); <span class="comment">// true/false</span></span><br></pre></td></tr></table></figure></p>
 <p>第三方模块：</p>
 <ul>
 <li>iconv：通过 C++ 调用 libiconv 库完成。</li>
 <li>iconv-lite：通过 JavaScript 实现。</li>
 </ul>
-<h3 id="宽字节中文乱码"><a href="#宽字节中文乱码" class="headerlink" title="宽字节中文乱码"></a>宽字节中文乱码</h3><ul>
-<li><code>buf.toString([encoding[, start[, end]]])</code> </li>
+<h3>宽字节中文乱码</h3>
+<ul>
+<li><code>buf.toString([encoding[, start[, end]]])</code></li>
 <li>文件可读流在读取时会逐个读取Buffer。</li>
 <li>宽字节字符串在UTF-8编码下是以3个字节的方式存储的。</li>
 </ul>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Buffer 的拼接</span></span><br><span class="line"><span class="keyword">var</span> chunks = []; <span class="comment">// 用数组来存储接收到的所有Buffer片段</span></span><br><span class="line"><span class="keyword">var</span> size = <span class="number">0</span>;    <span class="comment">// 记录下所有片段的总长度</span></span><br><span class="line">res.on(<span class="string">'data'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">chunk</span>) </span>&#123;</span><br><span class="line">    chunks.push(chunk);</span><br><span class="line">    size += chunk.length;</span><br><span class="line">&#125;);</span><br><span class="line">res.on(<span class="string">'end'</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="comment">// Buffer.concat() 生成一个合并的 Buffer 对象</span></span><br><span class="line">    <span class="keyword">var</span> buf = Buffer.concat(chunks, size);</span><br><span class="line">    vr str = iconv.decode(buf, <span class="string">'utf8'</span>);</span><br><span class="line">    <span class="built_in">console</span>.log(str);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-<h2 id="Buffer-与性能"><a href="#Buffer-与性能" class="headerlink" title="Buffer 与性能"></a>Buffer 与性能</h2><ul>
+<p><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Buffer 的拼接</span></span><br><span class="line"><span class="keyword">var</span> chunks = []; <span class="comment">// 用数组来存储接收到的所有Buffer片段</span></span><br><span class="line"><span class="keyword">var</span> size = <span class="number">0</span>;    <span class="comment">// 记录下所有片段的总长度</span></span><br><span class="line">res.on(<span class="string">'data'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">chunk</span>) </span>&#123;</span><br><span class="line">    chunks.push(chunk);</span><br><span class="line">    size += chunk.length;</span><br><span class="line">&#125;);</span><br><span class="line">res.on(<span class="string">'end'</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="comment">// Buffer.concat() 生成一个合并的 Buffer 对象</span></span><br><span class="line">    <span class="keyword">var</span> buf = Buffer.concat(chunks, size);</span><br><span class="line">    vr str = iconv.decode(buf, <span class="string">'utf8'</span>);</span><br><span class="line">    <span class="built_in">console</span>.log(str);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<h2>Buffer 与性能</h2>
+<ul>
 <li>通过预先转换静态内容为 Buffer 对象，可以有效地减少 CPU 的重复使用，节省服务器资源。</li>
 <li>在文件读取时，<strong>highWaterMark</strong> 的设置对性能至关重要。该值越大，读取速度越快。</li>
 </ul>
@@ -996,7 +1009,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Buffer-结构"><span class="nav-number">1.</span> <span class="nav-text">Buffer 结构</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#模块结构"><span class="nav-number">1.1.</span> <span class="nav-text">模块结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Buffer-对象"><span class="nav-number">1.2.</span> <span class="nav-text">Buffer 对象</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Buffer-内存分配"><span class="nav-number">1.3.</span> <span class="nav-text">Buffer 内存分配</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Buffer-的转换"><span class="nav-number">2.</span> <span class="nav-text">Buffer 的转换</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#宽字节中文乱码"><span class="nav-number">2.1.</span> <span class="nav-text">宽字节中文乱码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Buffer-与性能"><span class="nav-number">3.</span> <span class="nav-text">Buffer 与性能</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#undefined"><span class="nav-number">1.</span> <span class="nav-text">Buffer 结构</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">1.1.</span> <span class="nav-text">模块结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">1.2.</span> <span class="nav-text">Buffer 对象</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">1.3.</span> <span class="nav-text">Buffer 内存分配</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#undefined"><span class="nav-number">2.</span> <span class="nav-text">Buffer 的转换</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">2.1.</span> <span class="nav-text">宽字节中文乱码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#undefined"><span class="nav-number">3.</span> <span class="nav-text">Buffer 与性能</span></a></li></ol></div>
             
 
           </div>
@@ -1031,7 +1044,7 @@
       <i class="fa fa-area-chart"></i>
     </span>
     
-    <span title="站点总字数">2.2m</span>
+    <span title="站点总字数">2.3m</span>
   
 
   
@@ -1040,7 +1053,7 @@
       <i class="fa fa-coffee"></i>
     </span>
     
-    <span title="站点阅读时长">33:50</span>
+    <span title="站点阅读时长">34:07</span>
   
 </div>
 
