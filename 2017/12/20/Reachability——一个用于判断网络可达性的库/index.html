@@ -381,7 +381,7 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>5.8k</span>
+              <span>5.7k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -428,44 +428,172 @@
 </ul>
 <p>Boom, you’re done.</p>
 <h2 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h2><h3 id="Blocks-方法示例"><a href="#Blocks-方法示例" class="headerlink" title="Blocks 方法示例"></a>Blocks 方法示例</h3><p>该示例使用 blocks 块来监听网络接口状态是否改变。该 blocks 将会在<strong>后台线程</strong>被调用，因此你需要将 UI 更新切换到主线程中。</p>
-<h4 id="In-Objective-C"><a href="#In-Objective-C" class="headerlink" title="In Objective-C"></a><strong>In</strong> Objective-C</h4><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">// 创建 reachability 对象</span><br><span class="line">Reachability *reach = [Reachability reachabilityWithHostname:@"www.google.com"];</span><br><span class="line"></span><br><span class="line">// 设置网络可达的 blocks</span><br><span class="line">reach.reachableBlock = ^(Reachability*reach)</span><br><span class="line">{</span><br><span class="line">    // 记住这里的代码会在后台线程中被调用，如果你想要更新UI，一定到切换到主线程：</span><br><span class="line">    dispatch_async(dispatch_get_main_queue(), ^{</span><br><span class="line">        NSLog(@"REACHABLE!");</span><br><span class="line">    });</span><br><span class="line">};</span><br><span class="line"></span><br><span class="line">// 设置网络不可达的 blocks</span><br><span class="line">reach.unreachableBlock = ^(Reachability*reach)</span><br><span class="line">{</span><br><span class="line">    NSLog(@"UNREACHABLE!");</span><br><span class="line">};</span><br><span class="line"></span><br><span class="line">// 开启监听</span><br><span class="line">[reach startNotifier];</span><br></pre></td></tr></tbody></table></figure>
+<h4 id="In-Objective-C"><a href="#In-Objective-C" class="headerlink" title="In Objective-C"></a><strong>In</strong> Objective-C</h4><pre class="line-numbers language-Objective-C" data-language="Objective-C"><code class="language-Objective-C">// 创建 reachability 对象
+Reachability *reach = [Reachability reachabilityWithHostname:@"www.google.com"];
 
-<h3 id="In-Swift-3"><a href="#In-Swift-3" class="headerlink" title="In Swift 3"></a>In Swift 3</h3><figure class="highlight swift"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> Reachability</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> reach: <span class="type">Reachability?</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">application</span><span class="params">(<span class="number">_</span> application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: <span class="keyword">Any</span>]?)</span></span> -&gt; <span class="type">Bool</span> {</span><br><span class="line">        <span class="comment">// Allocate a reachability object</span></span><br><span class="line">        <span class="keyword">self</span>.reach = <span class="type">Reachability</span>.forInternetConnection()</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// Set the blocks</span></span><br><span class="line">        <span class="keyword">self</span>.reach!.reachableBlock = {</span><br><span class="line">            (reach: <span class="type">Reachability?</span>) -&gt; <span class="type">Void</span> <span class="keyword">in</span></span><br><span class="line">            </span><br><span class="line">            <span class="comment">// keep in mind this is called on a background thread</span></span><br><span class="line">            <span class="comment">// and if you are updating the UI it needs to happen</span></span><br><span class="line">            <span class="comment">// on the main thread, like this:</span></span><br><span class="line">            <span class="type">DispatchQueue</span>.main.async {</span><br><span class="line">                <span class="built_in">print</span>(<span class="string">"REACHABLE!"</span>)</span><br><span class="line">            }</span><br><span class="line">        }</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">self</span>.reach!.unreachableBlock = {</span><br><span class="line">            (reach: <span class="type">Reachability?</span>) -&gt; <span class="type">Void</span> <span class="keyword">in</span></span><br><span class="line">            <span class="built_in">print</span>(<span class="string">"UNREACHABLE!"</span>)</span><br><span class="line">        }</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">self</span>.reach!.startNotifier()</span><br><span class="line">    </span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span></span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+// 设置网络可达的 blocks
+reach.reachableBlock = ^(Reachability*reach)
+{
+    // 记住这里的代码会在后台线程中被调用，如果你想要更新UI，一定到切换到主线程：
+    dispatch_async(dispatch_get_main_queue(), ^{
+        NSLog(@"REACHABLE!");
+    });
+};
+
+// 设置网络不可达的 blocks
+reach.unreachableBlock = ^(Reachability*reach)
+{
+    NSLog(@"UNREACHABLE!");
+};
+
+// 开启监听
+[reach startNotifier];<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="In-Swift-3"><a href="#In-Swift-3" class="headerlink" title="In Swift 3"></a>In Swift 3</h3><pre class="line-numbers language-Swift" data-language="Swift"><code class="language-Swift">import Reachability
+
+var reach: Reachability?
+
+func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -&gt; Bool {
+        // Allocate a reachability object
+        self.reach = Reachability.forInternetConnection()
+
+        // Set the blocks
+        self.reach!.reachableBlock = {
+            (reach: Reachability?) -&gt; Void in
+
+            // keep in mind this is called on a background thread
+            // and if you are updating the UI it needs to happen
+            // on the main thread, like this:
+            DispatchQueue.main.async {
+                print("REACHABLE!")
+            }
+        }
+
+        self.reach!.unreachableBlock = {
+            (reach: Reachability?) -&gt; Void in
+            print("UNREACHABLE!")
+        }
+
+        self.reach!.startNotifier()
+
+        return true
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <h3 id="NSNotification-通知方法示例"><a href="#NSNotification-通知方法示例" class="headerlink" title="NSNotification 通知方法示例"></a><code>NSNotification</code> 通知方法示例</h3><p>此示例将使用 <code>NSNotification</code> 来通知网络连接状态的变化。 它们将在主线程上被调用，因此你可以从该函数内部进行 UI 更新。</p>
 <p>此外，它要求 <code>Reachability</code> 对象默认将 WWAN（3G / EDGE / CDMA）蜂窝网络视为不可达的连接（如果你正在编写视频流应用程序（例如，用于保存用户的数据计划），则可以使用此功能）。</p>
-<h4 id="In-Objective-C-1"><a href="#In-Objective-C-1" class="headerlink" title="In Objective-C"></a>In Objective-C</h4><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">// 通过指定域名的方式创建 reachability 对象</span><br><span class="line">Reachability* reach = [Reachability reachabilityWithHostname:@"www.google.com"];</span><br><span class="line"></span><br><span class="line">// 不判断蜂窝网络是否可用</span><br><span class="line">reach.reachableOnWWAN = NO;</span><br><span class="line"></span><br><span class="line">// Here we set up a NSNotification observer. The Reachability that caused the notification</span><br><span class="line">// is passed in the object parameter</span><br><span class="line">[[NSNotificationCenter defaultCenter] addObserver:self</span><br><span class="line">                                         selector:@selector(reachabilityChanged:)</span><br><span class="line">                                             name:kReachabilityChangedNotification</span><br><span class="line">                                           object:nil];</span><br><span class="line"></span><br><span class="line">[reach startNotifier];</span><br></pre></td></tr></tbody></table></figure>
+<h4 id="In-Objective-C-1"><a href="#In-Objective-C-1" class="headerlink" title="In Objective-C"></a>In Objective-C</h4><pre class="line-numbers language-Objective-C" data-language="Objective-C"><code class="language-Objective-C">// 通过指定域名的方式创建 reachability 对象
+Reachability* reach = [Reachability reachabilityWithHostname:@"www.google.com"];
+
+// 不判断蜂窝网络是否可用
+reach.reachableOnWWAN = NO;
+
+// Here we set up a NSNotification observer. The Reachability that caused the notification
+// is passed in the object parameter
+[[NSNotificationCenter defaultCenter] addObserver:self
+                                         selector:@selector(reachabilityChanged:)
+                                             name:kReachabilityChangedNotification
+                                           object:nil];
+
+[reach startNotifier];<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>接收通知的方法：</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">-(void)reachabilityChanged:(NSNotification*)note</span><br><span class="line">{</span><br><span class="line">    Reachability * reach = [note object];</span><br><span class="line">    if([reach isReachable])</span><br><span class="line">    {</span><br><span class="line">        NSString * temp = [NSString stringWithFormat:@"GOOGLE Notification Says Reachable(%@)", reach.currentReachabilityString];</span><br><span class="line">        NSLog(@"%@", temp);</span><br><span class="line">    }</span><br><span class="line">    else</span><br><span class="line">    {</span><br><span class="line">        NSString * temp = [NSString stringWithFormat:@"GOOGLE Notification Says Unreachable(%@)", reach.currentReachabilityString];</span><br><span class="line">        NSLog(@"%@", temp);</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">-(void)reachabilityChanged:(NSNotification*)note
+{
+    Reachability * reach = [note object];
+    if([reach isReachable])
+    {
+        NSString * temp = [NSString stringWithFormat:@"GOOGLE Notification Says Reachable(%@)", reach.currentReachabilityString];
+        NSLog(@"%@", temp);
+    }
+    else
+    {
+        NSString * temp = [NSString stringWithFormat:@"GOOGLE Notification Says Unreachable(%@)", reach.currentReachabilityString];
+        NSLog(@"%@", temp);
+    }
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 
 
-<h4 id="In-Swift-3-1"><a href="#In-Swift-3-1" class="headerlink" title="In Swift 3"></a>In Swift 3</h4><figure class="highlight swift"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> Reachability</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> reach: <span class="type">Reachability?</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">application</span><span class="params">(<span class="number">_</span> application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: <span class="keyword">Any</span>]?)</span></span> -&gt; <span class="type">Bool</span> {</span><br><span class="line">    <span class="comment">// Allocate a reachability object</span></span><br><span class="line">    <span class="keyword">self</span>.reach = <span class="type">Reachability</span>.forInternetConnection()</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// Tell the reachability that we DON'T want to be reachable on 3G/EDGE/CDMA</span></span><br><span class="line">    <span class="keyword">self</span>.reach!.reachableOnWWAN = <span class="literal">false</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">// Here we set up a NSNotification observer. The Reachability that caused the notification</span></span><br><span class="line">    <span class="comment">// is passed in the object parameter</span></span><br><span class="line">    <span class="type">NotificationCenter</span>.<span class="keyword">default</span>.addObserver(</span><br><span class="line">        <span class="keyword">self</span>,</span><br><span class="line">        selector: #selector(reachabilityChanged),</span><br><span class="line">        name: <span class="type">NSNotification</span>.<span class="type">Name</span>.reachabilityChanged,</span><br><span class="line">        object: <span class="literal">nil</span></span><br><span class="line">    )</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">self</span>.reach!.startNotifier()</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span></span><br><span class="line">}</span><br><span class="line">        </span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">reachabilityChanged</span><span class="params">(notification: NSNotification)</span></span> {</span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">self</span>.reach!.isReachableViaWiFi() || <span class="keyword">self</span>.reach!.isReachableViaWWAN() {</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">"Service avalaible!!!"</span>)</span><br><span class="line">    } <span class="keyword">else</span> {</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">"No service avalaible!!!"</span>)</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<h4 id="In-Swift-3-1"><a href="#In-Swift-3-1" class="headerlink" title="In Swift 3"></a>In Swift 3</h4><pre class="line-numbers language-Swift" data-language="Swift"><code class="language-Swift">import Reachability
+
+var reach: Reachability?
+
+func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -&gt; Bool {
+    // Allocate a reachability object
+    self.reach = Reachability.forInternetConnection()
+
+    // Tell the reachability that we DON'T want to be reachable on 3G/EDGE/CDMA
+    self.reach!.reachableOnWWAN = false
+
+    // Here we set up a NSNotification observer. The Reachability that caused the notification
+    // is passed in the object parameter
+    NotificationCenter.default.addObserver(
+        self,
+        selector: #selector(reachabilityChanged),
+        name: NSNotification.Name.reachabilityChanged,
+        object: nil
+    )
+
+    self.reach!.startNotifier()
+
+    return true
+}
+
+func reachabilityChanged(notification: NSNotification) {
+    if self.reach!.isReachableViaWiFi() || self.reach!.isReachableViaWWAN() {
+        print("Service avalaible!!!")
+    } else {
+        print("No service avalaible!!!")
+    }
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <h2 id="Tell-the-world"><a href="#Tell-the-world" class="headerlink" title="Tell the world"></a>Tell the world</h2><p>Head over to <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL3RvbnltaWxsaW9uL1JlYWNoYWJpbGl0eS93aWtpL1Byb2plY3RzLXVzaW5nLVJlYWNoYWJpbGl0eQ==">Projects using Reachability<i class="fa fa-external-link-alt"></i></span> and add your project for “Maximum Wins!”.</p>
 <h2 id="小结："><a href="#小结：" class="headerlink" title="小结："></a>小结：</h2><ol>
 <li>创建 <strong>Reachability</strong> 对象的方法有三种：</li>
 </ol>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">+(instancetype)reachabilityWithHostName:(NSString*)hostname; // 指定域名</span><br><span class="line">+(instancetype)reachabilityForInternetConnection; // 通用网络连接</span><br><span class="line">+(instancetype)reachabilityWithAddress:(void *)hostAddress; // 指定地址</span><br><span class="line">+(instancetype)reachabilityForLocalWiFi; // 指定Wi-Fi网络</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">+(instancetype)reachabilityWithHostName:(NSString*)hostname; // 指定域名
++(instancetype)reachabilityForInternetConnection; // 通用网络连接
++(instancetype)reachabilityWithAddress:(void *)hostAddress; // 指定地址
++(instancetype)reachabilityForLocalWiFi; // 指定Wi-Fi网络<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
 
 <ol start="2">
 <li><p>可选设置，是否忽视蜂窝网络可达性</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">@property (nonatomic, assign) BOOL reachableOnWWAN;</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">@property (nonatomic, assign) BOOL reachableOnWWAN;<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 </li>
 <li><p>监听网络可达性的方法有两种：</p>
 <p>2.1 Blocks 方式</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">@property (nonatomic, copy) NetworkReachable    reachableBlock;</span><br><span class="line">@property (nonatomic, copy) NetworkUnreachable  unreachableBlock;</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">@property (nonatomic, copy) NetworkReachable    reachableBlock;
+@property (nonatomic, copy) NetworkUnreachable  unreachableBlock;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 
 <p>2.2 通知方式</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[[NSNotificationCenter defaultCenter] addObserver:self </span><br><span class="line">                                         selector:@selector(reachabilityChanged:) </span><br><span class="line">                                             name:kReachabilityChangedNotification </span><br><span class="line">                                           object:nil];</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">[[NSNotificationCenter defaultCenter] addObserver:self 
+                                      selector:@selector(reachabilityChanged:) 
+                                          name:kReachabilityChangedNotification 
+                                        object:nil];<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
 </li>
 <li><p>开始、停止监听</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">-(BOOL)startNotifier;</span><br><span class="line">-(void)stopNotifier;</span><br></pre></td></tr></tbody></table></figure>
-
-</li>
-</ol>
-<h3 id="实例代码："><a href="#实例代码：" class="headerlink" title="实例代码："></a>实例代码：</h3><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">// 网络可达性检查</span><br><span class="line">Reachability *reachability = [Reachability reachabilityWithHostName:URL_HOST];</span><br><span class="line">reachability.reachableBlock = ^(Reachability *reachability) {</span><br><span class="line">    // 3.0s 后执行加载任务</span><br><span class="line">    // 默认情况下，切换到主线程更新UI，这里延迟3秒是为了多旋转一会菊花用的。</span><br><span class="line">    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{</span><br><span class="line">        // 连接服务器</span><br><span class="line">        [self connectToServer];</span><br><span class="line">    });</span><br><span class="line">};</span><br><span class="line">reachability.unreachableBlock = ^(Reachability *reachability) {</span><br><span class="line">    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{</span><br><span class="line">        self.emptyDescription = @"无法访问服务器，请稍后再试。";</span><br><span class="line">        self.displayEmptyDataSet = YES;</span><br><span class="line">        self.loading = NO;</span><br><span class="line">    });</span><br><span class="line">};</span><br><span class="line">[reachability startNotifier];</span><br></pre></td></tr></tbody></table></figure>
+<p>&lt;!–hexoPostRenderEscape:</p><pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">-(BOOL)startNotifier;<p></p>
+</code></pre></li><code class="language-objective-c">
+</code></ol><code class="language-objective-c">
+</code><p><code class="language-objective-c">-(void)stopNotifier;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code>:hexoPostRenderEscape–&gt;</p>
+<h3 id="实例代码："><a href="#实例代码：" class="headerlink" title="实例代码："></a>实例代码：</h3><pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">// 网络可达性检查
+Reachability *reachability = [Reachability reachabilityWithHostName:URL_HOST];
+reachability.reachableBlock = ^(Reachability *reachability) {
+    // 3.0s 后执行加载任务
+    // 默认情况下，切换到主线程更新UI，这里延迟3秒是为了多旋转一会菊花用的。
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        // 连接服务器
+        [self connectToServer];
+    });
+};
+reachability.unreachableBlock = ^(Reachability *reachability) {
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        self.emptyDescription = @"无法访问服务器，请稍后再试。";
+        self.displayEmptyDataSet = YES;
+        self.loading = NO;
+    });
+};
+[reachability startNotifier];<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
     </div>
 
@@ -585,12 +713,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">2.1m</span>
+    <span title="站点总字数">2.3m</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">31:21</span>
+    <span title="站点阅读时长">34:09</span>
 </div>
   <div class="powered-by">由 <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZw==">NexT.Gemini</span> 强力驱动
   </div>

@@ -385,7 +385,7 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>16k</span>
+              <span>15k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -444,34 +444,347 @@
 <li>只支持 file 文件上传（应用程序退出后，data 或 stream 类型的传输将会失败）。</li>
 <li>如果在应用程序处于后台时启动后台传输，配置对象的 <span class="exturl" data-url="aHR0cHM6Ly9kZXZlbG9wZXIuYXBwbGUuY29tL2RvY3VtZW50YXRpb24vZm91bmRhdGlvbi9uc3VybHNlc3Npb25jb25maWd1cmF0aW9uLzE0MTE1NTItZGlzY3JldGlvbmFyeQ==">discretionary<i class="fa fa-external-link-alt"></i></span> 属性将被视为 true。</li>
 </ul>
-<h3 id="网络请求创建流程"><a href="#网络请求创建流程" class="headerlink" title="网络请求创建流程"></a>网络请求创建流程</h3><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">NSURL--&gt;NSURLRequest</span><br><span class="line">NSURLRequest--&gt;NSURLSessionTask</span><br><span class="line">NSURLSessionConfiguration--&gt;NSURLSession</span><br><span class="line">NSURLSession--&gt;NSURLSessionTask</span><br></pre></td></tr></tbody></table></figure>
+<h3 id="网络请求创建流程"><a href="#网络请求创建流程" class="headerlink" title="网络请求创建流程"></a>网络请求创建流程</h3><pre class="line-numbers language-none"><code class="language-none">graph LR
+NSURL--&gt;NSURLRequest
+NSURLRequest--&gt;NSURLSessionTask
+NSURLSessionConfiguration--&gt;NSURLSession
+NSURLSession--&gt;NSURLSessionTask<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p><img data-src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071216.png" alt="网络请求流程图.png"></p>
-<h2 id="创建和配置-Session"><a href="#创建和配置-Session" class="headerlink" title="创建和配置 Session"></a>创建和配置 Session</h2><h3 id="一、NSURLSessionDataTask-示例"><a href="#一、NSURLSessionDataTask-示例" class="headerlink" title="一、NSURLSessionDataTask 示例"></a>一、NSURLSessionDataTask 示例</h3><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">// 1.创建 NSURLSessionConfiguration</span><br><span class="line">NSURLSessionConfiguration *defaultConfiguration = [NSURLSessionConfiguration defaultSessionConfiguration];</span><br><span class="line">NSURLSessionConfiguration *ephemeralConfiguration = [NSURLSessionConfiguration ephemeralSessionConfiguration];</span><br><span class="line">NSURLSessionConfiguration *backgroundConfiguration = [NSURLSessionConfiguration backgroundSessionConfigurationWithIdentifier: @"com.myapp.networking.background"];</span><br><span class="line"></span><br><span class="line">// 配置默认会话的缓存行为</span><br><span class="line">NSString *cachesDirectory = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES).firstObject;</span><br><span class="line">NSString *cachePath = [cachesDirectory stringByAppendingPathComponent:@"MyCache"];</span><br><span class="line"></span><br><span class="line">/* Note:</span><br><span class="line"> iOS需要设置相对路径:〜/Library/Caches</span><br><span class="line"> OS X 要设置绝对路径。</span><br><span class="line"> */</span><br><span class="line">NSURLCache *cache = [[NSURLCache alloc] initWithMemoryCapacity:16384</span><br><span class="line">                                                  diskCapacity:268435456</span><br><span class="line">                                                      diskPath:cachePath];</span><br><span class="line">defaultConfiguration.URLCache = cache;</span><br><span class="line">defaultConfiguration.requestCachePolicy = NSURLRequestUseProtocolCachePolicy;</span><br><span class="line"></span><br><span class="line">// 2.创建 NSURLSession</span><br><span class="line">NSOperationQueue *operationQueue = [NSOperationQueue mainQueue];</span><br><span class="line"></span><br><span class="line">NSURLSession *defaultSession = [NSURLSession sessionWithConfiguration:defaultConfiguration delegate:self delegateQueue:operationQueue];</span><br><span class="line">NSURLSession *ephemeralSession = [NSURLSession sessionWithConfiguration:ephemeralConfiguration delegate:self delegateQueue:operationQueue];</span><br><span class="line">NSURLSession *backgroundSession = [NSURLSession sessionWithConfiguration:backgroundConfiguration delegate:self delegateQueue:operationQueue];</span><br><span class="line"></span><br><span class="line">// 3.创建 NSURLSessionDataTask</span><br><span class="line">NSURL *url = [NSURL URLWithString:@"https://www.example.com/"];</span><br><span class="line"></span><br><span class="line">[[defaultSession dataTaskWithURL:url completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {</span><br><span class="line">    NSLog(@"Got response %@ with error %@.\n", response, error);</span><br><span class="line">    NSLog(@"DATA:\n%@\nEND DATA\n", [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);</span><br><span class="line">          }] resume];</span><br></pre></td></tr></tbody></table></figure>
+<h2 id="创建和配置-Session"><a href="#创建和配置-Session" class="headerlink" title="创建和配置 Session"></a>创建和配置 Session</h2><h3 id="一、NSURLSessionDataTask-示例"><a href="#一、NSURLSessionDataTask-示例" class="headerlink" title="一、NSURLSessionDataTask 示例"></a>一、NSURLSessionDataTask 示例</h3><pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">// 1.创建 NSURLSessionConfiguration
+NSURLSessionConfiguration *defaultConfiguration = [NSURLSessionConfiguration defaultSessionConfiguration];
+NSURLSessionConfiguration *ephemeralConfiguration = [NSURLSessionConfiguration ephemeralSessionConfiguration];
+NSURLSessionConfiguration *backgroundConfiguration = [NSURLSessionConfiguration backgroundSessionConfigurationWithIdentifier: @"com.myapp.networking.background"];
+
+// 配置默认会话的缓存行为
+NSString *cachesDirectory = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES).firstObject;
+NSString *cachePath = [cachesDirectory stringByAppendingPathComponent:@"MyCache"];
+
+/* Note:
+ iOS需要设置相对路径:〜/Library/Caches
+ OS X 要设置绝对路径。
+ */
+NSURLCache *cache = [[NSURLCache alloc] initWithMemoryCapacity:16384
+                                                  diskCapacity:268435456
+                                                      diskPath:cachePath];
+defaultConfiguration.URLCache = cache;
+defaultConfiguration.requestCachePolicy = NSURLRequestUseProtocolCachePolicy;
+
+// 2.创建 NSURLSession
+NSOperationQueue *operationQueue = [NSOperationQueue mainQueue];
+
+NSURLSession *defaultSession = [NSURLSession sessionWithConfiguration:defaultConfiguration delegate:self delegateQueue:operationQueue];
+NSURLSession *ephemeralSession = [NSURLSession sessionWithConfiguration:ephemeralConfiguration delegate:self delegateQueue:operationQueue];
+NSURLSession *backgroundSession = [NSURLSession sessionWithConfiguration:backgroundConfiguration delegate:self delegateQueue:operationQueue];
+
+// 3.创建 NSURLSessionDataTask
+NSURL *url = [NSURL URLWithString:@"https://www.example.com/"];
+
+[[defaultSession dataTaskWithURL:url completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+    NSLog(@"Got response %@ with error %@.\n", response, error);
+    NSLog(@"DATA:\n%@\nEND DATA\n", [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
+          }] resume];<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 
 
-<h3 id="二、NSURLSessionDownloadTask-示例"><a href="#二、NSURLSessionDownloadTask-示例" class="headerlink" title="二、NSURLSessionDownloadTask 示例"></a>二、NSURLSessionDownloadTask 示例</h3><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line">NSURL *url = [NSURL URLWithString:@"https://developer.apple.com/library/ios/documentation/Cocoa/Reference/Foundation/ObjC_classic/FoundationObjC.pdf"];</span><br><span class="line"></span><br><span class="line">// 1.创建 NSURLSessionConfiguration</span><br><span class="line">NSURLSessionConfiguration *backgroundConfiguration = [NSURLSessionConfiguration backgroundSessionConfigurationWithIdentifier: @"com.myapp.networking.background"];</span><br><span class="line"></span><br><span class="line">// 2.创建 NSURLSession</span><br><span class="line">NSOperationQueue *operationQueue = [NSOperationQueue mainQueue];</span><br><span class="line"></span><br><span class="line">NSURLSession *backgroundSession = [NSURLSession sessionWithConfiguration:backgroundConfiguration delegate:self delegateQueue:operationQueue];</span><br><span class="line"></span><br><span class="line">// 3.创建 NSURLSessionDownloadTask</span><br><span class="line">NSURLSessionDownloadTask *downloadTask = [backgroundSession downloadTaskWithURL:url];</span><br><span class="line">[downloadTask resume];</span><br><span class="line"></span><br><span class="line"># prama mark - Delegate</span><br><span class="line">- (void)URLSession:(NSURLSession *)session</span><br><span class="line">      downloadTask:(NSURLSessionDownloadTask *)downloadTask</span><br><span class="line">      didWriteData:(int64_t)bytesWritten</span><br><span class="line"> totalBytesWritten:(int64_t)totalBytesWritten</span><br><span class="line">totalBytesExpectedToWrite:(int64_t)totalBytesExpectedToWrite</span><br><span class="line">{</span><br><span class="line">    NSLog(@"Session %@ download task %@ wrote an additional %lld bytes (total %lld bytes) out of an expected %lld bytes.\n", session, downloadTask, bytesWritten, totalBytesWritten, totalBytesExpectedToWrite);</span><br><span class="line">}</span><br><span class="line"> </span><br><span class="line">- (void)URLSession:(NSURLSession *)session</span><br><span class="line">      downloadTask:(NSURLSessionDownloadTask *)downloadTask</span><br><span class="line"> didResumeAtOffset:(int64_t)fileOffset</span><br><span class="line">expectedTotalBytes:(int64_t)expectedTotalBytes</span><br><span class="line">{</span><br><span class="line">    NSLog(@"Session %@ download task %@ resumed at offset %lld bytes out of an expected %lld bytes.\n", session, downloadTask, fileOffset, expectedTotalBytes);</span><br><span class="line">}</span><br><span class="line"> </span><br><span class="line">- (void)URLSession:(NSURLSession *)session</span><br><span class="line">      downloadTask:(NSURLSessionDownloadTask *)downloadTask</span><br><span class="line">didFinishDownloadingToURL:(NSURL *)location</span><br><span class="line">{</span><br><span class="line">    NSLog(@"Session %@ download task %@ finished downloading to URL %@\n", session, downloadTask, location);</span><br><span class="line"> </span><br><span class="line">    // Perform the completion handler for the current session</span><br><span class="line">    self.completionHandlers[session.configuration.identifier]();</span><br><span class="line"> </span><br><span class="line">   // Open the downloaded file for reading</span><br><span class="line">    NSError *readError = nil;</span><br><span class="line">    NSFileHandle *fileHandle = [NSFileHandle fileHandleForReadingFromURL:location error:readError];</span><br><span class="line">    // ...</span><br><span class="line"> </span><br><span class="line">   // Move the file to a new URL</span><br><span class="line">    NSFileManager *fileManager = [NSFileManager defaultManager];</span><br><span class="line">    NSURL *cacheDirectory = [[fileManager URLsForDirectory:NSCachesDirectory inDomains:NSUserDomainMask] firstObject];</span><br><span class="line">    NSError *moveError = nil;</span><br><span class="line">    if ([fileManager moveItemAtURL:location toURL:cacheDirectory error:moveError]) {</span><br><span class="line">        // ...</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<h3 id="二、NSURLSessionDownloadTask-示例"><a href="#二、NSURLSessionDownloadTask-示例" class="headerlink" title="二、NSURLSessionDownloadTask 示例"></a>二、NSURLSessionDownloadTask 示例</h3><pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">NSURL *url = [NSURL URLWithString:@"https://developer.apple.com/library/ios/documentation/Cocoa/Reference/Foundation/ObjC_classic/FoundationObjC.pdf"];
+
+// 1.创建 NSURLSessionConfiguration
+NSURLSessionConfiguration *backgroundConfiguration = [NSURLSessionConfiguration backgroundSessionConfigurationWithIdentifier: @"com.myapp.networking.background"];
+
+// 2.创建 NSURLSession
+NSOperationQueue *operationQueue = [NSOperationQueue mainQueue];
+
+NSURLSession *backgroundSession = [NSURLSession sessionWithConfiguration:backgroundConfiguration delegate:self delegateQueue:operationQueue];
+
+// 3.创建 NSURLSessionDownloadTask
+NSURLSessionDownloadTask *downloadTask = [backgroundSession downloadTaskWithURL:url];
+[downloadTask resume];
+
+# prama mark - Delegate
+- (void)URLSession:(NSURLSession *)session
+      downloadTask:(NSURLSessionDownloadTask *)downloadTask
+      didWriteData:(int64_t)bytesWritten
+ totalBytesWritten:(int64_t)totalBytesWritten
+totalBytesExpectedToWrite:(int64_t)totalBytesExpectedToWrite
+{
+    NSLog(@"Session %@ download task %@ wrote an additional %lld bytes (total %lld bytes) out of an expected %lld bytes.\n", session, downloadTask, bytesWritten, totalBytesWritten, totalBytesExpectedToWrite);
+}
+
+- (void)URLSession:(NSURLSession *)session
+      downloadTask:(NSURLSessionDownloadTask *)downloadTask
+ didResumeAtOffset:(int64_t)fileOffset
+expectedTotalBytes:(int64_t)expectedTotalBytes
+{
+    NSLog(@"Session %@ download task %@ resumed at offset %lld bytes out of an expected %lld bytes.\n", session, downloadTask, fileOffset, expectedTotalBytes);
+}
+
+- (void)URLSession:(NSURLSession *)session
+      downloadTask:(NSURLSessionDownloadTask *)downloadTask
+didFinishDownloadingToURL:(NSURL *)location
+{
+    NSLog(@"Session %@ download task %@ finished downloading to URL %@\n", session, downloadTask, location);
+
+    // Perform the completion handler for the current session
+    self.completionHandlers[session.configuration.identifier]();
+
+   // Open the downloaded file for reading
+    NSError *readError = nil;
+    NSFileHandle *fileHandle = [NSFileHandle fileHandleForReadingFromURL:location error:readError];
+    // ...
+
+   // Move the file to a new URL
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    NSURL *cacheDirectory = [[fileManager URLsForDirectory:NSCachesDirectory inDomains:NSUserDomainMask] firstObject];
+    NSError *moveError = nil;
+    if ([fileManager moveItemAtURL:location toURL:cacheDirectory error:moveError]) {
+        // ...
+    }
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 
 
-<h3 id="三、Uploading-Body-Content"><a href="#三、Uploading-Body-Content" class="headerlink" title="三、Uploading Body Content"></a>三、Uploading Body Content</h3><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line">// 1.创建 NSURLSessionConfiguration</span><br><span class="line">NSURLSessionConfiguration *defaultConfiguration = [NSURLSessionConfiguration defaultSessionConfiguration];</span><br><span class="line"></span><br><span class="line">// 配置默认会话的缓存行为</span><br><span class="line">NSString *cachesDirectory = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES).firstObject;</span><br><span class="line">NSString *cachePath = [cachesDirectory stringByAppendingPathComponent:@"MyCache"];</span><br><span class="line"></span><br><span class="line">/* Note:</span><br><span class="line"> iOS需要设置相对路径:〜/Library/Caches</span><br><span class="line"> OS X 要设置绝对路径。</span><br><span class="line"> */</span><br><span class="line">NSURLCache *cache = [[NSURLCache alloc] initWithMemoryCapacity:16384</span><br><span class="line">                                                  diskCapacity:268435456</span><br><span class="line">                                                      diskPath:cachePath];</span><br><span class="line">defaultConfiguration.URLCache = cache;</span><br><span class="line">defaultConfiguration.requestCachePolicy = NSURLRequestUseProtocolCachePolicy;</span><br><span class="line"></span><br><span class="line">// 2.创建 NSURLSession</span><br><span class="line">NSOperationQueue *operationQueue = [NSOperationQueue mainQueue];</span><br><span class="line"></span><br><span class="line">NSURLSession *defaultSession = [NSURLSession sessionWithConfiguration:defaultConfiguration delegate:self delegateQueue:operationQueue];</span><br><span class="line"></span><br><span class="line">// ***************************************************************</span><br><span class="line">// 3.1.上传 Data </span><br><span class="line">NSURL *textFileURL = [NSURL fileURLWithPath:@"/path/to/file.txt"];</span><br><span class="line">NSData *data = [NSData dataWithContentsOfURL:textFileURL];</span><br><span class="line"> </span><br><span class="line">NSURL *url = [NSURL URLWithString:@"https://www.example.com/"];</span><br><span class="line">NSMutableURLRequest *mutableRequest = [NSMutableURLRequest requestWithURL:url];</span><br><span class="line">mutableRequest.HTTPMethod = @"POST";</span><br><span class="line">[mutableRequest setValue:[NSString stringWithFormat:@"%lld", data.length] forHTTPHeaderField:@"Content-Length"];</span><br><span class="line">[mutableRequest setValue:@"text/plain" forHTTPHeaderField:@"Content-Type"];</span><br><span class="line"> </span><br><span class="line">NSURLSessionUploadTask *uploadTask = [defaultSession uploadTaskWithRequest:mutableRequest fromData:data];</span><br><span class="line">[uploadTask resume];</span><br><span class="line"></span><br><span class="line">// ***************************************************************</span><br><span class="line">// 3.2.上传 File </span><br><span class="line">NSURL *textFileURL = [NSURL fileURLWithPath:@"/path/to/file.txt"];</span><br><span class="line"> </span><br><span class="line">NSURL *url = [NSURL URLWithString:@"https://www.example.com/"];</span><br><span class="line">NSMutableURLRequest *mutableRequest = [NSMutableURLRequest requestWithURL:url];</span><br><span class="line">mutableRequest.HTTPMethod = @"POST";</span><br><span class="line"> </span><br><span class="line">NSURLSessionUploadTask *uploadTask = [defaultSession uploadTaskWithRequest:mutableRequest fromFile:textFileURL];</span><br><span class="line">[uploadTask resume];</span><br><span class="line"></span><br><span class="line">// ***************************************************************</span><br><span class="line">// 3.3.上传 Stream</span><br><span class="line">NSURL *textFileURL = [NSURL fileURLWithPath:@"/path/to/file.txt"];</span><br><span class="line"> </span><br><span class="line">NSURL *url = [NSURL URLWithString:@"https://www.example.com/"];</span><br><span class="line">NSMutableURLRequest *mutableRequest = [NSMutableURLRequest requestWithURL:url];</span><br><span class="line">mutableRequest.HTTPMethod = @"POST";</span><br><span class="line">mutableRequest.HTTPBodyStream = [NSInputStream inputStreamWithFileAtPath:textFileURL.path];</span><br><span class="line">[mutableRequest setValue:@"text/plain" forHTTPHeaderField:@"Content-Type"];</span><br><span class="line">[mutableRequest setValue:[NSString stringWithFormat:@"%lld", data.length] forHTTPHeaderField:@"Content-Length"];</span><br><span class="line"> </span><br><span class="line">NSURLSessionUploadTask *uploadTask = [defaultSession uploadTaskWithStreamedRequest:mutableRequest];</span><br><span class="line">[uploadTask resume];</span><br></pre></td></tr></tbody></table></figure>
+<h3 id="三、Uploading-Body-Content"><a href="#三、Uploading-Body-Content" class="headerlink" title="三、Uploading Body Content"></a>三、Uploading Body Content</h3><pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">// 1.创建 NSURLSessionConfiguration
+NSURLSessionConfiguration *defaultConfiguration = [NSURLSessionConfiguration defaultSessionConfiguration];
+
+// 配置默认会话的缓存行为
+NSString *cachesDirectory = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES).firstObject;
+NSString *cachePath = [cachesDirectory stringByAppendingPathComponent:@"MyCache"];
+
+/* Note:
+ iOS需要设置相对路径:〜/Library/Caches
+ OS X 要设置绝对路径。
+ */
+NSURLCache *cache = [[NSURLCache alloc] initWithMemoryCapacity:16384
+                                                  diskCapacity:268435456
+                                                      diskPath:cachePath];
+defaultConfiguration.URLCache = cache;
+defaultConfiguration.requestCachePolicy = NSURLRequestUseProtocolCachePolicy;
+
+// 2.创建 NSURLSession
+NSOperationQueue *operationQueue = [NSOperationQueue mainQueue];
+
+NSURLSession *defaultSession = [NSURLSession sessionWithConfiguration:defaultConfiguration delegate:self delegateQueue:operationQueue];
+
+// ***************************************************************
+// 3.1.上传 Data 
+NSURL *textFileURL = [NSURL fileURLWithPath:@"/path/to/file.txt"];
+NSData *data = [NSData dataWithContentsOfURL:textFileURL];
+
+NSURL *url = [NSURL URLWithString:@"https://www.example.com/"];
+NSMutableURLRequest *mutableRequest = [NSMutableURLRequest requestWithURL:url];
+mutableRequest.HTTPMethod = @"POST";
+[mutableRequest setValue:[NSString stringWithFormat:@"%lld", data.length] forHTTPHeaderField:@"Content-Length"];
+[mutableRequest setValue:@"text/plain" forHTTPHeaderField:@"Content-Type"];
+
+NSURLSessionUploadTask *uploadTask = [defaultSession uploadTaskWithRequest:mutableRequest fromData:data];
+[uploadTask resume];
+
+// ***************************************************************
+// 3.2.上传 File 
+NSURL *textFileURL = [NSURL fileURLWithPath:@"/path/to/file.txt"];
+
+NSURL *url = [NSURL URLWithString:@"https://www.example.com/"];
+NSMutableURLRequest *mutableRequest = [NSMutableURLRequest requestWithURL:url];
+mutableRequest.HTTPMethod = @"POST";
+
+NSURLSessionUploadTask *uploadTask = [defaultSession uploadTaskWithRequest:mutableRequest fromFile:textFileURL];
+[uploadTask resume];
+
+// ***************************************************************
+// 3.3.上传 Stream
+NSURL *textFileURL = [NSURL fileURLWithPath:@"/path/to/file.txt"];
+
+NSURL *url = [NSURL URLWithString:@"https://www.example.com/"];
+NSMutableURLRequest *mutableRequest = [NSMutableURLRequest requestWithURL:url];
+mutableRequest.HTTPMethod = @"POST";
+mutableRequest.HTTPBodyStream = [NSInputStream inputStreamWithFileAtPath:textFileURL.path];
+[mutableRequest setValue:@"text/plain" forHTTPHeaderField:@"Content-Type"];
+[mutableRequest setValue:[NSString stringWithFormat:@"%lld", data.length] forHTTPHeaderField:@"Content-Length"];
+
+NSURLSessionUploadTask *uploadTask = [defaultSession uploadTaskWithStreamedRequest:mutableRequest];
+[uploadTask resume];<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 
 
-<h3 id="四、NSURLSessionDataTask-发送-GET-请求"><a href="#四、NSURLSessionDataTask-发送-GET-请求" class="headerlink" title="四、NSURLSessionDataTask 发送 GET 请求"></a>四、NSURLSessionDataTask 发送 GET 请求</h3><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">- (void)p_NSURLSessionDataTask_GET {</span><br><span class="line">    // 请求路径</span><br><span class="line">    NSURL *url = [NSURL URLWithString:@"https://op.juhe.cn/shanghai/hospital?dtype=&amp;key=123"];</span><br><span class="line">    </span><br><span class="line">    // 1.创建 NSURLSession，使用共享 Session</span><br><span class="line">    NSURLSession *session = [NSURLSession sharedSession];</span><br><span class="line">    </span><br><span class="line">    // 2.创建 NSURLSessionDataTask, 默认 GET 请求</span><br><span class="line">    NSURLSessionDataTask *dataTask = [session dataTaskWithURL:url completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {</span><br><span class="line">        if (error) {</span><br><span class="line">            NSLog(@"%@",error.localizedDescription);</span><br><span class="line">        }else {</span><br><span class="line">            NSLog(@"%@",data);</span><br><span class="line">        }</span><br><span class="line">    }];</span><br><span class="line">    // 3.执行 Task</span><br><span class="line">    [dataTask resume];</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<h3 id="四、NSURLSessionDataTask-发送-GET-请求"><a href="#四、NSURLSessionDataTask-发送-GET-请求" class="headerlink" title="四、NSURLSessionDataTask 发送 GET 请求"></a>四、NSURLSessionDataTask 发送 GET 请求</h3><pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">- (void)p_NSURLSessionDataTask_GET {
+    // 请求路径
+    NSURL *url = [NSURL URLWithString:@"https://op.juhe.cn/shanghai/hospital?dtype=&amp;key=123"];
+
+    // 1.创建 NSURLSession，使用共享 Session
+    NSURLSession *session = [NSURLSession sharedSession];
+
+    // 2.创建 NSURLSessionDataTask, 默认 GET 请求
+    NSURLSessionDataTask *dataTask = [session dataTaskWithURL:url completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+        if (error) {
+            NSLog(@"%@",error.localizedDescription);
+        }else {
+            NSLog(@"%@",data);
+        }
+    }];
+    // 3.执行 Task
+    [dataTask resume];
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 
 
-<h3 id="五、NSURLSessionDataTask-发送-POST-请求"><a href="#五、NSURLSessionDataTask-发送-POST-请求" class="headerlink" title="五、NSURLSessionDataTask 发送 POST 请求"></a>五、NSURLSessionDataTask 发送 POST 请求</h3><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">- (void)p_NSURLSessionDataTask_POST {</span><br><span class="line">    // 请求路径</span><br><span class="line">    NSURL *url = [NSURL URLWithString:@"https://op.juhe.cn/shanghai/hospital"];</span><br><span class="line">    </span><br><span class="line">    // 创建请求对象</span><br><span class="line">    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];</span><br><span class="line">    // 设置请求方法</span><br><span class="line">    request.HTTPMethod = @"POST";</span><br><span class="line">    // 设置请求体</span><br><span class="line">    NSString *stringBody = @"dtype=&amp;key=123";</span><br><span class="line">    request.HTTPBody = [stringBody dataUsingEncoding:NSUTF8StringEncoding];</span><br><span class="line">    </span><br><span class="line">    // 1.创建 NSURLSession,使用共享 Session</span><br><span class="line">    NSURLSession *session = [NSURLSession sharedSession];</span><br><span class="line">    // 2.创建 NSURLSessionDataTask</span><br><span class="line">    NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {</span><br><span class="line">        if (error) {</span><br><span class="line">            // error</span><br><span class="line">        }else {</span><br><span class="line">            // data</span><br><span class="line">        }</span><br><span class="line">    }];</span><br><span class="line">    // 3.执行 Task</span><br><span class="line">    [dataTask resume];</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<h3 id="五、NSURLSessionDataTask-发送-POST-请求"><a href="#五、NSURLSessionDataTask-发送-POST-请求" class="headerlink" title="五、NSURLSessionDataTask 发送 POST 请求"></a>五、NSURLSessionDataTask 发送 POST 请求</h3><pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">- (void)p_NSURLSessionDataTask_POST {
+    // 请求路径
+    NSURL *url = [NSURL URLWithString:@"https://op.juhe.cn/shanghai/hospital"];
+
+    // 创建请求对象
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+    // 设置请求方法
+    request.HTTPMethod = @"POST";
+    // 设置请求体
+    NSString *stringBody = @"dtype=&amp;key=123";
+    request.HTTPBody = [stringBody dataUsingEncoding:NSUTF8StringEncoding];
+
+    // 1.创建 NSURLSession,使用共享 Session
+    NSURLSession *session = [NSURLSession sharedSession];
+    // 2.创建 NSURLSessionDataTask
+    NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+        if (error) {
+            // error
+        }else {
+            // data
+        }
+    }];
+    // 3.执行 Task
+    [dataTask resume];
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 
 
-<h3 id="六、NSURLSessionDataTask-设置代理发送请求"><a href="#六、NSURLSessionDataTask-设置代理发送请求" class="headerlink" title="六、NSURLSessionDataTask 设置代理发送请求"></a>六、NSURLSessionDataTask 设置代理发送请求</h3><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br></pre></td><td class="code"><pre><span class="line">- (void)p_NSURLSessionDataTask_Delegate {</span><br><span class="line">    // 请求路径</span><br><span class="line">    NSURL *url = [NSURL URLWithString:@"https://op.juhe.cn/shanghai/hospital"];</span><br><span class="line">    </span><br><span class="line">    // 创建请求对象</span><br><span class="line">    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];</span><br><span class="line">    // 设置请求方法</span><br><span class="line">    request.HTTPMethod = @"POST";</span><br><span class="line">    // 设置请求体</span><br><span class="line">    NSString *stringBody = @"dtype=&amp;key=5718abc3837ecb471c5d5b1ef1e35130";</span><br><span class="line">    request.HTTPBody = [stringBody dataUsingEncoding:NSUTF8StringEncoding];</span><br><span class="line">    </span><br><span class="line">    // 1.创建 NSURLSessionConfiguration</span><br><span class="line">    NSURLSessionConfiguration *configuration =</span><br><span class="line">        [NSURLSessionConfiguration defaultSessionConfiguration];</span><br><span class="line">    // 2.创建 NSURLSession</span><br><span class="line">    NSURLSession *session =</span><br><span class="line">        [NSURLSession sessionWithConfiguration:configuration</span><br><span class="line">                                      delegate:self</span><br><span class="line">                                 delegateQueue:nil];</span><br><span class="line">    // 3.创建 NSURLSessionDataTask</span><br><span class="line">    NSURLSessionDataTask *dataTask =</span><br><span class="line">        [session dataTaskWithRequest:request];</span><br><span class="line">    // 4.执行 Task</span><br><span class="line">    [dataTask resume];</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">#pragma mark - NSURLSessionDelegate</span><br><span class="line"></span><br><span class="line">- (void)URLSession:(NSURLSession *)session didBecomeInvalidWithError:(nullable NSError *)error {</span><br><span class="line">    // 请求失败调用。</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">- (void)URLSession:(NSURLSession *)session didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge</span><br><span class="line"> completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition disposition, NSURLCredential * _Nullable credential))completionHandler {</span><br><span class="line">    // 处理身份验证和凭据。</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">- (void)URLSessionDidFinishEventsForBackgroundURLSession:(NSURLSession *)session {</span><br><span class="line">    // 后台任务下载完成后调用</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">#pragma mark - NSURLSessionDataDelegate</span><br><span class="line"></span><br><span class="line">- (void)URLSession:(NSURLSession *)session</span><br><span class="line">          dataTask:(NSURLSessionDataTask *)dataTask</span><br><span class="line">didReceiveResponse:(NSURLResponse *)response</span><br><span class="line"> completionHandler:(void (^)(NSURLSessionResponseDisposition disposition))completionHandler {</span><br><span class="line">    // 接收到服务器响应的时候调用</span><br><span class="line">    // 默认情况下不接收数据，必须告诉系统是否接收服务器返回的数据</span><br><span class="line">    completionHandler(NSURLSessionResponseAllow);</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">- (void)URLSession:(NSURLSession *)session</span><br><span class="line">              task:(NSURLSessionTask *)task</span><br><span class="line">didCompleteWithError:(nullable NSError *)error {</span><br><span class="line">    // 请求失败调用</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">- (void)URLSession:(NSURLSession *)session</span><br><span class="line">          dataTask:(NSURLSessionDataTask *)dataTask</span><br><span class="line">    didReceiveData:(NSData *)data {</span><br><span class="line">    // 接受到服务器返回数据的时候调用,可能被调用多次</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<h3 id="六、NSURLSessionDataTask-设置代理发送请求"><a href="#六、NSURLSessionDataTask-设置代理发送请求" class="headerlink" title="六、NSURLSessionDataTask 设置代理发送请求"></a>六、NSURLSessionDataTask 设置代理发送请求</h3><pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">- (void)p_NSURLSessionDataTask_Delegate {
+    // 请求路径
+    NSURL *url = [NSURL URLWithString:@"https://op.juhe.cn/shanghai/hospital"];
+
+    // 创建请求对象
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+    // 设置请求方法
+    request.HTTPMethod = @"POST";
+    // 设置请求体
+    NSString *stringBody = @"dtype=&amp;key=5718abc3837ecb471c5d5b1ef1e35130";
+    request.HTTPBody = [stringBody dataUsingEncoding:NSUTF8StringEncoding];
+
+    // 1.创建 NSURLSessionConfiguration
+    NSURLSessionConfiguration *configuration =
+        [NSURLSessionConfiguration defaultSessionConfiguration];
+    // 2.创建 NSURLSession
+    NSURLSession *session =
+        [NSURLSession sessionWithConfiguration:configuration
+                                      delegate:self
+                                 delegateQueue:nil];
+    // 3.创建 NSURLSessionDataTask
+    NSURLSessionDataTask *dataTask =
+        [session dataTaskWithRequest:request];
+    // 4.执行 Task
+    [dataTask resume];
+}
+
+#pragma mark - NSURLSessionDelegate
+
+- (void)URLSession:(NSURLSession *)session didBecomeInvalidWithError:(nullable NSError *)error {
+    // 请求失败调用。
+}
+
+- (void)URLSession:(NSURLSession *)session didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
+ completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition disposition, NSURLCredential * _Nullable credential))completionHandler {
+    // 处理身份验证和凭据。
+}
+
+- (void)URLSessionDidFinishEventsForBackgroundURLSession:(NSURLSession *)session {
+    // 后台任务下载完成后调用
+}
+
+#pragma mark - NSURLSessionDataDelegate
+
+- (void)URLSession:(NSURLSession *)session
+          dataTask:(NSURLSessionDataTask *)dataTask
+didReceiveResponse:(NSURLResponse *)response
+ completionHandler:(void (^)(NSURLSessionResponseDisposition disposition))completionHandler {
+    // 接收到服务器响应的时候调用
+    // 默认情况下不接收数据，必须告诉系统是否接收服务器返回的数据
+    completionHandler(NSURLSessionResponseAllow);
+}
+
+- (void)URLSession:(NSURLSession *)session
+              task:(NSURLSessionTask *)task
+didCompleteWithError:(nullable NSError *)error {
+    // 请求失败调用
+}
+
+- (void)URLSession:(NSURLSession *)session
+          dataTask:(NSURLSessionDataTask *)dataTask
+    didReceiveData:(NSData *)data {
+    // 接受到服务器返回数据的时候调用,可能被调用多次
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 
 
-<h3 id="获取新闻示例代码："><a href="#获取新闻示例代码：" class="headerlink" title="获取新闻示例代码："></a>获取新闻示例代码：</h3><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line">-（void）viewdidload {</span><br><span class="line"></span><br><span class="line">    //创建NSURLSession对象</span><br><span class="line">    NSURLSessionConfiguration *config = [NSURLSessionConfiguration defaultSessionConfiguration];</span><br><span class="line">    _session = [NSURLSession sessionWithConfiguration:config</span><br><span class="line">                                             delegate:nil</span><br><span class="line">                                        delegateQueue:nil];</span><br><span class="line">    //发起网络请求获取新闻</span><br><span class="line">    [self fetchHrssnews];</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">#pragma 获取新闻方法</span><br><span class="line">- (void)fetchHrssnews {</span><br><span class="line">    </span><br><span class="line">    //创建NSURLRequest对象</span><br><span class="line">    NSString *requestString = hrssnewsString;</span><br><span class="line">    NSURL *url = [NSURL URLWithString:requestString];</span><br><span class="line">    //方法参数：统一资源定位符、缓存策略：忽略本地缓存、等待web服务器响应最长时间</span><br><span class="line">    NSMutableURLRequest *req = [NSMutableURLRequest requestWithURL:url</span><br><span class="line">                                                       cachePolicy:NSURLRequestReloadIgnoringLocalCacheData</span><br><span class="line">                                                   timeoutInterval:60.0f];</span><br><span class="line">    //设置请求方式为POST</span><br><span class="line">    [req setHTTPMethod:    @"POST"];</span><br><span class="line">    </span><br><span class="line">    //设置请求体</span><br><span class="line">    NSString *dataString = @"ksym=0&amp;jsym=15";</span><br><span class="line">    NSData *postData = [dataString dataUsingEncoding:NSUTF8StringEncoding];</span><br><span class="line">    [req setHTTPBody:postData];</span><br><span class="line">    </span><br><span class="line">    //创建NSURLSessionDataTask对象</span><br><span class="line">    NSURLSessionDataTask *dataTask = [self.session dataTaskWithRequest:req completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {</span><br><span class="line">        </span><br><span class="line">        //解析JSON数据</span><br><span class="line">        NSDictionary *jsonObject = [NSJSONSerialization</span><br><span class="line">                                    JSONObjectWithData:data</span><br><span class="line">                                options:kNilOptions</span><br><span class="line">                                error:nil];</span><br><span class="line">        </span><br><span class="line">        self.msgflag = jsonObject[@"msgflag"];</span><br><span class="line">        HQLog(@"msgflag:%@",self.msgflag);</span><br><span class="line">        self.msg = jsonObject[@"msg"];</span><br><span class="line">        HQLog(@"msg:%@",self.msg);</span><br><span class="line">        </span><br><span class="line">        //判断是否成功获取服务器端数据</span><br><span class="line">        if ([self.msgflag isEqualToString:@"0"]) {</span><br><span class="line">            HQLog(@"msgflag:%@",self.msgflag);</span><br><span class="line">        }else{</span><br><span class="line">            HQLog(@"msgflag:-1,msg:For input string: ");</span><br><span class="line">        }</span><br><span class="line">        </span><br><span class="line">        //使用dispatch_asynch函数让reloadData方法在主线程中运行</span><br><span class="line">        dispatch_async(dispatch_get_main_queue(), ^{</span><br><span class="line">            //重新加载UITableView对象的数据</span><br><span class="line">            [self.tableView reloadData];});</span><br><span class="line">            //停止刷新</span><br><span class="line">            [self.tableView.mj_header endRefreshing];</span><br><span class="line">    }];</span><br><span class="line">    </span><br><span class="line">    //NSURLSessionDataTask在刚创建的时候默认处于挂起状态，需要手动调用恢复。</span><br><span class="line">    [dataTask resume];</span><br><span class="line">    </span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<h3 id="获取新闻示例代码："><a href="#获取新闻示例代码：" class="headerlink" title="获取新闻示例代码："></a>获取新闻示例代码：</h3><pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">-（void）viewdidload {
+
+    //创建NSURLSession对象
+    NSURLSessionConfiguration *config = [NSURLSessionConfiguration defaultSessionConfiguration];
+    _session = [NSURLSession sessionWithConfiguration:config
+                                             delegate:nil
+                                        delegateQueue:nil];
+    //发起网络请求获取新闻
+    [self fetchHrssnews];
+}
+
+#pragma 获取新闻方法
+- (void)fetchHrssnews {
+
+    //创建NSURLRequest对象
+    NSString *requestString = hrssnewsString;
+    NSURL *url = [NSURL URLWithString:requestString];
+    //方法参数：统一资源定位符、缓存策略：忽略本地缓存、等待web服务器响应最长时间
+    NSMutableURLRequest *req = [NSMutableURLRequest requestWithURL:url
+                                                       cachePolicy:NSURLRequestReloadIgnoringLocalCacheData
+                                                   timeoutInterval:60.0f];
+    //设置请求方式为POST
+    [req setHTTPMethod:    @"POST"];
+
+    //设置请求体
+    NSString *dataString = @"ksym=0&amp;jsym=15";
+    NSData *postData = [dataString dataUsingEncoding:NSUTF8StringEncoding];
+    [req setHTTPBody:postData];
+
+    //创建NSURLSessionDataTask对象
+    NSURLSessionDataTask *dataTask = [self.session dataTaskWithRequest:req completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+
+        //解析JSON数据
+        NSDictionary *jsonObject = [NSJSONSerialization
+                                    JSONObjectWithData:data
+                                options:kNilOptions
+                                error:nil];
+
+        self.msgflag = jsonObject[@"msgflag"];
+        HQLog(@"msgflag:%@",self.msgflag);
+        self.msg = jsonObject[@"msg"];
+        HQLog(@"msg:%@",self.msg);
+
+        //判断是否成功获取服务器端数据
+        if ([self.msgflag isEqualToString:@"0"]) {
+            HQLog(@"msgflag:%@",self.msgflag);
+        }else{
+            HQLog(@"msgflag:-1,msg:For input string: ");
+        }
+
+        //使用dispatch_asynch函数让reloadData方法在主线程中运行
+        dispatch_async(dispatch_get_main_queue(), ^{
+            //重新加载UITableView对象的数据
+            [self.tableView reloadData];});
+            //停止刷新
+            [self.tableView.mj_header endRefreshing];
+    }];
+
+    //NSURLSessionDataTask在刚创建的时候默认处于挂起状态，需要手动调用恢复。
+    [dataTask resume];
+
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><ul>
 <li><span class="exturl" data-url="aHR0cHM6Ly9kZXZlbG9wZXIuYXBwbGUuY29tL2xpYnJhcnkvY29udGVudC9kb2N1bWVudGF0aW9uL0NvY29hL0NvbmNlcHR1YWwvVVJMTG9hZGluZ1N5c3RlbS9VUkxMb2FkaW5nU3lzdGVtLmh0bWwjLy9hcHBsZV9yZWYvZG9jL3VpZC8xMDAwMDE2NWk=">Apple: URL Session Programming Guide<i class="fa fa-external-link-alt"></i></span></li>
@@ -606,12 +919,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">2.1m</span>
+    <span title="站点总字数">2.3m</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">31:21</span>
+    <span title="站点阅读时长">34:09</span>
 </div>
   <div class="powered-by">由 <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZw==">NexT.Gemini</span> 强力驱动
   </div>

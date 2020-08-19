@@ -537,19 +537,69 @@ textFiled.delegate = self;
     return YES;
 }</code></pre>
 <h3 id="重写绘制行为"><a href="#重写绘制行为" class="headerlink" title="重写绘制行为"></a>重写绘制行为</h3><p>除了 <code>UITextField</code> 对象的风格选项，你还可以定制化 <code>UITextField</code> 对象，为他添加许多不同的重写方法，来改变文本字段的显示行为。这些方法都会返回一个 <code>CGRect</code> 结构，制定了文本字段每个部件的边界范围。以下方法都可以重写。</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">– textRectForBounds:　　  　//重写来重置文字区域</span><br><span class="line">– drawTextInRect:　　      　//改变绘文字属性.重写时调用super可以按默认图形属性绘制,若自己完全重写绘制函数，就不用调用super了.</span><br><span class="line">– placeholderRectForBounds:　　//重写来重置占位符区域</span><br><span class="line">– drawPlaceholderInRect:　　//重写改变绘制占位符属性.重写时调用super可以按默认图形属性绘制,若自己完全重写绘制函数，就不用调用super了.</span><br><span class="line">– borderRectForBounds:　　//重写来重置边缘区域</span><br><span class="line">– editingRectForBounds:　　//重写来重置编辑区域</span><br><span class="line">– clearButtonRectForBounds:　　//重写来重置clearButton位置,改变size可能导致button的图片失真</span><br><span class="line">– leftViewRectForBounds:</span><br><span class="line">– rightViewRectForBounds:</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-none"><code class="language-none">– textRectForBounds:　　  　//重写来重置文字区域
+– drawTextInRect:　　      　//改变绘文字属性.重写时调用super可以按默认图形属性绘制,若自己完全重写绘制函数，就不用调用super了.
+– placeholderRectForBounds:　　//重写来重置占位符区域
+– drawPlaceholderInRect:　　//重写改变绘制占位符属性.重写时调用super可以按默认图形属性绘制,若自己完全重写绘制函数，就不用调用super了.
+– borderRectForBounds:　　//重写来重置边缘区域
+– editingRectForBounds:　　//重写来重置编辑区域
+– clearButtonRectForBounds:　　//重写来重置clearButton位置,改变size可能导致button的图片失真
+– leftViewRectForBounds:
+– rightViewRectForBounds:<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <h3 id="委托方法"><a href="#委托方法" class="headerlink" title="委托方法"></a>委托方法</h3><ol>
 <li><strong>目标 - 动作（Target-Action）设计模式：</strong>当某个特定的事件发生时（例如按下按钮），发生事件的一方会向指定的目标对象发送一个之前设定好的动作消息。</li>
 <li>在目标 - 动作中，针对不同的事件，需要创建不同的动作消息。<strong>UIButton</strong> 对象的事件比较简单，通常只需要处理点击事件；相反，像 <strong>UITextField</strong> 这类事件复杂的对象，Apple 使用委托设计模式。 <strong>UITextField</strong> 对象具有一个委托属性，通过为 <strong>UITextField</strong> 对象设置委托， <strong>UITextField</strong> 对象会在发生事件时向委托发送响应的消息，由委托处理该事件。</li>
 <li>凡是支持委托的对象，其背后都有一个相应的协议，如果一个类实现了某个协议中规定的方法，就称这个类遵守（conform）了该协议。</li>
 </ol>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">//UITextFieldDelegate协议</span><br><span class="line">@protocol UITextFieldDelegate &lt;NSObject&gt;</span><br></pre></td></tr></tbody></table></figure>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">@optional   //写在该指令之后的所有方法全部声明为可选的</span><br><span class="line">@required  //必须实现的方法</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-none"><code class="language-none">//UITextFieldDelegate协议
+@protocol UITextFieldDelegate &lt;NSObject&gt;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-none"><code class="language-none">@optional   //写在该指令之后的所有方法全部声明为可选的
+@required  //必须实现的方法<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 <p>对于编辑 UITextField 对象文本内容的事件，有以下两个对应的委托方法：</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">// 开始编辑时触发，文本字段将成为first responder</span><br><span class="line">- (void)textFieldDidBeginEditing:(UITextField *)textField;</span><br><span class="line"></span><br><span class="line">// 该方法被触发时，输入框已经结束编辑状态</span><br><span class="line">- (void)textFieldDidEndEditing:(UITextField *)textField;             </span><br><span class="line">// may be called if forced even if shouldEndEditing returns NO (e.g. view removed from window) or endEditing:YES called</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-none"><code class="language-none">// 开始编辑时触发，文本字段将成为first responder
+- (void)textFieldDidBeginEditing:(UITextField *)textField;
+
+// 该方法被触发时，输入框已经结束编辑状态
+- (void)textFieldDidEndEditing:(UITextField *)textField;             
+// may be called if forced even if shouldEndEditing returns NO (e.g. view removed from window) or endEditing:YES called<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>还有一类带有返回值的委托方法，用于从委托中查询需要的信息</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"> - BOOL)textFieldShouldBeginEditing:(UITextField *)textField {</span><br><span class="line">（输入框询问是否可以编辑，YES可以编辑，NO不能编辑）</span><br><span class="line"> //返回一个BOOL值，指定是否循序文本字段开始编辑,返回NO时不能唤起键盘进行编辑。</span><br><span class="line">&nbsp; &nbsp;return&nbsp;YES;</span><br><span class="line">}</span><br><span class="line"> </span><br><span class="line"> - (BOOL)textFieldShouldEndEditing:(UITextField *)textField {</span><br><span class="line">  //返回BOOL值，指定是否允许文本字段结束编辑，当编辑结束，文本字段会放弃first responder状态　</span><br><span class="line">  //要想在用户结束编辑时阻止文本字段消失，可以返回NO　</span><br><span class="line">  //这对一些文本字段必须始终保持活跃状态的程序很有用，比如即时消息</span><br><span class="line">  return NO;　//一直处于编辑状态</span><br><span class="line"> }</span><br><span class="line"></span><br><span class="line"> - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {</span><br><span class="line"></span><br><span class="line">    //当用户使用自动更正功能，把输入的文字修改为推荐的文字时，就会调用这个方法。　</span><br><span class="line">    //这对于想要加入撤销选项的应用程序特别有用　</span><br><span class="line">    //可以跟踪字段内所做的最后一次修改，也可以对所有编辑做日志记录,用作审计用途。　　 </span><br><span class="line">    //要防止文字被改变可以返回NO　</span><br><span class="line">    //这个方法的参数中有一个NSRange对象，指明了被改变文字的位置，建议修改的文本也在其中　</span><br><span class="line">    return YES;</span><br><span class="line">}</span><br><span class="line"> </span><br><span class="line"> - (BOOL)textFieldShouldClear:(UITextField *)textField {</span><br><span class="line">//返回一个BOOL值指明是否允许根据用户请求清除内容　</span><br><span class="line">//可以设置在特定条件下才允许清除内容　</span><br><span class="line">return YES;　//返回YES，输入内容后，点击右边的清除按钮可以清除，返回NO，点击清除不起作用    </span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"> - (BOOL)textFieldShouldReturn:(UITextField *)textField {</span><br><span class="line"></span><br><span class="line">    //返回一个BOOL值，指明是否允许在按下回车键时结束编辑　</span><br><span class="line">    //如果允许要调用resignFirstResponder 方法，这会导致结束编辑，而键盘会被收起[textField     resignFirstResponder];</span><br><span class="line">    //查一下resign（放弃）这个单词的意思就明白这个方法了　</span><br><span class="line">    return YES;</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-none"><code class="language-none"> - BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
+（输入框询问是否可以编辑，YES可以编辑，NO不能编辑）
+ //返回一个BOOL值，指定是否循序文本字段开始编辑,返回NO时不能唤起键盘进行编辑。
+&nbsp; &nbsp;return&nbsp;YES;
+}
+
+ - (BOOL)textFieldShouldEndEditing:(UITextField *)textField {
+  //返回BOOL值，指定是否允许文本字段结束编辑，当编辑结束，文本字段会放弃first responder状态　
+  //要想在用户结束编辑时阻止文本字段消失，可以返回NO　
+  //这对一些文本字段必须始终保持活跃状态的程序很有用，比如即时消息
+  return NO;　//一直处于编辑状态
+ }
+
+ - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
+
+    //当用户使用自动更正功能，把输入的文字修改为推荐的文字时，就会调用这个方法。　
+    //这对于想要加入撤销选项的应用程序特别有用　
+    //可以跟踪字段内所做的最后一次修改，也可以对所有编辑做日志记录,用作审计用途。　　 
+    //要防止文字被改变可以返回NO　
+    //这个方法的参数中有一个NSRange对象，指明了被改变文字的位置，建议修改的文本也在其中　
+    return YES;
+}
+
+ - (BOOL)textFieldShouldClear:(UITextField *)textField {
+//返回一个BOOL值指明是否允许根据用户请求清除内容　
+//可以设置在特定条件下才允许清除内容　
+return YES;　//返回YES，输入内容后，点击右边的清除按钮可以清除，返回NO，点击清除不起作用    
+}
+
+ - (BOOL)textFieldShouldReturn:(UITextField *)textField {
+
+    //返回一个BOOL值，指明是否允许在按下回车键时结束编辑　
+    //如果允许要调用resignFirstResponder 方法，这会导致结束编辑，而键盘会被收起[textField     resignFirstResponder];
+    //查一下resign（放弃）这个单词的意思就明白这个方法了　
+    return YES;
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>例如 <strong>UITextField</strong> 对象的委托属性为 <strong>HQLHyponsisViewController</strong> 自身，<strong>HQLHyponsisViewController</strong> 类实现了 <strong>UITextFieldDelegate</strong> 协议，当 “return” 键被按下时触发协议方法， <strong>HQLHyponsisViewController.m</strong> 文件中实现的 <code>textFieldShouldReturn:</code> 方法被调用。</p>
 <h3 id="通知"><a href="#通知" class="headerlink" title="通知"></a>通知</h3><p><strong>UITextField</strong> 派生自 <strong>UIControl</strong>，所以 <strong>UIControl</strong> 类中的通知系统在文本字段中也可以使用。除了 <strong>UIControl</strong> 类的标准事件，你还可以使用下列 <strong>UITextField</strong>  类特有的事件. </p>
@@ -559,7 +609,26 @@ textFiled.delegate = self;
 UIKeyboardDidShowNotification  　//键盘显示之后发送
 UIKeyboardWillHideNotification 　//键盘隐藏之前发送
 UIKeyboardDidHideNotification  　//键盘隐藏之后发送</code></pre>
-<h4 id="监听UITextField的值判断是否禁用按钮"><a href="#监听UITextField的值判断是否禁用按钮" class="headerlink" title="监听UITextField的值判断是否禁用按钮"></a>监听 UITextField 的值判断是否禁用按钮</h4><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">- (void)viewDidLoad {</span><br><span class="line">    [super viewDidLoad];</span><br><span class="line">    // 添加通知</span><br><span class="line">    [[NSNotificationCenter defaultCenter] addObserver:self</span><br><span class="line">                                             selector:@selector(textFieldTextDidChanged:)</span><br><span class="line">                                                 name:UITextFieldTextDidChangeNotification</span><br><span class="line">                                               object:nil];</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">- (void)dealloc {</span><br><span class="line">    // 移除通知</span><br><span class="line">    [[NSNotificationCenter defaultCenter] removeObserver:self];</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">#pragma mark - NSNotification</span><br><span class="line"></span><br><span class="line">- (void)textFieldTextDidChanged:(NSNotification *)notification {</span><br><span class="line">    BOOL isTextFieldTextNull = (self.usernameTextField.text.length == 0)||(self.passwordTextField.text.length == 0) ;</span><br><span class="line">    self.loginButton.enabled = !isTextFieldTextNull;</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<h4 id="监听UITextField的值判断是否禁用按钮"><a href="#监听UITextField的值判断是否禁用按钮" class="headerlink" title="监听UITextField的值判断是否禁用按钮"></a>监听 UITextField 的值判断是否禁用按钮</h4><pre class="line-numbers language-none"><code class="language-none">- (void)viewDidLoad {
+    [super viewDidLoad];
+    // 添加通知
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(textFieldTextDidChanged:)
+                                                 name:UITextFieldTextDidChangeNotification
+                                               object:nil];
+}
+
+- (void)dealloc {
+    // 移除通知
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+#pragma mark - NSNotification
+
+- (void)textFieldTextDidChanged:(NSNotification *)notification {
+    BOOL isTextFieldTextNull = (self.usernameTextField.text.length == 0)||(self.passwordTextField.text.length == 0) ;
+    self.loginButton.enabled = !isTextFieldTextNull;
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 
 <h3 id="在storyboard中设置UITextField"><a href="#在storyboard中设置UITextField" class="headerlink" title="在storyboard中设置UITextField"></a>在 storyboard 中设置 UITextField</h3><ol>
@@ -767,12 +836,12 @@ return YES;
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">2.1m</span>
+    <span title="站点总字数">2.3m</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">31:21</span>
+    <span title="站点阅读时长">34:09</span>
 </div>
   <div class="powered-by">由 <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZw==">NexT.Gemini</span> 强力驱动
   </div>

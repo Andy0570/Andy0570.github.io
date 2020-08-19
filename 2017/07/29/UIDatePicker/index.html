@@ -384,7 +384,7 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>9k</span>
+              <span>8.6k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -453,7 +453,12 @@
 </ul>
 <h3 id="配置日期选择器模式"><a href="#配置日期选择器模式" class="headerlink" title="配置日期选择器模式"></a>配置日期选择器模式</h3><ul>
 <li><p><code>datePickerMode</code></p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">typedef enum UIDatePickerMode : NSInteger {</span><br><span class="line">    UIDatePickerModeTime,</span><br><span class="line">    UIDatePickerModeDate,</span><br><span class="line">    UIDatePickerModeDateAndTime,</span><br><span class="line">    UIDatePickerModeCountDownTimer</span><br><span class="line">} UIDatePickerMode;</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">typedef enum UIDatePickerMode : NSInteger {
+  UIDatePickerModeTime,
+  UIDatePickerModeDate,
+  UIDatePickerModeDateAndTime,
+  UIDatePickerModeCountDownTimer
+} UIDatePickerMode;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 </li>
 </ul>
@@ -474,22 +479,246 @@
 <h3 id="常量"><a href="#常量" class="headerlink" title="常量"></a>常量</h3><ul>
 <li><code>UIDatePickerMode</code></li>
 </ul>
-<h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><h3 id="示例一："><a href="#示例一：" class="headerlink" title="示例一："></a>示例一：</h3><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">- (void)viewDidLoad {</span><br><span class="line">    [super viewDidLoad];</span><br><span class="line">    </span><br><span class="line">    CGRect frame = CGRectMake(27, 100, 320, 216);</span><br><span class="line">    // 创建 UIDatePicker 对象</span><br><span class="line">    UIDatePicker *datePicker = [[UIDatePicker alloc] initWithFrame:frame];</span><br><span class="line">    // 设置背景颜色</span><br><span class="line">    datePicker.backgroundColor = [UIColor flatWhiteColor];</span><br><span class="line">    // 设置日期选择器模式:日期模式</span><br><span class="line">    datePicker.datePickerMode = UIDatePickerModeDate;</span><br><span class="line">    // 设置可供选择的最小时间：昨天</span><br><span class="line">    NSTimeInterval time = 24 * 60 * 60; // 24H 的时间戳值</span><br><span class="line">    datePicker.minimumDate = [[NSDate alloc] initWithTimeIntervalSinceNow:- time];</span><br><span class="line">    // 设置可供选择的最大时间：明天</span><br><span class="line">    datePicker.maximumDate = [[NSDate alloc] initWithTimeIntervalSinceNow:time];</span><br><span class="line">    // 添加 Target-Action</span><br><span class="line">    [datePicker addTarget:self</span><br><span class="line">                   action:@selector(datePickerValueChanged:)</span><br><span class="line">         forControlEvents:UIControlEventValueChanged];</span><br><span class="line">    // 将 UIDatePicker 对象添加到当前视图</span><br><span class="line">    [self.view addSubview:datePicker];</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">- (void)datePickerValueChanged:(id)sender {</span><br><span class="line">    // 直接打印 Data</span><br><span class="line">//    UIDatePicker *datePicker = (UIDatePicker *)sender;</span><br><span class="line">//    NSDate *date = datePicker.date;</span><br><span class="line">//    NSLog(@"%@",date); // Sun Jul 30 15:28:17 2017</span><br><span class="line">    </span><br><span class="line">    // 格式化日期后再打印</span><br><span class="line">    UIDatePicker *datePicker = (UIDatePicker *)sender;</span><br><span class="line">    NSDate *date = datePicker.date;</span><br><span class="line">    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];</span><br><span class="line">    [dateFormatter setDateFormat:@"yyyy年MM月dd日"];</span><br><span class="line">    NSString *string = [dateFormatter stringFromDate:date];</span><br><span class="line">    NSLog(@"%@",string); // 2017年07月29日</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><h3 id="示例一："><a href="#示例一：" class="headerlink" title="示例一："></a>示例一：</h3><pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">- (void)viewDidLoad {
+    [super viewDidLoad];
+
+    CGRect frame = CGRectMake(27, 100, 320, 216);
+    // 创建 UIDatePicker 对象
+    UIDatePicker *datePicker = [[UIDatePicker alloc] initWithFrame:frame];
+    // 设置背景颜色
+    datePicker.backgroundColor = [UIColor flatWhiteColor];
+    // 设置日期选择器模式:日期模式
+    datePicker.datePickerMode = UIDatePickerModeDate;
+    // 设置可供选择的最小时间：昨天
+    NSTimeInterval time = 24 * 60 * 60; // 24H 的时间戳值
+    datePicker.minimumDate = [[NSDate alloc] initWithTimeIntervalSinceNow:- time];
+    // 设置可供选择的最大时间：明天
+    datePicker.maximumDate = [[NSDate alloc] initWithTimeIntervalSinceNow:time];
+    // 添加 Target-Action
+    [datePicker addTarget:self
+                   action:@selector(datePickerValueChanged:)
+         forControlEvents:UIControlEventValueChanged];
+    // 将 UIDatePicker 对象添加到当前视图
+    [self.view addSubview:datePicker];
+}
+
+- (void)datePickerValueChanged:(id)sender {
+    // 直接打印 Data
+//    UIDatePicker *datePicker = (UIDatePicker *)sender;
+//    NSDate *date = datePicker.date;
+//    NSLog(@"%@",date); // Sun Jul 30 15:28:17 2017
+
+    // 格式化日期后再打印
+    UIDatePicker *datePicker = (UIDatePicker *)sender;
+    NSDate *date = datePicker.date;
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setDateFormat:@"yyyy年MM月dd日"];
+    NSString *string = [dateFormatter stringFromDate:date];
+    NSLog(@"%@",string); // 2017年07月29日
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>效果：</p>
 <p><img data-src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/074023.jpg"></p>
-<h3 id="示例二：点击-UITextField-弹出-UIDatePicker-日期选择器"><a href="#示例二：点击-UITextField-弹出-UIDatePicker-日期选择器" class="headerlink" title="示例二：点击 UITextField 弹出 UIDatePicker 日期选择器"></a>示例二：点击 UITextField 弹出 UIDatePicker 日期选择器</h3><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br></pre></td><td class="code"><pre><span class="line">#import "ViewController.h"</span><br><span class="line">#import "Chameleon.h"</span><br><span class="line"></span><br><span class="line">@interface ViewController () &lt;UITextFieldDelegate&gt;</span><br><span class="line"></span><br><span class="line">@property (nonatomic, strong) UITextField *textField;</span><br><span class="line">@property (nonatomic ,strong) UITextField *otherTextField;</span><br><span class="line">@property (nonatomic, strong) UIDatePicker *datePicker;</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">@implementation ViewController</span><br><span class="line"></span><br><span class="line">#pragma mark - Lifecycle</span><br><span class="line"></span><br><span class="line">- (void)viewDidLoad {</span><br><span class="line">    [super viewDidLoad];</span><br><span class="line">    </span><br><span class="line">    [self.view addSubview:self.textField];</span><br><span class="line">    [self.view addSubview:self.otherTextField];</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">#pragma mark - Custom Accessors</span><br><span class="line"></span><br><span class="line">- (UITextField *)textField {</span><br><span class="line">    if (!_textField) {</span><br><span class="line">        _textField = [[UITextField alloc] initWithFrame:CGRectMake(30, 100, 320, 44)];</span><br><span class="line">        _textField.backgroundColor = [UIColor flatLimeColor];</span><br><span class="line">        _textField.returnKeyType = UIReturnKeyDone;</span><br><span class="line">        _textField.tag = 1001;</span><br><span class="line">        _textField.delegate = self;</span><br><span class="line">    }</span><br><span class="line">    return _textField;</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">- (UITextField *)otherTextField {</span><br><span class="line">    if (!_otherTextField) {</span><br><span class="line">        _otherTextField = [[UITextField alloc] initWithFrame:CGRectMake(30, 160, 320, 44)];</span><br><span class="line">        _otherTextField.backgroundColor = [UIColor flatBlueColor];</span><br><span class="line">        _otherTextField.returnKeyType = UIReturnKeyDone;</span><br><span class="line">        _otherTextField.tag = 1002;</span><br><span class="line">        _otherTextField.delegate = self;</span><br><span class="line">    }</span><br><span class="line">    return _otherTextField;</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">- (UIDatePicker *)datePicker {</span><br><span class="line">    if (!_datePicker) {</span><br><span class="line">        // 创建 UIDatePicker 对象</span><br><span class="line">        _datePicker = [[UIDatePicker alloc] init];</span><br><span class="line">        // 设置背景颜色</span><br><span class="line">        _datePicker.backgroundColor = [UIColor flatWhiteColor];</span><br><span class="line">        // 设置日期选择器模式:日期模式</span><br><span class="line">        _datePicker.datePickerMode = UIDatePickerModeDate;</span><br><span class="line">        // 设置可供选择的最小时间：昨天</span><br><span class="line">        NSTimeInterval time = 24 * 60 * 60; // 24H 的时间戳值</span><br><span class="line">        _datePicker.minimumDate = [[NSDate alloc] initWithTimeIntervalSinceNow:- time];</span><br><span class="line">        // 设置可供选择的最大时间：明天</span><br><span class="line">        _datePicker.maximumDate = [[NSDate alloc] initWithTimeIntervalSinceNow:time];</span><br><span class="line">        // 添加 Target-Action</span><br><span class="line">        [_datePicker addTarget:self</span><br><span class="line">                        action:@selector(datePickerValueChanged:)</span><br><span class="line">              forControlEvents:UIControlEventValueChanged];</span><br><span class="line">    }</span><br><span class="line">    return _datePicker;</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">#pragma mark - IBActions</span><br><span class="line"></span><br><span class="line">- (void)datePickerValueChanged:(id)sender {</span><br><span class="line">    UIDatePicker *datePicker = (UIDatePicker *)sender;</span><br><span class="line">    NSDate *date = datePicker.date;</span><br><span class="line">    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];</span><br><span class="line">    [dateFormatter setDateFormat:@"yyyy年MM月dd日"];</span><br><span class="line">    NSString *string = [dateFormatter stringFromDate:date];</span><br><span class="line">    // 将日期赋值给 textField</span><br><span class="line">    self.textField.text = string;</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">#pragma mark - UITextFieldDelegate</span><br><span class="line"></span><br><span class="line">- (BOOL)textFieldShouldBeginEditing:(UITextField *)textField {</span><br><span class="line">    // 如果需要显示键盘，则隐藏 datePicker</span><br><span class="line">    if (textField.tag != 1001) {</span><br><span class="line">        if (self.datePicker.superview) {</span><br><span class="line">            [self.datePicker removeFromSuperview];</span><br><span class="line">        }</span><br><span class="line">        return YES;</span><br><span class="line">    }</span><br><span class="line">    </span><br><span class="line">    // 如果需要弹出日期选择器，则隐藏所有键盘</span><br><span class="line">    [self.view endEditing:YES];</span><br><span class="line">   </span><br><span class="line">    // 以动画的方式显示日期选择器</span><br><span class="line">    self.datePicker.frame = CGRectMake(0, [UIScreen mainScreen].bounds.size.height, [UIScreen mainScreen].bounds.size.width, 216);</span><br><span class="line">    [self.view addSubview:self.datePicker];</span><br><span class="line">    </span><br><span class="line">    [UIView animateWithDuration:0.3f animations:^{</span><br><span class="line">        self.datePicker.frame = CGRectMake(0, [UIScreen mainScreen].bounds.size.height - 216, [UIScreen mainScreen].bounds.size.width, 216);</span><br><span class="line">    } completion:^(BOOL finished) {</span><br><span class="line">        </span><br><span class="line">    }];</span><br><span class="line">    return NO;</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">- (BOOL)textFieldShouldReturn:(UITextField *)textField {</span><br><span class="line">    return YES;</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></tbody></table></figure>
+<h3 id="示例二：点击-UITextField-弹出-UIDatePicker-日期选择器"><a href="#示例二：点击-UITextField-弹出-UIDatePicker-日期选择器" class="headerlink" title="示例二：点击 UITextField 弹出 UIDatePicker 日期选择器"></a>示例二：点击 UITextField 弹出 UIDatePicker 日期选择器</h3><pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">#import "ViewController.h"
+#import "Chameleon.h"
+
+@interface ViewController () &lt;UITextFieldDelegate&gt;
+
+@property (nonatomic, strong) UITextField *textField;
+@property (nonatomic ,strong) UITextField *otherTextField;
+@property (nonatomic, strong) UIDatePicker *datePicker;
+
+@end
+
+@implementation ViewController
+
+#pragma mark - Lifecycle
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+
+    [self.view addSubview:self.textField];
+    [self.view addSubview:self.otherTextField];
+}
+
+#pragma mark - Custom Accessors
+
+- (UITextField *)textField {
+    if (!_textField) {
+        _textField = [[UITextField alloc] initWithFrame:CGRectMake(30, 100, 320, 44)];
+        _textField.backgroundColor = [UIColor flatLimeColor];
+        _textField.returnKeyType = UIReturnKeyDone;
+        _textField.tag = 1001;
+        _textField.delegate = self;
+    }
+    return _textField;
+}
+
+- (UITextField *)otherTextField {
+    if (!_otherTextField) {
+        _otherTextField = [[UITextField alloc] initWithFrame:CGRectMake(30, 160, 320, 44)];
+        _otherTextField.backgroundColor = [UIColor flatBlueColor];
+        _otherTextField.returnKeyType = UIReturnKeyDone;
+        _otherTextField.tag = 1002;
+        _otherTextField.delegate = self;
+    }
+    return _otherTextField;
+}
+
+- (UIDatePicker *)datePicker {
+    if (!_datePicker) {
+        // 创建 UIDatePicker 对象
+        _datePicker = [[UIDatePicker alloc] init];
+        // 设置背景颜色
+        _datePicker.backgroundColor = [UIColor flatWhiteColor];
+        // 设置日期选择器模式:日期模式
+        _datePicker.datePickerMode = UIDatePickerModeDate;
+        // 设置可供选择的最小时间：昨天
+        NSTimeInterval time = 24 * 60 * 60; // 24H 的时间戳值
+        _datePicker.minimumDate = [[NSDate alloc] initWithTimeIntervalSinceNow:- time];
+        // 设置可供选择的最大时间：明天
+        _datePicker.maximumDate = [[NSDate alloc] initWithTimeIntervalSinceNow:time];
+        // 添加 Target-Action
+        [_datePicker addTarget:self
+                        action:@selector(datePickerValueChanged:)
+              forControlEvents:UIControlEventValueChanged];
+    }
+    return _datePicker;
+}
+
+#pragma mark - IBActions
+
+- (void)datePickerValueChanged:(id)sender {
+    UIDatePicker *datePicker = (UIDatePicker *)sender;
+    NSDate *date = datePicker.date;
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setDateFormat:@"yyyy年MM月dd日"];
+    NSString *string = [dateFormatter stringFromDate:date];
+    // 将日期赋值给 textField
+    self.textField.text = string;
+}
+
+#pragma mark - UITextFieldDelegate
+
+- (BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
+    // 如果需要显示键盘，则隐藏 datePicker
+    if (textField.tag != 1001) {
+        if (self.datePicker.superview) {
+            [self.datePicker removeFromSuperview];
+        }
+        return YES;
+    }
+
+    // 如果需要弹出日期选择器，则隐藏所有键盘
+    [self.view endEditing:YES];
+
+    // 以动画的方式显示日期选择器
+    self.datePicker.frame = CGRectMake(0, [UIScreen mainScreen].bounds.size.height, [UIScreen mainScreen].bounds.size.width, 216);
+    [self.view addSubview:self.datePicker];
+
+    [UIView animateWithDuration:0.3f animations:^{
+        self.datePicker.frame = CGRectMake(0, [UIScreen mainScreen].bounds.size.height - 216, [UIScreen mainScreen].bounds.size.width, 216);
+    } completion:^(BOOL finished) {
+
+    }];
+    return NO;
+}
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField {
+    return YES;
+}
+
+@end<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>效果：</p>
 <p><img data-src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/074025.jpg"></p>
 <h3 id="示例2-2"><a href="#示例2-2" class="headerlink" title="示例2-2"></a>示例 2-2</h3><p>将 <code>textFileDate.inputView</code> 设置成 <strong>UIDatePicker</strong> 可能更好：</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">// 1  声明datePicker设置弹出日期键盘的格式</span><br><span class="line">datePicker = [[UIDatePicker alloc] init];</span><br><span class="line"></span><br><span class="line">//datePicker.datePickerMode = UIDatePickerModeDateAndTime;</span><br><span class="line">//datePicker.minuteInterval = 30;</span><br><span class="line"></span><br><span class="line">[datePicker setDatePickerMode:UIDatePickerModeDate];</span><br><span class="line"></span><br><span class="line">[datePicker addTarget:self</span><br><span class="line">               action:@selector(chooseDate:)</span><br><span class="line">     forControlEvents:UIControlEventValueChanged];</span><br><span class="line"></span><br><span class="line">// 选择日期</span><br><span class="line">-(void)chooseDate:(UIDatePicker *)sender {</span><br><span class="line"></span><br><span class="line">NSDate *selectedDate = sender.date;</span><br><span class="line">NSDateFormatter *formatter = [[NSDateFormatter alloc] init];</span><br><span class="line">formatter.dateFormat = @"yyyy-MM-dd";</span><br><span class="line">NSString *dateString = [formatter stringFromDate:selectedDate];</span><br><span class="line">textFileDate.text = dateString;</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">// 设置输入的界面是时间选择的datepicker</span><br><span class="line">textFileDate.inputView = datePicker;</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-none"><code class="language-none">// 1  声明datePicker设置弹出日期键盘的格式
+datePicker = [[UIDatePicker alloc] init];
+
+//datePicker.datePickerMode = UIDatePickerModeDateAndTime;
+//datePicker.minuteInterval = 30;
+
+[datePicker setDatePickerMode:UIDatePickerModeDate];
+
+[datePicker addTarget:self
+               action:@selector(chooseDate:)
+     forControlEvents:UIControlEventValueChanged];
+
+// 选择日期
+-(void)chooseDate:(UIDatePicker *)sender {
+
+NSDate *selectedDate = sender.date;
+NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+formatter.dateFormat = @"yyyy-MM-dd";
+NSString *dateString = [formatter stringFromDate:selectedDate];
+textFileDate.text = dateString;
+}
+
+// 设置输入的界面是时间选择的datepicker
+textFileDate.inputView = datePicker;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <h3 id="示例三："><a href="#示例三：" class="headerlink" title="示例三："></a>示例三：</h3><p>项目需求需要做一个日期选择器，只显示年月，不需要显示日。</p>
 <p>网上找到这篇文章，<span class="exturl" data-url="aHR0cDovL3d3dy5qaWFuc2h1LmNvbS9wLzg0MDUxMGU5MmY3MQ==">iOS - 日期选择控件 (可单独选年 / 年月 / 年月日)<i class="fa fa-external-link-alt"></i></span> ，看源码实现非常麻烦。</p>
 <p>看到 stackoverflow 上的提问 <span class="exturl" data-url="aHR0cHM6Ly9zdGFja292ZXJmbG93LmNvbS9xdWVzdGlvbnMvMzM0ODI0Ny91aWRhdGVwaWNrZXItc2VsZWN0LW1vbnRoLWFuZC15ZWFy">UIDatePicker select Month and Year<i class="fa fa-external-link-alt"></i></span> </p>
 <p>推荐还是自己写一个 <strong>UIPickerView</strong> 实现可能比较方便。</p>
-<h2 id="附录1-UIDatePicker源码"><a href="#附录1-UIDatePicker源码" class="headerlink" title="附录1 UIDatePicker源码"></a>附录 1 UIDatePicker 源码</h2><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line">//</span><br><span class="line">//  UIDatePicker.h</span><br><span class="line">//  UIKit</span><br><span class="line">//</span><br><span class="line">//  Copyright (c) 2006-2015 Apple Inc. All rights reserved.</span><br><span class="line">//</span><br><span class="line"></span><br><span class="line">#import &lt;Foundation/Foundation.h&gt;</span><br><span class="line">#import &lt;UIKit/UIControl.h&gt;</span><br><span class="line">#import &lt;UIKit/UIKitDefines.h&gt;</span><br><span class="line"></span><br><span class="line">NS_ASSUME_NONNULL_BEGIN</span><br><span class="line"></span><br><span class="line">// 日期选择器模式</span><br><span class="line">typedef NS_ENUM(NSInteger, UIDatePickerMode) {</span><br><span class="line">    UIDatePickerModeTime,           // 根据区域设置显示小时，分钟和可选的AM/PM（例如 6 | 53 | PM）</span><br><span class="line">    UIDatePickerModeDate,           // 根据区域设置显示年月日（例如，11 | 15 | 2007）</span><br><span class="line">    UIDatePickerModeDateAndTime,    // 根据区域设置显示日期，小时，分钟和可选的AM/PM（例如 Wed Nov 15 | 6 | 53 | PM）</span><br><span class="line">    UIDatePickerModeCountDownTimer, // 显示小时和分钟（例如 1 | 53）</span><br><span class="line">} __TVOS_PROHIBITED;</span><br><span class="line"></span><br><span class="line">// ****************************📌 UIDatePicker 头文件*****************************</span><br><span class="line">NS_CLASS_AVAILABLE_IOS(2_0) __TVOS_PROHIBITED @interface UIDatePicker : UIControl &lt;NSCoding&gt;</span><br><span class="line"></span><br><span class="line">// 日期选择器模式，默认为 UIDatePickerModeDateAndTime</span><br><span class="line">@property (nonatomic) UIDatePickerMode datePickerMode; </span><br><span class="line"></span><br><span class="line">// 区域，默认为 [NSLocale currentLocale]. 设置为 nil 则返回默认值</span><br><span class="line">@property (nullable, nonatomic, strong) NSLocale   *locale;</span><br><span class="line"></span><br><span class="line">// 日历，默认 [NSCalendar currentCalendar]. 设置为 nil 则返回默认值</span><br><span class="line">@property (null_resettable, nonatomic, copy)   NSCalendar *calendar;</span><br><span class="line"></span><br><span class="line">// 时区，默认为 nil. use current time zone or time zone from calendar</span><br><span class="line">@property (nullable, nonatomic, strong) NSTimeZone *timeZone; </span><br><span class="line"></span><br><span class="line">// 日期，当选择器创建时默认为当前日期。当选择 UIDatePickerModeCountDownTimer 模式时会被忽略，且选择器以 0:00 为起点</span><br><span class="line">@property (nonatomic, strong) NSDate *date;        </span><br><span class="line"></span><br><span class="line">// 指定最小/最大日期范围。 默认值为 nil。 当 min&gt; max 时，这些值将被忽略。 </span><br><span class="line">// 选择 UIDatePickerModeCountDownTimer 模式时忽略该值。</span><br><span class="line">@property (nullable, nonatomic, strong) NSDate *minimumDate; </span><br><span class="line">@property (nullable, nonatomic, strong) NSDate *maximumDate; </span><br><span class="line"></span><br><span class="line">// 倒计时持续时间</span><br><span class="line">// 当日期选择器的 mode 属性设置为 UIDatePickerModeCountDownTimer 时，使用此属性获取并设置当前选定的值。 此属性的类型为 NSTimeInterval，因此以秒为单位，尽管日期选择器仅显示小时和分钟。 如果日期选择器的模式不是 UIDatePickerModeCountDownTimer，则此值为 undefined; 参考date属性。 默认值为0.0，最大值为23:59（86,399秒）。</span><br><span class="line">@property (nonatomic) NSTimeInterval countDownDuration; </span><br><span class="line"></span><br><span class="line">// 显示分钟转盘的时间间隔。 间隔必须均匀分为60.默认值为1. min为1，max为30</span><br><span class="line">@property (nonatomic) NSInteger      minuteInterval;</span><br><span class="line"></span><br><span class="line">// 如果动画为YES，则以动画方式转动时间转盘来显示新的日期</span><br><span class="line">- (void)setDate:(NSDate *)date animated:(BOOL)animated; </span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">NS_ASSUME_NONNULL_END</span><br></pre></td></tr></tbody></table></figure>
+<h2 id="附录1-UIDatePicker源码"><a href="#附录1-UIDatePicker源码" class="headerlink" title="附录1 UIDatePicker源码"></a>附录 1 UIDatePicker 源码</h2><pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">//
+//  UIDatePicker.h
+//  UIKit
+//
+//  Copyright (c) 2006-2015 Apple Inc. All rights reserved.
+//
+
+#import &lt;Foundation/Foundation.h&gt;
+#import &lt;UIKit/UIControl.h&gt;
+#import &lt;UIKit/UIKitDefines.h&gt;
+
+NS_ASSUME_NONNULL_BEGIN
+
+// 日期选择器模式
+typedef NS_ENUM(NSInteger, UIDatePickerMode) {
+    UIDatePickerModeTime,           // 根据区域设置显示小时，分钟和可选的AM/PM（例如 6 | 53 | PM）
+    UIDatePickerModeDate,           // 根据区域设置显示年月日（例如，11 | 15 | 2007）
+    UIDatePickerModeDateAndTime,    // 根据区域设置显示日期，小时，分钟和可选的AM/PM（例如 Wed Nov 15 | 6 | 53 | PM）
+    UIDatePickerModeCountDownTimer, // 显示小时和分钟（例如 1 | 53）
+} __TVOS_PROHIBITED;
+
+// ****************************📌 UIDatePicker 头文件*****************************
+NS_CLASS_AVAILABLE_IOS(2_0) __TVOS_PROHIBITED @interface UIDatePicker : UIControl &lt;NSCoding&gt;
+
+// 日期选择器模式，默认为 UIDatePickerModeDateAndTime
+@property (nonatomic) UIDatePickerMode datePickerMode; 
+
+// 区域，默认为 [NSLocale currentLocale]. 设置为 nil 则返回默认值
+@property (nullable, nonatomic, strong) NSLocale   *locale;
+
+// 日历，默认 [NSCalendar currentCalendar]. 设置为 nil 则返回默认值
+@property (null_resettable, nonatomic, copy)   NSCalendar *calendar;
+
+// 时区，默认为 nil. use current time zone or time zone from calendar
+@property (nullable, nonatomic, strong) NSTimeZone *timeZone; 
+
+// 日期，当选择器创建时默认为当前日期。当选择 UIDatePickerModeCountDownTimer 模式时会被忽略，且选择器以 0:00 为起点
+@property (nonatomic, strong) NSDate *date;        
+
+// 指定最小/最大日期范围。 默认值为 nil。 当 min&gt; max 时，这些值将被忽略。 
+// 选择 UIDatePickerModeCountDownTimer 模式时忽略该值。
+@property (nullable, nonatomic, strong) NSDate *minimumDate; 
+@property (nullable, nonatomic, strong) NSDate *maximumDate; 
+
+// 倒计时持续时间
+// 当日期选择器的 mode 属性设置为 UIDatePickerModeCountDownTimer 时，使用此属性获取并设置当前选定的值。 此属性的类型为 NSTimeInterval，因此以秒为单位，尽管日期选择器仅显示小时和分钟。 如果日期选择器的模式不是 UIDatePickerModeCountDownTimer，则此值为 undefined; 参考date属性。 默认值为0.0，最大值为23:59（86,399秒）。
+@property (nonatomic) NSTimeInterval countDownDuration; 
+
+// 显示分钟转盘的时间间隔。 间隔必须均匀分为60.默认值为1. min为1，max为30
+@property (nonatomic) NSInteger      minuteInterval;
+
+// 如果动画为YES，则以动画方式转动时间转盘来显示新的日期
+- (void)setDate:(NSDate *)date animated:(BOOL)animated; 
+
+@end
+
+NS_ASSUME_NONNULL_END<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 
 
@@ -621,12 +850,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">2.1m</span>
+    <span title="站点总字数">2.3m</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">31:21</span>
+    <span title="站点阅读时长">34:09</span>
 </div>
   <div class="powered-by">由 <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZw==">NexT.Gemini</span> 强力驱动
   </div>

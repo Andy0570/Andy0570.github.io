@@ -382,7 +382,7 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>3.4k</span>
+              <span>3.2k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -411,15 +411,33 @@
 </ul>
 <a id="more"></a>
 
-<h4 id="查看进程的内存占用：process-memoryUsage"><a href="#查看进程的内存占用：process-memoryUsage" class="headerlink" title="查看进程的内存占用：process.memoryUsage()"></a>查看进程的内存占用：process.memoryUsage ()</h4><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> node</span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> process.memoryUsage();</span></span><br><span class="line">{ rss: 23175168,      # 进程的常驻内存部分</span><br><span class="line">  heapTotal: 9682944, # 已申请到的堆内存</span><br><span class="line">  heapUsed: 5283000,  # 堆内存当前使用量</span><br><span class="line">  external: 11777 }</span><br><span class="line"><span class="meta">&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 堆中的内存总量&lt;进程的常驻内存用量</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 堆外内存：不是通过V8分配的内存。</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> Buffer 对象不经过 V8 的内存分配机制。</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> Node 的内存构成：通过 V8 分配的部分 + Node 自行分配的部分。</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 因此，受到 V8 的垃圾回收机制限制的主要是 V8 的堆内存。</span></span><br></pre></td></tr></tbody></table></figure>
+<h4 id="查看进程的内存占用：process-memoryUsage"><a href="#查看进程的内存占用：process-memoryUsage" class="headerlink" title="查看进程的内存占用：process.memoryUsage()"></a>查看进程的内存占用：process.memoryUsage ()</h4><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ node
+<span class="token operator">&gt;</span> process.memoryUsage<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">{</span> rss: <span class="token number">23175168</span>,      <span class="token comment"># 进程的常驻内存部分</span>
+  heapTotal: <span class="token number">9682944</span>, <span class="token comment"># 已申请到的堆内存</span>
+  heapUsed: <span class="token number">5283000</span>,  <span class="token comment"># 堆内存当前使用量</span>
+  external: <span class="token number">11777</span> <span class="token punctuation">}</span>
+<span class="token operator">&gt;</span>
+
+<span class="token comment"># 堆中的内存总量&lt;进程的常驻内存用量</span>
+<span class="token comment"># 堆外内存：不是通过V8分配的内存。</span>
+<span class="token comment"># Buffer 对象不经过 V8 的内存分配机制。</span>
+
+<span class="token comment"># Node 的内存构成：通过 V8 分配的部分 + Node 自行分配的部分。</span>
+<span class="token comment"># 因此，受到 V8 的垃圾回收机制限制的主要是 V8 的堆内存。</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <h4 id="查看系统的内存占用：os-totalmem-和-freemem"><a href="#查看系统的内存占用：os-totalmem-和-freemem" class="headerlink" title="查看系统的内存占用：os.totalmem() 和 freemem()"></a>查看系统的内存占用：os.totalmem () 和 freemem ()</h4><p>查看操作系统的内存使用情况：</p>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> node</span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> os.totalmem() <span class="comment"># 返回系统总内存</span></span></span><br><span class="line">17179869184</span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> os.freemem() <span class="comment"># 返回系统闲置内存</span></span></span><br><span class="line">4516331520  </span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ node
+<span class="token operator">&gt;</span> os.totalmem<span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token comment"># 返回系统总内存</span>
+<span class="token number">17179869184</span>
+<span class="token operator">&gt;</span> os.freemem<span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token comment"># 返回系统闲置内存</span>
+<span class="token number">4516331520</span>  <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 
 
 <p>Node 启动时可以调整内存使用量：</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">node --max-old-space-size=1700 test.js // 单位为MB，设置老生代内存空间最大值</span><br><span class="line">node --max-new-space-size=1024 test.js // 单位为KB，设置新生代内存空间大小</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-none"><code class="language-none">node --max-old-space-size=1700 test.js // 单位为MB，设置老生代内存空间最大值
+node --max-new-space-size=1024 test.js // 单位为KB，设置新生代内存空间大小<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 
 
 
@@ -463,12 +481,14 @@
 <p><img data-src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/075041.jpg" alt="image"></p>
 </li>
 </ul>
-<h3 id="查看垃圾回收日志：-trach-gc"><a href="#查看垃圾回收日志：-trach-gc" class="headerlink" title="查看垃圾回收日志：--trach_gc"></a>查看垃圾回收日志：<code>--trach_gc</code></h3><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 在 gc.log 文件中得到所有的垃圾回收信息。</span></span><br><span class="line">node --trach_gc -e "var a = [];for (var i = 0; i &lt; 1000000; i++) a.push(new Array(100));" &gt; gc.log</span><br></pre></td></tr></tbody></table></figure>
+<h3 id="查看垃圾回收日志：-trach-gc"><a href="#查看垃圾回收日志：-trach-gc" class="headerlink" title="查看垃圾回收日志：--trach_gc"></a>查看垃圾回收日志：<code>--trach_gc</code></h3><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token comment"># 在 gc.log 文件中得到所有的垃圾回收信息。</span>
+node --trach_gc -e <span class="token string">"var a = [];for (var i = 0; i &lt; 1000000; i++) a.push(new Array(100));"</span> <span class="token operator">&gt;</span> gc.log<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 
-<h3 id="查看性能分析数据：-prof"><a href="#查看性能分析数据：-prof" class="headerlink" title="查看性能分析数据：--prof"></a>查看性能分析数据：<code>--prof</code></h3><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">node --prof test.js</span><br></pre></td></tr></tbody></table></figure>
+<h3 id="查看性能分析数据：-prof"><a href="#查看性能分析数据：-prof" class="headerlink" title="查看性能分析数据：--prof"></a>查看性能分析数据：<code>--prof</code></h3><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">node --prof test.js<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 
 <p>V8 提供了 linux-tick-processor 工具（Node 路径：deps/v8/tools）用于统计日志信息。</p>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 将该工具的目录添加到环境变量 PATH 中，执行分析日志命令：</span></span><br><span class="line">linux-tick-processor v8.log</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token comment"># 将该工具的目录添加到环境变量 PATH 中，执行分析日志命令：</span>
+linux-tick-processor v8.log<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 
 
 
@@ -481,14 +501,24 @@
 <li><p>作用域链；</p>
 </li>
 <li><p>变量的主动释放：delete 操作、将变量重新赋值。</p>
-<figure class="highlight javascript"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 全局变量，进程退出才会释放</span></span><br><span class="line"><span class="built_in">global</span>.foo = <span class="string">'I am global object'</span>;</span><br><span class="line"><span class="built_in">console</span>.log(<span class="built_in">global</span>.foo); <span class="comment">// =&gt; 'I am global object'</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 1. delete 操作删除全局变量</span></span><br><span class="line"><span class="keyword">delete</span> <span class="built_in">global</span>.foo; </span><br><span class="line"></span><br><span class="line"><span class="comment">// 2. 重新赋值</span></span><br><span class="line"><span class="built_in">global</span>.foo = <span class="literal">undefined</span>; <span class="comment">// or null</span></span><br><span class="line"><span class="built_in">console</span>.log(<span class="built_in">global</span>.foo); <span class="comment">// =&gt; 'undefined'</span></span><br></pre></td></tr></tbody></table></figure>
-
+<p>&lt;!–hexoPostRenderEscape:</p><pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token comment">// 全局变量，进程退出才会释放</span><br>global<span class="token punctuation">.</span>foo <span class="token operator">=</span> <span class="token string">'I am global object'</span><span class="token punctuation">;</span><br>console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>global<span class="token punctuation">.</span>foo<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// =&gt; 'I am global object'</span><p></p>
+</code></pre></li><code class="language-javascript">
+</code></ul><code class="language-javascript">
+<p><span class="token comment">// 1. delete 操作删除全局变量</span><br><span class="token keyword">delete</span> global<span class="token punctuation">.</span>foo<span class="token punctuation">;</span> </p>
+</code><p><code class="language-javascript"><span class="token comment">// 2. 重新赋值</span><br>global<span class="token punctuation">.</span>foo <span class="token operator">=</span> <span class="token keyword">undefined</span><span class="token punctuation">;</span> <span class="token comment">// or null</span><br>console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>global<span class="token punctuation">.</span>foo<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// =&gt; ‘undefined’</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code>:hexoPostRenderEscape–&gt;</p>
 <blockquote>
 <p>💡 在 V8 中通过 delete 删除对象的属性有可能干扰 V8 的优化，所以<strong>通过赋值方式解除引用</strong>更好。</p>
 </blockquote>
-</li>
-</ul>
-<h3 id="闭包：实现外部作用域访问内部作用域中变量的方法"><a href="#闭包：实现外部作用域访问内部作用域中变量的方法" class="headerlink" title="闭包：实现外部作用域访问内部作用域中变量的方法"></a>闭包：实现外部作用域访问内部作用域中变量的方法</h3><figure class="highlight javascript"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> foo = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>{</span><br><span class="line">    <span class="keyword">var</span> bar = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>{</span><br><span class="line">        <span class="keyword">var</span> local = <span class="string">'局部变量'</span>;</span><br><span class="line">        <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>{ <span class="comment">// 函数作为返回值，且该匿名函数可以访问local</span></span><br><span class="line">            <span class="keyword">return</span> local; <span class="comment">// 内部作用域可以访问外部对象</span></span><br><span class="line">        };</span><br><span class="line">    };</span><br><span class="line">    <span class="keyword">var</span> baz = bar(); <span class="comment">// bar() 函数返回的是一个匿名函数，且可以访问local</span></span><br><span class="line">    <span class="built_in">console</span>.log(baz());</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<h3 id="闭包：实现外部作用域访问内部作用域中变量的方法"><a href="#闭包：实现外部作用域访问内部作用域中变量的方法" class="headerlink" title="闭包：实现外部作用域访问内部作用域中变量的方法"></a>闭包：实现外部作用域访问内部作用域中变量的方法</h3><pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token keyword">var</span> <span class="token function-variable function">foo</span> <span class="token operator">=</span> <span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">var</span> <span class="token function-variable function">bar</span> <span class="token operator">=</span> <span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">var</span> local <span class="token operator">=</span> <span class="token string">'局部变量'</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> <span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span> <span class="token comment">// 函数作为返回值，且该匿名函数可以访问local</span>
+            <span class="token keyword">return</span> local<span class="token punctuation">;</span> <span class="token comment">// 内部作用域可以访问外部对象</span>
+        <span class="token punctuation">}</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token punctuation">;</span>
+    <span class="token keyword">var</span> baz <span class="token operator">=</span> <span class="token function">bar</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// bar() 函数返回的是一个匿名函数，且可以访问local</span>
+    console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token function">baz</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 
 
@@ -522,7 +552,23 @@
 <h3 id="大内存应用"><a href="#大内存应用" class="headerlink" title="大内存应用"></a>大内存应用</h3><p>Node 提供了 <strong>stream</strong> 模块用于处理大文件。</p>
 <p>fs 模块的 <code>createReadStream()</code> 和 <code>createWriteStream()</code> 方法可以分别用于创建文件的可读流与可写流。</p>
 <p>process 模块中的 stdin 和 stdout 分别是可读流和可写流的示例。</p>
-<figure class="highlight javascript"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> fs = <span class="built_in">require</span>(<span class="string">'fs'</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 读取一个文件，然后将数据写入到另一个文件中</span></span><br><span class="line"><span class="comment">// 流处理的方式不会受到V8内存限制的影响。</span></span><br><span class="line"><span class="keyword">var</span> reader = fs.createReadStream(<span class="string">'in.txt'</span>);</span><br><span class="line"><span class="keyword">var</span> writer = fs.createWriteStream(<span class="string">'out.txt'</span>);</span><br><span class="line">reader.on(<span class="string">'data'</span>, <span class="function"><span class="keyword">function</span> (<span class="params">chunk</span>) </span>{</span><br><span class="line">    writer.write(chunk);</span><br><span class="line">});</span><br><span class="line">reader.on(<span class="string">'end'</span>, <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>{</span><br><span class="line">    writer.end();</span><br><span class="line">});</span><br><span class="line"></span><br><span class="line"><span class="comment">// 上述代码的简写方法：</span></span><br><span class="line"><span class="keyword">var</span> reader = fs.createReadStream(<span class="string">'in.txt'</span>);</span><br><span class="line"><span class="keyword">var</span> writer = fs.createWriteStream(<span class="string">'out.txt'</span>);</span><br><span class="line">reader.pipe(writer);</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token keyword">const</span> fs <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'fs'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token comment">// 读取一个文件，然后将数据写入到另一个文件中</span>
+<span class="token comment">// 流处理的方式不会受到V8内存限制的影响。</span>
+<span class="token keyword">var</span> reader <span class="token operator">=</span> fs<span class="token punctuation">.</span><span class="token function">createReadStream</span><span class="token punctuation">(</span><span class="token string">'in.txt'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">var</span> writer <span class="token operator">=</span> fs<span class="token punctuation">.</span><span class="token function">createWriteStream</span><span class="token punctuation">(</span><span class="token string">'out.txt'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+reader<span class="token punctuation">.</span><span class="token function">on</span><span class="token punctuation">(</span><span class="token string">'data'</span><span class="token punctuation">,</span> <span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token parameter">chunk</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    writer<span class="token punctuation">.</span><span class="token function">write</span><span class="token punctuation">(</span>chunk<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+reader<span class="token punctuation">.</span><span class="token function">on</span><span class="token punctuation">(</span><span class="token string">'end'</span><span class="token punctuation">,</span> <span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    writer<span class="token punctuation">.</span><span class="token function">end</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token comment">// 上述代码的简写方法：</span>
+<span class="token keyword">var</span> reader <span class="token operator">=</span> fs<span class="token punctuation">.</span><span class="token function">createReadStream</span><span class="token punctuation">(</span><span class="token string">'in.txt'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">var</span> writer <span class="token operator">=</span> fs<span class="token punctuation">.</span><span class="token function">createWriteStream</span><span class="token punctuation">(</span><span class="token string">'out.txt'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+reader<span class="token punctuation">.</span><span class="token function">pipe</span><span class="token punctuation">(</span>writer<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <blockquote>
 <p> 💡</p>
@@ -646,12 +692,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">2.1m</span>
+    <span title="站点总字数">2.3m</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">31:21</span>
+    <span title="站点阅读时长">34:09</span>
 </div>
   <div class="powered-by">由 <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZw==">NexT.Gemini</span> 强力驱动
   </div>

@@ -383,7 +383,7 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>2.1k</span>
+              <span>2k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -413,15 +413,31 @@
 
 <p>官方描述：通常在开发应用程序时，我们遇到了一个问题，iPhone 键盘向上滑动并覆盖 <strong>UITextField / UITextView</strong>。 <strong>IQKeyboardManager</strong> 允许您防止键盘向上滑动就会覆盖 <strong>UITextField / UITextView</strong> 的问题，而不需要您输入任何代码，并且不需要额外的设置。 要使用 <strong>IQKeyboardManager</strong>，您只需要向项目中添加源文件。</p>
 <h4 id="启用-禁用管理键盘和textField之间的距离。"><a href="#启用-禁用管理键盘和textField之间的距离。" class="headerlink" title="启用/禁用管理键盘和textField之间的距离。"></a>启用 / 禁用管理键盘和 textField 之间的距离。</h4><p><strong>默认全局开启</strong>，只要把框架放入项目中就能自动开启，甚至不需要 <code>#import</code> 导入，厉害了。</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line"> Enable/disable managing distance between keyboard and textField. Default is YES(Enabled when class loads in `+(void)load` method).</span><br><span class="line"> */</span><br><span class="line">@property(nonatomic, assign, getter = isEnabled) BOOL enable;</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-none"><code class="language-none">/**
+ Enable/disable managing distance between keyboard and textField. Default is YES(Enabled when class loads in `+(void)load` method).
+ */
+@property(nonatomic, assign, getter = isEnabled) BOOL enable;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
 <p>使用：</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {</span><br><span class="line">    // 全局禁用管理键盘和textField之间的距离。</span><br><span class="line">    [IQKeyboardManager sharedManager].enable = NO;</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-none"><code class="language-none">- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    // 全局禁用管理键盘和textField之间的距离。
+    [IQKeyboardManager sharedManager].enable = NO;
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
 <h4 id="添加手势，当键盘被弹出后，点击屏幕背景收起键盘。"><a href="#添加手势，当键盘被弹出后，点击屏幕背景收起键盘。" class="headerlink" title="添加手势，当键盘被弹出后，点击屏幕背景收起键盘。"></a>添加手势，当键盘被弹出后，点击屏幕背景收起键盘。</h4><p><strong>方法一：</strong> 如果不使用该框架实现的方式：</p>
 <ol>
 <li><p>在 <code>viewDidLoad:</code> 方法中添加以下代码：</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">//添加手势，点击屏幕其他区域收起键盘的操作</span><br><span class="line">UITapGestureRecognizer *gesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hidenkeyboard)];</span><br><span class="line">gesture.numberOfTapsRequired = 1;</span><br><span class="line">[self.view addGestureRecognizer:gesture];</span><br></pre></td></tr></tbody></table></figure></li>
+<pre class="line-numbers language-none"><code class="language-none">//添加手势，点击屏幕其他区域收起键盘的操作
+UITapGestureRecognizer *gesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hidenkeyboard)];
+gesture.numberOfTapsRequired = 1;
+[self.view addGestureRecognizer:gesture];<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre></li>
 <li><p>然后添加需要实现的 <code>hidenkeyboard</code> 方法：</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">    //隐藏键盘的方法</span><br><span class="line">    - (void)hidenkeyboard {</span><br><span class="line">    //设置所有需要用到键盘的输入文本框放弃第一响应者状态</span><br><span class="line">    [self.view endEditing:YES];</span><br><span class="line">    </span><br><span class="line">    ~~[self.account resignFirstResponder]; //用户名输入框~~</span><br><span class="line">    ~~[self.password resignFirstResponder];//密码输入框~~</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-none"><code class="language-none">    //隐藏键盘的方法
+- (void)hidenkeyboard {
+//设置所有需要用到键盘的输入文本框放弃第一响应者状态
+[self.view endEditing:YES];
+
+~~[self.account resignFirstResponder]; //用户名输入框~~
+~~[self.password resignFirstResponder];//密码输入框~~
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 </li>
 </ol>
@@ -429,21 +445,30 @@
 <h4 id="隐藏键盘上的工具条"><a href="#隐藏键盘上的工具条" class="headerlink" title="隐藏键盘上的工具条"></a>隐藏键盘上的工具条</h4><ul>
 <li>全局设置 </li>
 </ul>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[IQKeyboardManager sharedManager].enableAutoToolbar = NO;</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-none"><code class="language-none">[IQKeyboardManager sharedManager].enableAutoToolbar = NO;<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <ul>
 <li>当某个特定输入框不需要键盘上的工具条时：</li>
 </ul>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">textField.inputAccessoryView = [[UIView alloc] init];</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-none"><code class="language-none">textField.inputAccessoryView = [[UIView alloc] init];<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 
 <ul>
 <li>在键盘上方显示工具条，不显示文本输入框占位符文字 </li>
 </ul>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[IQKeyboardManager sharedManager].enableAutoToolbar = YES;</span><br><span class="line">[IQKeyboardManager sharedManager].shouldShowTextFieldPlaceholder = NO;</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-none"><code class="language-none">[IQKeyboardManager sharedManager].enableAutoToolbar = YES;
+[IQKeyboardManager sharedManager].shouldShowTextFieldPlaceholder = NO;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 
 <ul>
 <li>设置某个视图上所有的输入框不需要工具条 </li>
 </ul>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">- (void)viewWillAppear:(BOOL)animated {</span><br><span class="line">    [super viewWillAppear:animated];</span><br><span class="line">    [[IQKeyboardManager sharedManager] setEnableAutoToolbar:NO];</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">- (void)viewWillDisappear:(BOOL)animated {</span><br><span class="line">    [super viewWillDisappear:animated];</span><br><span class="line">    [[IQKeyboardManager sharedManager] setEnableAutoToolbar:YES];</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-none"><code class="language-none">- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    [[IQKeyboardManager sharedManager] setEnableAutoToolbar:NO];
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    [[IQKeyboardManager sharedManager] setEnableAutoToolbar:YES];
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><ul>
 <li><span class="exturl" data-url="aHR0cDovL3d3dy5qaWFuc2h1LmNvbS9wLzAxYzA2ODIwMDNhOQ==">iOS 开发第三方库一 IQKeyboardManager @豆志昂扬<i class="fa fa-external-link-alt"></i></span></li>
@@ -568,12 +593,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">2.1m</span>
+    <span title="站点总字数">2.3m</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">31:21</span>
+    <span title="站点阅读时长">34:09</span>
 </div>
   <div class="powered-by">由 <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZw==">NexT.Gemini</span> 强力驱动
   </div>

@@ -29,12 +29,12 @@
     var CONFIG = {"hostname":"andy0570.com","root":"/","scheme":"Gemini","version":"8.0.0-rc.5","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":"mac","bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":true,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":true,"nav":null,"activeClass":"valine"},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"algolia":{"appID":"0E2AON8EZF","apiKey":"22fbefd84c8343239f5c04365b9728de","indexName":"MyBlogPlatform","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"path":"search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":true,"preload":false}};
   </script>
 
-  <meta name="description" content="动态改变 webview 的 frame 以达到 webview 刚好填充 contentSize 的效果 1234567891011121314&#x2F;&#x2F; 在Y方向给contentSize足够的空间_webView.scrollView.contentSize &#x3D; CGSizeMake(self.view.bounds.size.width, MAXFLOAT);&#x2F;&#x2F; 加载本地HTML数据[_webV">
+  <meta name="description" content="动态改变 webview 的 frame 以达到 webview 刚好填充 contentSize 的效果 &#x2F;&#x2F; 在Y方向给contentSize足够的空间 _webView.scrollView.contentSize &#x3D; CGSizeMake(self.view.bounds.size.width, MAXFLOAT); &#x2F;&#x2F; 加载本地HTML数据 [_webView loadHTMLStri">
 <meta property="og:type" content="article">
 <meta property="og:title" content="iOS 编程：关于 UIWebview scrollview 的 contentSize 问题">
 <meta property="og:url" content="https://andy0570.com/2017/11/03/iOS%20%E7%BC%96%E7%A8%8B%EF%BC%9A%E5%85%B3%E4%BA%8E%20UIWebview%20scrollview%20%E7%9A%84%20contentSize%20%E9%97%AE%E9%A2%98/index.html">
 <meta property="og:site_name" content="独木舟的木">
-<meta property="og:description" content="动态改变 webview 的 frame 以达到 webview 刚好填充 contentSize 的效果 1234567891011121314&#x2F;&#x2F; 在Y方向给contentSize足够的空间_webView.scrollView.contentSize &#x3D; CGSizeMake(self.view.bounds.size.width, MAXFLOAT);&#x2F;&#x2F; 加载本地HTML数据[_webV">
+<meta property="og:description" content="动态改变 webview 的 frame 以达到 webview 刚好填充 contentSize 的效果 &#x2F;&#x2F; 在Y方向给contentSize足够的空间 _webView.scrollView.contentSize &#x3D; CGSizeMake(self.view.bounds.size.width, MAXFLOAT); &#x2F;&#x2F; 加载本地HTML数据 [_webView loadHTMLStri">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2017-11-03T15:25:00.000Z">
 <meta property="article:modified_time" content="2019-05-01T13:37:14.000Z">
@@ -379,7 +379,7 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>650</span>
+              <span>631</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -397,7 +397,20 @@
     
     <div class="post-body" itemprop="articleBody">
         <p>动态改变 webview 的 frame 以达到 webview 刚好填充 contentSize 的效果</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">// 在Y方向给contentSize足够的空间</span><br><span class="line">_webView.scrollView.contentSize = CGSizeMake(self.view.bounds.size.width, MAXFLOAT);</span><br><span class="line">// 加载本地HTML数据</span><br><span class="line">[_webView loadHTMLString:html baseURL:nil];</span><br><span class="line"></span><br><span class="line">// web视图加载完成</span><br><span class="line">- (void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation {</span><br><span class="line">    // 在加载完毕之后获取webview内容所需要的空间</span><br><span class="line">    CGSize size = [webView sizeThatFits:CGSizeMake(self.view.bounds.size.width, MAXFLOAT)];</span><br><span class="line">    CGRect frame = CGRectMake(0, 0, size.width, size.height);</span><br><span class="line">    webView.frame = frame;</span><br><span class="line">    // 调整好frame之后再调整contentSize</span><br><span class="line">    webView.scrollView.contentSize = CGSizeMake(0, 0);</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">// 在Y方向给contentSize足够的空间
+_webView.scrollView.contentSize = CGSizeMake(self.view.bounds.size.width, MAXFLOAT);
+// 加载本地HTML数据
+[_webView loadHTMLString:html baseURL:nil];
+
+// web视图加载完成
+- (void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation {
+    // 在加载完毕之后获取webview内容所需要的空间
+    CGSize size = [webView sizeThatFits:CGSizeMake(self.view.bounds.size.width, MAXFLOAT)];
+    CGRect frame = CGRectMake(0, 0, size.width, size.height);
+    webView.frame = frame;
+    // 调整好frame之后再调整contentSize
+    webView.scrollView.contentSize = CGSizeMake(0, 0);
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
     </div>
 
@@ -516,12 +529,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">2.1m</span>
+    <span title="站点总字数">2.3m</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">31:21</span>
+    <span title="站点阅读时长">34:09</span>
 </div>
   <div class="powered-by">由 <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZw==">NexT.Gemini</span> 强力驱动
   </div>

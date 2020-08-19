@@ -535,7 +535,7 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>16k</span>
+              <span>15k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -760,7 +760,7 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>4.5k</span>
+              <span>4.4k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -989,7 +989,7 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>5.2k</span>
+              <span>5k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -1009,7 +1009,12 @@
           <h1 id="保存和读取数据的机制"><a href="#保存和读取数据的机制" class="headerlink" title="保存和读取数据的机制"></a>保存和读取数据的机制</h1><p>在之前写的 Homeowner 基础上更新，<strong>通过固化来保存和读取模型对象</strong>，当用户重新运行 Homeowner 应用时，可以读取之前创建并保存的模型对象。</p>
 <p>之前的应用：<span class="exturl" data-url="aHR0cDovL3d3dy5qaWFuc2h1LmNvbS9wLzA4ZDA5N2UxN2EyNQ==">《iOS 编程（第四版）》Demo8：Homeowner<i class="fa fa-external-link-alt"></i></span></p>
 <p>## 固化机制<br><strong>固化</strong> 是由 iOS SDK 提供的一种保存和读取对象的机制。当应用固化某个对象时，会将该对象的所有属性存入指定的文件夹。当应用解固某个对象时，会从指定的文件读取相应的数据，然后根据数据还原对象。<br>为了固化或解固某个对象，相应对象的类必须遵守 <strong>NSCoding</strong> 协议，并实现两个必须方法：</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">@protocol NSCoding</span><br><span class="line"></span><br><span class="line">- (void)encodeWithCoder:(NSCoder *)aCoder;</span><br><span class="line">- (nullable instancetype)initWithCoder:(NSCoder *)aDecoder; // NS_DESIGNATED_INITIALIZER</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">@protocol NSCoding
+
+- (void)encodeWithCoder:(NSCoder *)aCoder;
+- (nullable instancetype)initWithCoder:(NSCoder *)aDecoder; // NS_DESIGNATED_INITIALIZER
+
+@end<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 
 <ul>
@@ -1106,7 +1111,7 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>6.7k</span>
+              <span>6.3k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -1125,7 +1130,17 @@
     <div class="post-body" itemprop="articleBody">
           <h3 id="SDCycleScrollView"><a href="#SDCycleScrollView" class="headerlink" title="SDCycleScrollView"></a>SDCycleScrollView</h3><p>傻瓜式最简单的方法，调用第三方框架，<span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2dzZGlvcy9TREN5Y2xlU2Nyb2xsVmlldw==">SDCycleScrollView<i class="fa fa-external-link-alt"></i></span></p>
 <h3 id="下面👇的自定义方法，模仿着写的，待完善。"><a href="#下面👇的自定义方法，模仿着写的，待完善。" class="headerlink" title="下面👇的自定义方法，模仿着写的，待完善。"></a>下面👇的自定义方法，模仿着写的，待完善。</h3><p>参考的<span class="exturl" data-url="aHR0cDovL3d3dy5qaWFuc2h1LmNvbS9wLzJiMzBhZDExMGJhNw==">无限轮播 (三图轮播原理)<i class="fa fa-external-link-alt"></i></span>, 自己模仿写了一个，但是发现图片一开始加载的时候有偏移量，一直没法解决，先留着吧。</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">#import &lt;UIKit/UIKit.h&gt;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> 首页轮播图</span><br><span class="line"> */</span><br><span class="line">@interface HQLCarouselView : UIView</span><br><span class="line"></span><br><span class="line">#pragma 视图控制器中调用的接口</span><br><span class="line">- (instancetype) initWithFrame:(CGRect)frame withPictures:(NSArray *)picture_array;</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">#import &lt;UIKit/UIKit.h&gt;
+
+/**
+ 首页轮播图
+ */
+@interface HQLCarouselView : UIView
+
+#pragma 视图控制器中调用的接口
+- (instancetype) initWithFrame:(CGRect)frame withPictures:(NSArray *)picture_array;
+
+@end<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2016/11/14/iOS%20%E7%BC%96%E7%A8%8B%EF%BC%9A%E8%BD%AE%E6%92%AD%E5%9B%BE/#more" rel="contents">
@@ -1455,7 +1470,7 @@
                 <i class="far fa-clock"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>13 分钟</span>
+              <span>12 分钟</span>
             </span>
 
         </div>
@@ -1467,7 +1482,17 @@
     <div class="post-body" itemprop="articleBody">
           <h3 id="TouchTracker"><a href="#TouchTracker" class="headerlink" title="TouchTracker"></a>TouchTracker</h3><p>参考：<span class="exturl" data-url="aHR0cHM6Ly93d3cuYW1hem9uLmNuL2dwL3Byb2R1Y3QvQjAxM1VHMlVMVy9yZWY9b2hfYXVpX2RfZGV0YWlscGFnZV9vMDNfP2llPVVURjgmcHNjPTE=">《iOS 编程（第四版）[美] Christian Keur》<i class="fa fa-external-link-alt"></i></span> 写的 Demo 笔记</p>
 <h2 id="1-触摸事件与UIResponder"><a href="#1-触摸事件与UIResponder" class="headerlink" title="1. 触摸事件与UIResponder"></a>1. 触摸事件与 UIResponder</h2><p>因为 <strong>UIView</strong> 是 <strong>UIResponder</strong> 的子类，所以覆盖以下四个方法就可以处理四种不同的触摸事件： </p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">// ① 一根手指或多根手指触摸屏幕</span><br><span class="line">- (void)touchesBegan:(NSSet&lt;UITouch *&gt; *)touches withEvent:(nullable UIEvent *)event;</span><br><span class="line"></span><br><span class="line">// ② 一根手指或多根手指在屏幕上移动（随着手指的移动，相关的对象会持续发送该消息）</span><br><span class="line">- (void)touchesMoved:(NSSet&lt;UITouch *&gt; *)touches withEvent:(nullable UIEvent *)event;</span><br><span class="line"></span><br><span class="line">// ③ 一根手指或多根手指离开屏幕</span><br><span class="line">- (void)touchesEnded:(NSSet&lt;UITouch *&gt; *)touches withEvent:(nullable UIEvent *)event;</span><br><span class="line"></span><br><span class="line">// ④ 在触摸操作正常结束前，某个系统事件（例如突然来电话）打断了触摸过程</span><br><span class="line">- (void)touchesCancelled:(NSSet&lt;UITouch *&gt; *)touches withEvent:(nullable UIEvent *)event;</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">// ① 一根手指或多根手指触摸屏幕
+- (void)touchesBegan:(NSSet&lt;UITouch *&gt; *)touches withEvent:(nullable UIEvent *)event;
+
+// ② 一根手指或多根手指在屏幕上移动（随着手指的移动，相关的对象会持续发送该消息）
+- (void)touchesMoved:(NSSet&lt;UITouch *&gt; *)touches withEvent:(nullable UIEvent *)event;
+
+// ③ 一根手指或多根手指离开屏幕
+- (void)touchesEnded:(NSSet&lt;UITouch *&gt; *)touches withEvent:(nullable UIEvent *)event;
+
+// ④ 在触摸操作正常结束前，某个系统事件（例如突然来电话）打断了触摸过程
+- (void)touchesCancelled:(NSSet&lt;UITouch *&gt; *)touches withEvent:(nullable UIEvent *)event;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>当系统检测到手指触摸屏幕的事件后，就会创建 <strong>UITouch</strong> 对象（一根手指的触摸事件对应一个 <strong>UITouch</strong> 对象）。发生触摸事件的 <strong>UIView</strong> 对象会收到不同阶段的以上四种消息。</p>
           <!--noindex-->
@@ -1546,12 +1571,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">2.1m</span>
+    <span title="站点总字数">2.3m</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">31:21</span>
+    <span title="站点阅读时长">34:09</span>
 </div>
   <div class="powered-by">由 <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZw==">NexT.Gemini</span> 强力驱动
   </div>

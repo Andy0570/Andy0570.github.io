@@ -383,7 +383,7 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>6.3k</span>
+              <span>6.2k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -410,8 +410,11 @@
 <li><p>Objectice-C 语言由 <span class="exturl" data-url="aHR0cHM6Ly96aC53aWtpcGVkaWEub3JnL3dpa2kvU21hbGx0YWxr">Smalltalk<i class="fa fa-external-link-alt"></i></span> 演化而来，后者是消息型语言的鼻祖。</p>
 </li>
 <li><p>Objectice-C 与 C++、Java 等面向对象语言类似，但是在语法上使用 <strong>消息结构</strong> （messaging structure），而非 <strong>函数调用</strong> （function calling）。</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">// Message (Objective-C)</span><br><span class="line">Object *obj = [Object new];</span><br><span class="line">[obj performWith:parameter1 and:parameter2];</span><br><span class="line"></span><br><span class="line">// Function calling (C++)</span><br><span class="line">Object *obj = new Object;</span><br><span class="line">obj -&gt;perform(parameter1, parameter2)</span><br></pre></td></tr></tbody></table></figure>
-</li>
+<p>&lt;!–hexoPostRenderEscape:</p><pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">// Message (Objective-C)<br>Object *obj = [Object new];<br>[obj performWith:parameter1 and:parameter2];<p></p>
+</code></pre></li><code class="language-objective-c">
+</code></ul><code class="language-objective-c">
+</code><p><code class="language-objective-c">// Function calling (C++)<br>Object *obj = new Object;<br>obj -&gt;perform(parameter1, parameter2)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code>:hexoPostRenderEscape–&gt;</p>
+<ul>
 <li><p>区别：使用<strong>消息结构</strong>的语言，其运行时所应执行的代码由<strong>运行环境</strong>来决定；而使用<strong>函数调用</strong>的语言，则由<strong>编译器</strong>决定。</p>
 </li>
 <li><p>Objectice-C 的重要工作都由<strong>运行期组件</strong>（runtime component）而非编译器来完成。<strong>运行期组件</strong>本质上就是一种与开发者所编代码相链接的<strong>动态库</strong>（dynamic library）。</p>
@@ -433,7 +436,24 @@
 <p><strong>后向引用</strong>：EOCPerson 类的实现文件则需要引入 EOCEmployer 类的头文件，因为若要使用后者，则必须知道其所有接口细节。</p>
 <p>将引入头文件的时机尽量延后，只在确有需要时才引入，这样就可以<strong>减少类的使用者所需引入的头文件数量</strong>。</p>
 <p><img data-src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/073018.jpg"></p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">//  EOCPerson.h</span><br><span class="line">#import &lt;Foundation/Foundation.h&gt;</span><br><span class="line"></span><br><span class="line">@class EOCEmployer;</span><br><span class="line"></span><br><span class="line">@interface EOCPerson : NSObject</span><br><span class="line">@property (nonatomic, copy) NSString *firstName;</span><br><span class="line">@property (nonatomic, copy) NSString *lastName;</span><br><span class="line">@property (nonatomic, strong) EOCEmployer *employer;</span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">//  EOCPerson.m</span><br><span class="line">#import "EOCPerson.h"</span><br><span class="line">#import "EOCEmployer.h"</span><br><span class="line"></span><br><span class="line">@implementation EOCPerson</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">//  EOCPerson.h
+#import &lt;Foundation/Foundation.h&gt;
+
+@class EOCEmployer;
+
+@interface EOCPerson : NSObject
+@property (nonatomic, copy) NSString *firstName;
+@property (nonatomic, copy) NSString *lastName;
+@property (nonatomic, strong) EOCEmployer *employer;
+@end
+
+//  EOCPerson.m
+#import "EOCPerson.h"
+#import "EOCEmployer.h"
+
+@implementation EOCPerson
+
+@end<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>必须在头文件中引入其他头文件：</p>
 <ul>
@@ -445,18 +465,61 @@
 <li>有时无法使用向前声明比如要声明某个类遵循一项协议。这种情况下，尽量把 “该类遵循某协议” 的这条声明移至 “class-continuation 分类” 中。如果不行的话，就把协议单独放在一个头文件中，然后将其引入。</li>
 </ul>
 <h3 id="第3条：多用字面量语法，少用与之等价的方法"><a href="#第3条：多用字面量语法，少用与之等价的方法" class="headerlink" title="第3条：多用字面量语法，少用与之等价的方法"></a>第 3 条：多用字面量语法，少用与之等价的方法</h3><p>使用字面量语法（literal syntax）可以缩减源代码长度，使其更为易读。</p>
-<h4 id="NSString"><a href="#NSString" class="headerlink" title="NSString"></a>NSString</h4><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">// 字符串字面量</span><br><span class="line">NSString *string = @"Effective Objective-C 2.0";</span><br></pre></td></tr></tbody></table></figure>
+<h4 id="NSString"><a href="#NSString" class="headerlink" title="NSString"></a>NSString</h4><pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">// 字符串字面量
+NSString *string = @"Effective Objective-C 2.0";<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 
-<h4 id="NSNumber"><a href="#NSNumber" class="headerlink" title="NSNumber"></a>NSNumber</h4><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">// 使用字面量语法</span><br><span class="line">NSNumber *intNumber    = @1;</span><br><span class="line">NSNumber *floatNumber  = @2.5f;</span><br><span class="line">NSNumber *doubleNumber = @3.14159;</span><br><span class="line">NSNumber *boolNumber   = @YES;</span><br><span class="line">NSNumber *charNumber   = @'a';</span><br><span class="line"></span><br><span class="line">int x = 5;</span><br><span class="line">float y = 6.32f;</span><br><span class="line">NSNumber *expressionNumber = @(x * y);</span><br></pre></td></tr></tbody></table></figure>
+<h4 id="NSNumber"><a href="#NSNumber" class="headerlink" title="NSNumber"></a>NSNumber</h4><pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">// 使用字面量语法
+NSNumber *intNumber    = @1;
+NSNumber *floatNumber  = @2.5f;
+NSNumber *doubleNumber = @3.14159;
+NSNumber *boolNumber   = @YES;
+NSNumber *charNumber   = @'a';
 
-<h4 id="NSArray"><a href="#NSArray" class="headerlink" title="NSArray"></a>NSArray</h4><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">// 标准语法</span><br><span class="line">NSArray *animals = [NSArray arrayWithObjects:@"cat",</span><br><span class="line">                                             @"dog",</span><br><span class="line">                                             @"mouse",</span><br><span class="line">                                             @"badger",nil];</span><br><span class="line">NSString *dog = [animals objectAtIndex:1];</span><br><span class="line"></span><br><span class="line">// 使用字面量语法</span><br><span class="line">NSArray *animals = @[@"cat",@"dog",@"mouse",@"badger"];</span><br><span class="line">NSString *dog = animals[1];</span><br></pre></td></tr></tbody></table></figure>
+int x = 5;
+float y = 6.32f;
+NSNumber *expressionNumber = @(x * y);<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
-<h4 id="NSDictionary"><a href="#NSDictionary" class="headerlink" title="NSDictionary"></a>NSDictionary</h4><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">// 标准语法</span><br><span class="line">// 顺序：&lt;对象&gt;,&lt;键&gt;,&lt;对象&gt;,&lt;键&gt;,nil</span><br><span class="line">NSDictionary *personData = [NSDictionary dictionaryWithObjectsAndKeys:</span><br><span class="line">                                    @"Matt",@"firstName",</span><br><span class="line">                                    @"Galloway",@"lastName",</span><br><span class="line">                                    [NSNumber numberWithInteger:28],@"age",</span><br><span class="line">                                    nil];</span><br><span class="line">NSString *lastName = [personData objectForKey:@"lastName"];</span><br><span class="line"></span><br><span class="line">// 字面量语法</span><br><span class="line">// 顺序：,&lt;键&gt;,&lt;对象&gt;,&lt;键&gt;,&lt;对象&gt;,</span><br><span class="line">NSDictionary *personData = @{@"firstName":@"Matt",</span><br><span class="line">                             @"lastName" :@"Galloway",</span><br><span class="line">                             @"age"      :@"@28"};</span><br><span class="line">NSString *lastName = personData[@"lastName"];</span><br></pre></td></tr></tbody></table></figure>
+<h4 id="NSArray"><a href="#NSArray" class="headerlink" title="NSArray"></a>NSArray</h4><pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">// 标准语法
+NSArray *animals = [NSArray arrayWithObjects:@"cat",
+                                             @"dog",
+                                             @"mouse",
+                                             @"badger",nil];
+NSString *dog = [animals objectAtIndex:1];
 
-<h4 id="NSMutableArray-amp-NSMutableDictionary"><a href="#NSMutableArray-amp-NSMutableDictionary" class="headerlink" title="NSMutableArray &amp; NSMutableDictionary"></a>NSMutableArray &amp; NSMutableDictionary</h4><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">// 修改可变数组与字典内容</span><br><span class="line">[mutableArray replaceObjectAtIndex:1 withObject:@"dog"];</span><br><span class="line">[mutableDictionary setObject:@"Galloway" forKey:@"lastName"];</span><br><span class="line"></span><br><span class="line">//下标操作</span><br><span class="line">mutableArray[1] = @"dog";</span><br><span class="line">mutableDictionary[@"lastName"] = @"Galloway";</span><br></pre></td></tr></tbody></table></figure>
+// 使用字面量语法
+NSArray *animals = @[@"cat",@"dog",@"mouse",@"badger"];
+NSString *dog = animals[1];<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h4 id="NSDictionary"><a href="#NSDictionary" class="headerlink" title="NSDictionary"></a>NSDictionary</h4><pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">// 标准语法
+// 顺序：&lt;对象&gt;,&lt;键&gt;,&lt;对象&gt;,&lt;键&gt;,nil
+NSDictionary *personData = [NSDictionary dictionaryWithObjectsAndKeys:
+                                    @"Matt",@"firstName",
+                                    @"Galloway",@"lastName",
+                                    [NSNumber numberWithInteger:28],@"age",
+                                    nil];
+NSString *lastName = [personData objectForKey:@"lastName"];
+
+// 字面量语法
+// 顺序：,&lt;键&gt;,&lt;对象&gt;,&lt;键&gt;,&lt;对象&gt;,
+NSDictionary *personData = @{@"firstName":@"Matt",
+                             @"lastName" :@"Galloway",
+                             @"age"      :@"@28"};
+NSString *lastName = personData[@"lastName"];<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h4 id="NSMutableArray-amp-NSMutableDictionary"><a href="#NSMutableArray-amp-NSMutableDictionary" class="headerlink" title="NSMutableArray &amp; NSMutableDictionary"></a>NSMutableArray &amp; NSMutableDictionary</h4><pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">// 修改可变数组与字典内容
+[mutableArray replaceObjectAtIndex:1 withObject:@"dog"];
+[mutableDictionary setObject:@"Galloway" forKey:@"lastName"];
+
+//下标操作
+mutableArray[1] = @"dog";
+mutableDictionary[@"lastName"] = @"Galloway";<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <h4 id="💡NSURL"><a href="#💡NSURL" class="headerlink" title="💡NSURL"></a>💡NSURL</h4><p>你知道 <strong>NUSRL</strong> 也有字面量语法吗？<code>@@</code> 是创建 NSURL 的字面量的绝佳方法:</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">// 标准语法</span><br><span class="line">NSURL *url = [NSURL URLWithString:@"http://example.com"];</span><br><span class="line"></span><br><span class="line">// 字面量语法</span><br><span class="line">NSURL *url = @@"http://example.com";</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-none"><code class="language-none">// 标准语法
+NSURL *url = [NSURL URLWithString:@"http://example.com"];
+
+// 字面量语法
+NSURL *url = @@"http://example.com";<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <h4 id="要点-2"><a href="#要点-2" class="headerlink" title="要点"></a>要点</h4><ul>
 <li>应该使用字面量语法来创建字符串、数值、数组、字典。与创建此类对象的常规方法相比，这么做更加简明扼要。</li>
@@ -467,17 +530,26 @@
 <li><code>#define</code> 预处理指令只是简单的替换，定义出来的常量<strong>没有类型信息</strong>。</li>
 </ul>
 <p>推荐方法：</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">// In the implementation file</span><br><span class="line">static const NSTimeInterval KAnimationDuration = 0.3;</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">// In the implementation file
+static const NSTimeInterval KAnimationDuration = 0.3;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 
 <p>常用的命名法：若常量局限于<strong>实现文件</strong>之内，则在前面加字母 K；若常量在类之外可见，则通常以类名为前缀。</p>
 <p><strong>const</strong>：如果修改由 const 修饰符所声明的变量，编译器就会报错。</p>
 <p><strong>static</strong>：该变量仅在定义此变量的编译单元中可见。</p>
 <p>对外公开某个常量：</p>
 <p>示例一：</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">// In the header file</span><br><span class="line">extern NSString *const EOCStringConst;</span><br><span class="line"></span><br><span class="line">// In the implementation file</span><br><span class="line">NSString *const EOCStringConst = @"VALUE";</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">// In the header file
+extern NSString *const EOCStringConst;
+
+// In the implementation file
+NSString *const EOCStringConst = @"VALUE";<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>示例二：</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">// EOCAnimatedView.h</span><br><span class="line">extern const NSTimeInterval EOCAnimatedViewAnimationDruation;</span><br><span class="line"></span><br><span class="line">// EOCAnimatedView.m</span><br><span class="line">const NSTimeInterval EOCAnimatedViewAnimationDruation = 0.3;</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">// EOCAnimatedView.h
+extern const NSTimeInterval EOCAnimatedViewAnimationDruation;
+
+// EOCAnimatedView.m
+const NSTimeInterval EOCAnimatedViewAnimationDruation = 0.3;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <blockquote>
 <p>💡推荐使用 <code>UIKIT_EXTERN</code> 关键字代替 <code>extern </code>。</p>
 </blockquote>
@@ -492,19 +564,43 @@
 <p>用 <strong>Foundation</strong> 框架中的辅助宏定义枚举类型：</p>
 <p>方法一，普通枚举类型：</p>
 <p><code>nsenum - Enumerated Type Declaration(NS_ENUM)</code></p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">typedef NS_ENUM(NSUInteger, EOCConnectionState) {</span><br><span class="line">    EOCConnectionStateDisconnected,</span><br><span class="line">    EOCConnectionStateConnecting,</span><br><span class="line">    EOCConnectionStateConnected,</span><br><span class="line">};</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">typedef NS_ENUM(NSUInteger, EOCConnectionState) {
+    EOCConnectionStateDisconnected,
+    EOCConnectionStateConnecting,
+    EOCConnectionStateConnected,
+};<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 
 
 <p>方法二，需要用 <strong>按位或操作</strong> 来组合的枚举定义：</p>
 <p><code>nsoptions - Enumerated Type Declaration(NS_OPTIONS)</code></p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">typedef NS_OPTIONS(NSUInteger, EOCPermittedDirection) {</span><br><span class="line">    EOCPermittedDirectionUP    = 1 &lt;&lt; 0,</span><br><span class="line">    EOCPermittedDirectionDown  = 1 &lt;&lt; 1,</span><br><span class="line">    EOCPermittedDirectionLeft  = 1 &lt;&lt; 2,</span><br><span class="line">    EOCPermittedDirectionRight = 1 &lt;&lt; 3,</span><br><span class="line">};</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">typedef NS_OPTIONS(NSUInteger, EOCPermittedDirection) {
+    EOCPermittedDirectionUP    = 1 &lt;&lt; 0,
+    EOCPermittedDirectionDown  = 1 &lt;&lt; 1,
+    EOCPermittedDirectionLeft  = 1 &lt;&lt; 2,
+    EOCPermittedDirectionRight = 1 &lt;&lt; 3,
+};<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 
 
 <p>方法二用在定义可以组合的选项：</p>
 <p>示例：</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">typedef enum UIViewAutoresizing : NSUInteger {</span><br><span class="line">    UIViewAutoresizingNone                 = 0,</span><br><span class="line">    UIViewAutoresizingFlexibleLeftMargin   = 1 &lt;&lt; 0,</span><br><span class="line">    UIViewAutoresizingFlexibleWidth        = 1 &lt;&lt; 1,</span><br><span class="line">    UIViewAutoresizingFlexibleRightMargin  = 1 &lt;&lt; 2,</span><br><span class="line">    UIViewAutoresizingFlexibleTopMargin    = 1 &lt;&lt; 3,</span><br><span class="line">    UIViewAutoresizingFlexibleHeight       = 1 &lt;&lt; 4,</span><br><span class="line">    UIViewAutoresizingFlexibleBottomMargin = 1 &lt;&lt; 5</span><br><span class="line">} UIViewAutoresizing;</span><br><span class="line"></span><br><span class="line">// 通过“按位或操作”组合多个选项</span><br><span class="line">UIViewAutoresizing resizing = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;</span><br><span class="line">// 通过“按位与操作”判断是否已启用某个选项</span><br><span class="line">if (resizing &amp; UIViewAutoresizingFlexibleWidth) {</span><br><span class="line">    // UIViewAutoresizingFlexibleWidth is set</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">typedef enum UIViewAutoresizing : NSUInteger {
+    UIViewAutoresizingNone                 = 0,
+    UIViewAutoresizingFlexibleLeftMargin   = 1 &lt;&lt; 0,
+    UIViewAutoresizingFlexibleWidth        = 1 &lt;&lt; 1,
+    UIViewAutoresizingFlexibleRightMargin  = 1 &lt;&lt; 2,
+    UIViewAutoresizingFlexibleTopMargin    = 1 &lt;&lt; 3,
+    UIViewAutoresizingFlexibleHeight       = 1 &lt;&lt; 4,
+    UIViewAutoresizingFlexibleBottomMargin = 1 &lt;&lt; 5
+} UIViewAutoresizing;
+
+// 通过“按位或操作”组合多个选项
+UIViewAutoresizing resizing = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+// 通过“按位与操作”判断是否已启用某个选项
+if (resizing &amp; UIViewAutoresizingFlexibleWidth) {
+    // UIViewAutoresizingFlexibleWidth is set
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p><img data-src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/073019.jpg"></p>
 <h4 id="要点-4"><a href="#要点-4" class="headerlink" title="要点"></a>要点</h4><ul>
@@ -635,12 +731,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">2.1m</span>
+    <span title="站点总字数">2.3m</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">31:21</span>
+    <span title="站点阅读时长">34:09</span>
 </div>
   <div class="powered-by">由 <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZw==">NexT.Gemini</span> 强力驱动
   </div>

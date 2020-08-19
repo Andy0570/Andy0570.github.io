@@ -381,7 +381,7 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>4.5k</span>
+              <span>4.4k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -410,10 +410,25 @@
 <li>键 / 值编码中的基本调用包括 <code>-valueForKey：</code> 和 <code>-setValue：forkey：</code> 这两个<br>方法，它们以字符串的形式向对象发送消息，字符串是我们关注属性的关键。</li>
 </ul>
 <p>示例 1：</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">BNRAppliance *a = [[BNRAppliance alloc] init];</span><br><span class="line"></span><br><span class="line">[a setProductName:@"Washing Machine"];</span><br><span class="line">// 使用 KVC 重写以上代码</span><br><span class="line"> [a setValue:@"Washing Machine" forKey:@"productName"];</span><br><span class="line">        </span><br><span class="line">[a setVoltage:240];</span><br><span class="line">// 使用 KVC 重写以上代码</span><br><span class="line">[a setValue:[NSNumber numberWithInt:240] forKey:@"voltage"];</span><br><span class="line">        </span><br><span class="line"> NSLog(@"a is %@",a);</span><br><span class="line"> // 使用 KVC 重写以上代码</span><br><span class="line"> NSLog(@"the product name is %@",[a valueForKey:@"productName"]);</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-none"><code class="language-none">BNRAppliance *a = [[BNRAppliance alloc] init];
+
+[a setProductName:@"Washing Machine"];
+// 使用 KVC 重写以上代码
+ [a setValue:@"Washing Machine" forKey:@"productName"];
+
+[a setVoltage:240];
+// 使用 KVC 重写以上代码
+[a setValue:[NSNumber numberWithInt:240] forKey:@"voltage"];
+
+ NSLog(@"a is %@",a);
+ // 使用 KVC 重写以上代码
+ NSLog(@"the product name is %@",[a valueForKey:@"productName"]);<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>示例 2：</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Person *jack = [[Person alloc] init];</span><br><span class="line">NSMutableString *name = [[NSMutableString alloc] initWithFormat:@"jack"];</span><br><span class="line">[jack setValue:name forKey:@"name"];</span><br><span class="line">NSLog(@"jack name : %@", [jack valueForKey:@"name"]);</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-none"><code class="language-none">Person *jack = [[Person alloc] init];
+NSMutableString *name = [[NSMutableString alloc] initWithFormat:@"jack"];
+[jack setValue:name forKey:@"name"];
+NSLog(@"jack name : %@", [jack valueForKey:@"name"]);<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
 
 <ul>
 <li>使用 KVC，编译器会查找是否存在 <strong>setter</strong>、<strong>getter</strong> 方法，如果不存在，它将在内部查找名为 <strong>_key</strong> 或 <strong>key</strong> 的实例变量。通过 KVC，可以获取不存在 <strong>getter</strong> 方法的对象值，无需通过对象指针直接访问。</li>
@@ -479,7 +494,15 @@ NSLog(@"max : %@", max);</code></pre>
 <h3 id="接受变更后通知"><a href="#接受变更后通知" class="headerlink" title="接受变更后通知"></a>接受变更后通知</h3><ul>
 <li>当对象的一个被观察属性发生变动时，观察者收到一个<br><code>observeValueForKeyPath:ofObject:change:context:</code> 消息。所有观察者都必须<br>实现这一方法。触发观察通知的对象和键路径、包含变更细节的字典，以及观察者<br>注册时提交的上下文指针均被提交给观察者，<code>context</code> 可以为任意类型参数。<br>示例：</li>
 </ul>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">- (void)observeValueForKeyPath:(NSString *)keyPath</span><br><span class="line">                      ofObject:(id)object</span><br><span class="line">                        change:(NSDictionary&lt;NSKeyValueChangeKey,id&gt; *)change</span><br><span class="line">                       context:(void *)context {</span><br><span class="line">    NSString *oldValue = [change objectForKey:NSKeyValueChangeOldKey];</span><br><span class="line">    NSString *newValue = [change objectForKey:NSKeyValueChangeNewKey];</span><br><span class="line">    NSLog(@"Observed:%@ of %@ was changed from %@ to %@",</span><br><span class="line">          keyPath,object,oldValue,newValue);</span><br><span class="line">} </span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-none"><code class="language-none">- (void)observeValueForKeyPath:(NSString *)keyPath
+                      ofObject:(id)object
+                        change:(NSDictionary&lt;NSKeyValueChangeKey,id&gt; *)change
+                       context:(void *)context {
+    NSString *oldValue = [change objectForKey:NSKeyValueChangeOldKey];
+    NSString *newValue = [change objectForKey:NSKeyValueChangeNewKey];
+    NSLog(@"Observed:%@ of %@ was changed from %@ to %@",
+          keyPath,object,oldValue,newValue);
+} <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <h3 id="移除观察者身份"><a href="#移除观察者身份" class="headerlink" title="移除观察者身份"></a>移除观察者身份</h3><ul>
 <li>你可以发送一条指定观察方对象和键路径的 <code>removeObserver:forKeyPath:</code><br>消息至被观察的对象，来移除一个键 - 值观察者。（当我们达到目的时）<br>示例：</li>
@@ -604,12 +627,12 @@ NSLog(@"max : %@", max);</code></pre>
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">2.1m</span>
+    <span title="站点总字数">2.3m</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">31:21</span>
+    <span title="站点阅读时长">34:09</span>
 </div>
   <div class="powered-by">由 <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZw==">NexT.Gemini</span> 强力驱动
   </div>

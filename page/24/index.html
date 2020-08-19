@@ -370,7 +370,7 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>7.4k</span>
+              <span>7.2k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -489,7 +489,7 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>1k</span>
+              <span>995</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -509,7 +509,31 @@
           <ul>
 <li>15 分钟支付倒计时 </li>
 </ul>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">// 支付倒计时</span><br><span class="line">- (void)secondsCountDown:(UILabel *)label {</span><br><span class="line">    __block int timeout = 900;</span><br><span class="line">    dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);</span><br><span class="line">    dispatch_source_t _timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, queue);</span><br><span class="line">    dispatch_source_set_timer(_timer, dispatch_walltime(NULL, 0), 1.0*NSEC_PER_SEC, 0);//每秒执行</span><br><span class="line">    dispatch_source_set_event_handler(_timer, ^{</span><br><span class="line">        if (timeout&lt;=0) {</span><br><span class="line">            dispatch_source_cancel(_timer);</span><br><span class="line">            dispatch_async(dispatch_get_main_queue(), ^{</span><br><span class="line">                // 隐藏密码输入界面，禁用支付按钮</span><br><span class="line">                [MBProgressHUD showMessage:@"付款超时，请返回重新选择座位"];</span><br><span class="line">            });</span><br><span class="line">        }else {</span><br><span class="line">            int minutes = timeout/60;</span><br><span class="line">            int seconds = timeout%60;</span><br><span class="line">            NSString *strTime = [NSString stringWithFormat:@"%d 分 %d 秒", minutes, seconds];</span><br><span class="line">            dispatch_async(dispatch_get_main_queue(), ^{</span><br><span class="line">                label.text = [NSString stringWithFormat:@"请在 %@ 内完成付款，晚了座位就没有了哦",strTime];</span><br><span class="line">            });</span><br><span class="line">            timeout--;</span><br><span class="line">        }</span><br><span class="line">    });</span><br><span class="line">    dispatch_resume(_timer);</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">// 支付倒计时
+- (void)secondsCountDown:(UILabel *)label {
+    __block int timeout = 900;
+    dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+    dispatch_source_t _timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, queue);
+    dispatch_source_set_timer(_timer, dispatch_walltime(NULL, 0), 1.0*NSEC_PER_SEC, 0);//每秒执行
+    dispatch_source_set_event_handler(_timer, ^{
+        if (timeout&lt;=0) {
+            dispatch_source_cancel(_timer);
+            dispatch_async(dispatch_get_main_queue(), ^{
+                // 隐藏密码输入界面，禁用支付按钮
+                [MBProgressHUD showMessage:@"付款超时，请返回重新选择座位"];
+            });
+        }else {
+            int minutes = timeout/60;
+            int seconds = timeout%60;
+            NSString *strTime = [NSString stringWithFormat:@"%d 分 %d 秒", minutes, seconds];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                label.text = [NSString stringWithFormat:@"请在 %@ 内完成付款，晚了座位就没有了哦",strTime];
+            });
+            timeout--;
+        }
+    });
+    dispatch_resume(_timer);
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><ul>
 <li><span class="exturl" data-url="aHR0cDovL3d3dy5jbmJsb2dzLmNvbS9zaXdlbnNzL3AvNjQyODkwMy5odG1s">iOS 中常用的验证码倒计时，支付半小时倒计时.<i class="fa fa-external-link-alt"></i></span></li>
@@ -717,7 +741,7 @@ NSRange rg = [ms3 rangeOfString:@"字符"]; //同上，原@“a插入字符bcdef
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>3.3k</span>
+              <span>3.2k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -742,7 +766,20 @@ NSRange rg = [ms3 rangeOfString:@"字符"]; //同上，原@“a插入字符bcdef
 <li><p><strong>NSMutableArray</strong> 继承于 <strong>NSArray</strong>, <strong>NSArray</strong> 的方法都可以使用，。</p>
 </li>
 </ul>
-<h2 id="数组的创建"><a href="#数组的创建" class="headerlink" title="数组的创建"></a>数组的创建</h2><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">Person *p1 = [[Person alloc] init];</span><br><span class="line">Person *p2 = [[Person alloc] init];</span><br><span class="line">Person *p3 = [[Person alloc] init];</span><br><span class="line"> </span><br><span class="line">//1.初始化时添加元素</span><br><span class="line">NSMutableArray *mArray1 = [[NSMutableArray alloc] initWithObjects:p1,p2,p3, nil];</span><br><span class="line"></span><br><span class="line">//2.创建空数组，再往里面添加</span><br><span class="line">NSMutableArray *mArray2 = [[NSMutableArray alloc] init];</span><br><span class="line">// 类方法</span><br><span class="line">NSMutableArray *mArray21 = [NSMutableArray array];</span><br><span class="line"></span><br><span class="line">//3.创建数组时，同时为数组分配3个存储空间，当3个空间全满之后，会自动扩展空间。</span><br><span class="line">NSMutableArray *mArray1 = [[NSMutableArray alloc] initWithCapacity:3];</span><br></pre></td></tr></tbody></table></figure>
+<h2 id="数组的创建"><a href="#数组的创建" class="headerlink" title="数组的创建"></a>数组的创建</h2><pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">Person *p1 = [[Person alloc] init];
+Person *p2 = [[Person alloc] init];
+Person *p3 = [[Person alloc] init];
+
+//1.初始化时添加元素
+NSMutableArray *mArray1 = [[NSMutableArray alloc] initWithObjects:p1,p2,p3, nil];
+
+//2.创建空数组，再往里面添加
+NSMutableArray *mArray2 = [[NSMutableArray alloc] init];
+// 类方法
+NSMutableArray *mArray21 = [NSMutableArray array];
+
+//3.创建数组时，同时为数组分配3个存储空间，当3个空间全满之后，会自动扩展空间。
+NSMutableArray *mArray1 = [[NSMutableArray alloc] initWithCapacity:3];<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2017/03/05/%E3%80%8AObjective-C%20%E7%BC%96%E7%A8%8B%E3%80%8B17.NSMutableArray/#more" rel="contents">
@@ -834,7 +871,7 @@ NSRange rg = [ms3 rangeOfString:@"字符"]; //同上，原@“a插入字符bcdef
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>1.4k</span>
+              <span>1.3k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -959,7 +996,7 @@ NSRange rg = [ms3 rangeOfString:@"字符"]; //同上，原@“a插入字符bcdef
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>2.5k</span>
+              <span>2.4k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -1076,7 +1113,7 @@ NSRange rg = [ms3 rangeOfString:@"字符"]; //同上，原@“a插入字符bcdef
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>925</span>
+              <span>922</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -1189,7 +1226,7 @@ NSRange rg = [ms3 rangeOfString:@"字符"]; //同上，原@“a插入字符bcdef
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>820</span>
+              <span>761</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -1206,7 +1243,40 @@ NSRange rg = [ms3 rangeOfString:@"字符"]; //同上，原@“a插入字符bcdef
     
     
     <div class="post-body" itemprop="articleBody">
-          <figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">#import "ViewController.h"</span><br><span class="line">// 导入加密功能的头文件</span><br><span class="line">#import &lt;CommonCrypto/CommonDigest.h&gt;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> 演示系统自带的md5加密功能。</span><br><span class="line"> */</span><br><span class="line">@interface ViewController ()</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">@implementation ViewController</span><br><span class="line"></span><br><span class="line">- (void)viewDidLoad {</span><br><span class="line">    [super viewDidLoad];</span><br><span class="line">    </span><br><span class="line">    // 定义一个字符串对象</span><br><span class="line">    NSString *str = @"Hello Apple!";</span><br><span class="line">    // 将字符串对象转换为C语言字符</span><br><span class="line">    const char *representation = [str UTF8String];</span><br><span class="line">    </span><br><span class="line">    // 创建一个标准长度的字符串</span><br><span class="line">    unsigned char md5[CC_MD5_DIGEST_LENGTH];</span><br><span class="line">    // 对C语言字符串进行加密，并将结果存入变量</span><br><span class="line">    CC_MD5(representation, strlen(representation), md5);</span><br><span class="line">    </span><br><span class="line">    // 创建一个可变的字符串变量</span><br><span class="line">    NSMutableString *mutableStr = [NSMutableString string];</span><br><span class="line">    for (int i = 0; i &lt; 16; i++) {</span><br><span class="line">        // 通过遍历该变量，将加密后的结果，存入可变字符串</span><br><span class="line">        [mutableStr appendFormat:@"%02X",md5[i]];</span><br><span class="line">    }</span><br><span class="line">    NSLog(@"%@",mutableStr);</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+          <pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">#import "ViewController.h"
+// 导入加密功能的头文件
+#import &lt;CommonCrypto/CommonDigest.h&gt;
+
+/**
+ 演示系统自带的md5加密功能。
+ */
+@interface ViewController ()
+
+@end
+
+@implementation ViewController
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+
+    // 定义一个字符串对象
+    NSString *str = @"Hello Apple!";
+    // 将字符串对象转换为C语言字符
+    const char *representation = [str UTF8String];
+
+    // 创建一个标准长度的字符串
+    unsigned char md5[CC_MD5_DIGEST_LENGTH];
+    // 对C语言字符串进行加密，并将结果存入变量
+    CC_MD5(representation, strlen(representation), md5);
+
+    // 创建一个可变的字符串变量
+    NSMutableString *mutableStr = [NSMutableString string];
+    for (int i = 0; i &lt; 16; i++) {
+        // 通过遍历该变量，将加密后的结果，存入可变字符串
+        [mutableStr appendFormat:@"%02X",md5[i]];
+    }
+    NSLog(@"%@",mutableStr);
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
       
     </div>
@@ -1291,14 +1361,14 @@ NSRange rg = [ms3 rangeOfString:@"字符"]; //同上，原@“a插入字符bcdef
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>19k</span>
+              <span>18k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>17 分钟</span>
+              <span>16 分钟</span>
             </span>
 
         </div>
@@ -1310,7 +1380,7 @@ NSRange rg = [ms3 rangeOfString:@"字符"]; //同上，原@“a插入字符bcdef
     <div class="post-body" itemprop="articleBody">
           <h1 id="UIImagePickerController"><a href="#UIImagePickerController" class="headerlink" title="UIImagePickerController"></a>UIImagePickerController</h1><p><strong>UIImagePickerController</strong> 类用于管理可定制的，基于系统支持的用户界面，用于在支持的设备上拍摄照片和电影，并且在你的 app 中为用户保存照片和电影。 图像选择器控制器管理用户交互并将这些交互的结果传递给委托对象。</p>
 <h2 id="使用步骤："><a href="#使用步骤：" class="headerlink" title="使用步骤："></a>使用步骤：</h2><p>需要导入包：<code>import &lt;MobileCoreServices/MobileCoreServices.h&gt;</code>;<br>拍摄视频需要导入包：<code>#import &lt;AssetsLibrary/AssetsLibrary.h&gt;</code><br>需要遵循的协议：<code>&lt;UINavigationControllerDelegate,UIImagePickerControllerDelegate&gt;</code>;</p>
-<h3 id="1️⃣-创建-UIImagePickerController-对象"><a href="#1️⃣-创建-UIImagePickerController-对象" class="headerlink" title="1️⃣  创建 UIImagePickerController 对象"></a>1️⃣  创建 UIImagePickerController 对象</h3><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">UIImagePickerController *imagePicker = [[UIImagePickerController alloc] init];</span><br></pre></td></tr></tbody></table></figure>
+<h3 id="1️⃣-创建-UIImagePickerController-对象"><a href="#1️⃣-创建-UIImagePickerController-对象" class="headerlink" title="1️⃣  创建 UIImagePickerController 对象"></a>1️⃣  创建 UIImagePickerController 对象</h3><pre class="line-numbers language-none"><code class="language-none">UIImagePickerController *imagePicker = [[UIImagePickerController alloc] init];<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2017/03/01/iOS%E4%B8%8A%E7%9A%84%E7%9B%B8%E6%9C%BA%E6%8D%95%E6%8D%89/#more" rel="contents">
@@ -1402,14 +1472,14 @@ NSRange rg = [ms3 rangeOfString:@"字符"]; //同上，原@“a插入字符bcdef
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>9.4k</span>
+              <span>9k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>9 分钟</span>
+              <span>8 分钟</span>
             </span>
 
         </div>
@@ -1420,7 +1490,17 @@ NSRange rg = [ms3 rangeOfString:@"字符"]; //同上，原@“a插入字符bcdef
     
     <div class="post-body" itemprop="articleBody">
           <h1 id="UIView"><a href="#UIView" class="headerlink" title="UIView"></a>UIView</h1><h3 id="1-UIView视图的基本使用"><a href="#1-UIView视图的基本使用" class="headerlink" title="1. UIView视图的基本使用"></a>1. UIView 视图的基本使用</h3><p>在根视图里添加两个子视图；</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">CGRect rect1 = CGRectMake(30, 50, 200, 200);</span><br><span class="line">UIView *view1 = [[UIView alloc] initWithFrame:rect1];</span><br><span class="line">[view1 setBackgroundColor:[UIColor brownColor]];</span><br><span class="line"></span><br><span class="line">CGRect rect2 = CGRectMake(60, 90, 200, 200);</span><br><span class="line">UIView *view2 = [[UIView alloc] initWithFrame:rect2];</span><br><span class="line">[view2 setBackgroundColor:[UIColor purpleColor]];</span><br><span class="line">[view2 setAlpha:0.5];</span><br><span class="line"></span><br><span class="line">[self.view addSubview:view1];</span><br><span class="line">[self.view addSubview:view2];</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">CGRect rect1 = CGRectMake(30, 50, 200, 200);
+UIView *view1 = [[UIView alloc] initWithFrame:rect1];
+[view1 setBackgroundColor:[UIColor brownColor]];
+
+CGRect rect2 = CGRectMake(60, 90, 200, 200);
+UIView *view2 = [[UIView alloc] initWithFrame:rect2];
+[view2 setBackgroundColor:[UIColor purpleColor]];
+[view2 setAlpha:0.5];
+
+[self.view addSubview:view1];
+[self.view addSubview:view2];<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2017/02/28/iOS%20%E7%BC%96%E7%A8%8B%EF%BC%9A%E8%A7%86%E5%9B%BE%E4%B8%8E%E6%89%8B%E5%8A%BF/#more" rel="contents">
@@ -1497,12 +1577,12 @@ NSRange rg = [ms3 rangeOfString:@"字符"]; //同上，原@“a插入字符bcdef
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">2.1m</span>
+    <span title="站点总字数">2.3m</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">31:21</span>
+    <span title="站点阅读时长">34:09</span>
 </div>
   <div class="powered-by">由 <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZw==">NexT.Gemini</span> 强力驱动
   </div>

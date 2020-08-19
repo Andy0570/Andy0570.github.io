@@ -391,7 +391,7 @@
                 <i class="far fa-clock"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>19 分钟</span>
+              <span>18 分钟</span>
             </span>
 
         </div>
@@ -411,16 +411,28 @@
 <p><strong>GCD</strong> 是一种与 block 有关的技术，它提供了对线程的抽象，而这种抽象则基于 “派发队列” (dispatch queue) 。开发者可将块排入队列中，由 GCD 负责处理所有调度事宜。GCD 会根据系统资源情况，适时地创建、复用、摧毁后台线程（background thread)，以便处理每个队列。 此外，使用 GCD 还可以方便地完成常见编程任务，比如编写 “只执行一次的线程安全代码” (thread-safe single-code execution)，或者根据可用的系统资源来并发执行多个操作。</p>
 <h3 id="第37条：理解“块”这一概念"><a href="#第37条：理解“块”这一概念" class="headerlink" title="第37条：理解“块”这一概念"></a>第 37 条：理解 “块” 这一概念</h3><h4 id="块的基础知识"><a href="#块的基础知识" class="headerlink" title="块的基础知识"></a>块的基础知识</h4><p><img data-src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071656.png"></p>
 <p>简单的 block：</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">^{</span><br><span class="line">    //Block implementation here</span><br><span class="line">};</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">^{
+    //Block implementation here
+};<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
 
 <p>block 语法结构：</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">typedef returnType(^name)(arguments);</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">typedef returnType(^name)(arguments);<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 
 <p>定义一个名为 someBlock 的变量：</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">void (^someBlock)() = ^{</span><br><span class="line">    //Block implementation here</span><br><span class="line">};</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">void (^someBlock)() = ^{
+    //Block implementation here
+};<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
 
 <p>❇️ block 的强大之处：在 block 内部可以访问 block 外部变量：</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">// 将变量声明为 __block 之后才可以在 Block 内部对此变量进行修改</span><br><span class="line">__block int additional = 5;</span><br><span class="line">// 声明Block块</span><br><span class="line">int (^addBlock)(int a, int b) = ^(int a, int b) {</span><br><span class="line">    additional = 10;</span><br><span class="line">    return a + b + additional;</span><br><span class="line">};</span><br><span class="line">// 使用Block块</span><br><span class="line">int add = addBlock(2, 5);</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">// 将变量声明为 __block 之后才可以在 Block 内部对此变量进行修改
+__block int additional = 5;
+// 声明Block块
+int (^addBlock)(int a, int b) = ^(int a, int b) {
+    additional = 10;
+    return a + b + additional;
+};
+// 使用Block块
+int add = addBlock(2, 5);<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <ul>
 <li><p>如果 block 所捕获的变量是对象类型，那么就会自动保留它。系统在释放这个块的时候，也会将其一并释放。</p>
@@ -428,7 +440,14 @@
 <li><p><strong>block 本身可视为对象</strong>，它也有引用计数。</p>
 </li>
 <li><p>如果将 block 定义在 Objective-C 类的实例方法中，那么除了可以访问类的所有实例变童之外，还可以使用 <code>self</code> 变量。block 总能修改实例变量，所以在声明时无须加 <code>_block</code>。不过，如果通过读写操作捕获了实例变量，那么也会自动把 <code>self</code> 变量一并捕获，因为实例变量是与 <code>self</code> 所指代的实例关联在一起的。</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">- (void)anInstanceMethod {</span><br><span class="line">    //...</span><br><span class="line">    void (^someBlock)() = ^{</span><br><span class="line">        _anInstanceVariable = @"Something";</span><br><span class="line">        NSLog(@"_anInstanceVariable = %@",_anInstanceVariable);</span><br><span class="line">    };</span><br><span class="line">    //...</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">- (void)anInstanceMethod {
+  //...
+  void (^someBlock)() = ^{
+      _anInstanceVariable = @"Something";
+      NSLog(@"_anInstanceVariable = %@",_anInstanceVariable);
+  };
+  //...
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 </li>
 <li><p>在 block 中，直接访问实例变量和通过 <code>self</code> 来访问是等效的。</p>
 </li>
@@ -438,7 +457,21 @@
 <h4 id="块的内部结构"><a href="#块的内部结构" class="headerlink" title="块的内部结构"></a>块的内部结构</h4><p>block 对象在栈中的结构：</p>
 <p><img data-src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071657.jpg"></p>
 <p>对应的结构体定义：</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">struct Block_descriptor {</span><br><span class="line">    unsigned long int reserved;</span><br><span class="line">    unsigned long int size;</span><br><span class="line">    void (*copy)(void *dst, void *src);</span><br><span class="line">    void (*dispose)(void *);</span><br><span class="line">};</span><br><span class="line"></span><br><span class="line">struct Block_layout {</span><br><span class="line">    void *isa;</span><br><span class="line">    int flags;</span><br><span class="line">    int reserved;</span><br><span class="line">    void (*invoke)(void *, ...);</span><br><span class="line">    struct Block_descriptor *descriptor;</span><br><span class="line">    /* Imported variables. */</span><br><span class="line">};</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">struct Block_descriptor {
+    unsigned long int reserved;
+    unsigned long int size;
+    void (*copy)(void *dst, void *src);
+    void (*dispose)(void *);
+};
+
+struct Block_layout {
+    void *isa;
+    int flags;
+    int reserved;
+    void (*invoke)(void *, ...);
+    struct Block_descriptor *descriptor;
+    /* Imported variables. */
+};<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <ul>
 <li><code>isa</code> 指针：指向表明该 block 类型的类。</li>
@@ -452,12 +485,24 @@
 <li>虽然 block 是对象，但是其所占的内存区域是分配在<strong>栈</strong>中的。这就是说，块只在定义它的那个范围内有效。</li>
 <li>给 block 对象发送 <code>copy</code> 消息可以把 Block 从<strong>栈</strong>复制到<strong>堆</strong>。拷贝后的块，可以在定义它的那个范围之外使用。</li>
 </ul>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">void (^block)();</span><br><span class="line">if (/** condition */) {</span><br><span class="line">    block = [^{</span><br><span class="line">        NSLog(@"Block A");</span><br><span class="line">    } copy];</span><br><span class="line">}else {</span><br><span class="line">    block = [^{</span><br><span class="line">        NSLog(@"Block B");</span><br><span class="line">    } copy];</span><br><span class="line">}</span><br><span class="line">block();</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">void (^block)();
+if (/** condition */) {
+    block = [^{
+        NSLog(@"Block A");
+    } copy];
+}else {
+    block = [^{
+        NSLog(@"Block B");
+    } copy];
+}
+block();<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <ul>
 <li><strong>全局块</strong>（global block）不会捕捉任何状态（比如外围的变量等)，运行时也无须有状态来参与。块所使用的整个内存区域，在编译期已经完全确定了，因此，全局块可以声明在全局内存里，而不需要在每次用到的时候于栈中创建。另外，全局块的拷贝操作是个空操作，因为全局块决不可能为系统所回收。这种块实际上相当于单例。下面就是个全局块：</li>
 </ul>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">void (^block) () = ^{</span><br><span class="line">    NSLog(@"This is a block");</span><br><span class="line">)；</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-none"><code class="language-none">void (^block) () = ^{
+    NSLog(@"This is a block");
+)；<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
 
 <ul>
 <li>全局的静态 block： <code>_NSConcreteGlobalBlock</code> 类型的 block 要么是空 block，要么是不访问任何外部变量的 block。它既不在栈中，也不在堆中，我理解为它可能在内存的全局区。</li>
@@ -471,16 +516,27 @@
 <li>block 块 可以分配在栈或堆上，也可以是全局的。分配在栈上的 block 块 可拷贝到堆里，这样的话，就和标准的 Objective-C 对象一样，具备引用计数了。</li>
 </ul>
 <h3 id="第38条：为常用的块类型创建-typedef"><a href="#第38条：为常用的块类型创建-typedef" class="headerlink" title="第38条：为常用的块类型创建 typedef"></a>第 38 条：为常用的块类型创建 typedef</h3><p>代码块便捷写法：<code>typedefBlock</code></p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">typedef &lt;#returnType#&gt;(^&lt;#name#&gt;)(&lt;#arguments#&gt;);</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">typedef &lt;#returnType#&gt;(^&lt;#name#&gt;)(&lt;#arguments#&gt;);<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 
 <p>示例一：</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">// 定义 Block 块</span><br><span class="line">typedef int(^EOCSomeBlock)(BOOL flag, int value);</span><br><span class="line"></span><br><span class="line">// 使用 Block 块</span><br><span class="line">EOCSomeBlock blcok = ^(BOOL flag, int value) {</span><br><span class="line">    // Implementation</span><br><span class="line">};</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">// 定义 Block 块
+typedef int(^EOCSomeBlock)(BOOL flag, int value);
+
+// 使用 Block 块
+EOCSomeBlock blcok = ^(BOOL flag, int value) {
+    // Implementation
+};<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>示例二：</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">typedef void(^EOCCompletionHandler)(NSData *data, NSError *error);</span><br><span class="line"></span><br><span class="line">// 方法使用 Block块 作为参数</span><br><span class="line">- (void)startingWithCompletionHandler:(EOCCompletionHandler)completion;</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">typedef void(^EOCCompletionHandler)(NSData *data, NSError *error);
+
+// 方法使用 Block块 作为参数
+- (void)startingWithCompletionHandler:(EOCCompletionHandler)completion;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>❇️ 使用 <strong>typedef</strong> 类型定义还便于重构 block 的类型签名。</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">// 新增一个参数，用以表示完成任务所花的时间</span><br><span class="line">typedef void(^EOCCompletionHandler)</span><br><span class="line">        (NSData *data, NSTimeInterval duration, NSError *error);</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">// 新增一个参数，用以表示完成任务所花的时间
+typedef void(^EOCCompletionHandler)
+        (NSData *data, NSTimeInterval duration, NSError *error);<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
 
 <h4 id="要点-1"><a href="#要点-1" class="headerlink" title="要点"></a>要点</h4><ul>
 <li>以 <strong>typedef</strong> 重新定义 block 类型，可以令 block 变量用起来更加简单。</li>
@@ -490,24 +546,125 @@
 <h3 id="第39条：用-handler-块降低代码分散程度"><a href="#第39条：用-handler-块降低代码分散程度" class="headerlink" title="第39条：用 handler 块降低代码分散程度"></a>第 39 条：用 handler 块降低代码分散程度</h3><p>为用户界面编码时，一种常用的范式就是 “异步执行任务”（perform task asynchronously)。这种范式的好处在于：处理用户界面的显示及触摸操作所用的线程，不会因为要执行 I/O 或网络通信这类耗时的任务而阻塞。这个线程通常称为主线程（main thread)。</p>
 <p>异步方法在执行完任务之后，需要以某种手段通知相关代码。实现此功能有很多办法。常用的技巧是设计一个委托协议（参见第 23 条)，令关注此事件的对象遵从该协议。对象成为 delegate 之后，就可以在相关事件发生时（例如某个异步任务执行完毕时）得到通知了。</p>
 <p><strong>Delegate</strong> 模式：</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">#import &lt;Foundation/Foundation.h&gt;</span><br><span class="line">@class EOCNetworkFetcher;</span><br><span class="line"></span><br><span class="line">@protocol EOCNetworkFetcherDelegate &lt;NSObject&gt;</span><br><span class="line">- (void)networkFetcher:(EOCNetworkFetcher *)fetcher</span><br><span class="line">        didFinishWithData:(NSData *)data;</span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">@interface EOCNetworkFetcher : NSObject</span><br><span class="line">@property (nonatomic, weak) id&lt;EOCNetworkFetcherDelegate&gt; delegate;</span><br><span class="line">- (instancetype)initWithURL:(NSURL *)url;</span><br><span class="line">- (void)start;</span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">// 其他类实现 delegate 协议：</span><br><span class="line">- (void)fetchFooData {</span><br><span class="line">    NSURL *url = [[NSURL alloc] initWithString:</span><br><span class="line">                  @"https://www.pinterest.com"];</span><br><span class="line">    EOCNetworkFetcher *fetcher =</span><br><span class="line">        [[EOCNetworkFetcher alloc] initWithURL:url];</span><br><span class="line">    fetcher.delegate = self;</span><br><span class="line">    [fetcher start];</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">- (void)networkFetcher:(EOCNetworkFetcher *)fetcher didFinishWithData:(NSData *)data {</span><br><span class="line">    // deal with data</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">#import &lt;Foundation/Foundation.h&gt;
+@class EOCNetworkFetcher;
+
+@protocol EOCNetworkFetcherDelegate &lt;NSObject&gt;
+- (void)networkFetcher:(EOCNetworkFetcher *)fetcher
+        didFinishWithData:(NSData *)data;
+@end
+
+@interface EOCNetworkFetcher : NSObject
+@property (nonatomic, weak) id&lt;EOCNetworkFetcherDelegate&gt; delegate;
+- (instancetype)initWithURL:(NSURL *)url;
+- (void)start;
+@end
+
+// 其他类实现 delegate 协议：
+- (void)fetchFooData {
+    NSURL *url = [[NSURL alloc] initWithString:
+                  @"https://www.pinterest.com"];
+    EOCNetworkFetcher *fetcher =
+        [[EOCNetworkFetcher alloc] initWithURL:url];
+    fetcher.delegate = self;
+    [fetcher start];
+}
+
+- (void)networkFetcher:(EOCNetworkFetcher *)fetcher didFinishWithData:(NSData *)data {
+    // deal with data
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p><strong>block</strong> 模式：</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">#import &lt;Foundation/Foundation.h&gt;</span><br><span class="line"></span><br><span class="line">typedef void(^EOCNetworkFetcherCompletionHandler)(NSData *data);</span><br><span class="line"></span><br><span class="line">@interface EOCNetworkFetcher : NSObject</span><br><span class="line">- (instancetype)initWithURL:(NSURL *)url;</span><br><span class="line">- (void)startWithCompletionHandler:</span><br><span class="line">            (EOCNetworkFetcherCompletionHandler)handler;</span><br><span class="line">@end</span><br><span class="line">  </span><br><span class="line">// 其他类获取数据：</span><br><span class="line">- (void)fetchFooData {</span><br><span class="line">    NSURL *url = [[NSURL alloc] initWithString:</span><br><span class="line">                  @"https://www.pinterest.com"];</span><br><span class="line">    EOCNetworkFetcher *fetcher =</span><br><span class="line">        [[EOCNetworkFetcher alloc] initWithURL:url];</span><br><span class="line">    // 调用 start 方法时直接以内联形式定义 Completion Handler。</span><br><span class="line">    [fetcher startWithCompletionHandler:^(NSData *data) {</span><br><span class="line">        // deal with data</span><br><span class="line">    }];</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">#import &lt;Foundation/Foundation.h&gt;
+
+typedef void(^EOCNetworkFetcherCompletionHandler)(NSData *data);
+
+@interface EOCNetworkFetcher : NSObject
+- (instancetype)initWithURL:(NSURL *)url;
+- (void)startWithCompletionHandler:
+            (EOCNetworkFetcherCompletionHandler)handler;
+@end
+
+// 其他类获取数据：
+- (void)fetchFooData {
+    NSURL *url = [[NSURL alloc] initWithString:
+                  @"https://www.pinterest.com"];
+    EOCNetworkFetcher *fetcher =
+        [[EOCNetworkFetcher alloc] initWithURL:url];
+    // 调用 start 方法时直接以内联形式定义 Completion Handler。
+    [fetcher startWithCompletionHandler:^(NSData *data) {
+        // deal with data
+    }];
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>❇️相比于委托模式，block 可以使代码更清晰整洁、API 更紧致、逻辑关联性更强。</p>
 <p>委托模式有个缺点：如果类要分别使用多个获取器下载不同数据，那么就得在 delegate 回调方法里根据传入的获取器参数来切换。</p>
 <p>而使用 block 来写的好处是：无须保存获取器，也无须在回调方法里切换。每个 completion handler 的业务逻辑都是和相关的获取器对象一起来定义的。</p>
 <h4 id="1-分别用两个处理程序来处理操作失败和操作成功"><a href="#1-分别用两个处理程序来处理操作失败和操作成功" class="headerlink" title="1. 分别用两个处理程序来处理操作失败和操作成功"></a>1. 分别用两个处理程序来处理操作失败和操作成功</h4><p>这种 API 设计风格很好，由于成功和失败的情况要分别处理，所以调用此 API 的代码也就会按照逻辑，把应对成功和失败情况的代码分开来写，这将令代码更易读懂。而且，若有需要，还可以把处理失败情况或成功情况所用的代码省略。</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">#import &lt;Foundation/Foundation.h&gt;</span><br><span class="line"></span><br><span class="line">typedef void(^EOCNetworkFetcherCompletionHandler)(NSData *data);</span><br><span class="line">typedef void(^EOCNetworkFetcherErrorHandler)(NSError *error);</span><br><span class="line"></span><br><span class="line">@interface EOCNetworkFetcher : NSObject</span><br><span class="line">- (instancetype)initWithURL:(NSURL *)url;</span><br><span class="line">- (void)startWithCompletionHandler:</span><br><span class="line">            (EOCNetworkFetcherCompletionHandler)handler</span><br><span class="line">                    failureHandler:</span><br><span class="line">            (EOCNetworkFetcherErrorHandler)failure;</span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">// 其他类使用：</span><br><span class="line">- (void)fetchFooData {</span><br><span class="line">    NSURL *url = [[NSURL alloc] initWithString:</span><br><span class="line">                  @"https://www.pinterest.com"];</span><br><span class="line">    EOCNetworkFetcher *fetcher =</span><br><span class="line">        [[EOCNetworkFetcher alloc] initWithURL:url];</span><br><span class="line">    [fetcher startWithCompletionHandler:^(NSData *data) {</span><br><span class="line">        // deal with data</span><br><span class="line">        </span><br><span class="line">    } failureHandler:^(NSError *error) {</span><br><span class="line">        // deal with error</span><br><span class="line">        </span><br><span class="line">    }];</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">#import &lt;Foundation/Foundation.h&gt;
+
+typedef void(^EOCNetworkFetcherCompletionHandler)(NSData *data);
+typedef void(^EOCNetworkFetcherErrorHandler)(NSError *error);
+
+@interface EOCNetworkFetcher : NSObject
+- (instancetype)initWithURL:(NSURL *)url;
+- (void)startWithCompletionHandler:
+            (EOCNetworkFetcherCompletionHandler)handler
+                    failureHandler:
+            (EOCNetworkFetcherErrorHandler)failure;
+@end
+
+// 其他类使用：
+- (void)fetchFooData {
+    NSURL *url = [[NSURL alloc] initWithString:
+                  @"https://www.pinterest.com"];
+    EOCNetworkFetcher *fetcher =
+        [[EOCNetworkFetcher alloc] initWithURL:url];
+    [fetcher startWithCompletionHandler:^(NSData *data) {
+        // deal with data
+
+    } failureHandler:^(NSError *error) {
+        // deal with error
+
+    }];
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <h5 id="2-把处理失败所需代码与处理成功所用代码，都封装到同一个-completion-handle-块里"><a href="#2-把处理失败所需代码与处理成功所用代码，都封装到同一个-completion-handle-块里" class="headerlink" title="2. 把处理失败所需代码与处理成功所用代码，都封装到同一个 completion handle 块里"></a>2. 把处理失败所需代码与处理成功所用代码，都封装到同一个 completion handle 块里</h5><p>缺点：由于全部逻辑都写在一起，导致块代码冗长复杂。</p>
 <p>优点：能把所有业务逻辑都放在一起使其更加灵活。例如，在传入错误信息时，可以把数据也传进来。有时数据正下载到一半，突然网络故障了。在这种情况下，可以把数据及相关的错误都回传给块。这样的话，completion handler 就能据此判断问题并适当处理了，而且还可利用已下载好的这部分数据做些事情。</p>
 <p>总体来说，笔者建议使用同一个块来处理成功与失败情况。</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">#import &lt;Foundation/Foundation.h&gt;</span><br><span class="line"></span><br><span class="line">typedef void(^EOCNetworkFetcherCompletionHandler)</span><br><span class="line">                                (NSData *data, NSError *error);</span><br><span class="line"></span><br><span class="line">@interface EOCNetworkFetcher : NSObject</span><br><span class="line">- (instancetype)initWithURL:(NSURL *)url;</span><br><span class="line">- (void)startWithCompletionHandler:</span><br><span class="line">            (EOCNetworkFetcherCompletionHandler)handler;</span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">// 其他类使用：</span><br><span class="line">- (void)fetchFooData {</span><br><span class="line">    NSURL *url = [[NSURL alloc] initWithString:</span><br><span class="line">                  @"https://www.pinterest.com"];</span><br><span class="line">    EOCNetworkFetcher *fetcher =</span><br><span class="line">        [[EOCNetworkFetcher alloc] initWithURL:url];</span><br><span class="line">    // 需要在块代码中检测传人的error变量，并且要把所有逻辑代码都放在一处</span><br><span class="line">    [fetcher startWithCompletionHandler:^(NSData *data, NSError *error) {</span><br><span class="line">        if (error) {</span><br><span class="line">            // handle failure</span><br><span class="line">        }else {</span><br><span class="line">            // handle success</span><br><span class="line">        }</span><br><span class="line">    }];</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">#import &lt;Foundation/Foundation.h&gt;
+
+typedef void(^EOCNetworkFetcherCompletionHandler)
+                                (NSData *data, NSError *error);
+
+@interface EOCNetworkFetcher : NSObject
+- (instancetype)initWithURL:(NSURL *)url;
+- (void)startWithCompletionHandler:
+            (EOCNetworkFetcherCompletionHandler)handler;
+@end
+
+// 其他类使用：
+- (void)fetchFooData {
+    NSURL *url = [[NSURL alloc] initWithString:
+                  @"https://www.pinterest.com"];
+    EOCNetworkFetcher *fetcher =
+        [[EOCNetworkFetcher alloc] initWithURL:url];
+    // 需要在块代码中检测传人的error变量，并且要把所有逻辑代码都放在一处
+    [fetcher startWithCompletionHandler:^(NSData *data, NSError *error) {
+        if (error) {
+            // handle failure
+        }else {
+            // handle success
+        }
+    }];
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>基于 handler 来设计 API 还有个原因，就是某些代码必须运行在特定的线程上，比如，Cocoa 与 Cocoa Touch 中的 UI 操作必须在主线程上执行：</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">// NSNotificationCenter</span><br><span class="line">- (id &lt;NSObject&gt;)addObserverForName:(nullable NSNotificationName)name</span><br><span class="line">                             object:(nullable id)obj</span><br><span class="line">                              queue:(nullable NSOperationQueue *)queue</span><br><span class="line">                         usingBlock:(void (^)(NSNotification *note))block;</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">// NSNotificationCenter
+- (id &lt;NSObject&gt;)addObserverForName:(nullable NSNotificationName)name
+                             object:(nullable id)obj
+                              queue:(nullable NSOperationQueue *)queue
+                         usingBlock:(void (^)(NSNotification *note))block;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <h4 id="要点-2"><a href="#要点-2" class="headerlink" title="要点"></a>要点</h4><ul>
 <li>在创建对象时，使用内联的 handler 块将相关业务逻辑一并声明。</li>
@@ -515,17 +672,104 @@
 <li>设计 API 时如果用到了 handler 块，那么可以增加一个参数，使调用者可通过此参数来决定应该把 block 安排在哪个队列上执行。</li>
 </ul>
 <h3 id="第40条：用块引用其所属对象时不要出现保留环"><a href="#第40条：用块引用其所属对象时不要出现保留环" class="headerlink" title="第40条：用块引用其所属对象时不要出现保留环"></a>第 40 条：用块引用其所属对象时不要出现保留环</h3><p>使用 block 很容易导致循环引用：</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br></pre></td><td class="code"><pre><span class="line">//  EOCNetworkFetcher.h</span><br><span class="line">#import &lt;Foundation/Foundation.h&gt;</span><br><span class="line"></span><br><span class="line">typedef void(^EOCNetworkFetcherCompletionHandler)</span><br><span class="line">                                (NSData *data);</span><br><span class="line"></span><br><span class="line">@interface EOCNetworkFetcher : NSObject</span><br><span class="line">@property (nonatomic, strong, readonly) NSURL *url;</span><br><span class="line">- (instancetype)initWithURL:(NSURL *)url;</span><br><span class="line">- (void)startWithCompletionHandler:</span><br><span class="line">            (EOCNetworkFetcherCompletionHandler)completion;</span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">//  EOCNetworkFetcher.m</span><br><span class="line">#import "EOCNetworkFetcher.h"</span><br><span class="line"></span><br><span class="line">@interface EOCNetworkFetcher ()</span><br><span class="line">@property (nonatomic, strong, readwrite) NSURL *url;</span><br><span class="line">@property (nonatomic, copy)</span><br><span class="line">            EOCNetworkFetcherCompletionHandler completionHandler;</span><br><span class="line">@property (nonatomic, strong) NSData *downloadData;</span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">@implementation EOCNetworkFetcher</span><br><span class="line"></span><br><span class="line">- (instancetype)initWithURL:(NSURL *)url {</span><br><span class="line">    if (self = [super init]) {</span><br><span class="line">        _url = url;</span><br><span class="line">    }</span><br><span class="line">    return self;</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">- (void)startWithCompletionHandler:</span><br><span class="line">        (EOCNetworkFetcherCompletionHandler)completion {</span><br><span class="line">    self.completionHandler = completion;</span><br><span class="line">    // 开启网络请求</span><br><span class="line">    // 设置 downloadData 属性</span><br><span class="line">    // 下载完成后，以回调方式执行 Block</span><br><span class="line">    [self p_requestCompleted];</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">// 为了能在下载完成后通过 p_requestCompleted 方法执行调用者所指定的块，</span><br><span class="line">// 需要把 completion handler 保存到实例变量</span><br><span class="line">// ❇️ _networkFetcher → _completionHandler</span><br><span class="line">- (void)p_requestCompleted {</span><br><span class="line">    if (_completionHandler) {</span><br><span class="line">        _completionHandler(_downloadData);</span><br><span class="line">    }</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">// 某个类可能会创建以上网络数据获取器对象，并用其从URL中下载数据：</span><br><span class="line">@implementation EOCDataModel {</span><br><span class="line">    // ❇️ EOCDataModel → _networkFetcher</span><br><span class="line">    EOCNetworkFetcher *_networkFetcher;</span><br><span class="line">    NSData *_fetchedData;</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">- (void)downloadData {</span><br><span class="line">    NSURL *url = [[NSURL alloc] initWithString:@"http://www.example.com"];</span><br><span class="line">    _networkFetcher = [[EOCNetworkFetcher alloc] initWithURL:url];</span><br><span class="line">    [_networkFetcher startWithCompletionHandler:^(NSData *data) {</span><br><span class="line">        </span><br><span class="line">        NSLog(@"Request URL %@ finished",_networkFetcher.url);</span><br><span class="line">        // 因为 completion handler 块要设置 _fetchedData 实例变量,所以它必须捕获 self 变量，而 self 指向 EOCDataModel 类</span><br><span class="line">        // ❇️ _completionHandler → EOCDataModel</span><br><span class="line">        _fetchedData = data;</span><br><span class="line">      </span><br><span class="line">        // 💡等 completion handler 块执行完毕后，再打破保留环，以便使获取器对象在handler 块执行期间保持存活状态。</span><br><span class="line">        _networkFetcher = nil;</span><br><span class="line">    }];</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">//  EOCNetworkFetcher.h
+#import &lt;Foundation/Foundation.h&gt;
+
+typedef void(^EOCNetworkFetcherCompletionHandler)
+                                (NSData *data);
+
+@interface EOCNetworkFetcher : NSObject
+@property (nonatomic, strong, readonly) NSURL *url;
+- (instancetype)initWithURL:(NSURL *)url;
+- (void)startWithCompletionHandler:
+            (EOCNetworkFetcherCompletionHandler)completion;
+@end
+
+//  EOCNetworkFetcher.m
+#import "EOCNetworkFetcher.h"
+
+@interface EOCNetworkFetcher ()
+@property (nonatomic, strong, readwrite) NSURL *url;
+@property (nonatomic, copy)
+            EOCNetworkFetcherCompletionHandler completionHandler;
+@property (nonatomic, strong) NSData *downloadData;
+@end
+
+@implementation EOCNetworkFetcher
+
+- (instancetype)initWithURL:(NSURL *)url {
+    if (self = [super init]) {
+        _url = url;
+    }
+    return self;
+}
+
+- (void)startWithCompletionHandler:
+        (EOCNetworkFetcherCompletionHandler)completion {
+    self.completionHandler = completion;
+    // 开启网络请求
+    // 设置 downloadData 属性
+    // 下载完成后，以回调方式执行 Block
+    [self p_requestCompleted];
+}
+
+// 为了能在下载完成后通过 p_requestCompleted 方法执行调用者所指定的块，
+// 需要把 completion handler 保存到实例变量
+// ❇️ _networkFetcher → _completionHandler
+- (void)p_requestCompleted {
+    if (_completionHandler) {
+        _completionHandler(_downloadData);
+    }
+}
+
+@end
+
+// 某个类可能会创建以上网络数据获取器对象，并用其从URL中下载数据：
+@implementation EOCDataModel {
+    // ❇️ EOCDataModel → _networkFetcher
+    EOCNetworkFetcher *_networkFetcher;
+    NSData *_fetchedData;
+}
+
+- (void)downloadData {
+    NSURL *url = [[NSURL alloc] initWithString:@"http://www.example.com"];
+    _networkFetcher = [[EOCNetworkFetcher alloc] initWithURL:url];
+    [_networkFetcher startWithCompletionHandler:^(NSData *data) {
+
+        NSLog(@"Request URL %@ finished",_networkFetcher.url);
+        // 因为 completion handler 块要设置 _fetchedData 实例变量,所以它必须捕获 self 变量，而 self 指向 EOCDataModel 类
+        // ❇️ _completionHandler → EOCDataModel
+        _fetchedData = data;
+
+        // 💡等 completion handler 块执行完毕后，再打破保留环，以便使获取器对象在handler 块执行期间保持存活状态。
+        _networkFetcher = nil;
+    }];
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>问题：</p>
 <ul>
 <li>在上例中，唯有 completion handler 运行过后，方能解除保留环。若是 completion handler— 直不运行，那么保留环就无法打破，于是内存就会泄漏。</li>
 <li>如果 completion handler 块所引用的对象最终又引用了这个块本身，那么就会出现保留环。</li>
 </ul>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">- (void)downloadData {</span><br><span class="line">    NSURL *url = [[NSURL alloc] initWithString:</span><br><span class="line">                  @"http://www.example.com"];</span><br><span class="line">    EOCNetworkFetcher *networkFetcher = [[EOCNetworkFetcher alloc] initWithURL:url];</span><br><span class="line">    [networkFetcher startWithCompletionHandler:^(NSData *data) {</span><br><span class="line">        // completionHandler → networkFetcher.url</span><br><span class="line">        // networkFetcher → completionHandler</span><br><span class="line">        NSLog(@"Request URL %@ finished",networkFetcher.url);</span><br><span class="line">        _fetchedData = data;</span><br><span class="line">    }];</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">- (void)downloadData {
+    NSURL *url = [[NSURL alloc] initWithString:
+                  @"http://www.example.com"];
+    EOCNetworkFetcher *networkFetcher = [[EOCNetworkFetcher alloc] initWithURL:url];
+    [networkFetcher startWithCompletionHandler:^(NSData *data) {
+        // completionHandler → networkFetcher.url
+        // networkFetcher → completionHandler
+        NSLog(@"Request URL %@ finished",networkFetcher.url);
+        _fetchedData = data;
+    }];
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>解决方法：获取器对象之所以要把 completion handler 块保存在属性里面，其唯一目的就是想稍后使用这个块。可是，获取器一旦运行过 completion handler 之后，就没有必要再保留它了。所以，只需将 <code>p_requestCompleted</code> 方法按如下方式修改即可：</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">- (void)p_requestCompleted {</span><br><span class="line">    if (_completionHandler) {</span><br><span class="line">        _completionHandler(_downloadData);</span><br><span class="line">    }</span><br><span class="line">    self.completionHandler = nil; // ❇️</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">- (void)p_requestCompleted {
+    if (_completionHandler) {
+        _completionHandler(_downloadData);
+    }
+    self.completionHandler = nil; // ❇️
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>要想清楚块可能会捕获并保留哪些对 象。如果这些对象又直接或间接保留了块，那么就要考虑怎样在适当的时机解除保留环。</p>
 <h4 id="要点-3"><a href="#要点-3" class="headerlink" title="要点"></a>要点</h4><ul>
@@ -535,7 +779,14 @@
 <h3 id="第41条：多用派发队列，少用同步锁"><a href="#第41条：多用派发队列，少用同步锁" class="headerlink" title="第41条：多用派发队列，少用同步锁"></a>第 41 条：多用派发队列，少用同步锁</h3><p>使用同步锁实现同步机制：</p>
 <ol>
 <li><p><strong>@synchronized</strong> 同步块：</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">- (void)synchronizedMethod {</span><br><span class="line">    @synchronized (self) {</span><br><span class="line">        // ...</span><br><span class="line">        // 根据给定对象，自动创建一个锁，并等待块中的代码执行完毕。</span><br><span class="line">        // 滥用 @synchronized (self) 会降低代码效率</span><br><span class="line">        </span><br><span class="line">    }   // 执行到这段代码结尾处，释放锁。</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">- (void)synchronizedMethod {
+ @synchronized (self) {
+     // ...
+     // 根据给定对象，自动创建一个锁，并等待块中的代码执行完毕。
+     // 滥用 @synchronized (self) 会降低代码效率
+
+ }   // 执行到这段代码结尾处，释放锁。
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 </li>
 <li><p><strong>NSRecursiveLock</strong> 递归锁</p>
 <ul>
@@ -544,15 +795,57 @@
 </ul>
 </li>
 </ol>
-<h4 id="GCD：串行并发队列"><a href="#GCD：串行并发队列" class="headerlink" title="GCD：串行并发队列"></a>GCD：串行并发队列</h4><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">@implementation HQLBlockObject {</span><br><span class="line">    dispatch_queue_t _syncQueue;</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">    // 自定义并发队列</span><br><span class="line">    // ⚠️注意到，文章中此处作者使用的是全局并发队列，而在 Ray Wenderlich 的GCD系列教程中使用的是自定义并发队列：原因在于：全局队列中还可能有其他任务正在执行，一旦加锁就会阻塞其他任务的正常执行，因此我们开辟一个新的自定义并发队列专门处理这个问题。</span><br><span class="line">    _syncQueue = dispatch_queue_create("com.effectiveobjectivec.syncQueue", DISPATCH_QUEUE_CONCURRENT);</span><br><span class="line"></span><br><span class="line">- (NSString *)someString {</span><br><span class="line">    __block NSString *localSomeString;</span><br><span class="line">    dispatch_sync(_syncQueue, ^{</span><br><span class="line">        localSomeString = _someString;</span><br><span class="line">    });</span><br><span class="line">    return localSomeString;</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">- (void)setSomeString:(NSString *)someString {</span><br><span class="line">    dispatch_barrier_async(_syncQueue, ^{</span><br><span class="line">        _someString = someString;</span><br><span class="line">    })</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<h4 id="GCD：串行并发队列"><a href="#GCD：串行并发队列" class="headerlink" title="GCD：串行并发队列"></a>GCD：串行并发队列</h4><pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">@implementation HQLBlockObject {
+    dispatch_queue_t _syncQueue;
+}
+
+    // 自定义并发队列
+    // ⚠️注意到，文章中此处作者使用的是全局并发队列，而在 Ray Wenderlich 的GCD系列教程中使用的是自定义并发队列：原因在于：全局队列中还可能有其他任务正在执行，一旦加锁就会阻塞其他任务的正常执行，因此我们开辟一个新的自定义并发队列专门处理这个问题。
+    _syncQueue = dispatch_queue_create("com.effectiveobjectivec.syncQueue", DISPATCH_QUEUE_CONCURRENT);
+
+- (NSString *)someString {
+    __block NSString *localSomeString;
+    dispatch_sync(_syncQueue, ^{
+        localSomeString = _someString;
+    });
+    return localSomeString;
+}
+
+- (void)setSomeString:(NSString *)someString {
+    dispatch_barrier_async(_syncQueue, ^{
+        _someString = someString;
+    })
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>把设置操作与获取操作都安排在序列化的队列里执行，这样的话，所有针对属性的访问操作就都同步了。</p>
 <h4 id="栅栏块"><a href="#栅栏块" class="headerlink" title="栅栏块"></a>栅栏块</h4><p>在队列中，栅栏块必须单独执行，不能与其他块并行。这只对<strong>并发队列</strong>有意义，因为串行队列中的块总是按顺序逐个来执行的。并发队列如果发现接下来要处理的块是个栅栏块 (barrier block) ，那么就一直要等当前所有并发块都执行完毕，才会单独执行这个栅栏块。待栅栏块执行过后，再按正常方式继续向下处理。</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">dispatch_barrier_sync(dispatch_queue_t  _Nonnull queue, ^{</span><br><span class="line"></span><br><span class="line">})</span><br><span class="line">dispatch_barrier_async(dispatch_queue_t  _Nonnull queue, ^{</span><br><span class="line"></span><br><span class="line">})</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">dispatch_barrier_sync(dispatch_queue_t  _Nonnull queue, ^{
+
+})
+dispatch_barrier_async(dispatch_queue_t  _Nonnull queue, ^{
+
+})<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 
 
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">- (NSString *)someString {</span><br><span class="line">    // 后台执行</span><br><span class="line">    _syncQueue = dispatch_get_global_queue(0, 0);</span><br><span class="line">    </span><br><span class="line">    __block NSString *localSomeString;</span><br><span class="line">    // 同步后台队列</span><br><span class="line">    dispatch_sync(_syncQueue, ^{</span><br><span class="line">        localSomeString = _someString;</span><br><span class="line">    });</span><br><span class="line">    return localSomeString;</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">- (void)setSomeString:(NSString *)someString {</span><br><span class="line">    // 异步栅栏队列</span><br><span class="line">    dispatch_barrier_async(_syncQueue, ^{</span><br><span class="line">       _someString = someString;</span><br><span class="line">    });</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">- (NSString *)someString {
+    // 后台执行
+    _syncQueue = dispatch_get_global_queue(0, 0);
+
+    __block NSString *localSomeString;
+    // 同步后台队列
+    dispatch_sync(_syncQueue, ^{
+        localSomeString = _someString;
+    });
+    return localSomeString;
+}
+
+- (void)setSomeString:(NSString *)someString {
+    // 异步栅栏队列
+    dispatch_barrier_async(_syncQueue, ^{
+       _someString = someString;
+    });
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p><img data-src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071659.jpg"></p>
 <h4 id="要点-4"><a href="#要点-4" class="headerlink" title="要点"></a>要点</h4><ul>
@@ -560,12 +853,22 @@
 <li>将同步与异步派发结合起来，可以实现与普通加锁机制一样的同步行为，而这么做却不会阻塞执行异步派发的线程。</li>
 <li>使用同步队列及栅栏块，可以令同步行为更加高效。</li>
 </ul>
-<h3 id="第42条：多用GCD，少用-performSelector-系列方法"><a href="#第42条：多用GCD，少用-performSelector-系列方法" class="headerlink" title="第42条：多用GCD，少用 performSelector 系列方法"></a>第 42 条：多用 GCD，少用 performSelector 系列方法</h3><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">// 接受的参数就是要执行的选择子</span><br><span class="line">- (id)performSelector:(SEL)aSelector;</span><br></pre></td></tr></tbody></table></figure>
+<h3 id="第42条：多用GCD，少用-performSelector-系列方法"><a href="#第42条：多用GCD，少用-performSelector-系列方法" class="headerlink" title="第42条：多用GCD，少用 performSelector 系列方法"></a>第 42 条：多用 GCD，少用 performSelector 系列方法</h3><pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">// 接受的参数就是要执行的选择子
+- (id)performSelector:(SEL)aSelector;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 <p>该方法与直接调用选择子等效：</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[self performSelector:@selector(selectorMethod)];</span><br><span class="line">[self selectorMethod];</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">[self performSelector:@selector(selectorMethod)];
+[self selectorMethod];<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 
 <p>特点：编译器要等到运行期才能知道执行的选择子。可以在动态绑定之上再次使用动态绑定，因而可以实现出下面这种功能:</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">SEL selector;</span><br><span class="line">if ( /** condition A */ ) {</span><br><span class="line">    selector = @selector(foo);</span><br><span class="line">}else if ( /** condition B */ ) {</span><br><span class="line">    selector = @selector(bar);</span><br><span class="line">}else {</span><br><span class="line">    selector = @selector(baz);</span><br><span class="line">}</span><br><span class="line">[self performSelector:selector];</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">SEL selector;
+if ( /** condition A */ ) {
+    selector = @selector(foo);
+}else if ( /** condition B */ ) {
+    selector = @selector(bar);
+}else {
+    selector = @selector(baz);
+}
+[self performSelector:selector];<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>不推荐使用 <code>performSelector</code> 方法的原因：</p>
 <p>⚠️ ARC 下会引起内存泄漏：编译器并不知道将要执行的选择子是什么，因此，也就不了解其方法签名及返回值，甚至连是否有返回值都不清楚，而由于编译器不知道方法名，所以就没办法运用 ARC 的内存管理规则来判定返回值是不是应该释放。鉴于此，ARC 采用了比较谨慎的做法，就是不添加释放操作。然而这么做可能导致内存泄漏，因为方法在返回对象时可能已经将其保留了。</p>
@@ -575,16 +878,33 @@
 <p>⚠️<code>performSelector</code> 方法还有诸多局限性，传入的参数类型必须是对象类型且最多只能接受 2 个参数、具备延后执行的方法无法处理带有 2 个参数的选择子。</p>
 <p>下面是几个使用 Block 的替代方案：</p>
 <h4 id="延后执行"><a href="#延后执行" class="headerlink" title="延后执行"></a>延后执行</h4><p>✅推荐：</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">double delayInSeconds = 5.0;</span><br><span class="line">dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW,</span><br><span class="line">                                        delayInSeconds *NSEC_PER_SEC);</span><br><span class="line">dispatch_after(popTime, dispatch_get_main_queue(), ^{</span><br><span class="line">    [self doSomething];</span><br><span class="line">});</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">double delayInSeconds = 5.0;
+dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW,
+                                        delayInSeconds *NSEC_PER_SEC);
+dispatch_after(popTime, dispatch_get_main_queue(), ^{
+    [self doSomething];
+});<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>❎反对：</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[self performSelector:@selector(doSomething)</span><br><span class="line">             withObject:nil</span><br><span class="line">             afterDelay:5.0];</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-none"><code class="language-none">[self performSelector:@selector(doSomething)
+             withObject:nil
+             afterDelay:5.0];<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
 
 <h4 id="主线程执行"><a href="#主线程执行" class="headerlink" title="主线程执行"></a>主线程执行</h4><p>✅推荐：</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">// 同步主线程（waitUntilDone:YES）</span><br><span class="line">dispatch_sync(dispatch_get_main_queue(), ^{</span><br><span class="line">    [self doSomething];</span><br><span class="line">});</span><br><span class="line"></span><br><span class="line">// 异步主线程（waitUntilDone:NO）</span><br><span class="line">dispatch_async(dispatch_get_main_queue(), ^{</span><br><span class="line">    [self doSomething];</span><br><span class="line">});</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">// 同步主线程（waitUntilDone:YES）
+dispatch_sync(dispatch_get_main_queue(), ^{
+    [self doSomething];
+});
+
+// 异步主线程（waitUntilDone:NO）
+dispatch_async(dispatch_get_main_queue(), ^{
+    [self doSomething];
+});<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>❎反对：</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[self performSelectorOnMainThread:@selector(doSomething)</span><br><span class="line">                       withObject:nil</span><br><span class="line">                    waitUntilDone:NO];</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">[self performSelectorOnMainThread:@selector(doSomething)
+                       withObject:nil
+                    waitUntilDone:NO];<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
 
 <h4 id="要点-5"><a href="#要点-5" class="headerlink" title="要点"></a>要点</h4><ul>
 <li><code>performSelector</code> 系列方法在内存管理方面容易有疏失。它无法确定将要执行的 selector 具体是什么，因而 ARC 编译器就无法插入适当的内存管理方法。</li>
@@ -608,7 +928,10 @@
 <li><p>操作队列有很多地方胜过派发队列。操作队列提供了多种预设的执行任务的方式，开发者可以直接使用。</p>
 </li>
 <li><p>有一个 API 选用了操作队列而非派发队列，这就是 NSNotificationCemer，开发者可通过其中的方法来注册监听器，以便在发生相关事件时得到通知，而这个方法接受的参数是块，不是选择子。</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">- (id &lt;NSObject&gt;)addObserverForName:(nullable NSNotificationName)name</span><br><span class="line">                             object:(nullable id)obj</span><br><span class="line">                              queue:(nullable NSOperationQueue *)queue</span><br><span class="line">                         usingBlock:(void (^)(NSNotification *note))bloc;</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">- (id &lt;NSObject&gt;)addObserverForName:(nullable NSNotificationName)name
+                           object:(nullable id)obj
+                            queue:(nullable NSOperationQueue *)queue
+                       usingBlock:(void (^)(NSNotification *note))bloc;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
 </li>
 <li><p>应该尽可能选用高层 API，只在确有必要时才求助于底层。笔者也同意这个说法，但我并不盲从。某些功能确实可以用高层的 Objective-C 方法来做，但这并不等于说它就一定比底层实现方案好。要想确定哪种方案更佳，最好还是测试一下性能。</p>
 </li>
@@ -619,32 +942,82 @@
 </ul>
 <h3 id="第44条：通过-Dispatch-Group-机制，根据系统资源状况来执行任务"><a href="#第44条：通过-Dispatch-Group-机制，根据系统资源状况来执行任务" class="headerlink" title="第44条：通过 Dispatch Group 机制，根据系统资源状况来执行任务"></a>第 44 条：通过 Dispatch Group 机制，根据系统资源状况来执行任务</h3><p><strong>dispatch group</strong> 是 GCD 的一项特性，能够把任务分组。调用者可以等待这组任务执行完毕，也可以在提供回调函数之后继续往下执行，这组任务完成时，调用者会得到通知。这个功能有许多用途，其中最重要、最值得注意的用法，就是<strong>把将要并发执行的多个任务合为一组</strong>，于是调用者就可以知道这些任务何时才能全部执行完毕。比方说，可以把压缩一系列文件的任务表示成 <strong>dispatch group</strong>。</p>
 <p>创建及使用 <strong>dispatch group</strong>：</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">dispatch_group_t group = dispatch_group_create();</span><br><span class="line">dispatch_group_async(group, dispatch_get_global_queue(0, 0), ^{</span><br><span class="line">    // 并行执行的线程一</span><br><span class="line">});</span><br><span class="line">dispatch_group_async(group, dispatch_get_global_queue(0, 0), ^{</span><br><span class="line">    // 并行执行的线程二</span><br><span class="line">});</span><br><span class="line">dispatch_group_notify(group, dispatch_get_global_queue(0, 0), ^{</span><br><span class="line">   // 汇总结果</span><br><span class="line">});</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">dispatch_group_t group = dispatch_group_create();
+dispatch_group_async(group, dispatch_get_global_queue(0, 0), ^{
+    // 并行执行的线程一
+});
+dispatch_group_async(group, dispatch_get_global_queue(0, 0), ^{
+    // 并行执行的线程二
+});
+dispatch_group_notify(group, dispatch_get_global_queue(0, 0), ^{
+   // 汇总结果
+});<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>给任务编组的两种方法：</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">// 1.比 dispatch_async 多一个参数，用于表示待执行的块所归属的组</span><br><span class="line">dispatch_group_async(dispatch_group_t group,</span><br><span class="line">                     dispatch_queue_t queue,</span><br><span class="line">                     dispatch_block_t block);</span><br><span class="line"></span><br><span class="line">// 2.dispatch_group_enter、dispatch_group_leave 需要成对使用</span><br><span class="line">dispatch_group_enter(dispatch_group_t group); // 使分组里正要执行的任务数递增，</span><br><span class="line">dispatch_group_leave(dispatch_group_t group); // 使分组里正要执行的任务数递减.</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">// 1.比 dispatch_async 多一个参数，用于表示待执行的块所归属的组
+dispatch_group_async(dispatch_group_t group,
+                     dispatch_queue_t queue,
+                     dispatch_block_t block);
+
+// 2.dispatch_group_enter、dispatch_group_leave 需要成对使用
+dispatch_group_enter(dispatch_group_t group); // 使分组里正要执行的任务数递增，
+dispatch_group_leave(dispatch_group_t group); // 使分组里正要执行的任务数递减.<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p><strong>dispatch_group_wait</strong> 函数用于等待 <strong>dispatch group</strong> 执行完毕：</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">dispatch_group_wait(dispatch_group_t group, </span><br><span class="line">                    dispatch_time_t timeout);</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">dispatch_group_wait(dispatch_group_t group, 
+                    dispatch_time_t timeout);<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 
 
 
 <p>示例：</p>
 <p>令数组中的每个对象都执行某项任务，并且等待所有任务执行完毕:</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">dispatch_queue_t queue =</span><br><span class="line">    dispatch_get_global_queue(QOS_CLASS_DEFAULT, 0);</span><br><span class="line">dispatch_group_t group = dispatch_group_create();</span><br><span class="line">for (id object in collection) {</span><br><span class="line">    dispatch_group_async(group, queue, ^{</span><br><span class="line">        [object performTask];</span><br><span class="line">    });</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">dispatch_group_wait(group, DISPATCH_TIME_FOREVER);</span><br><span class="line">// 任务执行完毕后继续操作</span><br><span class="line"></span><br><span class="line">// 若当前线程不应阻塞，则可以使用 dispatch_group_notify 代替 dispatch_group_wait</span><br><span class="line">dispatch_queue_t notifyQueue = dispatch_get_main_queue();</span><br><span class="line">dispatch_group_notify(group, notifyQueue, ^{</span><br><span class="line">    // 任务执行完毕后继续操作</span><br><span class="line">});</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">dispatch_queue_t queue =
+    dispatch_get_global_queue(QOS_CLASS_DEFAULT, 0);
+dispatch_group_t group = dispatch_group_create();
+for (id object in collection) {
+    dispatch_group_async(group, queue, ^{
+        [object performTask];
+    });
+}
+
+dispatch_group_wait(group, DISPATCH_TIME_FOREVER);
+// 任务执行完毕后继续操作
+
+// 若当前线程不应阻塞，则可以使用 dispatch_group_notify 代替 dispatch_group_wait
+dispatch_queue_t notifyQueue = dispatch_get_main_queue();
+dispatch_group_notify(group, notifyQueue, ^{
+    // 任务执行完毕后继续操作
+});<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>开发者未必总需要使用 <strong>dispatch group</strong>。有时候采用单个队列搭配标准的异步派发，也可实现同样效果：</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">// 自定义串行队列</span><br><span class="line">dispatch_queue_t queue =</span><br><span class="line">    dispatch_queue_create("com.effecitveobjectivec.queue", NULL);</span><br><span class="line">for (id object in collection) {</span><br><span class="line">    dispatch_async(queue, ^{</span><br><span class="line">        [object performTask];</span><br><span class="line">    });</span><br><span class="line">}</span><br><span class="line">dispatch_async(queue, ^{</span><br><span class="line">    // 任务执行完毕后继续操作</span><br><span class="line">});</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-none"><code class="language-none">// 自定义串行队列
+dispatch_queue_t queue =
+    dispatch_queue_create("com.effecitveobjectivec.queue", NULL);
+for (id object in collection) {
+    dispatch_async(queue, ^{
+        [object performTask];
+    });
+}
+dispatch_async(queue, ^{
+    // 任务执行完毕后继续操作
+});<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <blockquote>
 <p>根据系统资源状况来执行任务：</p>
 <p>为了执行队列中的块，<strong>GCD 会在适当的时机自动创建新线程或复用旧线程。</strong>如果使用并发队列，那么其中有可能会有多个线程，这也就意味着多个块可以并发执行。在并发队列中，执行任务所用的并发线程数量，取决于各种因素，而 GCD 主要是根据系统资源状况来判定这些因素的。假如 CPU 有多个核心，并且队列中有大量任务等待执行，那么 GCD 就可能会给该队列配备多个线程。通过 dispatch group 所提供的这种简便方式，既可以并发执行一系列给定的任务，又能在全部任务结束时得到通知。由于 GCD 有并发队列机制，所以能够根据可用的系统资源状况来并发执行任务。而开发者则可以专注于业务逻辑代码，无须再为了处理并发任务而编写复杂的调度器。</p>
 </blockquote>
 <p>遍历某个 collection ，并在其每个元素上执行任务，而这也可以用另外一个 GCD 函数来实现：</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">dispatch_apply(size_t iterations,</span><br><span class="line">               dispatch_queue_t queue,</span><br><span class="line">               void (^block)(size_t));</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">dispatch_apply(size_t iterations,
+               dispatch_queue_t queue,
+               void (^block)(size_t));<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
 
 <p>此函数会将块反复执行一定的次数，每次传给块的参数值都会递增，从 0 开始，直至 “iterations-1”。</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">// 自定义串行队列</span><br><span class="line">dispatch_queue_t queue =</span><br><span class="line">    dispatch_queue_create("com.effecitveobjectivec.queue", NULL);    </span><br><span class="line">dispatch_apply(10, queue, ^(size_t) {</span><br><span class="line">    // Perform Task：0~9</span><br><span class="line">});</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">// 自定义串行队列
+dispatch_queue_t queue =
+    dispatch_queue_create("com.effecitveobjectivec.queue", NULL);    
+dispatch_apply(10, queue, ^(size_t) {
+    // Perform Task：0~9
+});<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>与 for 循环不同的是， <strong>diSpatch_apply</strong> 所用的队列可以是并发队列。但是 <strong>diSpatch_apply</strong>  会持续阻塞，直到所有任务都执行完毕为止。</p>
 <p>假如把块派给了当前队列（或者体系中高于当前队列的某个串行队列)，就将导致死锁。若想在后台执行任务，则应使用 <strong>dispatch group</strong>。</p>
@@ -653,13 +1026,30 @@
 <li>通过 <strong>dispatch group</strong>，可以在并发式派发队列里同时执行多项任务。此时 GCD 会根据系统资源状况来调度这些并发执行的任务。开发者若自己来实现此功能，则需编写大量代码。</li>
 </ul>
 <h3 id="第45条：使用-dispatch-once-来执行只需运行一次的线程安全代码"><a href="#第45条：使用-dispatch-once-来执行只需运行一次的线程安全代码" class="headerlink" title="第45条：使用 dispatch_once 来执行只需运行一次的线程安全代码"></a>第 45 条：使用 dispatch_once 来执行只需运行一次的线程安全代码</h3><p>单例模式：</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">+ (instancetype)sharedInstance {</span><br><span class="line">    static EOCClass *sharedInstance = nil;</span><br><span class="line">    // 为保证线程安全，将创建单例实例的代码包裹在同步块里。</span><br><span class="line">    @synchronized (self) {</span><br><span class="line">        if (!sharedInstance) {</span><br><span class="line">            sharedInstance = [[self alloc] init];</span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line">    return sharedInstance;</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">+ (instancetype)sharedInstance {
+    static EOCClass *sharedInstance = nil;
+    // 为保证线程安全，将创建单例实例的代码包裹在同步块里。
+    @synchronized (self) {
+        if (!sharedInstance) {
+            sharedInstance = [[self alloc] init];
+        }
+    }
+    return sharedInstance;
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p><strong>dispatch_once</strong> 函数：</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">_dispatch_once(dispatch_once_t *predicate,</span><br><span class="line">               dispatch_block_t block)</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">_dispatch_once(dispatch_once_t *predicate,
+               dispatch_block_t block)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 
 <p>该函数保证相关的块必定会执行，且仅执行一次。首次调用该函数时，必然会执行块中的代码，最重要的一点在于，<strong>此操作完全是线程安全的</strong>。</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">+ (instancetype)sharedInstance {</span><br><span class="line">    static EOCClass *sharedInstance = nil;</span><br><span class="line">    static dispatch_once_t onceToken;</span><br><span class="line">    dispatch_once(&amp;onceToken, ^{</span><br><span class="line">        sharedInstance = [[self alloc] init];</span><br><span class="line">    });</span><br><span class="line">    return sharedInstance;</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">+ (instancetype)sharedInstance {
+    static EOCClass *sharedInstance = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&amp;onceToken, ^{
+        sharedInstance = [[self alloc] init];
+    });
+    return sharedInstance;
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <ul>
 <li>使用 <strong>dispatch_once</strong> 可以简化代码并且彻底保证线程安全。</li>
@@ -670,7 +1060,9 @@
 <li>经常需要编写只需执行一次的线程安全代码。通过 GCD 所提供的 <strong>dispatch_once</strong> 函数，很容易就能实现此功能。</li>
 <li>标记应该声明在 <strong>static</strong> 或 <strong>global</strong> 作用域中，这样的话，在把只需执行一次的 block 传给 <strong>dispatch_once</strong> 函数时，传进去的标记也是相同的。</li>
 </ul>
-<h3 id="第46条：不要使用-dispatch-get-current-queue"><a href="#第46条：不要使用-dispatch-get-current-queue" class="headerlink" title="第46条：不要使用 dispatch_get_current_queue"></a>第 46 条：不要使用 dispatch_get_current_queue</h3><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">// 此函数返回当前正在执行代码的队列。</span><br><span class="line">// This function is deprecated and will be removed in a future release.</span><br><span class="line">dispatch_get_current_queue(void);</span><br></pre></td></tr></tbody></table></figure>
+<h3 id="第46条：不要使用-dispatch-get-current-queue"><a href="#第46条：不要使用-dispatch-get-current-queue" class="headerlink" title="第46条：不要使用 dispatch_get_current_queue"></a>第 46 条：不要使用 dispatch_get_current_queue</h3><pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">// 此函数返回当前正在执行代码的队列。
+// This function is deprecated and will be removed in a future release.
+dispatch_get_current_queue(void);<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
 
 <p>⚠️ iOS 系统从 6.0 版本起，已经正式弃用此函数了。</p>
 <h4 id="要点-9"><a href="#要点-9" class="headerlink" title="要点"></a>要点</h4><ul>
@@ -803,12 +1195,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">2.1m</span>
+    <span title="站点总字数">2.3m</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">31:21</span>
+    <span title="站点阅读时长">34:09</span>
 </div>
   <div class="powered-by">由 <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZw==">NexT.Gemini</span> 强力驱动
   </div>

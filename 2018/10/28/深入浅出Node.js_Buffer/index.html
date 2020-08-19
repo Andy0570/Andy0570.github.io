@@ -411,7 +411,15 @@
 <li>Node 在进程启动时已经加载了 Buffer，并将其放在了全局对象（global）上。所以在使用 Buffer 时，无须通过 <code>require()</code> 即可直接使用。</li>
 </ul>
 <h3 id="Buffer-对象"><a href="#Buffer-对象" class="headerlink" title="Buffer 对象"></a>Buffer 对象</h3><p>Buffer 对象类似于数组，它的元素为 16 进制的两位数，即 0 到 255 的数值。</p>
-<figure class="highlight javascript"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> str = <span class="string">'深入浅出 node.js'</span>;</span><br><span class="line"><span class="keyword">var</span> buf = Buffer.from(str, <span class="string">'utf-8'</span>);</span><br><span class="line"><span class="built_in">console</span>.log(buf); <span class="comment">// &lt;Buffer e6 b7 b1 e5 85 a5 e6 b5 85 e5 87 ba 20 6e 6f 64 65 2e 6a 73&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> buf2 = Buffer.alloc(<span class="number">100</span>);</span><br><span class="line"><span class="comment">// 通过 length 获取长度</span></span><br><span class="line"><span class="built_in">console</span>.log(buf2.length); <span class="comment">// 100</span></span><br><span class="line"><span class="comment">// 通过下标访问元素、赋值</span></span><br><span class="line"><span class="built_in">console</span>.log(buf2[<span class="number">10</span>]); <span class="comment">// 0</span></span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token keyword">var</span> str <span class="token operator">=</span> <span class="token string">'深入浅出 node.js'</span><span class="token punctuation">;</span>
+<span class="token keyword">var</span> buf <span class="token operator">=</span> Buffer<span class="token punctuation">.</span><span class="token function">from</span><span class="token punctuation">(</span>str<span class="token punctuation">,</span> <span class="token string">'utf-8'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>buf<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// &lt;Buffer e6 b7 b1 e5 85 a5 e6 b5 85 e5 87 ba 20 6e 6f 64 65 2e 6a 73&gt;</span>
+
+<span class="token keyword">var</span> buf2 <span class="token operator">=</span> Buffer<span class="token punctuation">.</span><span class="token function">alloc</span><span class="token punctuation">(</span><span class="token number">100</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment">// 通过 length 获取长度</span>
+console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>buf2<span class="token punctuation">.</span>length<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// 100</span>
+<span class="token comment">// 通过下标访问元素、赋值</span>
+console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>buf2<span class="token punctuation">[</span><span class="token number">10</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// 0</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>给元素的赋值（0～255）规则：</p>
 <ul>
@@ -440,7 +448,7 @@
 <h2 id="Buffer-的转换"><a href="#Buffer-的转换" class="headerlink" title="Buffer 的转换"></a>Buffer 的转换</h2><p>Buffer 对象可以与字符串之间相互转换。</p>
 <p>支持的字符串编码类型有：ASCII、UTF-8、UTF-16LE/UCS-2、Base64、Latin1、Binary、Hex。</p>
 <p>判断编码是否支持转换：</p>
-<figure class="highlight javascript"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Buffer.isEncoding(ecoding); <span class="comment">// true/false</span></span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript">Buffer<span class="token punctuation">.</span><span class="token function">isEncoding</span><span class="token punctuation">(</span>ecoding<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// true/false</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 
 <p>第三方模块：</p>
 <ul>
@@ -452,7 +460,19 @@
 <li>文件可读流在读取时会逐个读取 Buffer。</li>
 <li>宽字节字符串在 UTF-8 编码下是以 3 个字节的方式存储的。</li>
 </ul>
-<figure class="highlight javascript"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Buffer 的拼接</span></span><br><span class="line"><span class="keyword">var</span> chunks = []; <span class="comment">// 用数组来存储接收到的所有Buffer片段</span></span><br><span class="line"><span class="keyword">var</span> size = <span class="number">0</span>;    <span class="comment">// 记录下所有片段的总长度</span></span><br><span class="line">res.on(<span class="string">'data'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">chunk</span>) </span>{</span><br><span class="line">    chunks.push(chunk);</span><br><span class="line">    size += chunk.length;</span><br><span class="line">});</span><br><span class="line">res.on(<span class="string">'end'</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>{</span><br><span class="line">    <span class="comment">// Buffer.concat() 生成一个合并的 Buffer 对象</span></span><br><span class="line">    <span class="keyword">var</span> buf = Buffer.concat(chunks, size);</span><br><span class="line">    vr str = iconv.decode(buf, <span class="string">'utf8'</span>);</span><br><span class="line">    <span class="built_in">console</span>.log(str);</span><br><span class="line">});</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token comment">// Buffer 的拼接</span>
+<span class="token keyword">var</span> chunks <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">;</span> <span class="token comment">// 用数组来存储接收到的所有Buffer片段</span>
+<span class="token keyword">var</span> size <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>    <span class="token comment">// 记录下所有片段的总长度</span>
+res<span class="token punctuation">.</span><span class="token function">on</span><span class="token punctuation">(</span><span class="token string">'data'</span><span class="token punctuation">,</span> <span class="token keyword">function</span><span class="token punctuation">(</span><span class="token parameter">chunk</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    chunks<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span>chunk<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    size <span class="token operator">+=</span> chunk<span class="token punctuation">.</span>length<span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+res<span class="token punctuation">.</span><span class="token function">on</span><span class="token punctuation">(</span><span class="token string">'end'</span><span class="token punctuation">,</span> <span class="token keyword">function</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token comment">// Buffer.concat() 生成一个合并的 Buffer 对象</span>
+    <span class="token keyword">var</span> buf <span class="token operator">=</span> Buffer<span class="token punctuation">.</span><span class="token function">concat</span><span class="token punctuation">(</span>chunks<span class="token punctuation">,</span> size<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    vr str <span class="token operator">=</span> iconv<span class="token punctuation">.</span><span class="token function">decode</span><span class="token punctuation">(</span>buf<span class="token punctuation">,</span> <span class="token string">'utf8'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>str<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 
 
@@ -578,12 +598,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">2.1m</span>
+    <span title="站点总字数">2.3m</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">31:21</span>
+    <span title="站点阅读时长">34:09</span>
 </div>
   <div class="powered-by">由 <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZw==">NexT.Gemini</span> 强力驱动
   </div>

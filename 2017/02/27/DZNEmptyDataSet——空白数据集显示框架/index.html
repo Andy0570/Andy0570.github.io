@@ -470,22 +470,36 @@
 </ul>
 <p>这个库已经被设计为不需要通过扩展（extend） <strong>UITableView</strong> 或 <strong>UICollectionView</strong> 类的方式来实现了。 使用 <strong>UITableViewController</strong> 或 <strong>UICollectionViewController</strong> 类仍然可以奏效。 只要通过遵循 <code>DZNEmptyDataSetSource</code> 和 <code>DZNEmptyDataSetDelegate</code> 协议，您将能够完全自定义应用程序的空状态的内容和外观。</p>
 <h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p>支持 <span class="exturl" data-url="aHR0cDovL2NvY29hcG9kcy5vcmcvP3E9RFpORW1wdHlEYXRhU2V0">CocoaPods<i class="fa fa-external-link-alt"></i></span> 导入</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pod 'DZNEmptyDataSet'</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">pod 'DZNEmptyDataSet'<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 
 
 
 <h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><p>完整文档参考：<span class="exturl" data-url="aHR0cDovL2NvY29hZG9jcy5vcmcvZG9jc2V0cy9EWk5FbXB0eURhdGFTZXQvMS44LjEv">CocoaPods 自动生成文档<i class="fa fa-external-link-alt"></i></span></p>
-<h3 id="导入"><a href="#导入" class="headerlink" title="导入"></a>导入</h3><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#import "UIScrollView+EmptyDataSet.h"</span><br></pre></td></tr></tbody></table></figure>
+<h3 id="导入"><a href="#导入" class="headerlink" title="导入"></a>导入</h3><pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">#import "UIScrollView+EmptyDataSet.h"<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 
 <p>作为框架导入：</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#import &lt;DZNEmptyDataSet/UIScrollView+EmptyDataSet.h&gt;</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">#import &lt;DZNEmptyDataSet/UIScrollView+EmptyDataSet.h&gt;<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 
-<h3 id="遵循协议"><a href="#遵循协议" class="headerlink" title="遵循协议"></a>遵循协议</h3><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">// 遵守 DZNEmptyDataSetSource 、DZNEmptyDataSetDelegate 协议</span><br><span class="line">@interface MainViewController : UITableViewController &lt;DZNEmptyDataSetSource, DZNEmptyDataSetDelegate&gt;</span><br><span class="line"></span><br><span class="line">- (void)viewDidLoad</span><br><span class="line">{</span><br><span class="line">    [super viewDidLoad];</span><br><span class="line"></span><br><span class="line">    self.tableView.emptyDataSetSource = self;</span><br><span class="line">    self.tableView.emptyDataSetDelegate = self;</span><br><span class="line"></span><br><span class="line">    // 删除单元格分隔线的一个小技巧</span><br><span class="line">    self.tableView.tableFooterView = [UIView new];</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<h3 id="遵循协议"><a href="#遵循协议" class="headerlink" title="遵循协议"></a>遵循协议</h3><pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">// 遵守 DZNEmptyDataSetSource 、DZNEmptyDataSetDelegate 协议
+@interface MainViewController : UITableViewController &lt;DZNEmptyDataSetSource, DZNEmptyDataSetDelegate&gt;
+
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+
+    self.tableView.emptyDataSetSource = self;
+    self.tableView.emptyDataSetDelegate = self;
+
+    // 删除单元格分隔线的一个小技巧
+    self.tableView.tableFooterView = [UIView new];
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <h3 id="实现数据源协议"><a href="#实现数据源协议" class="headerlink" title="实现数据源协议"></a>实现数据源协议</h3><h3 id="DZNEmptyDataSetSource-——实现该协议，可以设置你想要在空白页面显示的内容，并且充分利用-NSAttributedString-功能来自定义文本外观。"><a href="#DZNEmptyDataSetSource-——实现该协议，可以设置你想要在空白页面显示的内容，并且充分利用-NSAttributedString-功能来自定义文本外观。" class="headerlink" title="DZNEmptyDataSetSource ——实现该协议，可以设置你想要在空白页面显示的内容，并且充分利用 NSAttributedString 功能来自定义文本外观。"></a>DZNEmptyDataSetSource —— 实现该协议，可以设置你想要在空白页面显示的内容，并且充分利用 <strong>NSAttributedString</strong> 功能来自定义文本外观。</h3><ul>
 <li><strong>空白页显示图片 </strong></li>
 </ul>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">- (UIImage *)imageForEmptyDataSet:(UIScrollView *)scrollView {</span><br><span class="line">    return [UIImage imageNamed:@"lion"];</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">- (UIImage *)imageForEmptyDataSet:(UIScrollView *)scrollView {
+    return [UIImage imageNamed:@"lion"];
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
 
 <p>效果图：</p>
 <p><img data-src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071547.jpg"></p>
@@ -493,7 +507,15 @@
 <ul>
 <li><strong>空白页显示标题 </strong></li>
 </ul>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">- (NSAttributedString *)titleForEmptyDataSet:(UIScrollView *)scrollView {</span><br><span class="line">    NSString *title = @"狮子王";</span><br><span class="line">    NSDictionary *attributes = @{</span><br><span class="line">                                 NSFontAttributeName:[UIFont boldSystemFontOfSize:18.0f],</span><br><span class="line">                                 NSForegroundColorAttributeName:[UIColor darkGrayColor]</span><br><span class="line">                                 };</span><br><span class="line">    return [[NSAttributedString alloc] initWithString:title attributes:attributes];</span><br><span class="line">}</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">- (NSAttributedString *)titleForEmptyDataSet:(UIScrollView *)scrollView {
+    NSString *title = @"狮子王";
+    NSDictionary *attributes = @{
+                                 NSFontAttributeName:[UIFont boldSystemFontOfSize:18.0f],
+                                 NSForegroundColorAttributeName:[UIColor darkGrayColor]
+                                 };
+    return [[NSAttributedString alloc] initWithString:title attributes:attributes];
+}
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>效果图：</p>
 <p><img data-src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071547-1.jpg"></p>
@@ -501,7 +523,21 @@
 <ul>
 <li><strong>空白页显示详细描述 </strong></li>
 </ul>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">- (NSAttributedString *)descriptionForEmptyDataSet:(UIScrollView *)scrollView {</span><br><span class="line">    NSString *text = @"你好，我的名字叫辛巴，大草原是我的家！";</span><br><span class="line">  </span><br><span class="line">    NSMutableParagraphStyle *paragraph = [NSMutableParagraphStyle new];</span><br><span class="line">    paragraph.lineBreakMode = NSLineBreakByWordWrapping;</span><br><span class="line">    paragraph.alignment = NSTextAlignmentCenter;</span><br><span class="line">    </span><br><span class="line">    NSDictionary *attributes = @{</span><br><span class="line">                                 NSFontAttributeName:[UIFont systemFontOfSize:14.0f],</span><br><span class="line">                                 NSForegroundColorAttributeName:[UIColor lightGrayColor],</span><br><span class="line">                                 NSParagraphStyleAttributeName:paragraph</span><br><span class="line">                                 };</span><br><span class="line">    </span><br><span class="line">    return [[NSAttributedString alloc] initWithString:text attributes:attributes];</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">- (NSAttributedString *)descriptionForEmptyDataSet:(UIScrollView *)scrollView {
+    NSString *text = @"你好，我的名字叫辛巴，大草原是我的家！";
+
+    NSMutableParagraphStyle *paragraph = [NSMutableParagraphStyle new];
+    paragraph.lineBreakMode = NSLineBreakByWordWrapping;
+    paragraph.alignment = NSTextAlignmentCenter;
+
+    NSDictionary *attributes = @{
+                                 NSFontAttributeName:[UIFont systemFontOfSize:14.0f],
+                                 NSForegroundColorAttributeName:[UIColor lightGrayColor],
+                                 NSParagraphStyleAttributeName:paragraph
+                                 };
+
+    return [[NSAttributedString alloc] initWithString:text attributes:attributes];
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>效果图：</p>
 <p><img data-src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071548.jpg"></p>
@@ -509,7 +545,16 @@
 <ul>
 <li><strong>空白页显示按钮：</strong>示例 1</li>
 </ul>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">- (NSAttributedString *)buttonTitleForEmptyDataSet:(UIScrollView *)scrollView forState:(UIControlState)state {</span><br><span class="line">    // 设置按钮标题</span><br><span class="line">    NSString *buttonTitle = @"喜欢我就点点点点我";</span><br><span class="line">    NSDictionary *attributes = @{</span><br><span class="line">                                 NSFontAttributeName:[UIFont boldSystemFontOfSize:17.0f]</span><br><span class="line">                                 };</span><br><span class="line">    return [[NSAttributedString alloc] initWithString:buttonTitle attributes:attributes];</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">- (NSAttributedString *)buttonTitleForEmptyDataSet:(UIScrollView *)scrollView forState:(UIControlState)state {
+    // 设置按钮标题
+    NSString *buttonTitle = @"喜欢我就点点点点我";
+    NSDictionary *attributes = @{
+                                 NSFontAttributeName:[UIFont boldSystemFontOfSize:17.0f]
+                                 };
+    return [[NSAttributedString alloc] initWithString:buttonTitle attributes:attributes];
+}
+
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>效果图：</p>
 <p><img data-src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071551.jpg"></p>
@@ -517,7 +562,18 @@
 <li><strong>空白页显示按钮：</strong>示例 2</li>
 </ul>
 <p>按钮点击高亮效果</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">- (NSAttributedString *)buttonTitleForEmptyDataSet:(UIScrollView *)scrollView forState:(UIControlState)state {</span><br><span class="line">    NSString *text = @"Learn more";</span><br><span class="line">    UIFont   *font = [UIFont systemFontOfSize:15.0];</span><br><span class="line">    // 设置默认状态、点击高亮状态下的按钮字体颜色</span><br><span class="line">    UIColor  *textColor = [UIColor colorWithHex:(state == UIControlStateNormal) ? @"007ee5" : @"48a1ea"];</span><br><span class="line">    </span><br><span class="line">    NSMutableDictionary *attributes = [NSMutableDictionary new];</span><br><span class="line">    [attributes setObject:font      forKey:NSFontAttributeName];</span><br><span class="line">    [attributes setObject:textColor forKey:NSForegroundColorAttributeName];</span><br><span class="line">    </span><br><span class="line">    return [[NSAttributedString alloc] initWithString:text attributes:attributes];</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">- (NSAttributedString *)buttonTitleForEmptyDataSet:(UIScrollView *)scrollView forState:(UIControlState)state {
+    NSString *text = @"Learn more";
+    UIFont   *font = [UIFont systemFontOfSize:15.0];
+    // 设置默认状态、点击高亮状态下的按钮字体颜色
+    UIColor  *textColor = [UIColor colorWithHex:(state == UIControlStateNormal) ? @"007ee5" : @"48a1ea"];
+
+    NSMutableDictionary *attributes = [NSMutableDictionary new];
+    [attributes setObject:font      forKey:NSFontAttributeName];
+    [attributes setObject:textColor forKey:NSForegroundColorAttributeName];
+
+    return [[NSAttributedString alloc] initWithString:text attributes:attributes];
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>效果图：</p>
 <p><img data-src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071555.gif"></p>
@@ -525,20 +581,64 @@
 <li><strong>空白页显示按钮：</strong>示例 3</li>
 </ul>
 <p>按钮标题中 <strong>点击重试</strong> 四个字加粗：</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">#pragma mark - DZNEmptyDataSetSource</span><br><span class="line"></span><br><span class="line">- (UIImage *)imageForEmptyDataSet:(UIScrollView *)scrollView {</span><br><span class="line">    return [UIImage imageNamed:@"placeholder_No_Network"];</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">- (NSAttributedString *)buttonTitleForEmptyDataSet:(UIScrollView *)scrollView forState:(UIControlState)state {</span><br><span class="line">    NSString *text = @"网络不给力，请点击重试哦~";</span><br><span class="line"></span><br><span class="line">    NSMutableAttributedString *attStr = [[NSMutableAttributedString alloc] initWithString:text];</span><br><span class="line">    // 设置所有字体大小为 #15</span><br><span class="line">    [attStr addAttribute:NSFontAttributeName</span><br><span class="line">                   value:[UIFont systemFontOfSize:15.0]</span><br><span class="line">                   range:NSMakeRange(0, text.length)];</span><br><span class="line">    // 设置所有字体颜色为浅灰色</span><br><span class="line">    [attStr addAttribute:NSForegroundColorAttributeName</span><br><span class="line">                   value:[UIColor lightGrayColor]</span><br><span class="line">                   range:NSMakeRange(0, text.length)];</span><br><span class="line">    // 设置指定4个字体为蓝色</span><br><span class="line">    [attStr addAttribute:NSForegroundColorAttributeName</span><br><span class="line">                   value:HexColor(@"#007EE5")</span><br><span class="line">                   range:NSMakeRange(7, 4)];</span><br><span class="line">    return attStr;</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">- (CGFloat)verticalOffsetForEmptyDataSet:(UIScrollView *)scrollView {</span><br><span class="line">    return -70.0f;</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">#pragma mark - DZNEmptyDataSetDelegate</span><br><span class="line"></span><br><span class="line">- (void)emptyDataSet:(UIScrollView *)scrollView didTapButton:(UIButton *)button {</span><br><span class="line">    // button clicked...</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">- (void)emptyDataSetWillAppear:(UIScrollView *)scrollView {</span><br><span class="line">    self.tableView.contentOffset = CGPointZero;</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">#pragma mark - DZNEmptyDataSetSource
+
+- (UIImage *)imageForEmptyDataSet:(UIScrollView *)scrollView {
+    return [UIImage imageNamed:@"placeholder_No_Network"];
+}
+
+- (NSAttributedString *)buttonTitleForEmptyDataSet:(UIScrollView *)scrollView forState:(UIControlState)state {
+    NSString *text = @"网络不给力，请点击重试哦~";
+
+    NSMutableAttributedString *attStr = [[NSMutableAttributedString alloc] initWithString:text];
+    // 设置所有字体大小为 #15
+    [attStr addAttribute:NSFontAttributeName
+                   value:[UIFont systemFontOfSize:15.0]
+                   range:NSMakeRange(0, text.length)];
+    // 设置所有字体颜色为浅灰色
+    [attStr addAttribute:NSForegroundColorAttributeName
+                   value:[UIColor lightGrayColor]
+                   range:NSMakeRange(0, text.length)];
+    // 设置指定4个字体为蓝色
+    [attStr addAttribute:NSForegroundColorAttributeName
+                   value:HexColor(@"#007EE5")
+                   range:NSMakeRange(7, 4)];
+    return attStr;
+}
+
+- (CGFloat)verticalOffsetForEmptyDataSet:(UIScrollView *)scrollView {
+    return -70.0f;
+}
+
+#pragma mark - DZNEmptyDataSetDelegate
+
+- (void)emptyDataSet:(UIScrollView *)scrollView didTapButton:(UIButton *)button {
+    // button clicked...
+}
+
+- (void)emptyDataSetWillAppear:(UIScrollView *)scrollView {
+    self.tableView.contentOffset = CGPointZero;
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>效果图</p>
 <p><img data-src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071556.jpg"></p>
 <ul>
 <li><strong>空白页显示按钮：</strong>示例 4</li>
 </ul>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">// 空白页显示返回按钮图片</span><br><span class="line">- (UIImage *)buttonImageForEmptyDataSet:(UIScrollView *)scrollView forState:(UIControlState)state {</span><br><span class="line">    return [UIImage imageNamed:@"placeholder_return"];</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">- (void)emptyDataSet:(UIScrollView *)scrollView didTapButton:(UIButton *)button {</span><br><span class="line">    [self.navigationController popViewControllerAnimated:YES];</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-none"><code class="language-none">// 空白页显示返回按钮图片
+- (UIImage *)buttonImageForEmptyDataSet:(UIScrollView *)scrollView forState:(UIControlState)state {
+    return [UIImage imageNamed:@"placeholder_return"];
+}
+
+- (void)emptyDataSet:(UIScrollView *)scrollView didTapButton:(UIButton *)button {
+    [self.navigationController popViewControllerAnimated:YES];
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <hr>
 <ul>
 <li><strong>设置按钮的背景颜色 </strong></li>
 </ul>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">- (nullable UIImage *)buttonBackgroundImageForEmptyDataSet:(UIScrollView *)scrollView forState:(UIControlState)state;</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-none"><code class="language-none">- (nullable UIImage *)buttonBackgroundImageForEmptyDataSet:(UIScrollView *)scrollView forState:(UIControlState)state;<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 
 
 
@@ -546,7 +646,9 @@
 <ul>
 <li><strong>设置按钮图片 </strong></li>
 </ul>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">- (UIImage *)buttonImageForEmptyDataSet:(UIScrollView *)scrollView forState:(UIControlState)state {</span><br><span class="line">    return [UIImage imageNamed:@"Image"];</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">- (UIImage *)buttonImageForEmptyDataSet:(UIScrollView *)scrollView forState:(UIControlState)state {
+    return [UIImage imageNamed:@"Image"];
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
 
 <p>效果图：</p>
 <p><img data-src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071557.jpg"></p>
@@ -554,14 +656,19 @@
 <ul>
 <li><strong>设置图片的  tintColor</strong></li>
 </ul>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">- (UIColor *)imageTintColorForEmptyDataSet:(UIScrollView *)scrollView {</span><br><span class="line">    return [UIColor yellowColor];</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-none"><code class="language-none">- (UIColor *)imageTintColorForEmptyDataSet:(UIScrollView *)scrollView {
+    return [UIColor yellowColor];
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
 
 <p>效果图：就是设置图片颜色，脑补中。。。</p>
 <hr>
 <ul>
 <li><strong>设置空白页面的背景色 </strong></li>
 </ul>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">- (UIColor *)backgroundColorForEmptyDataSet:(UIScrollView *)scrollView {</span><br><span class="line">    UIColor *appleGreenColor = [UIColor colorWithRed:199/255.0 green:237/255.0 blue:204/255.0 alpha:1.0];</span><br><span class="line">    return appleGreenColor;</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">- (UIColor *)backgroundColorForEmptyDataSet:(UIScrollView *)scrollView {
+    UIColor *appleGreenColor = [UIColor colorWithRed:199/255.0 green:237/255.0 blue:204/255.0 alpha:1.0];
+    return appleGreenColor;
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>效果图：</p>
 <p><img data-src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071558.jpg"></p>
@@ -569,22 +676,72 @@
 <ul>
 <li>如果你需要设置更复杂的布局，也可以<strong>返回自定义视图</strong>：</li>
 </ul>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">- (UIView *)customViewForEmptyDataSet:(UIScrollView *)scrollView {</span><br><span class="line">    UIActivityIndicatorView *activityView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];</span><br><span class="line">    [activityView startAnimating];</span><br><span class="line">    return activityView;</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">- (UIView *)customViewForEmptyDataSet:(UIScrollView *)scrollView {
+    UIActivityIndicatorView *activityView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+    [activityView startAnimating];
+    return activityView;
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>效果图：</p>
 <p><img data-src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071559.gif"></p>
 <hr>
 <ul>
-<li><strong>设置图片动画 </strong></li>
+<li><strong>设置图片动画</strong></li>
 </ul>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">#pragma mark - DZNEmptyDataSetSource</span><br><span class="line">#pragma mark 设置空白页图片</span><br><span class="line">- (nullable UIImage *)imageForEmptyDataSet:(UIScrollView *)scrollView {</span><br><span class="line">    return [UIImage imageNamed:@"lion"];</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">#pragma mark 设置图片动画: 旋转</span><br><span class="line">- (CAAnimation *)imageAnimationForEmptyDataSet:(UIScrollView *)scrollView {</span><br><span class="line">    CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath: @"transform"];</span><br><span class="line">    </span><br><span class="line">    animation.fromValue = [NSValue valueWithCATransform3D:CATransform3DIdentity];</span><br><span class="line">    animation.toValue = [NSValue valueWithCATransform3D:CATransform3DMakeRotation(M_PI_2, 0.0, 0.0, 1.0)];</span><br><span class="line">    </span><br><span class="line">    animation.duration = 0.25;</span><br><span class="line">    animation.cumulative = YES;</span><br><span class="line">    animation.repeatCount = MAXFLOAT;</span><br><span class="line">    </span><br><span class="line">    return animation;</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">#pragma mark - DZNEmptyDataSetDelegate</span><br><span class="line">// 向代理请求图像视图动画权限。 默认值为NO。</span><br><span class="line">// 确保从 imageAnimationForEmptyDataSet 返回有效的CAAnimation对象：</span><br><span class="line">- (BOOL)emptyDataSetShouldAnimateImageView:(UIScrollView *)scrollView {</span><br><span class="line">    return YES;</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">#pragma mark - DZNEmptyDataSetSource
+#pragma mark 设置空白页图片
+- (nullable UIImage *)imageForEmptyDataSet:(UIScrollView *)scrollView {
+    return [UIImage imageNamed:@"lion"];
+}
+
+#pragma mark 设置图片动画: 旋转
+- (CAAnimation *)imageAnimationForEmptyDataSet:(UIScrollView *)scrollView {
+    CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath: @"transform"];
+
+    animation.fromValue = [NSValue valueWithCATransform3D:CATransform3DIdentity];
+    animation.toValue = [NSValue valueWithCATransform3D:CATransform3DMakeRotation(M_PI_2, 0.0, 0.0, 1.0)];
+
+    animation.duration = 0.25;
+    animation.cumulative = YES;
+    animation.repeatCount = MAXFLOAT;
+
+    return animation;
+}
+
+#pragma mark - DZNEmptyDataSetDelegate
+// 向代理请求图像视图动画权限。 默认值为NO。
+// 确保从 imageAnimationForEmptyDataSet 返回有效的CAAnimation对象：
+- (BOOL)emptyDataSetShouldAnimateImageView:(UIScrollView *)scrollView {
+    return YES;
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>效果图：</p>
 <p><img data-src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071602.gif"></p>
 <ul>
-<li><strong>图像视图动画：缩放 </strong></li>
+<li><strong>图像视图动画：缩放</strong></li>
 </ul>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">#pragma mark - DZNEmptyDataSetSource</span><br><span class="line">#pragma mark 设置空白页图片</span><br><span class="line">- (nullable UIImage *)imageForEmptyDataSet:(UIScrollView *)scrollView {</span><br><span class="line">    return [UIImage imageNamed:@"computer"];</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">#pragma mark 设置图片动画</span><br><span class="line">- (CAAnimation *)imageAnimationForEmptyDataSet:(UIScrollView *)scrollView</span><br><span class="line">{</span><br><span class="line">    CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:@"bounds"];</span><br><span class="line">    animation.duration = 1.25;</span><br><span class="line">    animation.cumulative = NO;</span><br><span class="line">    animation.repeatCount = MAXFLOAT;</span><br><span class="line">    animation.toValue = [NSValue valueWithCGRect:CGRectMake(0, 0, 45, 45)];</span><br><span class="line"></span><br><span class="line">    return animation;</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">#pragma mark - DZNEmptyDataSetDelegate</span><br><span class="line">- (BOOL)emptyDataSetShouldAnimateImageView:(UIScrollView *)scrollView {</span><br><span class="line">    return YES;</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">#pragma mark - DZNEmptyDataSetSource
+#pragma mark 设置空白页图片
+- (nullable UIImage *)imageForEmptyDataSet:(UIScrollView *)scrollView {
+    return [UIImage imageNamed:@"computer"];
+}
+
+#pragma mark 设置图片动画
+- (CAAnimation *)imageAnimationForEmptyDataSet:(UIScrollView *)scrollView
+{
+    CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:@"bounds"];
+    animation.duration = 1.25;
+    animation.cumulative = NO;
+    animation.repeatCount = MAXFLOAT;
+    animation.toValue = [NSValue valueWithCGRect:CGRectMake(0, 0, 45, 45)];
+
+    return animation;
+}
+
+#pragma mark - DZNEmptyDataSetDelegate
+- (BOOL)emptyDataSetShouldAnimateImageView:(UIScrollView *)scrollView {
+    return YES;
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>效果图：</p>
 <p><img data-src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071602-1.gif"></p>
@@ -596,21 +753,59 @@
 <p>通过阅读源码，可以发现它是这样工作的：</p>
 <ol>
 <li><p>首先在遵循协议的.m 文件中声明了一个 <strong>BOOL</strong> 类型的变量，用来记录空白页面当前的加载状态：</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">@property (nonatomic, getter=isLoading) BOOL loading;</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">@property (nonatomic, getter=isLoading) BOOL loading;<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 </li>
 <li><p>然后为该属性设置 <strong>setter</strong> 方法，重新加载空数据集视图：</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">- (void)setLoading:(BOOL)loading</span><br><span class="line">{</span><br><span class="line">  if (self.isLoading == loading) {</span><br><span class="line">      return;</span><br><span class="line">  }</span><br><span class="line"> </span><br><span class="line">  _loading = loading;</span><br><span class="line">  // 每次 loading 状态被修改，就刷新空白页面。</span><br><span class="line">  [self.tableView reloadEmptyDataSet];</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">- (void)setLoading:(BOOL)loading
+{
+if (self.isLoading == loading) {
+   return;
+}
+
+_loading = loading;
+// 每次 loading 状态被修改，就刷新空白页面。
+[self.tableView reloadEmptyDataSet];
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 </li>
 <li><p>接下来要实现几个关联协议</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line">#pragma mark - DZNEmptyDataSetSource</span><br><span class="line">#pragma mark 设置空白页图片</span><br><span class="line">- (UIImage *)imageForEmptyDataSet:(UIScrollView *)scrollView {</span><br><span class="line">    if (self.isLoading) {</span><br><span class="line">        // 圆形加载图片</span><br><span class="line">        return [UIImage imageNamed:@"loading_imgBlue_78x78"];</span><br><span class="line">    }else {</span><br><span class="line">        // 默认静态图片</span><br><span class="line">        return [UIImage imageNamed:@"staticImage"];</span><br><span class="line">    }</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">#pragma mark 图片旋转动画</span><br><span class="line">- (CAAnimation *)imageAnimationForEmptyDataSet:(UIScrollView *)scrollView</span><br><span class="line">{</span><br><span class="line">    CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:@"transform"];</span><br><span class="line">    animation.fromValue = [NSValue valueWithCATransform3D:CATransform3DIdentity];</span><br><span class="line">    animation.toValue = [NSValue valueWithCATransform3D: CATransform3DMakeRotation(M_PI_2, 0.0, 0.0, 1.0) ];</span><br><span class="line">    animation.duration = 0.25;</span><br><span class="line">    animation.cumulative = YES;</span><br><span class="line">    animation.repeatCount = MAXFLOAT;</span><br><span class="line">    </span><br><span class="line">    return animation;</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">#pragma mark - DZNEmptyDataSetDelegate</span><br><span class="line">#pragma mark 是否开启动画</span><br><span class="line">- (BOOL)emptyDataSetShouldAnimateImageView:(UIScrollView *)scrollView {</span><br><span class="line">    return self.isLoading;</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">#pragma mark 空白页面被点击时刷新页面</span><br><span class="line">- (void)emptyDataSet:(UIScrollView *)scrollView didTapView:(UIView *)view {</span><br><span class="line">    // 空白页面被点击时开启动画，reloadEmptyDataSet</span><br><span class="line">    self.loading = YES;</span><br><span class="line">    // 执行加载任务...</span><br><span class="line">    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{</span><br><span class="line">        // 任务加载完成后关闭动画，reloadEmptyDataSet</span><br><span class="line">        self.loading = NO;</span><br><span class="line">    });</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
-
+<p>&lt;!–hexoPostRenderEscape:</p><pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">#pragma mark - DZNEmptyDataSetSource<br>#pragma mark 设置空白页图片<p></p>
+</code></pre></li><code class="language-objective-c">
+</code></ol><code class="language-objective-c">
+<ul>
+<li>(UIImage *)imageForEmptyDataSet:(UIScrollView *)scrollView {<br>  if (self.isLoading) {<pre><code>  &amp;#x2F;&amp;#x2F; 圆形加载图片
+  return [UIImage imageNamed:@&amp;quot;loading_imgBlue_78x78&amp;quot;];</code></pre>
+  }else {<pre><code>  &amp;#x2F;&amp;#x2F; 默认静态图片
+  return [UIImage imageNamed:@&amp;quot;staticImage&amp;quot;];</code></pre>
+  }<br>}</li>
+</ul>
+<p>#pragma mark 图片旋转动画</p>
+<ul>
+<li><p>(CAAnimation *)imageAnimationForEmptyDataSet:(UIScrollView *)scrollView<br>{<br>  CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:@"transform"];<br>  animation.fromValue = [NSValue valueWithCATransform3D:CATransform3DIdentity];<br>  animation.toValue = [NSValue valueWithCATransform3D: CATransform3DMakeRotation(M_PI_2, 0.0, 0.0, 1.0) ];<br>  animation.duration = 0.25;<br>  animation.cumulative = YES;<br>  animation.repeatCount = MAXFLOAT;</p>
+<p>  return animation;<br>}</p>
 </li>
-</ol>
+</ul>
+<p>#pragma mark - DZNEmptyDataSetDelegate<br>#pragma mark 是否开启动画</p>
+<ul>
+<li>(BOOL)emptyDataSetShouldAnimateImageView:(UIScrollView *)scrollView {<br>  return self.isLoading;<br>}</li>
+</ul>
+<p>#pragma mark 空白页面被点击时刷新页面</p>
+</code><ul><code class="language-objective-c">
+</code><li><code class="language-objective-c">(void)emptyDataSet:(UIScrollView *)scrollView didTapView:(UIView *)view {<br>  // 空白页面被点击时开启动画，reloadEmptyDataSet<br>  self.loading = YES;<br>  // 执行加载任务…<br>  dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{<pre><code>  &amp;#x2F;&amp;#x2F; 任务加载完成后关闭动画，reloadEmptyDataSet
+  self.loading &amp;#x3D; NO;</code></pre>
+  });<br>}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code>:hexoPostRenderEscape–&gt;</li>
+</ul>
 <hr>
 <ul>
-<li>此外，你还可以调整内容视图的<strong>垂直对齐</strong>（垂直偏移量）方式：</li>
+<li> 此外，你还可以调整内容视图的<strong>垂直对齐</strong>（垂直偏移量）方式：</li>
 </ul>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">// 向上偏移量为表头视图高度/2</span><br><span class="line">- (CGFloat)verticalOffsetForEmptyDataSet:(UIScrollView *)scrollView {</span><br><span class="line">    return -self.tableView.tableHeaderView.frame.size.height/2.0f;</span><br><span class="line">}</span><br><span class="line">// 或者，返回固定值</span><br><span class="line">- (CGFloat)verticalOffsetForEmptyDataSet:(UIScrollView *)scrollView {</span><br><span class="line">    return -64;</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">// 向上偏移量为表头视图高度/2
+- (CGFloat)verticalOffsetForEmptyDataSet:(UIScrollView *)scrollView {
+    return -self.tableView.tableHeaderView.frame.size.height/2.0f;
+}
+// 或者，返回固定值
+- (CGFloat)verticalOffsetForEmptyDataSet:(UIScrollView *)scrollView {
+    return -64;
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>效果图：</p>
 <p><img data-src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071607.jpg"></p>
@@ -618,7 +813,9 @@
 <ul>
 <li>最后，你也可以<strong>设置所有组件彼此之间的上下间距</strong>（默认间距为 11 pt）：</li>
 </ul>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">- (CGFloat)spaceHeightForEmptyDataSet:(UIScrollView *)scrollView {</span><br><span class="line">    return 25.0f;</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-none"><code class="language-none">- (CGFloat)spaceHeightForEmptyDataSet:(UIScrollView *)scrollView {
+    return 25.0f;
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
 
 <p>效果图：</p>
 <p><img data-src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071607-1.jpg"></p>
@@ -626,91 +823,107 @@
 <h3 id="实现代理协议"><a href="#实现代理协议" class="headerlink" title="实现代理协议"></a>实现代理协议</h3><h3 id="DZNEmptyDataSetDelegate-——实现该协议，可以设置你期望从空白页面返回的的行为，并接收用户交互事件。"><a href="#DZNEmptyDataSetDelegate-——实现该协议，可以设置你期望从空白页面返回的的行为，并接收用户交互事件。" class="headerlink" title="DZNEmptyDataSetDelegate ——实现该协议，可以设置你期望从空白页面返回的的行为，并接收用户交互事件。"></a>DZNEmptyDataSetDelegate —— 实现该协议，可以设置你期望从空白页面返回的的行为，并接收用户交互事件。</h3><ul>
 <li>设置是否 <strong>渲染和显示空白页面</strong>（默认为 **<em>YES**</em>）：</li>
 </ul>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">- (BOOL)emptyDataSetShouldDisplay:(UIScrollView *)scrollView {</span><br><span class="line">    return YES;</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">- (BOOL)emptyDataSetShouldDisplay:(UIScrollView *)scrollView {
+    return YES;
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
 
 
 
 <ul>
 <li>设置是否 <strong>以淡入方式显示空白页面</strong> 。 (默认值为 **<em>YES**</em>)</li>
 </ul>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">- (BOOL)emptyDataSetShouldFadeIn:(UIScrollView *)scrollView { </span><br><span class="line">    return YES;</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">- (BOOL)emptyDataSetShouldFadeIn:(UIScrollView *)scrollView { 
+    return YES;
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
 
 
 
 <ul>
 <li><strong>强制显示空数据集</strong>：当项目数量大于 0 时，请求代理是否仍应显示空数据集。（默认值为 **<em>NO**</em>）</li>
 </ul>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">- (BOOL)emptyDataSetShouldBeForcedToDisplay:(UIScrollView *)scrollView;</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-none"><code class="language-none">- (BOOL)emptyDataSetShouldBeForcedToDisplay:(UIScrollView *)scrollView;<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 
 
 
 <ul>
 <li><strong>获取交互权限</strong>: 是否接收用户点击事件（默认为 **<em>YES**</em>）：</li>
 </ul>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">- (BOOL)emptyDataSetShouldAllowTouch:(UIScrollView *)scrollView {</span><br><span class="line">    // 如果正在加载中，则不响应用户交互。</span><br><span class="line">    return !self.isLoading;</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-none"><code class="language-none">- (BOOL)emptyDataSetShouldAllowTouch:(UIScrollView *)scrollView {
+    // 如果正在加载中，则不响应用户交互。
+    return !self.isLoading;
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
 
 
 
 <ul>
 <li><strong>获取滚动权限</strong>（默认值为 **<em>NO**</em>）：</li>
 </ul>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">- (BOOL)emptyDataSetShouldAllowScroll:(UIScrollView *)scrollView;</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-none"><code class="language-none">- (BOOL)emptyDataSetShouldAllowScroll:(UIScrollView *)scrollView;<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 
 
 
 <ul>
 <li><strong>获取图像动画权限</strong>：是否开启图片动画（默认值为 **<em>NO**</em>）：</li>
 </ul>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">- (BOOL)emptyDataSetShouldAnimateImageView:(UIScrollView *)scrollView {</span><br><span class="line">    return YES;</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-none"><code class="language-none">- (BOOL)emptyDataSetShouldAnimateImageView:(UIScrollView *)scrollView {
+    return YES;
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
 
 
 <ul>
 <li>空白数据集 <strong>视图被点击</strong> 时触发该方法：</li>
 </ul>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">- (void)emptyDataSet:(UIScrollView *)scrollView didTapView:(UIView *)view {</span><br><span class="line">    // 处理视图点击事件...</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">- (void)emptyDataSet:(UIScrollView *)scrollView didTapView:(UIView *)view {
+    // 处理视图点击事件...
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
 
 
 
 <ul>
 <li>空白数据集 <strong>按钮被点击时</strong> 触发该方法：</li>
 </ul>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">- (void)emptyDataSet:(UIScrollView *)scrollView didTapButton:(UIButton *)button {</span><br><span class="line">    // 处理按钮点击事件...</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">- (void)emptyDataSet:(UIScrollView *)scrollView didTapButton:(UIButton *)button {
+    // 处理按钮点击事件...
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
 
 
 
 <ul>
 <li>空白页将要出现 </li>
 </ul>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">- (void)emptyDataSetWillAppear:(UIScrollView *)scrollView {</span><br><span class="line">  // 如果你的空白占位图与需求向左，发生偏移，可如下设置：</span><br><span class="line">  self.tableView.contentOffset = CGPointZero;</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">- (void)emptyDataSetWillAppear:(UIScrollView *)scrollView {
+  // 如果你的空白占位图与需求向左，发生偏移，可如下设置：
+  self.tableView.contentOffset = CGPointZero;
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
 
 
 
 <ul>
 <li>空白页已经出现 </li>
 </ul>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">- (void)emptyDataSetDidAppear:(UIScrollView *)scrollView;</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">- (void)emptyDataSetDidAppear:(UIScrollView *)scrollView;<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 
 
 
 <ul>
 <li>空白页将要消失 </li>
 </ul>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">- (void)emptyDataSetWillDisappear:(UIScrollView *)scrollView;</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">- (void)emptyDataSetWillDisappear:(UIScrollView *)scrollView;<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 
 
 
 <ul>
 <li>空白页已经消失 </li>
 </ul>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">- (void)emptyDataSetDidDisappear:(UIScrollView *)scrollView;</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">- (void)emptyDataSetDidDisappear:(UIScrollView *)scrollView;<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 
 
 
 <h3 id="刷新布局"><a href="#刷新布局" class="headerlink" title="刷新布局"></a>刷新布局</h3><p>如果你需要刷新空白页面布局，只需调用：</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[self.tableView reloadData];</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-none"><code class="language-none">[self.tableView reloadData];<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 
 <p>或者</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[self.collectionView reloadData];</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-none"><code class="language-none">[self.collectionView reloadData];<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 
 <p>这取决于你用的是哪一个。</p>
 <h3 id="强制布局更新"><a href="#强制布局更新" class="headerlink" title="强制布局更新"></a>强制布局更新</h3><p>你还可以调用  <code>[self.tableView reloadEmptyDataSet]</code> 以使当前空白页面布局无效，并触发布局更新，绕过 <code>-reloadData</code>。 如果你的数据源上有很多逻辑处理，当你不需要或者想避免调用 <code>-reloadData</code> 时这可能很有用。 当使用 <strong>UIScrollView</strong> 时，  <code>[self.scrollView reloadEmptyDataSet]</code> 是刷新内容的唯一方法。</p>
@@ -838,12 +1051,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">2.1m</span>
+    <span title="站点总字数">2.3m</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">31:21</span>
+    <span title="站点阅读时长">34:09</span>
 </div>
   <div class="powered-by">由 <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZw==">NexT.Gemini</span> 强力驱动
   </div>

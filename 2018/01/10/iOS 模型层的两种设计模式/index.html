@@ -380,7 +380,7 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>5.7k</span>
+              <span>5.4k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -406,10 +406,79 @@
 <li>使用生成器模式；</li>
 </ul>
 <h3 id="一、自定义初始化器"><a href="#一、自定义初始化器" class="headerlink" title="一、自定义初始化器"></a>一、自定义初始化器</h3><p>这是设计模型层的常用方式。</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br></pre></td><td class="code"><pre><span class="line">// ---------------------------------------------------</span><br><span class="line">//  HQLUser.h</span><br><span class="line">// ---------------------------------------------------</span><br><span class="line">#import &lt;Foundation/Foundation.h&gt;</span><br><span class="line"></span><br><span class="line">@interface HQLUser : NSObject</span><br><span class="line"></span><br><span class="line">// 属性的设置：向外层暴露的属性尽量设置为不可变(immutable)、只读（readonly） </span><br><span class="line">@property (nonatomic, copy, readonly) NSString *userID;</span><br><span class="line">@property (nonatomic, copy, readonly) NSString *firstName;</span><br><span class="line">@property (nonatomic, copy, readonly) NSString *lastName;</span><br><span class="line">@property (nonatomic, copy, readonly) NSString *gender;</span><br><span class="line">@property (nonatomic, copy, readonly) NSDate *dateOfBirth;</span><br><span class="line">@property (nonatomic, copy, readonly) NSArray *albums;</span><br><span class="line"></span><br><span class="line">// 指定初始化方法</span><br><span class="line">- (instancetype)initWithUserID:(NSString *)userID</span><br><span class="line">                     firstName:(NSString *)firstName</span><br><span class="line">                      lastName:(NSString *)lastName</span><br><span class="line">                        gender:(NSString *)gender</span><br><span class="line">                   dateOfBirth:(NSDate *)dateOfBirth</span><br><span class="line">                        albums:(NSArray *)albums;</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">// ---------------------------------------------------</span><br><span class="line">//  HQLUser.m</span><br><span class="line">// ---------------------------------------------------</span><br><span class="line">#import "HQLUser.h"</span><br><span class="line"></span><br><span class="line">@interface HQLUser ()</span><br><span class="line"></span><br><span class="line">// 在内部将属性重新封装为 readwrite，这样属性在内部就是可读可写的。</span><br><span class="line">@property (nonatomic, copy, readwrite) NSString *userID;</span><br><span class="line">@property (nonatomic, copy, readwrite) NSString *firstName;</span><br><span class="line">@property (nonatomic, copy, readwrite) NSString *lastName;</span><br><span class="line">@property (nonatomic, copy, readwrite) NSString *gender;</span><br><span class="line">@property (nonatomic, copy, readwrite) NSDate *dateOfBirth;</span><br><span class="line">@property (nonatomic, copy, readwrite) NSArray *albums;</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">@implementation HQLUser</span><br><span class="line"></span><br><span class="line">- (instancetype)initWithUserID:(NSString *)userID</span><br><span class="line">                     firstName:(NSString *)firstName</span><br><span class="line">                      lastName:(NSString *)lastName</span><br><span class="line">                        gender:(NSString *)gender</span><br><span class="line">                   dateOfBirth:(NSDate *)dateOfBirth</span><br><span class="line">                        albums:(NSArray *)albums {</span><br><span class="line">    if (self = [super init]) {</span><br><span class="line">        _userID      = [userID copy];</span><br><span class="line">        _firstName   = [firstName copy];</span><br><span class="line">        _lastName    = [lastName copy];</span><br><span class="line">        _gender      = [gender copy];</span><br><span class="line">        _dateOfBirth = dateOfBirth;</span><br><span class="line">        _albums      = [albums copy];</span><br><span class="line">    }</span><br><span class="line">    return self;</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">- (instancetype)init {</span><br><span class="line">    @throw [NSException exceptionWithName:@"Method Undefined"</span><br><span class="line">                                   reason:@"Use Designated Initializer Method"</span><br><span class="line">                                 userInfo:nil];</span><br><span class="line">    return nil;</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">// ---------------------------------------------------
+//  HQLUser.h
+// ---------------------------------------------------
+#import &lt;Foundation/Foundation.h&gt;
+
+@interface HQLUser : NSObject
+
+// 属性的设置：向外层暴露的属性尽量设置为不可变(immutable)、只读（readonly） 
+@property (nonatomic, copy, readonly) NSString *userID;
+@property (nonatomic, copy, readonly) NSString *firstName;
+@property (nonatomic, copy, readonly) NSString *lastName;
+@property (nonatomic, copy, readonly) NSString *gender;
+@property (nonatomic, copy, readonly) NSDate *dateOfBirth;
+@property (nonatomic, copy, readonly) NSArray *albums;
+
+// 指定初始化方法
+- (instancetype)initWithUserID:(NSString *)userID
+                     firstName:(NSString *)firstName
+                      lastName:(NSString *)lastName
+                        gender:(NSString *)gender
+                   dateOfBirth:(NSDate *)dateOfBirth
+                        albums:(NSArray *)albums;
+
+@end
+
+// ---------------------------------------------------
+//  HQLUser.m
+// ---------------------------------------------------
+#import "HQLUser.h"
+
+@interface HQLUser ()
+
+// 在内部将属性重新封装为 readwrite，这样属性在内部就是可读可写的。
+@property (nonatomic, copy, readwrite) NSString *userID;
+@property (nonatomic, copy, readwrite) NSString *firstName;
+@property (nonatomic, copy, readwrite) NSString *lastName;
+@property (nonatomic, copy, readwrite) NSString *gender;
+@property (nonatomic, copy, readwrite) NSDate *dateOfBirth;
+@property (nonatomic, copy, readwrite) NSArray *albums;
+
+@end
+
+@implementation HQLUser
+
+- (instancetype)initWithUserID:(NSString *)userID
+                     firstName:(NSString *)firstName
+                      lastName:(NSString *)lastName
+                        gender:(NSString *)gender
+                   dateOfBirth:(NSDate *)dateOfBirth
+                        albums:(NSArray *)albums {
+    if (self = [super init]) {
+        _userID      = [userID copy];
+        _firstName   = [firstName copy];
+        _lastName    = [lastName copy];
+        _gender      = [gender copy];
+        _dateOfBirth = dateOfBirth;
+        _albums      = [albums copy];
+    }
+    return self;
+}
+
+- (instancetype)init {
+    @throw [NSException exceptionWithName:@"Method Undefined"
+                                   reason:@"Use Designated Initializer Method"
+                                 userInfo:nil];
+    return nil;
+}
+
+@end<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>调用如下：</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">// 使用自定义的初始化器    </span><br><span class="line">HQLUser *user = [[HQLUser alloc] initWithUserID:@"1214138" firstName:@"Hello" lastName:@"Kitty" gender:@"man" dateOfBirth:[NSDate date] albums:[NSArray array]];</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">// 使用自定义的初始化器    
+HQLUser *user = [[HQLUser alloc] initWithUserID:@"1214138" firstName:@"Hello" lastName:@"Kitty" gender:@"man" dateOfBirth:[NSDate date] albums:[NSArray array]];<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 
 <blockquote>
 <p>💡<br>指定初始化方法和非指定初始化方法可以用宏来进行标记：</p>
@@ -424,10 +493,103 @@
 <li>向下兼容问题：如果新增一个属性，就需要重构指定初始化方法，因此，新版模型无法实现向下兼容；</li>
 </ol>
 <h3 id="二、生成器模式"><a href="#二、生成器模式" class="headerlink" title="二、生成器模式"></a>二、生成器模式</h3><p> 需要引入外部类进行管理。生成器有 setter 方法，也需要提供与模型数据完全一致的存储。生成器最终也会使用初始化器。</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br></pre></td><td class="code"><pre><span class="line">// ---------------------------------------------------</span><br><span class="line">//  HPUser.h</span><br><span class="line">// ---------------------------------------------------</span><br><span class="line"></span><br><span class="line">#import &lt;Foundation/Foundation.h&gt;</span><br><span class="line"></span><br><span class="line">@class HPUserBuilder;</span><br><span class="line">@class HPUser;</span><br><span class="line"></span><br><span class="line">typedef void(^HPUserBuilderBlock)(HPUserBuilder *builder);</span><br><span class="line"></span><br><span class="line">@interface HPUserBuilder : NSObject</span><br><span class="line"></span><br><span class="line">@property (nonatomic, copy) NSString *username;</span><br><span class="line">@property (nonatomic, copy) NSString *gender;</span><br><span class="line">@property (nonatomic, copy) NSDate *dateOfBirth;</span><br><span class="line"></span><br><span class="line">- (HPUser *)build;</span><br><span class="line">- (HPUserBuilder *)username:(NSString *)username;</span><br><span class="line">- (HPUserBuilder *)gender:(NSString *)gender;</span><br><span class="line">- (HPUserBuilder *)dateOfBirth:(NSDate *)dateOfBirth;</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">@interface HPUser : NSObject</span><br><span class="line"></span><br><span class="line">@property (nonatomic, copy) NSString *username;</span><br><span class="line">@property (nonatomic, copy) NSString *gender;</span><br><span class="line">@property (nonatomic, copy) NSDate *dateOfBirth;</span><br><span class="line"></span><br><span class="line">- (instancetype)initWithBuilder:(HPUserBuilder *)builder;</span><br><span class="line">- (instancetype)initWithBlock:(HPUserBuilderBlock)block;</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">// ---------------------------------------------------</span><br><span class="line">//  HPUser.m</span><br><span class="line">// ---------------------------------------------------</span><br><span class="line"></span><br><span class="line">#import "HPUser.h"</span><br><span class="line"></span><br><span class="line">@implementation HPUserBuilder</span><br><span class="line"></span><br><span class="line">- (HPUser *)build {</span><br><span class="line">    // 构造器的初始化方法，调用的还是模型层的指定初始化方法</span><br><span class="line">    return [[HPUser alloc] initWithBuilder:self];</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">- (HPUserBuilder *)username:(NSString *)username {</span><br><span class="line">    _username = [username copy];</span><br><span class="line">    return self;</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">- (HPUserBuilder *)gender:(NSString *)gender {</span><br><span class="line">    _gender = [gender copy];</span><br><span class="line">    return self;</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">- (HPUserBuilder *)dateOfBirth:(NSDate *)dateOfBirth {</span><br><span class="line">    _dateOfBirth = dateOfBirth;</span><br><span class="line">    return self;</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">@implementation HPUser</span><br><span class="line"></span><br><span class="line">// 指定初始化方法</span><br><span class="line">- (instancetype)initWithBuilder:(HPUserBuilder *)builder {</span><br><span class="line">    if (self = [super init]) {</span><br><span class="line">        _username = builder.username;</span><br><span class="line">        _gender = builder.gender;</span><br><span class="line">        _dateOfBirth = builder.dateOfBirth;</span><br><span class="line">    }</span><br><span class="line">    return self;</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">- (instancetype)initWithBlock:(HPUserBuilderBlock)block {</span><br><span class="line">    HPUserBuilder *builder = [[HPUserBuilder alloc] init];</span><br><span class="line">    block(builder);</span><br><span class="line">    // 返回的是构造器的初始化方法</span><br><span class="line">    return [builder build];</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">// ---------------------------------------------------
+//  HPUser.h
+// ---------------------------------------------------
+
+#import &lt;Foundation/Foundation.h&gt;
+
+@class HPUserBuilder;
+@class HPUser;
+
+typedef void(^HPUserBuilderBlock)(HPUserBuilder *builder);
+
+@interface HPUserBuilder : NSObject
+
+@property (nonatomic, copy) NSString *username;
+@property (nonatomic, copy) NSString *gender;
+@property (nonatomic, copy) NSDate *dateOfBirth;
+
+- (HPUser *)build;
+- (HPUserBuilder *)username:(NSString *)username;
+- (HPUserBuilder *)gender:(NSString *)gender;
+- (HPUserBuilder *)dateOfBirth:(NSDate *)dateOfBirth;
+
+@end
+
+@interface HPUser : NSObject
+
+@property (nonatomic, copy) NSString *username;
+@property (nonatomic, copy) NSString *gender;
+@property (nonatomic, copy) NSDate *dateOfBirth;
+
+- (instancetype)initWithBuilder:(HPUserBuilder *)builder;
+- (instancetype)initWithBlock:(HPUserBuilderBlock)block;
+
+@end
+
+// ---------------------------------------------------
+//  HPUser.m
+// ---------------------------------------------------
+
+#import "HPUser.h"
+
+@implementation HPUserBuilder
+
+- (HPUser *)build {
+    // 构造器的初始化方法，调用的还是模型层的指定初始化方法
+    return [[HPUser alloc] initWithBuilder:self];
+}
+
+- (HPUserBuilder *)username:(NSString *)username {
+    _username = [username copy];
+    return self;
+}
+
+- (HPUserBuilder *)gender:(NSString *)gender {
+    _gender = [gender copy];
+    return self;
+}
+
+- (HPUserBuilder *)dateOfBirth:(NSDate *)dateOfBirth {
+    _dateOfBirth = dateOfBirth;
+    return self;
+}
+
+@end
+
+@implementation HPUser
+
+// 指定初始化方法
+- (instancetype)initWithBuilder:(HPUserBuilder *)builder {
+    if (self = [super init]) {
+        _username = builder.username;
+        _gender = builder.gender;
+        _dateOfBirth = builder.dateOfBirth;
+    }
+    return self;
+}
+
+- (instancetype)initWithBlock:(HPUserBuilderBlock)block {
+    HPUserBuilder *builder = [[HPUserBuilder alloc] init];
+    block(builder);
+    // 返回的是构造器的初始化方法
+    return [builder build];
+}
+
+@end<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>生产器模式解决了自定义初始化方法的两个缺点，它的方法名不会很长、也解决了向下的兼容性问题，调用如下：</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">// 1</span><br><span class="line">HPUserBuilder *builder = [[[[[HPUserBuilder alloc] init] username:@"username"] gender:@"man"] dateOfBirth:[NSDate date]];</span><br><span class="line">HPUser *usr = [[HPUser alloc] initWithBuilder:builder];</span><br><span class="line"></span><br><span class="line">// 2</span><br><span class="line">HPUser *user = [[HPUser alloc] initWithBlock:^(HPUserBuilder *builder) {</span><br><span class="line">    builder.username    = @"username";</span><br><span class="line">    builder.gender      = @"man";</span><br><span class="line">    builder.dateOfBirth = [NSDate date];</span><br><span class="line">}];</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">// 1
+HPUserBuilder *builder = [[[[[HPUserBuilder alloc] init] username:@"username"] gender:@"man"] dateOfBirth:[NSDate date]];
+HPUser *usr = [[HPUser alloc] initWithBuilder:builder];
+
+// 2
+HPUser *user = [[HPUser alloc] initWithBlock:^(HPUserBuilder *builder) {
+    builder.username    = @"username";
+    builder.gender      = @"man";
+    builder.dateOfBirth = [NSDate date];
+}];<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p><strong>生成器模式</strong> 其实就是在普通的 Model 层之上又封装了一个中间层，这个中间类的属性和 Model 层是一样的。<strong>本质上到最后还是要去调用 Model 层的指定初始化方法</strong>。</p>
 <p>使用指南：</p>
@@ -563,12 +725,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">2.1m</span>
+    <span title="站点总字数">2.3m</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">31:21</span>
+    <span title="站点阅读时长">34:09</span>
 </div>
   <div class="powered-by">由 <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZw==">NexT.Gemini</span> 强力驱动
   </div>

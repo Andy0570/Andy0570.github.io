@@ -410,10 +410,37 @@
 
 
 <h3 id="NSURLSessionConfiguration"><a href="#NSURLSessionConfiguration" class="headerlink" title="NSURLSessionConfiguration"></a>NSURLSessionConfiguration</h3><p>创建 <strong>NSURLSessionConfiguration</strong> 对象的三种方式：</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">// 默认会话配置</span><br><span class="line">NSURLSessionConfiguration *defaultConfig = [NSURLSessionConfiguration defaultSessionConfiguration];</span><br><span class="line"></span><br><span class="line">// 短暂会话配置,无缓存(caches),cookies,证书(credentials)</span><br><span class="line">NSURLSessionConfiguration *ephemeralConfig = [NSURLSessionConfiguration ephemeralSessionConfiguration];</span><br><span class="line"></span><br><span class="line">// 后台会话配置</span><br><span class="line">NSURLSessionConfiguration *backgroundConfig = [NSURLSessionConfiguration backgroundSessionConfigurationWithIdentifier:@"com.Apple.BackgroundDownload.BackgroundSession"];</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">// 默认会话配置
+NSURLSessionConfiguration *defaultConfig = [NSURLSessionConfiguration defaultSessionConfiguration];
+
+// 短暂会话配置,无缓存(caches),cookies,证书(credentials)
+NSURLSessionConfiguration *ephemeralConfig = [NSURLSessionConfiguration ephemeralSessionConfiguration];
+
+// 后台会话配置
+NSURLSessionConfiguration *backgroundConfig = [NSURLSessionConfiguration backgroundSessionConfigurationWithIdentifier:@"com.Apple.BackgroundDownload.BackgroundSession"];<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <h3 id="NSURLSession"><a href="#NSURLSession" class="headerlink" title="NSURLSession"></a>NSURLSession</h3><p>创建 <strong>NSURLSession</strong> 对象的三种方式：</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">// 1. 单例类会话,便捷创建方法</span><br><span class="line">NSURLSession *sharedSession = [NSURLSession sharedSession];</span><br><span class="line"></span><br><span class="line">// 2. sessionWithConfiguration:</span><br><span class="line">// 一般用 Block 处理服务器回调时使用</span><br><span class="line">// 默认会话</span><br><span class="line">NSURLSession *defaultSession = [NSURLSession sessionWithConfiguration:defaultConfig];</span><br><span class="line">// 短暂会话</span><br><span class="line">NSURLSession *ephemeralSesson = [NSURLSession sessionWithConfiguration:ephemeralConfig];</span><br><span class="line">// 后台会话</span><br><span class="line">NSURLSession *backgroundSession = [NSURLSession sessionWithConfiguration:backgroundConfig];</span><br><span class="line"></span><br><span class="line">// 3. sessionWithConfiguration:delegate:delegateQueue:</span><br><span class="line">// 需要实现委托协议或者指定线程的创建方法</span><br><span class="line">NSOperationQueue *operationQueue = [NSOperationQueue mainQueue];</span><br><span class="line">// 默认会话</span><br><span class="line">NSURLSession *defalutSession1 = [NSURLSession sessionWithConfiguration:defaultConfig delegate:self delegateQueue:operationQueue];</span><br><span class="line">// 短暂会话</span><br><span class="line">NSURLSession *ephemeralSesson1 = [NSURLSession sessionWithConfiguration:ephemeralConfig delegate:self delegateQueue:operationQueue];</span><br><span class="line">// 后台会话</span><br><span class="line">NSURLSession *backgroundSession1 = [NSURLSession sessionWithConfiguration:backgroundConfig delegate:self delegateQueue:operationQueue];</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">// 1. 单例类会话,便捷创建方法
+NSURLSession *sharedSession = [NSURLSession sharedSession];
+
+// 2. sessionWithConfiguration:
+// 一般用 Block 处理服务器回调时使用
+// 默认会话
+NSURLSession *defaultSession = [NSURLSession sessionWithConfiguration:defaultConfig];
+// 短暂会话
+NSURLSession *ephemeralSesson = [NSURLSession sessionWithConfiguration:ephemeralConfig];
+// 后台会话
+NSURLSession *backgroundSession = [NSURLSession sessionWithConfiguration:backgroundConfig];
+
+// 3. sessionWithConfiguration:delegate:delegateQueue:
+// 需要实现委托协议或者指定线程的创建方法
+NSOperationQueue *operationQueue = [NSOperationQueue mainQueue];
+// 默认会话
+NSURLSession *defalutSession1 = [NSURLSession sessionWithConfiguration:defaultConfig delegate:self delegateQueue:operationQueue];
+// 短暂会话
+NSURLSession *ephemeralSesson1 = [NSURLSession sessionWithConfiguration:ephemeralConfig delegate:self delegateQueue:operationQueue];
+// 后台会话
+NSURLSession *backgroundSession1 = [NSURLSession sessionWithConfiguration:backgroundConfig delegate:self delegateQueue:operationQueue];<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <h4 id="NSURLSessionTask"><a href="#NSURLSessionTask" class="headerlink" title="NSURLSessionTask"></a>NSURLSessionTask</h4><p>⚠️ 创建 <strong>NSURLSessionTask</strong> 对象有四种种方式：</p>
 <blockquote>
@@ -427,11 +454,259 @@
 <p><img data-src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071444.jpg"></p>
 <h4 id="NSURLSessionDelegate-委托协议"><a href="#NSURLSessionDelegate-委托协议" class="headerlink" title="NSURLSessionDelegate 委托协议"></a>NSURLSessionDelegate 委托协议</h4><p><img data-src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071445.jpg"></p>
 <p>示例 Demo</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br></pre></td><td class="code"><pre><span class="line">// *************************************************</span><br><span class="line">// SCViewController.h</span><br><span class="line">#import &lt;UIKit/UIKit.h&gt;</span><br><span class="line"></span><br><span class="line">@interface SCViewController : UIViewController</span><br><span class="line"></span><br><span class="line">@property (strong, nonatomic) NSURLSessionDownloadTask *resumableTask;   // 可恢复任务</span><br><span class="line">@property (strong, nonatomic) NSURLSessionDownloadTask *backgroundTask;  // 后台任务</span><br><span class="line"></span><br><span class="line">@property (strong, nonatomic, readonly) NSURLSession *backgroundSession; // 后台会话</span><br><span class="line"></span><br><span class="line">@property (weak, nonatomic) IBOutlet UIImageView *imageView;</span><br><span class="line">@property (weak, nonatomic) IBOutlet UIProgressView *progressIndicator;</span><br><span class="line">@property (strong, nonatomic) IBOutletCollection(UIBarButtonItem) NSArray *startButtons;</span><br><span class="line"></span><br><span class="line">- (IBAction)startCancellable:(id)sender;  // 开始任务</span><br><span class="line">- (IBAction)cancelCancellable:(id)sender; // 取消任务</span><br><span class="line">- (IBAction)startResumable:(id)sender;    // 恢复任务</span><br><span class="line">- (IBAction)startBackground:(id)sender;   // 后台任务</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">// *************************************************</span><br><span class="line">// SCViewController.m</span><br><span class="line">#import "SCViewController.h"</span><br><span class="line">#import "SCAppDelegate.h"</span><br><span class="line"></span><br><span class="line">@interface SCViewController () &lt;NSURLSessionDownloadDelegate&gt; {</span><br><span class="line">    NSURLSessionDownloadTask *cancellableTask; // 可取消任务</span><br><span class="line">    NSURLSession *inProcessSession; // 私有会话</span><br><span class="line">    NSData *partialDownload; // 后台下载临时数据</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">@implementation SCViewController</span><br><span class="line"></span><br><span class="line">#pragma mark - Lifecycle</span><br><span class="line">- (void)viewDidLoad</span><br><span class="line">{</span><br><span class="line">    [super viewDidLoad];</span><br><span class="line">    // 从 nib 文件加载视图后，进行额外的初始化工作</span><br><span class="line">    self.progressIndicator.hidden = YES;</span><br><span class="line">    self.progressIndicator.progress = 0;</span><br><span class="line">    </span><br><span class="line">    // Make sure that we've attached to the background session</span><br><span class="line">    self.backgroundSession.sessionDescription = @"Background session";</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">#pragma mark - Custom Accessors</span><br><span class="line">// 后台会话，单例类</span><br><span class="line">- (NSURLSession *)backgroundSession</span><br><span class="line">{</span><br><span class="line">    static NSURLSession *backgroundSession = nil;</span><br><span class="line">    static dispatch_once_t onceToken;</span><br><span class="line">    dispatch_once(&amp;onceToken, ^{</span><br><span class="line">        NSURLSessionConfiguration *config = [NSURLSessionConfiguration backgroundSessionConfigurationWithIdentifier:@"com.shinobicontrols.BackgroundDownload.BackgroundSession"];</span><br><span class="line">        backgroundSession = [NSURLSession sessionWithConfiguration:config</span><br><span class="line">                                                          delegate:self</span><br><span class="line">                                                     delegateQueue:nil];</span><br><span class="line">    });</span><br><span class="line">    return backgroundSession;</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">#pragma mark - IBActions</span><br><span class="line">// 开始任务</span><br><span class="line">- (IBAction)startCancellable:(id)sender {</span><br><span class="line">    if (!cancellableTask) {</span><br><span class="line">        if(!inProcessSession) {</span><br><span class="line">            // 创建默认会话</span><br><span class="line">            NSURLSessionConfiguration *sessionConfig = [NSURLSessionConfiguration defaultSessionConfiguration];</span><br><span class="line">            inProcessSession = [NSURLSession sessionWithConfiguration:sessionConfig</span><br><span class="line">                                                             delegate:self</span><br><span class="line">                                                        delegateQueue:nil];</span><br><span class="line">            inProcessSession.sessionDescription = @"in-process NSURLSession";</span><br><span class="line">        }</span><br><span class="line">        </span><br><span class="line">        // Image CreativeCommons courtesy of flickr.com/charliematters</span><br><span class="line">        NSString *url = @"http://farm6.staticflickr.com/5505/9824098016_0e28a047c2_b_d.jpg";</span><br><span class="line">        NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:url]];</span><br><span class="line">        </span><br><span class="line">        // 创建可取消任务</span><br><span class="line">        cancellableTask = [inProcessSession downloadTaskWithRequest:request];</span><br><span class="line">        </span><br><span class="line">        [self setDownloadButtonsAsEnabled:NO];</span><br><span class="line">        self.imageView.hidden = YES;</span><br><span class="line">        </span><br><span class="line">        // 开启下载任务</span><br><span class="line">        [cancellableTask resume];</span><br><span class="line">    }</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">// 取消任务</span><br><span class="line">- (IBAction)cancelCancellable:(id)sender {</span><br><span class="line">    if(cancellableTask) {</span><br><span class="line">        // 1. 可取消任务</span><br><span class="line">        [cancellableTask cancel];</span><br><span class="line">        cancellableTask = nil;</span><br><span class="line">    } else if(self.resumableTask) {</span><br><span class="line">        // 2. 可恢复任务</span><br><span class="line">        [self.resumableTask cancelByProducingResumeData:^(NSData *resumeData) {</span><br><span class="line">            // ❇️ 缓存已下载数据</span><br><span class="line">            partialDownload = resumeData;</span><br><span class="line">            self.resumableTask = nil;</span><br><span class="line">        }];</span><br><span class="line">    } else if(self.backgroundTask) {</span><br><span class="line">        // 3. 后台任务</span><br><span class="line">        [self.backgroundTask cancel];</span><br><span class="line">        self.backgroundTask = nil;</span><br><span class="line">    }</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">// 恢复任务</span><br><span class="line">- (IBAction)startResumable:(id)sender {</span><br><span class="line">    if(!self.resumableTask) {</span><br><span class="line">        if(!inProcessSession) {</span><br><span class="line">            // 创建默认会话</span><br><span class="line">            NSURLSessionConfiguration *sessionConfig = [NSURLSessionConfiguration defaultSessionConfiguration];</span><br><span class="line">            inProcessSession = [NSURLSession sessionWithConfiguration:sessionConfig delegate:self delegateQueue:nil];</span><br><span class="line">            inProcessSession.sessionDescription = @"in-process NSURLSession";</span><br><span class="line">        }</span><br><span class="line">        </span><br><span class="line">        if(partialDownload) {</span><br><span class="line">            // 1. 如果存在缓存数据，继续下载此任务</span><br><span class="line">            self.resumableTask = [inProcessSession downloadTaskWithResumeData:partialDownload];</span><br><span class="line">        } else {</span><br><span class="line">            // 2. 如果不存在缓存，新建可恢复任务</span><br><span class="line">            // Image CreativeCommons courtesy of flickr.com/charliematters</span><br><span class="line">            NSString *url = @"http://farm3.staticflickr.com/2846/9823925914_78cd653ac9_b_d.jpg";</span><br><span class="line">            NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:url]];</span><br><span class="line">            // 创建可恢复任务</span><br><span class="line">            self.resumableTask = [inProcessSession downloadTaskWithRequest:request];</span><br><span class="line">        }</span><br><span class="line">        </span><br><span class="line">        [self setDownloadButtonsAsEnabled:NO];</span><br><span class="line">        self.imageView.hidden = YES;</span><br><span class="line">        </span><br><span class="line">        // 开启下载任务</span><br><span class="line">        [self.resumableTask resume];</span><br><span class="line">    }</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">// 开始后台任务</span><br><span class="line">- (IBAction)startBackground:(id)sender {</span><br><span class="line">    // Image CreativeCommons courtesy of flickr.com/charliematters</span><br><span class="line">    NSString *url = @"http://farm3.staticflickr.com/2831/9823890176_82b4165653_b_d.jpg";</span><br><span class="line">    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:url]];</span><br><span class="line">    </span><br><span class="line">    // self.backgroundSession 是单例对象</span><br><span class="line">    self.backgroundTask = [self.backgroundSession downloadTaskWithRequest:request];</span><br><span class="line">    </span><br><span class="line">    [self setDownloadButtonsAsEnabled:NO];</span><br><span class="line">    self.imageView.hidden = YES;</span><br><span class="line">    </span><br><span class="line">    // 开启下载任务</span><br><span class="line">    [self.backgroundTask resume];</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">#pragma mark - Private</span><br><span class="line">- (void)setDownloadButtonsAsEnabled:(BOOL)enabled</span><br><span class="line">{</span><br><span class="line">    // 更新按钮 enable 状态</span><br><span class="line">    for(UIBarButtonItem *btn in self.startButtons) {</span><br><span class="line">        btn.enabled = enabled;</span><br><span class="line">    }</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">#pragma mark - NSURLSessionDownloadDelegate</span><br><span class="line"></span><br><span class="line">// 追踪下载任务进度，更新进度条</span><br><span class="line">- (void)URLSession:(NSURLSession *)session downloadTask:(NSURLSessionDownloadTask *)downloadTask didWriteData:(int64_t)bytesWritten totalBytesWritten:(int64_t)totalBytesWritten totalBytesExpectedToWrite:(int64_t)totalBytesExpectedToWrite</span><br><span class="line">{</span><br><span class="line">    double currentProgress = totalBytesWritten / (double)totalBytesExpectedToWrite;</span><br><span class="line">    dispatch_async(dispatch_get_main_queue(), ^{</span><br><span class="line">        self.progressIndicator.hidden = NO;</span><br><span class="line">        self.progressIndicator.progress = currentProgress;</span><br><span class="line">    });</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">// 恢复下载后调用</span><br><span class="line">- (void)URLSession:(NSURLSession *)session downloadTask:(NSURLSessionDownloadTask *)downloadTask didResumeAtOffset:(int64_t)fileOffset expectedTotalBytes:(int64_t)expectedTotalBytes</span><br><span class="line">{</span><br><span class="line">    // Leave this for now</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">// 下载任务成功后调用</span><br><span class="line">- (void)URLSession:(NSURLSession *)session downloadTask:(NSURLSessionDownloadTask *)downloadTask didFinishDownloadingToURL:(NSURL *)location</span><br><span class="line">{</span><br><span class="line">    // We've successfully finished the download. Let's save the file</span><br><span class="line">    // 保存到文件</span><br><span class="line">    NSFileManager *fileManager = [NSFileManager defaultManager];</span><br><span class="line">    </span><br><span class="line">    NSArray *URLs = [fileManager URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask];</span><br><span class="line">    NSURL *documentsDirectory = URLs[0];</span><br><span class="line">    </span><br><span class="line">    NSURL *destinationPath = [documentsDirectory URLByAppendingPathComponent:[location lastPathComponent]];</span><br><span class="line">    NSError *error;</span><br><span class="line">    </span><br><span class="line">    // 先删除文件中已经存在的任何文件</span><br><span class="line">    [fileManager removeItemAtURL:destinationPath error:NULL];</span><br><span class="line">    BOOL success = [fileManager copyItemAtURL:location toURL:destinationPath error:&amp;error];</span><br><span class="line">    </span><br><span class="line">    if (success) {</span><br><span class="line">        // 保存到文件后，更新主线程 UI</span><br><span class="line">        dispatch_async(dispatch_get_main_queue(), ^{</span><br><span class="line">            UIImage *image = [UIImage imageWithContentsOfFile:[destinationPath path]];</span><br><span class="line">            self.imageView.image = image;</span><br><span class="line">            self.imageView.contentMode = UIViewContentModeScaleAspectFill;</span><br><span class="line">            self.imageView.hidden = NO;</span><br><span class="line">        });</span><br><span class="line">    }else {</span><br><span class="line">        NSLog(@"Couldn't copy the downloaded file");</span><br><span class="line">    }</span><br><span class="line">    </span><br><span class="line">    // ❇️ 会话置空，解除循环引用</span><br><span class="line">    if(downloadTask == cancellableTask) {</span><br><span class="line">        cancellableTask = nil;</span><br><span class="line">    } else if (downloadTask == self.resumableTask) {</span><br><span class="line">        self.resumableTask = nil;</span><br><span class="line">        partialDownload = nil;</span><br><span class="line">    } else if (session == self.backgroundSession) {</span><br><span class="line">        // 后台会话</span><br><span class="line">        self.backgroundTask = nil;</span><br><span class="line">        // Get hold of the app delegate</span><br><span class="line">        SCAppDelegate *appDelegate = (SCAppDelegate *)[[UIApplication sharedApplication] delegate];</span><br><span class="line">        if(appDelegate.backgroundURLSessionCompletionHandler) {</span><br><span class="line">            // Need to copy the completion handler</span><br><span class="line">            void (^handler)() = appDelegate.backgroundURLSessionCompletionHandler;</span><br><span class="line">            appDelegate.backgroundURLSessionCompletionHandler = nil;</span><br><span class="line">            handler();</span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">#pragma mark - NSURLSessionTaskDelegate</span><br><span class="line">// 每一个任务结束的时候执行-NSURLSessionDelegate,不管任务是不是正常结束:</span><br><span class="line">- (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task didCompleteWithError:(NSError *)error {</span><br><span class="line">    // 主线程更新 UI</span><br><span class="line">    dispatch_async(dispatch_get_main_queue(), ^{</span><br><span class="line">        self.progressIndicator.hidden = YES;</span><br><span class="line">        [self setDownloadButtonsAsEnabled:YES];</span><br><span class="line">    });</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">// *************************************************
+// SCViewController.h
+#import &lt;UIKit/UIKit.h&gt;
+
+@interface SCViewController : UIViewController
+
+@property (strong, nonatomic) NSURLSessionDownloadTask *resumableTask;   // 可恢复任务
+@property (strong, nonatomic) NSURLSessionDownloadTask *backgroundTask;  // 后台任务
+
+@property (strong, nonatomic, readonly) NSURLSession *backgroundSession; // 后台会话
+
+@property (weak, nonatomic) IBOutlet UIImageView *imageView;
+@property (weak, nonatomic) IBOutlet UIProgressView *progressIndicator;
+@property (strong, nonatomic) IBOutletCollection(UIBarButtonItem) NSArray *startButtons;
+
+- (IBAction)startCancellable:(id)sender;  // 开始任务
+- (IBAction)cancelCancellable:(id)sender; // 取消任务
+- (IBAction)startResumable:(id)sender;    // 恢复任务
+- (IBAction)startBackground:(id)sender;   // 后台任务
+
+@end
+
+// *************************************************
+// SCViewController.m
+#import "SCViewController.h"
+#import "SCAppDelegate.h"
+
+@interface SCViewController () &lt;NSURLSessionDownloadDelegate&gt; {
+    NSURLSessionDownloadTask *cancellableTask; // 可取消任务
+    NSURLSession *inProcessSession; // 私有会话
+    NSData *partialDownload; // 后台下载临时数据
+}
+
+@end
+
+@implementation SCViewController
+
+#pragma mark - Lifecycle
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+    // 从 nib 文件加载视图后，进行额外的初始化工作
+    self.progressIndicator.hidden = YES;
+    self.progressIndicator.progress = 0;
+
+    // Make sure that we've attached to the background session
+    self.backgroundSession.sessionDescription = @"Background session";
+}
+
+#pragma mark - Custom Accessors
+// 后台会话，单例类
+- (NSURLSession *)backgroundSession
+{
+    static NSURLSession *backgroundSession = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&amp;onceToken, ^{
+        NSURLSessionConfiguration *config = [NSURLSessionConfiguration backgroundSessionConfigurationWithIdentifier:@"com.shinobicontrols.BackgroundDownload.BackgroundSession"];
+        backgroundSession = [NSURLSession sessionWithConfiguration:config
+                                                          delegate:self
+                                                     delegateQueue:nil];
+    });
+    return backgroundSession;
+}
+
+#pragma mark - IBActions
+// 开始任务
+- (IBAction)startCancellable:(id)sender {
+    if (!cancellableTask) {
+        if(!inProcessSession) {
+            // 创建默认会话
+            NSURLSessionConfiguration *sessionConfig = [NSURLSessionConfiguration defaultSessionConfiguration];
+            inProcessSession = [NSURLSession sessionWithConfiguration:sessionConfig
+                                                             delegate:self
+                                                        delegateQueue:nil];
+            inProcessSession.sessionDescription = @"in-process NSURLSession";
+        }
+
+        // Image CreativeCommons courtesy of flickr.com/charliematters
+        NSString *url = @"http://farm6.staticflickr.com/5505/9824098016_0e28a047c2_b_d.jpg";
+        NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:url]];
+
+        // 创建可取消任务
+        cancellableTask = [inProcessSession downloadTaskWithRequest:request];
+
+        [self setDownloadButtonsAsEnabled:NO];
+        self.imageView.hidden = YES;
+
+        // 开启下载任务
+        [cancellableTask resume];
+    }
+}
+
+// 取消任务
+- (IBAction)cancelCancellable:(id)sender {
+    if(cancellableTask) {
+        // 1. 可取消任务
+        [cancellableTask cancel];
+        cancellableTask = nil;
+    } else if(self.resumableTask) {
+        // 2. 可恢复任务
+        [self.resumableTask cancelByProducingResumeData:^(NSData *resumeData) {
+            // ❇️ 缓存已下载数据
+            partialDownload = resumeData;
+            self.resumableTask = nil;
+        }];
+    } else if(self.backgroundTask) {
+        // 3. 后台任务
+        [self.backgroundTask cancel];
+        self.backgroundTask = nil;
+    }
+}
+
+// 恢复任务
+- (IBAction)startResumable:(id)sender {
+    if(!self.resumableTask) {
+        if(!inProcessSession) {
+            // 创建默认会话
+            NSURLSessionConfiguration *sessionConfig = [NSURLSessionConfiguration defaultSessionConfiguration];
+            inProcessSession = [NSURLSession sessionWithConfiguration:sessionConfig delegate:self delegateQueue:nil];
+            inProcessSession.sessionDescription = @"in-process NSURLSession";
+        }
+
+        if(partialDownload) {
+            // 1. 如果存在缓存数据，继续下载此任务
+            self.resumableTask = [inProcessSession downloadTaskWithResumeData:partialDownload];
+        } else {
+            // 2. 如果不存在缓存，新建可恢复任务
+            // Image CreativeCommons courtesy of flickr.com/charliematters
+            NSString *url = @"http://farm3.staticflickr.com/2846/9823925914_78cd653ac9_b_d.jpg";
+            NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:url]];
+            // 创建可恢复任务
+            self.resumableTask = [inProcessSession downloadTaskWithRequest:request];
+        }
+
+        [self setDownloadButtonsAsEnabled:NO];
+        self.imageView.hidden = YES;
+
+        // 开启下载任务
+        [self.resumableTask resume];
+    }
+}
+
+// 开始后台任务
+- (IBAction)startBackground:(id)sender {
+    // Image CreativeCommons courtesy of flickr.com/charliematters
+    NSString *url = @"http://farm3.staticflickr.com/2831/9823890176_82b4165653_b_d.jpg";
+    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:url]];
+
+    // self.backgroundSession 是单例对象
+    self.backgroundTask = [self.backgroundSession downloadTaskWithRequest:request];
+
+    [self setDownloadButtonsAsEnabled:NO];
+    self.imageView.hidden = YES;
+
+    // 开启下载任务
+    [self.backgroundTask resume];
+}
+
+#pragma mark - Private
+- (void)setDownloadButtonsAsEnabled:(BOOL)enabled
+{
+    // 更新按钮 enable 状态
+    for(UIBarButtonItem *btn in self.startButtons) {
+        btn.enabled = enabled;
+    }
+}
+
+#pragma mark - NSURLSessionDownloadDelegate
+
+// 追踪下载任务进度，更新进度条
+- (void)URLSession:(NSURLSession *)session downloadTask:(NSURLSessionDownloadTask *)downloadTask didWriteData:(int64_t)bytesWritten totalBytesWritten:(int64_t)totalBytesWritten totalBytesExpectedToWrite:(int64_t)totalBytesExpectedToWrite
+{
+    double currentProgress = totalBytesWritten / (double)totalBytesExpectedToWrite;
+    dispatch_async(dispatch_get_main_queue(), ^{
+        self.progressIndicator.hidden = NO;
+        self.progressIndicator.progress = currentProgress;
+    });
+}
+
+// 恢复下载后调用
+- (void)URLSession:(NSURLSession *)session downloadTask:(NSURLSessionDownloadTask *)downloadTask didResumeAtOffset:(int64_t)fileOffset expectedTotalBytes:(int64_t)expectedTotalBytes
+{
+    // Leave this for now
+}
+
+// 下载任务成功后调用
+- (void)URLSession:(NSURLSession *)session downloadTask:(NSURLSessionDownloadTask *)downloadTask didFinishDownloadingToURL:(NSURL *)location
+{
+    // We've successfully finished the download. Let's save the file
+    // 保存到文件
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+
+    NSArray *URLs = [fileManager URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask];
+    NSURL *documentsDirectory = URLs[0];
+
+    NSURL *destinationPath = [documentsDirectory URLByAppendingPathComponent:[location lastPathComponent]];
+    NSError *error;
+
+    // 先删除文件中已经存在的任何文件
+    [fileManager removeItemAtURL:destinationPath error:NULL];
+    BOOL success = [fileManager copyItemAtURL:location toURL:destinationPath error:&amp;error];
+
+    if (success) {
+        // 保存到文件后，更新主线程 UI
+        dispatch_async(dispatch_get_main_queue(), ^{
+            UIImage *image = [UIImage imageWithContentsOfFile:[destinationPath path]];
+            self.imageView.image = image;
+            self.imageView.contentMode = UIViewContentModeScaleAspectFill;
+            self.imageView.hidden = NO;
+        });
+    }else {
+        NSLog(@"Couldn't copy the downloaded file");
+    }
+
+    // ❇️ 会话置空，解除循环引用
+    if(downloadTask == cancellableTask) {
+        cancellableTask = nil;
+    } else if (downloadTask == self.resumableTask) {
+        self.resumableTask = nil;
+        partialDownload = nil;
+    } else if (session == self.backgroundSession) {
+        // 后台会话
+        self.backgroundTask = nil;
+        // Get hold of the app delegate
+        SCAppDelegate *appDelegate = (SCAppDelegate *)[[UIApplication sharedApplication] delegate];
+        if(appDelegate.backgroundURLSessionCompletionHandler) {
+            // Need to copy the completion handler
+            void (^handler)() = appDelegate.backgroundURLSessionCompletionHandler;
+            appDelegate.backgroundURLSessionCompletionHandler = nil;
+            handler();
+        }
+    }
+
+}
+
+#pragma mark - NSURLSessionTaskDelegate
+// 每一个任务结束的时候执行-NSURLSessionDelegate,不管任务是不是正常结束:
+- (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task didCompleteWithError:(NSError *)error {
+    // 主线程更新 UI
+    dispatch_async(dispatch_get_main_queue(), ^{
+        self.progressIndicator.hidden = YES;
+        [self setDownloadButtonsAsEnabled:YES];
+    });
+}
+
+@end<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>开启后台下载任务时，即使关闭了应用程序，这个下载任务依然在后台运行。</p>
 <p>当这个下载任务完成后，iOS 将会重新启动 app 来让任务知道，对这个我们不必放在心上。为了达到这个目的，我们可以在 app 的代理中调用下面的代码:</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">- (void)application:(UIApplication *)application handleEventsForBackgroundURLSession:(NSString *)identifier completionHandler:(void (^)())completionHandler</span><br><span class="line">{</span><br><span class="line">    self.backgroundURLSessionCompletionHandler = completionHandler;</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">- (void)application:(UIApplication *)application handleEventsForBackgroundURLSession:(NSString *)identifier completionHandler:(void (^)())completionHandler
+{
+    self.backgroundURLSessionCompletionHandler = completionHandler;
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
 
 <h3 id="效果"><a href="#效果" class="headerlink" title="效果"></a>效果</h3><p><img data-src="http://upload-images.jianshu.io/upload_images/2648731-26ce50a3e3637801.gif?imageMogr2/auto-orient/strip"></p>
 
@@ -552,12 +827,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">2.1m</span>
+    <span title="站点总字数">2.3m</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">31:21</span>
+    <span title="站点阅读时长">34:09</span>
 </div>
   <div class="powered-by">由 <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZw==">NexT.Gemini</span> 强力驱动
   </div>

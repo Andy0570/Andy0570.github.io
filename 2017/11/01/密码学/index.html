@@ -45,8 +45,8 @@
 <meta property="article:published_time" content="2017-11-01T08:47:00.000Z">
 <meta property="article:modified_time" content="2019-05-07T06:50:43.000Z">
 <meta property="article:author" content="独木舟的木">
-<meta property="article:tag" content="密码学">
 <meta property="article:tag" content="PKI">
+<meta property="article:tag" content="密码学">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072511-1.jpg">
 
@@ -388,7 +388,7 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>5.6k</span>
+              <span>5.5k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -433,7 +433,21 @@
 <h4 id="空格情况"><a href="#空格情况" class="headerlink" title="空格情况"></a>空格情况</h4><p>因为是把 8 个字节转换为 6 个字节进行编码，势必会产生位数不对应的问题。因此会使用 0 来补齐，用 = 表示全 0 的情况。（注意到 base64 总会编码补齐为 4 个字符一组）</p>
 <p><img data-src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072514.jpg"></p>
 <p>因此，单独的 M 用 base64 编码 ➡ TQ==</p>
-<h3 id="Objective-C-代码"><a href="#Objective-C-代码" class="headerlink" title="Objective-C 代码"></a>Objective-C 代码</h3><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">// base64编码</span><br><span class="line">- (NSString *)base64Encode:(NSString *)string {</span><br><span class="line">    // 1.将字符串转换为二进制</span><br><span class="line">    NSData *data = [string dataUsingEncoding:NSUTF8StringEncoding];</span><br><span class="line">    // 2.二进制数据进行编码</span><br><span class="line">    return [data base64EncodedStringWithOptions:0];</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">// base64解码</span><br><span class="line">- (NSString *)base64Decode:(NSString *)string {</span><br><span class="line">    // 1.字符串转换为二进制</span><br><span class="line">    NSData *data = [[NSData alloc] initWithBase64EncodedString:string options:0];</span><br><span class="line">    // 2.解码</span><br><span class="line">    return [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<h3 id="Objective-C-代码"><a href="#Objective-C-代码" class="headerlink" title="Objective-C 代码"></a>Objective-C 代码</h3><pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">// base64编码
+- (NSString *)base64Encode:(NSString *)string {
+    // 1.将字符串转换为二进制
+    NSData *data = [string dataUsingEncoding:NSUTF8StringEncoding];
+    // 2.二进制数据进行编码
+    return [data base64EncodedStringWithOptions:0];
+}
+
+// base64解码
+- (NSString *)base64Decode:(NSString *)string {
+    // 1.字符串转换为二进制
+    NSData *data = [[NSData alloc] initWithBase64EncodedString:string options:0];
+    // 2.解码
+    return [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 
 
@@ -465,13 +479,22 @@
 <li>加密之后的数据是没法解密的。（<strong>不可逆运算</strong>）</li>
 </ul>
 <h4 id="MD5加密"><a href="#MD5加密" class="headerlink" title="MD5加密"></a>MD5 加密</h4><p><a target="_blank" rel="noopener" href="https://github.com/jerolimov/NSHash">GitHub 源码：jerilimov/<strong>NSHash</strong></a>——NSData、NSString 的分类，添加了 MD5、SHA1、SHA256、SHA512 加密算法</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">NSString *pwd = @"123456";</span><br><span class="line">pwd = [pwd MD5];</span><br><span class="line">NSLog(@"MD5 = %@",pwd);</span><br><span class="line">// MD5 = e10adc3949ba59abbe56e057f20f883e</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">NSString *pwd = @"123456";
+pwd = [pwd MD5];
+NSLog(@"MD5 = %@",pwd);
+// MD5 = e10adc3949ba59abbe56e057f20f883e<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>像 MD5 这样的加密算法是<strong>无法反向解密</strong>的，但是对相同的数据加密，得到的结果是一样的。</p>
 <p>于是 <span class="exturl" data-url="aHR0cDovL3d3dy5jbWQ1LmNvbS8=">CMD5<i class="fa fa-external-link-alt"></i></span> 利用散列函数的这种特性，将加密前的数据和加密后的数据进行映射保存，可以实现反向查询。</p>
 <p>将刚才 123456 加密后的 MD5 输入，可以反向查询出原始数据：</p>
 <p><img data-src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072515.jpg"></p>
-<h4 id="MD5加盐：对数据先加盐，再进行MD5加密，可以增加结果的复杂度"><a href="#MD5加盐：对数据先加盐，再进行MD5加密，可以增加结果的复杂度" class="headerlink" title="MD5加盐：对数据先加盐，再进行MD5加密，可以增加结果的复杂度"></a>MD5 加盐：对数据先加盐，再进行 MD5 加密，可以增加结果的复杂度</h4><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">/* 盐，足够长，足够复杂，足够咸*/</span><br><span class="line">static NSString *slat = @"5O9Jc!9%N^6Kd*dcS9Or$&amp;fSVWmC^xku2@Lg0xd8CL0Sl$omN6zQS7c7YrHhtwn@";</span><br><span class="line"></span><br><span class="line">NSString *pwd = @"123456";</span><br><span class="line">pwd = [[pwd stringByAppendingString:slat] MD5];</span><br><span class="line">NSLog(@"MD5 = %@",pwd);</span><br><span class="line">// MD5 = 04f60881265e2b240b217f8deaaa8e12</span><br></pre></td></tr></tbody></table></figure>
+<h4 id="MD5加盐：对数据先加盐，再进行MD5加密，可以增加结果的复杂度"><a href="#MD5加盐：对数据先加盐，再进行MD5加密，可以增加结果的复杂度" class="headerlink" title="MD5加盐：对数据先加盐，再进行MD5加密，可以增加结果的复杂度"></a>MD5 加盐：对数据先加盐，再进行 MD5 加密，可以增加结果的复杂度</h4><pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">/* 盐，足够长，足够复杂，足够咸*/
+static NSString *slat = @"5O9Jc!9%N^6Kd*dcS9Or$&amp;fSVWmC^xku2@Lg0xd8CL0Sl$omN6zQS7c7YrHhtwn@";
+
+NSString *pwd = @"123456";
+pwd = [[pwd stringByAppendingString:slat] MD5];
+NSLog(@"MD5 = %@",pwd);
+// MD5 = 04f60881265e2b240b217f8deaaa8e12<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>再将此 MD5 密码放到该网站上进行查询：</p>
 <p><img data-src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072516.jpg"></p>
@@ -479,10 +502,85 @@
 <p>没有查到，结果显示，被反向查询出来的难度就会加大。</p>
 </blockquote>
 <p>缺点：盐是固定的，如果盐被泄露，数据就会不安全。</p>
-<h4 id="HMAC加密"><a href="#HMAC加密" class="headerlink" title="HMAC加密"></a>HMAC 加密</h4><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br></pre></td><td class="code"><pre><span class="line">//-----------------------------------------------------</span><br><span class="line">#import &lt;Foundation/Foundation.h&gt;</span><br><span class="line"></span><br><span class="line">@interface NSString (Hash)</span><br><span class="line">- (NSString *)hmacMD5StringWithKey:(NSString *)key;</span><br><span class="line">- (NSString *)hmacSHA1StringWithKey:(NSString *)key;</span><br><span class="line">- (NSString *)hmacSHA256StringWithKey:(NSString *)key;</span><br><span class="line">- (NSString *)hmacSHA512StringWithKey:(NSString *)key;</span><br><span class="line">@end</span><br><span class="line">  </span><br><span class="line">#import "NSString+Hash.h"</span><br><span class="line">#import &lt;CommonCrypto/CommonHMAC.h&gt;</span><br><span class="line">@implementation NSString (Hash)</span><br><span class="line"></span><br><span class="line">- (NSString *)hmacMD5StringWithKey:(NSString *)key</span><br><span class="line">{</span><br><span class="line">    return [self hmacStringUsingAlg:kCCHmacAlgMD5 withKey:key];</span><br><span class="line">}</span><br><span class="line">- (NSString *)hmacSHA1StringWithKey:(NSString *)key</span><br><span class="line">{</span><br><span class="line">    return [self hmacStringUsingAlg:kCCHmacAlgSHA1 withKey:key];</span><br><span class="line">}</span><br><span class="line">- (NSString *)hmacSHA256StringWithKey:(NSString *)key</span><br><span class="line">{</span><br><span class="line">    return [self hmacStringUsingAlg:kCCHmacAlgSHA256 withKey:key];</span><br><span class="line">}</span><br><span class="line">- (NSString *)hmacSHA512StringWithKey:(NSString *)key</span><br><span class="line">{</span><br><span class="line">    return [self hmacStringUsingAlg:kCCHmacAlgSHA512 withKey:key];</span><br><span class="line">}</span><br><span class="line">#pragma mark - Helpers</span><br><span class="line">- (NSString *)hmacStringUsingAlg:(CCHmacAlgorithm)alg withKey:(NSString *)key</span><br><span class="line">{</span><br><span class="line">    size_t size;</span><br><span class="line">    switch (alg) {</span><br><span class="line">        case kCCHmacAlgMD5:</span><br><span class="line">            size = CC_MD5_DIGEST_LENGTH;</span><br><span class="line">            break;</span><br><span class="line">        case kCCHmacAlgSHA1:</span><br><span class="line">            size = CC_SHA1_DIGEST_LENGTH;</span><br><span class="line">            break;</span><br><span class="line">        case kCCHmacAlgSHA224:</span><br><span class="line">            size = CC_SHA224_DIGEST_LENGTH;</span><br><span class="line">            break;</span><br><span class="line">        case kCCHmacAlgSHA256:</span><br><span class="line">            size = CC_SHA256_DIGEST_LENGTH;</span><br><span class="line">            break;</span><br><span class="line">        case kCCHmacAlgSHA384:</span><br><span class="line">            size = CC_SHA384_DIGEST_LENGTH;</span><br><span class="line">            break;</span><br><span class="line">        case kCCHmacAlgSHA512:</span><br><span class="line">            size = CC_SHA512_DIGEST_LENGTH;</span><br><span class="line">            break;</span><br><span class="line">        default:</span><br><span class="line">            return nil;</span><br><span class="line">    }</span><br><span class="line">    </span><br><span class="line">    NSData *keyData = [key dataUsingEncoding:NSUTF8StringEncoding];</span><br><span class="line">    NSData *messageData = [self dataUsingEncoding:NSUTF8StringEncoding];</span><br><span class="line">    NSMutableData *mutableData = [NSMutableData dataWithLength:size];</span><br><span class="line">    CCHmac(alg, keyData.bytes, keyData.length, messageData.bytes, messageData.length, mutableData.mutableBytes);</span><br><span class="line">    return [self stringFromBytes:(unsigned char *)mutableData.bytes length:(int)mutableData.length];</span><br><span class="line">}</span><br><span class="line">- (NSString *)stringFromBytes:(unsigned char *)bytes length:(int)length</span><br><span class="line">{</span><br><span class="line">    NSMutableString *mutableString = @"".mutableCopy;</span><br><span class="line">    for (int i = 0; i &lt; length; i++)</span><br><span class="line">        [mutableString appendFormat:@"%02x", bytes[i]];</span><br><span class="line">    return [NSString stringWithString:mutableString];</span><br><span class="line">}</span><br><span class="line">@end</span><br></pre></td></tr></tbody></table></figure>
+<h4 id="HMAC加密"><a href="#HMAC加密" class="headerlink" title="HMAC加密"></a>HMAC 加密</h4><pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">//-----------------------------------------------------
+#import &lt;Foundation/Foundation.h&gt;
+
+@interface NSString (Hash)
+- (NSString *)hmacMD5StringWithKey:(NSString *)key;
+- (NSString *)hmacSHA1StringWithKey:(NSString *)key;
+- (NSString *)hmacSHA256StringWithKey:(NSString *)key;
+- (NSString *)hmacSHA512StringWithKey:(NSString *)key;
+@end
+
+#import "NSString+Hash.h"
+#import &lt;CommonCrypto/CommonHMAC.h&gt;
+@implementation NSString (Hash)
+
+- (NSString *)hmacMD5StringWithKey:(NSString *)key
+{
+    return [self hmacStringUsingAlg:kCCHmacAlgMD5 withKey:key];
+}
+- (NSString *)hmacSHA1StringWithKey:(NSString *)key
+{
+    return [self hmacStringUsingAlg:kCCHmacAlgSHA1 withKey:key];
+}
+- (NSString *)hmacSHA256StringWithKey:(NSString *)key
+{
+    return [self hmacStringUsingAlg:kCCHmacAlgSHA256 withKey:key];
+}
+- (NSString *)hmacSHA512StringWithKey:(NSString *)key
+{
+    return [self hmacStringUsingAlg:kCCHmacAlgSHA512 withKey:key];
+}
+#pragma mark - Helpers
+- (NSString *)hmacStringUsingAlg:(CCHmacAlgorithm)alg withKey:(NSString *)key
+{
+    size_t size;
+    switch (alg) {
+        case kCCHmacAlgMD5:
+            size = CC_MD5_DIGEST_LENGTH;
+            break;
+        case kCCHmacAlgSHA1:
+            size = CC_SHA1_DIGEST_LENGTH;
+            break;
+        case kCCHmacAlgSHA224:
+            size = CC_SHA224_DIGEST_LENGTH;
+            break;
+        case kCCHmacAlgSHA256:
+            size = CC_SHA256_DIGEST_LENGTH;
+            break;
+        case kCCHmacAlgSHA384:
+            size = CC_SHA384_DIGEST_LENGTH;
+            break;
+        case kCCHmacAlgSHA512:
+            size = CC_SHA512_DIGEST_LENGTH;
+            break;
+        default:
+            return nil;
+    }
+
+    NSData *keyData = [key dataUsingEncoding:NSUTF8StringEncoding];
+    NSData *messageData = [self dataUsingEncoding:NSUTF8StringEncoding];
+    NSMutableData *mutableData = [NSMutableData dataWithLength:size];
+    CCHmac(alg, keyData.bytes, keyData.length, messageData.bytes, messageData.length, mutableData.mutableBytes);
+    return [self stringFromBytes:(unsigned char *)mutableData.bytes length:(int)mutableData.length];
+}
+- (NSString *)stringFromBytes:(unsigned char *)bytes length:(int)length
+{
+    NSMutableString *mutableString = @"".mutableCopy;
+    for (int i = 0; i &lt; length; i++)
+        [mutableString appendFormat:@"%02x", bytes[i]];
+    return [NSString stringWithString:mutableString];
+}
+@end<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>测试</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">// HMAC 用一个密钥加密，并且做了两次散列。</span><br><span class="line">// 在实际的开发中，密钥来自于服务器。——对应一个帐号，一个KEY</span><br><span class="line">NSString *pwd = @"123456";</span><br><span class="line">pwd = [pwd hmacMD5StringWithKey:@"Key"];</span><br><span class="line">NSLog(@"MD5 = %@",pwd);</span><br><span class="line">// MD5 = a7cac7471d2c9eb7a944e07d44d305ca</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">// HMAC 用一个密钥加密，并且做了两次散列。
+// 在实际的开发中，密钥来自于服务器。——对应一个帐号，一个KEY
+NSString *pwd = @"123456";
+pwd = [pwd hmacMD5StringWithKey:@"Key"];
+NSLog(@"MD5 = %@",pwd);
+// MD5 = a7cac7471d2c9eb7a944e07d44d305ca<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>将此 MD5 密码放到该网站上查询也是查不到的。</p>
 <p>项目实际使用流程：</p>
@@ -575,8 +673,8 @@
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/%E5%AF%86%E7%A0%81%E5%AD%A6/" rel="tag"># 密码学</a>
               <a href="/tags/PKI/" rel="tag"># PKI</a>
+              <a href="/tags/%E5%AF%86%E7%A0%81%E5%AD%A6/" rel="tag"># 密码学</a>
           </div>
 
         
@@ -649,12 +747,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">2.1m</span>
+    <span title="站点总字数">2.3m</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">31:21</span>
+    <span title="站点阅读时长">34:09</span>
 </div>
   <div class="powered-by">由 <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZw==">NexT.Gemini</span> 强力驱动
   </div>

@@ -382,7 +382,7 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>4.4k</span>
+              <span>4.2k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -407,15 +407,116 @@
 <li>后台服务器返回的原始字符串：<code>201709—————201709</code>，在后台老大哥的眼里，这种格式当然是完美的🤷🏻‍♂️，可在前端眼里，如果直接把酱紫的字符串直接显示在页面上，显示粗糙，又难读，用户体验非常糟糕，连我这样毫无审美感的程序猿都看不下去了好吧。</li>
 <li>优化后显示字符串：<code>2017年9月  ⇀ 2017年9月</code>。</li>
 </ul>
-<h3 id="最初的方法：用正则表达式匹配，再截取，可能存在边界溢出导致崩溃。"><a href="#最初的方法：用正则表达式匹配，再截取，可能存在边界溢出导致崩溃。" class="headerlink" title="最初的方法：用正则表达式匹配，再截取，可能存在边界溢出导致崩溃。"></a>最初的方法：用正则表达式匹配，再截取，可能存在边界溢出导致崩溃。</h3><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line">// 正则表达式</span><br><span class="line">- (BOOL)validateExpensePeriod {</span><br><span class="line">    NSString *regex = @"^\\d{6}\\D+\\d{6}$";</span><br><span class="line">    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF MATCHES %@",regex];</span><br><span class="line">    return [predicate evaluateWithObject:_expensePeriod];</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">// 输入日期格式</span><br><span class="line">- (NSDateFormatter *)inputDateFormatter {</span><br><span class="line">    if (!_inputDateFormatter) {</span><br><span class="line">        _inputDateFormatter = [[NSDateFormatter alloc] init];</span><br><span class="line">        _inputDateFormatter.dateFormat = @"yyyyMM"; // 201710</span><br><span class="line">    }</span><br><span class="line">    return _inputDateFormatter;</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">// 输出日期格式</span><br><span class="line">- (NSDateFormatter *)outputDateFormatter {</span><br><span class="line">    if (!_outputDateFormatter) {</span><br><span class="line">        _outputDateFormatter = [[NSDateFormatter alloc] init];</span><br><span class="line">        _outputDateFormatter.dateFormat = @"yyyy年MMM"; // 2017年10月</span><br><span class="line">    }</span><br><span class="line">    return _outputDateFormatter;</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">// ...</span><br><span class="line"></span><br><span class="line">// 因为后台有时候会返回预料之外的字符串，如果仍按照正常逻辑截取会导致边界溢出崩溃——要背锅的哦</span><br><span class="line">NSUInteger strLength = _expensePeriod.length;</span><br><span class="line">if (strLength &lt; 16 || ![self validateExpensePeriod]) {</span><br><span class="line">    return _expensePeriod;</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">// 截取字符串中的开始日期和结束日期</span><br><span class="line">NSString *beginDateStr = [_expensePeriod substringToIndex:6];</span><br><span class="line">NSString *endDateStr = [_expensePeriod substringFromIndex:strLength-6];    </span><br><span class="line"></span><br><span class="line">// 将字符串转换为</span><br><span class="line">NSDate *beginDate = [self.inputDateFormatter dateFromString:beginDateStr];</span><br><span class="line">NSDate *endDate   = [self.inputDateFormatter dateFromString:endDateStr];</span><br><span class="line">if ((beginDate == nil) || (endDate == nil)) {</span><br><span class="line">    return _expensePeriod;</span><br><span class="line">}else {</span><br><span class="line">    NSString *formartDateStr = [NSString stringWithFormat:@"%@ ⇀ %@",</span><br><span class="line">                                [self.outputDateFormatter stringFromDate:beginDate],</span><br><span class="line">                                [self.outputDateFormatter stringFromDate:endDate]];</span><br><span class="line">    return formartDateStr;</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<h3 id="最初的方法：用正则表达式匹配，再截取，可能存在边界溢出导致崩溃。"><a href="#最初的方法：用正则表达式匹配，再截取，可能存在边界溢出导致崩溃。" class="headerlink" title="最初的方法：用正则表达式匹配，再截取，可能存在边界溢出导致崩溃。"></a>最初的方法：用正则表达式匹配，再截取，可能存在边界溢出导致崩溃。</h3><pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">// 正则表达式
+- (BOOL)validateExpensePeriod {
+    NSString *regex = @"^\\d{6}\\D+\\d{6}$";
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF MATCHES %@",regex];
+    return [predicate evaluateWithObject:_expensePeriod];
+}
+
+// 输入日期格式
+- (NSDateFormatter *)inputDateFormatter {
+    if (!_inputDateFormatter) {
+        _inputDateFormatter = [[NSDateFormatter alloc] init];
+        _inputDateFormatter.dateFormat = @"yyyyMM"; // 201710
+    }
+    return _inputDateFormatter;
+}
+
+// 输出日期格式
+- (NSDateFormatter *)outputDateFormatter {
+    if (!_outputDateFormatter) {
+        _outputDateFormatter = [[NSDateFormatter alloc] init];
+        _outputDateFormatter.dateFormat = @"yyyy年MMM"; // 2017年10月
+    }
+    return _outputDateFormatter;
+}
+
+// ...
+
+// 因为后台有时候会返回预料之外的字符串，如果仍按照正常逻辑截取会导致边界溢出崩溃——要背锅的哦
+NSUInteger strLength = _expensePeriod.length;
+if (strLength &lt; 16 || ![self validateExpensePeriod]) {
+    return _expensePeriod;
+}
+
+// 截取字符串中的开始日期和结束日期
+NSString *beginDateStr = [_expensePeriod substringToIndex:6];
+NSString *endDateStr = [_expensePeriod substringFromIndex:strLength-6];    
+
+// 将字符串转换为
+NSDate *beginDate = [self.inputDateFormatter dateFromString:beginDateStr];
+NSDate *endDate   = [self.inputDateFormatter dateFromString:endDateStr];
+if ((beginDate == nil) || (endDate == nil)) {
+    return _expensePeriod;
+}else {
+    NSString *formartDateStr = [NSString stringWithFormat:@"%@ ⇀ %@",
+                                [self.outputDateFormatter stringFromDate:beginDate],
+                                [self.outputDateFormatter stringFromDate:endDate]];
+    return formartDateStr;
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 
 
-<h3 id="优化方法，正则表达式返回所有匹配结果的范围，自动截取，实现成功，方法太过复杂"><a href="#优化方法，正则表达式返回所有匹配结果的范围，自动截取，实现成功，方法太过复杂" class="headerlink" title="优化方法，正则表达式返回所有匹配结果的范围，自动截取，实现成功，方法太过复杂"></a>优化方法，正则表达式返回所有匹配结果的范围，自动截取，实现成功，方法太过复杂</h3><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">// 标签文本字符串</span><br><span class="line">- (NSString *)expensePeriodLabelText {</span><br><span class="line">    // 优化显示起止日期 201709----201709</span><br><span class="line">    NSUInteger strLength = _expensePeriod.length;</span><br><span class="line">    __block NSString *beginDateStr;</span><br><span class="line">    __block NSString *endDateStr;</span><br><span class="line">    </span><br><span class="line">    // 正则表达式匹配结果</span><br><span class="line">    NSString *regex = @"\\d{6}";</span><br><span class="line">    NSRegularExpression *regularExpression = [NSRegularExpression regularExpressionWithPattern:regex options:NSRegularExpressionCaseInsensitive error:nil];</span><br><span class="line">      // 正则表达式匹配，将结果返回到数组</span><br><span class="line">    NSArray *matches = [regularExpression matchesInString:_expensePeriod options:NSMatchingReportProgress range:NSMakeRange(0, strLength)];</span><br><span class="line">    if (matches.count &gt; 0 &amp;&amp; matches.count == 2) {</span><br><span class="line">        [matches enumerateObjectsUsingBlock:^(NSTextCheckingResult *obj, NSUInteger idx, BOOL * _Nonnull stop) {</span><br><span class="line">            // 用匹配结果的范围去截取字符串</span><br><span class="line">            if (idx == 0) {</span><br><span class="line">                beginDateStr = [_expensePeriod substringWithRange:obj.range];</span><br><span class="line">            }else {</span><br><span class="line">                endDateStr = [_expensePeriod substringWithRange:obj.range];</span><br><span class="line">            }</span><br><span class="line">        }];</span><br><span class="line">    }else {</span><br><span class="line">        return _expensePeriod;</span><br><span class="line">    }</span><br><span class="line">    </span><br><span class="line">    NSDate *beginDate = [self.inputDateFormatter dateFromString:beginDateStr];</span><br><span class="line">    NSDate *endDate   = [self.inputDateFormatter dateFromString:endDateStr];</span><br><span class="line">    if ((beginDate == nil) || (endDate == nil)) {</span><br><span class="line">        return _expensePeriod;</span><br><span class="line">    }else {</span><br><span class="line">        NSString *formartDateStr = [NSString stringWithFormat:@"%@ ⇀ %@",</span><br><span class="line">                                    [self.outputDateFormatter stringFromDate:beginDate],</span><br><span class="line">                                    [self.outputDateFormatter stringFromDate:endDate]];</span><br><span class="line">        return formartDateStr;</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<h3 id="优化方法，正则表达式返回所有匹配结果的范围，自动截取，实现成功，方法太过复杂"><a href="#优化方法，正则表达式返回所有匹配结果的范围，自动截取，实现成功，方法太过复杂" class="headerlink" title="优化方法，正则表达式返回所有匹配结果的范围，自动截取，实现成功，方法太过复杂"></a>优化方法，正则表达式返回所有匹配结果的范围，自动截取，实现成功，方法太过复杂</h3><pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">// 标签文本字符串
+- (NSString *)expensePeriodLabelText {
+    // 优化显示起止日期 201709----201709
+    NSUInteger strLength = _expensePeriod.length;
+    __block NSString *beginDateStr;
+    __block NSString *endDateStr;
+
+    // 正则表达式匹配结果
+    NSString *regex = @"\\d{6}";
+    NSRegularExpression *regularExpression = [NSRegularExpression regularExpressionWithPattern:regex options:NSRegularExpressionCaseInsensitive error:nil];
+      // 正则表达式匹配，将结果返回到数组
+    NSArray *matches = [regularExpression matchesInString:_expensePeriod options:NSMatchingReportProgress range:NSMakeRange(0, strLength)];
+    if (matches.count &gt; 0 &amp;&amp; matches.count == 2) {
+        [matches enumerateObjectsUsingBlock:^(NSTextCheckingResult *obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            // 用匹配结果的范围去截取字符串
+            if (idx == 0) {
+                beginDateStr = [_expensePeriod substringWithRange:obj.range];
+            }else {
+                endDateStr = [_expensePeriod substringWithRange:obj.range];
+            }
+        }];
+    }else {
+        return _expensePeriod;
+    }
+
+    NSDate *beginDate = [self.inputDateFormatter dateFromString:beginDateStr];
+    NSDate *endDate   = [self.inputDateFormatter dateFromString:endDateStr];
+    if ((beginDate == nil) || (endDate == nil)) {
+        return _expensePeriod;
+    }else {
+        NSString *formartDateStr = [NSString stringWithFormat:@"%@ ⇀ %@",
+                                    [self.outputDateFormatter stringFromDate:beginDate],
+                                    [self.outputDateFormatter stringFromDate:endDate]];
+        return formartDateStr;
+    }
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 
 
-<h3 id="再优化方法，使用-YYKit-方法，方法相对简洁"><a href="#再优化方法，使用-YYKit-方法，方法相对简洁" class="headerlink" title="再优化方法，使用 YYKit 方法，方法相对简洁"></a>再优化方法，使用 YYKit 方法，方法相对简洁</h3><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">- (NSString *)expensePeriodLabelText {</span><br><span class="line">    __block NSMutableArray *mutableArray = [NSMutableArray arrayWithCapacity:2];</span><br><span class="line">    [_expensePeriod enumerateRegexMatches:@"\\d{6}" options:NSRegularExpressionCaseInsensitive usingBlock:^(NSString * _Nonnull match, NSRange matchRange, BOOL * _Nonnull stop) {</span><br><span class="line">        [mutableArray addObject:match];</span><br><span class="line">    }];</span><br><span class="line">    if (mutableArray.count != 2) {</span><br><span class="line">        return _expensePeriod;</span><br><span class="line">    }</span><br><span class="line">    </span><br><span class="line">    NSDate *beginDate = [self.inputDateFormatter dateFromString:mutableArray.firstObject];</span><br><span class="line">    NSDate *endDate   = [self.inputDateFormatter dateFromString:mutableArray.lastObject];</span><br><span class="line">    if (!beginDate || !endDate) {</span><br><span class="line">        return _expensePeriod;</span><br><span class="line">    }</span><br><span class="line">    </span><br><span class="line">    NSString *formartDateStr = [NSString stringWithFormat:@"%@ ⇀ %@",</span><br><span class="line">                                [self.outputDateFormatter stringFromDate:beginDate],</span><br><span class="line">                                [self.outputDateFormatter stringFromDate:endDate]];</span><br><span class="line">    return formartDateStr;</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<h3 id="再优化方法，使用-YYKit-方法，方法相对简洁"><a href="#再优化方法，使用-YYKit-方法，方法相对简洁" class="headerlink" title="再优化方法，使用 YYKit 方法，方法相对简洁"></a>再优化方法，使用 YYKit 方法，方法相对简洁</h3><pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">- (NSString *)expensePeriodLabelText {
+    __block NSMutableArray *mutableArray = [NSMutableArray arrayWithCapacity:2];
+    [_expensePeriod enumerateRegexMatches:@"\\d{6}" options:NSRegularExpressionCaseInsensitive usingBlock:^(NSString * _Nonnull match, NSRange matchRange, BOOL * _Nonnull stop) {
+        [mutableArray addObject:match];
+    }];
+    if (mutableArray.count != 2) {
+        return _expensePeriod;
+    }
+
+    NSDate *beginDate = [self.inputDateFormatter dateFromString:mutableArray.firstObject];
+    NSDate *endDate   = [self.inputDateFormatter dateFromString:mutableArray.lastObject];
+    if (!beginDate || !endDate) {
+        return _expensePeriod;
+    }
+
+    NSString *formartDateStr = [NSString stringWithFormat:@"%@ ⇀ %@",
+                                [self.outputDateFormatter stringFromDate:beginDate],
+                                [self.outputDateFormatter stringFromDate:endDate]];
+    return formartDateStr;
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>最终的效果：</p>
 <p><img data-src="http://upload-images.jianshu.io/upload_images/2648731-dd9478bfaa14c70d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240"></p>
 
@@ -537,12 +638,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">2.1m</span>
+    <span title="站点总字数">2.3m</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">31:21</span>
+    <span title="站点阅读时长">34:09</span>
 </div>
   <div class="powered-by">由 <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZw==">NexT.Gemini</span> 强力驱动
   </div>

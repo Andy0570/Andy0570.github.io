@@ -380,14 +380,14 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>11k</span>
+              <span>9.7k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>10 分钟</span>
+              <span>9 分钟</span>
             </span>
 
         </div>
@@ -425,16 +425,269 @@
 <li>在引导程序完成后执行一个脚本；</li>
 <li>使用脚本安装并配置应用程序；</li>
 </ol>
-<h3 id="在虚拟服务器上部署-OpenSwan-作为-VPN-服务器"><a href="#在虚拟服务器上部署-OpenSwan-作为-VPN-服务器" class="headerlink" title="在虚拟服务器上部署 OpenSwan 作为 VPN 服务器"></a>在虚拟服务器上部署 OpenSwan 作为 VPN 服务器</h3><h4 id="vpn-create-cloudformation-stack-sh-文件"><a href="#vpn-create-cloudformation-stack-sh-文件" class="headerlink" title="vpn-create-cloudformation-stack.sh 文件"></a>vpn-create-cloudformation-stack.sh 文件</h4><figure class="highlight sh"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash -ex</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 获取默认 VPC</span></span><br><span class="line">vpc=$(aws ec2 describe-vpcs --filter <span class="string">"Name=isDefault, Values=true"</span> --query <span class="string">"Vpcs[0].VpcId"</span> --output text)</span><br><span class="line"><span class="comment"># 获取默认子网</span></span><br><span class="line">subnet=$(aws ec2 describe-subnets --filters Name=vpc-id,Values=<span class="variable">$vpc</span> --query Subnets[0].SubnetId --output text)</span><br><span class="line"><span class="comment"># 创建一个随机密码</span></span><br><span class="line">sharedsecret=$(openssl rand -base64 30)</span><br><span class="line">user=vpn</span><br><span class="line"><span class="comment"># 创建一个随机共享密钥</span></span><br><span class="line">password=$(openssl rand -base64 30)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 创建一个 CloudFormation 堆栈</span></span><br><span class="line">aws cloudformation create-stack --stack-name vpn --template-url \</span><br><span class="line">https://s3.amazonaws.com/awsinaction/chapter5/vpn-cloudformation.json \ <span class="comment"># 1⃣️ CloudFormation 模版文件</span></span><br><span class="line">--parameters ParameterKey=KeyName,ParameterValue=mykey \</span><br><span class="line">ParameterKey=VPC,ParameterValue=<span class="variable">$vpc</span> \</span><br><span class="line">ParameterKey=Subnet,ParameterValue=<span class="variable">$subnet</span> \</span><br><span class="line">ParameterKey=IPSecSharedSecret,ParameterValue=<span class="variable">$sharedsecret</span> \</span><br><span class="line">ParameterKey=VPNUser,ParameterValue=<span class="variable">$user</span> \</span><br><span class="line">ParameterKey=VPNPassword,ParameterValue=<span class="variable">$password</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 如果状态不是 COMPLETE，请在 1 min后重试</span></span><br><span class="line"><span class="keyword">while</span> [[ `aws cloudformation describe-stacks --stack-name vpn --query Stacks[0].StackStatus` != *<span class="string">"COMPLETE"</span>* ]]</span><br><span class="line"><span class="keyword">do</span></span><br><span class="line">    sleep 10</span><br><span class="line"><span class="keyword">done</span></span><br><span class="line">aws cloudformation describe-stacks --stack-name vpn --query Stacks[0].Outputs</span><br></pre></td></tr></tbody></table></figure>
+<h3 id="在虚拟服务器上部署-OpenSwan-作为-VPN-服务器"><a href="#在虚拟服务器上部署-OpenSwan-作为-VPN-服务器" class="headerlink" title="在虚拟服务器上部署 OpenSwan 作为 VPN 服务器"></a>在虚拟服务器上部署 OpenSwan 作为 VPN 服务器</h3><h4 id="vpn-create-cloudformation-stack-sh-文件"><a href="#vpn-create-cloudformation-stack-sh-文件" class="headerlink" title="vpn-create-cloudformation-stack.sh 文件"></a>vpn-create-cloudformation-stack.sh 文件</h4><pre class="line-numbers language-sh" data-language="sh"><code class="language-sh">#!/bin/bash -ex
 
-<h4 id="vpn-cloudformation-json-——使用用户数据来初始化一台虚拟服务器"><a href="#vpn-cloudformation-json-——使用用户数据来初始化一台虚拟服务器" class="headerlink" title="vpn-cloudformation.json &nbsp;——使用用户数据来初始化一台虚拟服务器"></a>vpn-cloudformation.json &nbsp;—— 使用用户数据来初始化一台虚拟服务器</h4><figure class="highlight"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br></pre></td><td class="code"><pre><span class="line"># 使用用户数据来初始化一台虚拟服务器</span><br><span class="line">{</span><br><span class="line">    <span class="attr">"AWSTemplateFormatVersion"</span>: <span class="string">"2010-09-09"</span>,</span><br><span class="line">    <span class="attr">"Description"</span>: <span class="string">"AWS in Action: chapter 5 (OpenSwan acting as VPN IPSec endpoint)"</span>,</span><br><span class="line">    "Parameters": { # 参数，使模版复用成为可能</span><br><span class="line">        "KeyName": { </span><br><span class="line">            "Description": "key for SSH access",</span><br><span class="line">            "Type": "AWS::EC2::KeyPair::KeyName",</span><br><span class="line">            "ConstraintDescription": "Must be the name of an existing key pair."</span><br><span class="line">        },</span><br><span class="line">        "VPC": {</span><br><span class="line">            "Description": "Just select the one and only default VPC.",</span><br><span class="line">            "Type": "AWS::EC2::VPC::Id"</span><br><span class="line">        },</span><br><span class="line">        "Subnet": {</span><br><span class="line">            "Description": "Just select one of the available subnets.",</span><br><span class="line">            "Type": "AWS::EC2::Subnet::Id"</span><br><span class="line">        },</span><br><span class="line">        "IPSecSharedSecret": {</span><br><span class="line">            "Description": "The shared secret key for IPSec.",</span><br><span class="line">            "Type": "String"</span><br><span class="line">        },</span><br><span class="line">        "VPNUser": {</span><br><span class="line">            "Description": "The VPN user.",</span><br><span class="line">            "Type": "String"</span><br><span class="line">        },</span><br><span class="line">        "VPNPassword": {</span><br><span class="line">            "Description": "The VPN password.",</span><br><span class="line">            "Type": "String"</span><br><span class="line">        }</span><br><span class="line">    },</span><br><span class="line">    "Mappings": {</span><br><span class="line">        "EC2RegionMap": {</span><br><span class="line">            "ap-northeast-1": {"AmazonLinuxAMIHVMEBSBacked64bit": "ami-cbf90ecb"},</span><br><span class="line">            "ap-southeast-1": {"AmazonLinuxAMIHVMEBSBacked64bit": "ami-68d8e93a"},</span><br><span class="line">            "ap-southeast-2": {"AmazonLinuxAMIHVMEBSBacked64bit": "ami-fd9cecc7"},</span><br><span class="line">            "eu-central-1": {"AmazonLinuxAMIHVMEBSBacked64bit": "ami-a8221fb5"},</span><br><span class="line">            "eu-west-1": {"AmazonLinuxAMIHVMEBSBacked64bit": "ami-a10897d6"},</span><br><span class="line">            "sa-east-1": {"AmazonLinuxAMIHVMEBSBacked64bit": "ami-b52890a8"},</span><br><span class="line">            "us-east-1": {"AmazonLinuxAMIHVMEBSBacked64bit": "ami-1ecae776"},</span><br><span class="line">            "us-west-1": {"AmazonLinuxAMIHVMEBSBacked64bit": "ami-d114f295"},</span><br><span class="line">            "us-west-2": {"AmazonLinuxAMIHVMEBSBacked64bit": "ami-e7527ed7"}</span><br><span class="line">        }</span><br><span class="line">    },</span><br><span class="line">    "Resources": {</span><br><span class="line">        "EC2Instance": { # 描述虚拟服务器</span><br><span class="line">            "Type": "AWS::EC2::Instance",</span><br><span class="line">            "Properties": {</span><br><span class="line">                "InstanceType": "t2.micro",</span><br><span class="line">                "SecurityGroupIds": [{"Ref": "InstanceSecurityGroup"}],</span><br><span class="line">                "KeyName": {"Ref": "KeyName"},</span><br><span class="line">                "ImageId": {"Fn::FindInMap": ["EC2RegionMap", {"Ref": "AWS::Region"}, "AmazonLinuxAMIHVMEBSBacked64bit"]},</span><br><span class="line">                "SubnetId": {"Ref": "Subnet"},</span><br><span class="line">                "UserData": {"Fn::Base64": {"Fn::Join": ["", [ # 为虚拟服务器定义一个 shell 脚本作为用户数据</span><br><span class="line">                    "#!/bin/bash -ex\n",</span><br><span class="line">                    "export IPSEC_PSK=", {"Ref": "IPSecSharedSecret"}, "\n",</span><br><span class="line">                    "export VPN_USER=", {"Ref": "VPNUser"}, "\n",</span><br><span class="line">                    "export VPN_PASSWORD=", {"Ref": "VPNPassword"}, "\n",</span><br><span class="line">                    "export STACK_NAME=", {"Ref": "AWS::StackName"}, "\n",</span><br><span class="line">                    "export REGION=", {"Ref": "AWS::Region"}, "\n",</span><br><span class="line">                    "curl -s https://raw.githubusercontent.com/AWSinAction/code/master/chapter5/vpn-setup.sh | bash -ex\n" # 2⃣️ 通过http获取shell脚本并执行</span><br><span class="line">                ]]}}</span><br><span class="line">            }</span><br><span class="line">        },</span><br><span class="line">        "InstanceSecurityGroup": {</span><br><span class="line">            "Type": "AWS::EC2::SecurityGroup",</span><br><span class="line">            "Properties": {</span><br><span class="line">                "GroupDescription": "Enable access to VPN server",</span><br><span class="line">                "VpcId": {"Ref": "VPC"},</span><br><span class="line">                "SecurityGroupIngress": [</span><br><span class="line">                    {</span><br><span class="line">                        <span class="attr">"IpProtocol"</span>: <span class="string">"tcp"</span>,</span><br><span class="line">                        <span class="attr">"FromPort"</span>: <span class="string">"22"</span>,</span><br><span class="line">                        <span class="attr">"ToPort"</span>: <span class="string">"22"</span>,</span><br><span class="line">                        <span class="attr">"CidrIp"</span>: <span class="string">"0.0.0.0/0"</span></span><br><span class="line">                    },</span><br><span class="line">                    {</span><br><span class="line">                        <span class="attr">"IpProtocol"</span>: <span class="string">"udp"</span>,</span><br><span class="line">                        <span class="attr">"FromPort"</span>: <span class="string">"500"</span>,</span><br><span class="line">                        <span class="attr">"ToPort"</span>: <span class="string">"500"</span>,</span><br><span class="line">                        <span class="attr">"CidrIp"</span>: <span class="string">"0.0.0.0/0"</span></span><br><span class="line">                    },</span><br><span class="line">                    {</span><br><span class="line">                        <span class="attr">"IpProtocol"</span>: <span class="string">"udp"</span>,</span><br><span class="line">                        <span class="attr">"FromPort"</span>: <span class="string">"1701"</span>,</span><br><span class="line">                        <span class="attr">"ToPort"</span>: <span class="string">"1701"</span>,</span><br><span class="line">                        <span class="attr">"CidrIp"</span>: <span class="string">"0.0.0.0/0"</span></span><br><span class="line">                    },</span><br><span class="line">                    {</span><br><span class="line">                        <span class="attr">"IpProtocol"</span>: <span class="string">"udp"</span>,</span><br><span class="line">                        <span class="attr">"FromPort"</span>: <span class="string">"4500"</span>,</span><br><span class="line">                        <span class="attr">"ToPort"</span>: <span class="string">"4500"</span>,</span><br><span class="line">                        <span class="attr">"CidrIp"</span>: <span class="string">"0.0.0.0/0"</span></span><br><span class="line">                    }</span><br><span class="line">                ]</span><br><span class="line">            }</span><br><span class="line">        }</span><br><span class="line">    },</span><br><span class="line">    "Outputs": {</span><br><span class="line">        "ServerIP": {</span><br><span class="line">            "Description": "Public IP address of the vpn server",</span><br><span class="line">            "Value": {"Fn::GetAtt": ["EC2Instance", "PublicIp"]}</span><br><span class="line">        },</span><br><span class="line">        "IPSecSharedSecret": {</span><br><span class="line">            "Description": "The shared key for the VPN connection (IPSec)",</span><br><span class="line">            "Value": {"Ref": "IPSecSharedSecret"}</span><br><span class="line">        },</span><br><span class="line">        "VPNUser": {</span><br><span class="line">            "Description": "The username for the vpn connection",</span><br><span class="line">            "Value": {"Ref": "VPNUser"}</span><br><span class="line">        },</span><br><span class="line">        "VPNPassword": {</span><br><span class="line">            "Description": "The password for the vpn connection",</span><br><span class="line">            "Value": {"Ref": "VPNPassword"}</span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+# 获取默认 VPC
+vpc=$(aws ec2 describe-vpcs --filter "Name=isDefault, Values=true" --query "Vpcs[0].VpcId" --output text)
+# 获取默认子网
+subnet=$(aws ec2 describe-subnets --filters Name=vpc-id,Values=$vpc --query Subnets[0].SubnetId --output text)
+# 创建一个随机密码
+sharedsecret=$(openssl rand -base64 30)
+user=vpn
+# 创建一个随机共享密钥
+password=$(openssl rand -base64 30)
+
+# 创建一个 CloudFormation 堆栈
+aws cloudformation create-stack --stack-name vpn --template-url \
+https://s3.amazonaws.com/awsinaction/chapter5/vpn-cloudformation.json \ # 1⃣️ CloudFormation 模版文件
+--parameters ParameterKey=KeyName,ParameterValue=mykey \
+ParameterKey=VPC,ParameterValue=$vpc \
+ParameterKey=Subnet,ParameterValue=$subnet \
+ParameterKey=IPSecSharedSecret,ParameterValue=$sharedsecret \
+ParameterKey=VPNUser,ParameterValue=$user \
+ParameterKey=VPNPassword,ParameterValue=$password
+
+# 如果状态不是 COMPLETE，请在 1 min后重试
+while [[ `aws cloudformation describe-stacks --stack-name vpn --query Stacks[0].StackStatus` != *"COMPLETE"* ]]
+do
+    sleep 10
+done
+aws cloudformation describe-stacks --stack-name vpn --query Stacks[0].Outputs<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h4 id="vpn-cloudformation-json-——使用用户数据来初始化一台虚拟服务器"><a href="#vpn-cloudformation-json-——使用用户数据来初始化一台虚拟服务器" class="headerlink" title="vpn-cloudformation.json &nbsp;——使用用户数据来初始化一台虚拟服务器"></a>vpn-cloudformation.json &nbsp;—— 使用用户数据来初始化一台虚拟服务器</h4><pre class="line-numbers language-json" data-language="json"><code class="language-json"># 使用用户数据来初始化一台虚拟服务器
+<span class="token punctuation">{</span>
+    <span class="token property">"AWSTemplateFormatVersion"</span><span class="token operator">:</span> <span class="token string">"2010-09-09"</span><span class="token punctuation">,</span>
+    <span class="token property">"Description"</span><span class="token operator">:</span> <span class="token string">"AWS in Action: chapter 5 (OpenSwan acting as VPN IPSec endpoint)"</span><span class="token punctuation">,</span>
+    <span class="token property">"Parameters"</span><span class="token operator">:</span> <span class="token punctuation">{</span> # 参数，使模版复用成为可能
+        <span class="token property">"KeyName"</span><span class="token operator">:</span> <span class="token punctuation">{</span> 
+            <span class="token property">"Description"</span><span class="token operator">:</span> <span class="token string">"key for SSH access"</span><span class="token punctuation">,</span>
+            <span class="token property">"Type"</span><span class="token operator">:</span> <span class="token string">"AWS::EC2::KeyPair::KeyName"</span><span class="token punctuation">,</span>
+            <span class="token property">"ConstraintDescription"</span><span class="token operator">:</span> <span class="token string">"Must be the name of an existing key pair."</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token property">"VPC"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+            <span class="token property">"Description"</span><span class="token operator">:</span> <span class="token string">"Just select the one and only default VPC."</span><span class="token punctuation">,</span>
+            <span class="token property">"Type"</span><span class="token operator">:</span> <span class="token string">"AWS::EC2::VPC::Id"</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token property">"Subnet"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+            <span class="token property">"Description"</span><span class="token operator">:</span> <span class="token string">"Just select one of the available subnets."</span><span class="token punctuation">,</span>
+            <span class="token property">"Type"</span><span class="token operator">:</span> <span class="token string">"AWS::EC2::Subnet::Id"</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token property">"IPSecSharedSecret"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+            <span class="token property">"Description"</span><span class="token operator">:</span> <span class="token string">"The shared secret key for IPSec."</span><span class="token punctuation">,</span>
+            <span class="token property">"Type"</span><span class="token operator">:</span> <span class="token string">"String"</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token property">"VPNUser"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+            <span class="token property">"Description"</span><span class="token operator">:</span> <span class="token string">"The VPN user."</span><span class="token punctuation">,</span>
+            <span class="token property">"Type"</span><span class="token operator">:</span> <span class="token string">"String"</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token property">"VPNPassword"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+            <span class="token property">"Description"</span><span class="token operator">:</span> <span class="token string">"The VPN password."</span><span class="token punctuation">,</span>
+            <span class="token property">"Type"</span><span class="token operator">:</span> <span class="token string">"String"</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token property">"Mappings"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token property">"EC2RegionMap"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+            <span class="token property">"ap-northeast-1"</span><span class="token operator">:</span> <span class="token punctuation">{</span><span class="token property">"AmazonLinuxAMIHVMEBSBacked64bit"</span><span class="token operator">:</span> <span class="token string">"ami-cbf90ecb"</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+            <span class="token property">"ap-southeast-1"</span><span class="token operator">:</span> <span class="token punctuation">{</span><span class="token property">"AmazonLinuxAMIHVMEBSBacked64bit"</span><span class="token operator">:</span> <span class="token string">"ami-68d8e93a"</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+            <span class="token property">"ap-southeast-2"</span><span class="token operator">:</span> <span class="token punctuation">{</span><span class="token property">"AmazonLinuxAMIHVMEBSBacked64bit"</span><span class="token operator">:</span> <span class="token string">"ami-fd9cecc7"</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+            <span class="token property">"eu-central-1"</span><span class="token operator">:</span> <span class="token punctuation">{</span><span class="token property">"AmazonLinuxAMIHVMEBSBacked64bit"</span><span class="token operator">:</span> <span class="token string">"ami-a8221fb5"</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+            <span class="token property">"eu-west-1"</span><span class="token operator">:</span> <span class="token punctuation">{</span><span class="token property">"AmazonLinuxAMIHVMEBSBacked64bit"</span><span class="token operator">:</span> <span class="token string">"ami-a10897d6"</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+            <span class="token property">"sa-east-1"</span><span class="token operator">:</span> <span class="token punctuation">{</span><span class="token property">"AmazonLinuxAMIHVMEBSBacked64bit"</span><span class="token operator">:</span> <span class="token string">"ami-b52890a8"</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+            <span class="token property">"us-east-1"</span><span class="token operator">:</span> <span class="token punctuation">{</span><span class="token property">"AmazonLinuxAMIHVMEBSBacked64bit"</span><span class="token operator">:</span> <span class="token string">"ami-1ecae776"</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+            <span class="token property">"us-west-1"</span><span class="token operator">:</span> <span class="token punctuation">{</span><span class="token property">"AmazonLinuxAMIHVMEBSBacked64bit"</span><span class="token operator">:</span> <span class="token string">"ami-d114f295"</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+            <span class="token property">"us-west-2"</span><span class="token operator">:</span> <span class="token punctuation">{</span><span class="token property">"AmazonLinuxAMIHVMEBSBacked64bit"</span><span class="token operator">:</span> <span class="token string">"ami-e7527ed7"</span><span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token property">"Resources"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token property">"EC2Instance"</span><span class="token operator">:</span> <span class="token punctuation">{</span> # 描述虚拟服务器
+            <span class="token property">"Type"</span><span class="token operator">:</span> <span class="token string">"AWS::EC2::Instance"</span><span class="token punctuation">,</span>
+            <span class="token property">"Properties"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+                <span class="token property">"InstanceType"</span><span class="token operator">:</span> <span class="token string">"t2.micro"</span><span class="token punctuation">,</span>
+                <span class="token property">"SecurityGroupIds"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token punctuation">{</span><span class="token property">"Ref"</span><span class="token operator">:</span> <span class="token string">"InstanceSecurityGroup"</span><span class="token punctuation">}</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+                <span class="token property">"KeyName"</span><span class="token operator">:</span> <span class="token punctuation">{</span><span class="token property">"Ref"</span><span class="token operator">:</span> <span class="token string">"KeyName"</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+                <span class="token property">"ImageId"</span><span class="token operator">:</span> <span class="token punctuation">{</span><span class="token property">"Fn::FindInMap"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"EC2RegionMap"</span><span class="token punctuation">,</span> <span class="token punctuation">{</span><span class="token property">"Ref"</span><span class="token operator">:</span> <span class="token string">"AWS::Region"</span><span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token string">"AmazonLinuxAMIHVMEBSBacked64bit"</span><span class="token punctuation">]</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+                <span class="token property">"SubnetId"</span><span class="token operator">:</span> <span class="token punctuation">{</span><span class="token property">"Ref"</span><span class="token operator">:</span> <span class="token string">"Subnet"</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+                <span class="token property">"UserData"</span><span class="token operator">:</span> <span class="token punctuation">{</span><span class="token property">"Fn::Base64"</span><span class="token operator">:</span> <span class="token punctuation">{</span><span class="token property">"Fn::Join"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">""</span><span class="token punctuation">,</span> <span class="token punctuation">[</span> # 为虚拟服务器定义一个 shell 脚本作为用户数据
+                    <span class="token string">"#!/bin/bash -ex\n"</span><span class="token punctuation">,</span>
+                    <span class="token string">"export IPSEC_PSK="</span><span class="token punctuation">,</span> <span class="token punctuation">{</span><span class="token property">"Ref"</span><span class="token operator">:</span> <span class="token string">"IPSecSharedSecret"</span><span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token string">"\n"</span><span class="token punctuation">,</span>
+                    <span class="token string">"export VPN_USER="</span><span class="token punctuation">,</span> <span class="token punctuation">{</span><span class="token property">"Ref"</span><span class="token operator">:</span> <span class="token string">"VPNUser"</span><span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token string">"\n"</span><span class="token punctuation">,</span>
+                    <span class="token string">"export VPN_PASSWORD="</span><span class="token punctuation">,</span> <span class="token punctuation">{</span><span class="token property">"Ref"</span><span class="token operator">:</span> <span class="token string">"VPNPassword"</span><span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token string">"\n"</span><span class="token punctuation">,</span>
+                    <span class="token string">"export STACK_NAME="</span><span class="token punctuation">,</span> <span class="token punctuation">{</span><span class="token property">"Ref"</span><span class="token operator">:</span> <span class="token string">"AWS::StackName"</span><span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token string">"\n"</span><span class="token punctuation">,</span>
+                    <span class="token string">"export REGION="</span><span class="token punctuation">,</span> <span class="token punctuation">{</span><span class="token property">"Ref"</span><span class="token operator">:</span> <span class="token string">"AWS::Region"</span><span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token string">"\n"</span><span class="token punctuation">,</span>
+                    <span class="token string">"curl -s https://raw.githubusercontent.com/AWSinAction/code/master/chapter5/vpn-setup.sh | bash -ex\n"</span> # <span class="token number">2</span>⃣️ 通过http获取shell脚本并执行
+                <span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token punctuation">}</span><span class="token punctuation">}</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token property">"InstanceSecurityGroup"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+            <span class="token property">"Type"</span><span class="token operator">:</span> <span class="token string">"AWS::EC2::SecurityGroup"</span><span class="token punctuation">,</span>
+            <span class="token property">"Properties"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+                <span class="token property">"GroupDescription"</span><span class="token operator">:</span> <span class="token string">"Enable access to VPN server"</span><span class="token punctuation">,</span>
+                <span class="token property">"VpcId"</span><span class="token operator">:</span> <span class="token punctuation">{</span><span class="token property">"Ref"</span><span class="token operator">:</span> <span class="token string">"VPC"</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+                <span class="token property">"SecurityGroupIngress"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+                    <span class="token punctuation">{</span>
+                        <span class="token property">"IpProtocol"</span><span class="token operator">:</span> <span class="token string">"tcp"</span><span class="token punctuation">,</span>
+                        <span class="token property">"FromPort"</span><span class="token operator">:</span> <span class="token string">"22"</span><span class="token punctuation">,</span>
+                        <span class="token property">"ToPort"</span><span class="token operator">:</span> <span class="token string">"22"</span><span class="token punctuation">,</span>
+                        <span class="token property">"CidrIp"</span><span class="token operator">:</span> <span class="token string">"0.0.0.0/0"</span>
+                    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+                    <span class="token punctuation">{</span>
+                        <span class="token property">"IpProtocol"</span><span class="token operator">:</span> <span class="token string">"udp"</span><span class="token punctuation">,</span>
+                        <span class="token property">"FromPort"</span><span class="token operator">:</span> <span class="token string">"500"</span><span class="token punctuation">,</span>
+                        <span class="token property">"ToPort"</span><span class="token operator">:</span> <span class="token string">"500"</span><span class="token punctuation">,</span>
+                        <span class="token property">"CidrIp"</span><span class="token operator">:</span> <span class="token string">"0.0.0.0/0"</span>
+                    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+                    <span class="token punctuation">{</span>
+                        <span class="token property">"IpProtocol"</span><span class="token operator">:</span> <span class="token string">"udp"</span><span class="token punctuation">,</span>
+                        <span class="token property">"FromPort"</span><span class="token operator">:</span> <span class="token string">"1701"</span><span class="token punctuation">,</span>
+                        <span class="token property">"ToPort"</span><span class="token operator">:</span> <span class="token string">"1701"</span><span class="token punctuation">,</span>
+                        <span class="token property">"CidrIp"</span><span class="token operator">:</span> <span class="token string">"0.0.0.0/0"</span>
+                    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+                    <span class="token punctuation">{</span>
+                        <span class="token property">"IpProtocol"</span><span class="token operator">:</span> <span class="token string">"udp"</span><span class="token punctuation">,</span>
+                        <span class="token property">"FromPort"</span><span class="token operator">:</span> <span class="token string">"4500"</span><span class="token punctuation">,</span>
+                        <span class="token property">"ToPort"</span><span class="token operator">:</span> <span class="token string">"4500"</span><span class="token punctuation">,</span>
+                        <span class="token property">"CidrIp"</span><span class="token operator">:</span> <span class="token string">"0.0.0.0/0"</span>
+                    <span class="token punctuation">}</span>
+                <span class="token punctuation">]</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token property">"Outputs"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token property">"ServerIP"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+            <span class="token property">"Description"</span><span class="token operator">:</span> <span class="token string">"Public IP address of the vpn server"</span><span class="token punctuation">,</span>
+            <span class="token property">"Value"</span><span class="token operator">:</span> <span class="token punctuation">{</span><span class="token property">"Fn::GetAtt"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"EC2Instance"</span><span class="token punctuation">,</span> <span class="token string">"PublicIp"</span><span class="token punctuation">]</span><span class="token punctuation">}</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token property">"IPSecSharedSecret"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+            <span class="token property">"Description"</span><span class="token operator">:</span> <span class="token string">"The shared key for the VPN connection (IPSec)"</span><span class="token punctuation">,</span>
+            <span class="token property">"Value"</span><span class="token operator">:</span> <span class="token punctuation">{</span><span class="token property">"Ref"</span><span class="token operator">:</span> <span class="token string">"IPSecSharedSecret"</span><span class="token punctuation">}</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token property">"VPNUser"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+            <span class="token property">"Description"</span><span class="token operator">:</span> <span class="token string">"The username for the vpn connection"</span><span class="token punctuation">,</span>
+            <span class="token property">"Value"</span><span class="token operator">:</span> <span class="token punctuation">{</span><span class="token property">"Ref"</span><span class="token operator">:</span> <span class="token string">"VPNUser"</span><span class="token punctuation">}</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token property">"VPNPassword"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+            <span class="token property">"Description"</span><span class="token operator">:</span> <span class="token string">"The password for the vpn connection"</span><span class="token punctuation">,</span>
+            <span class="token property">"Value"</span><span class="token operator">:</span> <span class="token punctuation">{</span><span class="token property">"Ref"</span><span class="token operator">:</span> <span class="token string">"VPNPassword"</span><span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 
 
-<h4 id="vpn-setup-sh-使用脚本安装并配置一个-VPN-服务器"><a href="#vpn-setup-sh-使用脚本安装并配置一个-VPN-服务器" class="headerlink" title="vpn-setup.sh - 使用脚本安装并配置一个 VPN 服务器"></a>vpn-setup.sh - 使用脚本安装并配置一个 VPN 服务器</h4><figure class="highlight sh"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash -ex</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#param IPSEC_PSK the shared secret</span></span><br><span class="line"><span class="comment">#param VPN_USER the vpn username</span></span><br><span class="line"><span class="comment">#param VPN_PASSWORD the vpn password</span></span><br><span class="line"><span class="comment">#param STACK_NAME</span></span><br><span class="line"><span class="comment">#param REGION</span></span><br><span class="line"> </span><br><span class="line"><span class="comment"># 获取虚拟服务器私有 IP 地址</span></span><br><span class="line">PRIVATE_IP=`curl -s http://169.254.169.254/latest/meta-data/<span class="built_in">local</span>-ipv4`</span><br><span class="line"> <span class="comment"># 获取虚拟服务器公有 IP 地址</span></span><br><span class="line">PUBLIC_IP=`curl -s http://169.254.169.254/latest/meta-data/public-ipv4`</span><br><span class="line"></span><br><span class="line"><span class="comment"># 向包管理器 yum 添加额外程序包</span></span><br><span class="line">yum-config-manager --<span class="built_in">enable</span> epel &amp;&amp; yum clean all</span><br><span class="line"><span class="comment"># 安装软件程序包</span></span><br><span class="line">yum install -y openswan xl2tpd</span><br><span class="line"></span><br><span class="line"><span class="comment"># 为 IPSec 写一个包含共享密钥的文件</span></span><br><span class="line">cat &gt; /etc/ipsec.conf &lt;&lt;EOF</span><br><span class="line">version 2.0</span><br><span class="line"> </span><br><span class="line">config setup</span><br><span class="line">    nat_traversal=yes</span><br><span class="line">    virtual_private=%v4:10.0.0.0/8,%v4:192.168.0.0/16,%v4:172.16.0.0/12,%v4:25.0.0.0/8,%v6:fd00::/8,%v6:fe80::/10</span><br><span class="line">    oe=off</span><br><span class="line">    protostack=netkey</span><br><span class="line">    nhelpers=0</span><br><span class="line">    interfaces=%defaultroute</span><br><span class="line"></span><br><span class="line">conn vpnpsk</span><br><span class="line">    auto=add</span><br><span class="line">    left=<span class="variable">$PRIVATE_IP</span></span><br><span class="line">    leftid=<span class="variable">$PUBLIC_IP</span></span><br><span class="line">    leftsubnet=<span class="variable">$PRIVATE_IP</span>/32</span><br><span class="line">    leftnexthop=%defaultroute</span><br><span class="line">    leftprotoport=17/1701</span><br><span class="line">    rightprotoport=17/%any</span><br><span class="line">    right=%any</span><br><span class="line">    rightsubnetwithin=0.0.0.0/0</span><br><span class="line">    forceencaps=yes</span><br><span class="line">    authby=secret</span><br><span class="line">    pfs=no</span><br><span class="line">    <span class="built_in">type</span>=transport</span><br><span class="line">    auth=esp</span><br><span class="line">    ike=3des-sha1</span><br><span class="line">    phase2alg=3des-sha1</span><br><span class="line">    dpddelay=30</span><br><span class="line">    dpdtimeout=120</span><br><span class="line">    dpdaction=clear</span><br><span class="line">EOF</span><br><span class="line"> </span><br><span class="line"> <span class="comment"># 为 IPSec 写配置文件</span></span><br><span class="line">cat &gt; /etc/ipsec.secrets &lt;&lt;EOF</span><br><span class="line"><span class="variable">$PUBLIC_IP</span> %any : PSK <span class="string">"<span class="variable">${IPSEC_PSK}</span>"</span></span><br><span class="line">EOF</span><br><span class="line"> </span><br><span class="line"> <span class="comment"># 为 L2TP 管道写配置文件</span></span><br><span class="line">cat &gt; /etc/xl2tpd/xl2tpd.conf &lt;&lt;EOF</span><br><span class="line">[global]</span><br><span class="line">port = 1701</span><br><span class="line"></span><br><span class="line">[lns default]</span><br><span class="line">ip range = 192.168.42.10-192.168.42.250</span><br><span class="line"><span class="built_in">local</span> ip = 192.168.42.1</span><br><span class="line">require chap = yes</span><br><span class="line">refuse pap = yes</span><br><span class="line">require authentication = yes</span><br><span class="line">name = l2tpd</span><br><span class="line">pppoptfile = /etc/ppp/options.xl2tpd</span><br><span class="line">length bit = yes</span><br><span class="line">EOF</span><br><span class="line"></span><br><span class="line"> <span class="comment"># 为 PPP 服务写配置文件</span></span><br><span class="line">cat &gt; /etc/ppp/chap-secrets &lt;&lt;EOF</span><br><span class="line"><span class="variable">${VPN_USER}</span> l2tpd <span class="variable">${VPN_PASSWORD}</span> *</span><br><span class="line">EOF</span><br><span class="line"></span><br><span class="line">cat &gt; /etc/ppp/options.xl2tpd &lt;&lt;EOF</span><br><span class="line">ipcp-accept-local</span><br><span class="line">ipcp-accept-remote</span><br><span class="line">ms-dns 8.8.8.8</span><br><span class="line">ms-dns 8.8.4.4</span><br><span class="line">noccp</span><br><span class="line">auth</span><br><span class="line">crtscts</span><br><span class="line">idle 1800</span><br><span class="line">mtu 1280</span><br><span class="line">mru 1280</span><br><span class="line">lock</span><br><span class="line">connect-delay 5000</span><br><span class="line">EOF</span><br><span class="line"> </span><br><span class="line">iptables -t nat -A POSTROUTING -s 192.168.42.0/24 -o eth0 -j MASQUERADE</span><br><span class="line"><span class="built_in">echo</span> 1 &gt; /proc/sys/net/ipv4/ip_forward</span><br><span class="line">iptables-save &gt; /etc/iptables.rules</span><br><span class="line"></span><br><span class="line">mkdir -p /etc/network/<span class="keyword">if</span>-pre-up.d</span><br><span class="line">cat &gt; /etc/network/<span class="keyword">if</span>-pre-up.d/iptablesload &lt;&lt;EOF</span><br><span class="line"><span class="meta">#!/bin/sh</span></span><br><span class="line">iptables-restore &lt; /etc/iptables.rules</span><br><span class="line"><span class="built_in">echo</span> 1 &gt; /proc/sys/net/ipv4/ip_forward</span><br><span class="line"><span class="built_in">exit</span> 0</span><br><span class="line">EOF</span><br><span class="line"></span><br><span class="line"><span class="comment"># 启动 VPN 服务器需要的服务</span></span><br><span class="line">service ipsec start &amp;&amp; service xl2tpd start</span><br><span class="line"><span class="comment"># 配置 VPN 服务器的运行等级</span></span><br><span class="line">chkconfig ipsec on &amp;&amp; chkconfig xl2tpd on</span><br><span class="line"></span><br><span class="line">/opt/aws/bin/cfn-signal --stack <span class="variable">$STACK_NAME</span> --resource EC2Instance --region <span class="variable">$REGION</span></span><br></pre></td></tr></tbody></table></figure>
+<h4 id="vpn-setup-sh-使用脚本安装并配置一个-VPN-服务器"><a href="#vpn-setup-sh-使用脚本安装并配置一个-VPN-服务器" class="headerlink" title="vpn-setup.sh - 使用脚本安装并配置一个 VPN 服务器"></a>vpn-setup.sh - 使用脚本安装并配置一个 VPN 服务器</h4><pre class="line-numbers language-sh" data-language="sh"><code class="language-sh">#!/bin/bash -ex
+
+#param IPSEC_PSK the shared secret
+#param VPN_USER the vpn username
+#param VPN_PASSWORD the vpn password
+#param STACK_NAME
+#param REGION
+
+# 获取虚拟服务器私有 IP 地址
+PRIVATE_IP=`curl -s http://169.254.169.254/latest/meta-data/local-ipv4`
+ # 获取虚拟服务器公有 IP 地址
+PUBLIC_IP=`curl -s http://169.254.169.254/latest/meta-data/public-ipv4`
+
+# 向包管理器 yum 添加额外程序包
+yum-config-manager --enable epel &amp;&amp; yum clean all
+# 安装软件程序包
+yum install -y openswan xl2tpd
+
+# 为 IPSec 写一个包含共享密钥的文件
+cat &gt; /etc/ipsec.conf &lt;&lt;EOF
+version 2.0
+
+config setup
+    nat_traversal=yes
+    virtual_private=%v4:10.0.0.0/8,%v4:192.168.0.0/16,%v4:172.16.0.0/12,%v4:25.0.0.0/8,%v6:fd00::/8,%v6:fe80::/10
+    oe=off
+    protostack=netkey
+    nhelpers=0
+    interfaces=%defaultroute
+
+conn vpnpsk
+    auto=add
+    left=$PRIVATE_IP
+    leftid=$PUBLIC_IP
+    leftsubnet=$PRIVATE_IP/32
+    leftnexthop=%defaultroute
+    leftprotoport=17/1701
+    rightprotoport=17/%any
+    right=%any
+    rightsubnetwithin=0.0.0.0/0
+    forceencaps=yes
+    authby=secret
+    pfs=no
+    type=transport
+    auth=esp
+    ike=3des-sha1
+    phase2alg=3des-sha1
+    dpddelay=30
+    dpdtimeout=120
+    dpdaction=clear
+EOF
+
+ # 为 IPSec 写配置文件
+cat &gt; /etc/ipsec.secrets &lt;&lt;EOF
+$PUBLIC_IP %any : PSK "${IPSEC_PSK}"
+EOF
+
+ # 为 L2TP 管道写配置文件
+cat &gt; /etc/xl2tpd/xl2tpd.conf &lt;&lt;EOF
+[global]
+port = 1701
+
+[lns default]
+ip range = 192.168.42.10-192.168.42.250
+local ip = 192.168.42.1
+require chap = yes
+refuse pap = yes
+require authentication = yes
+name = l2tpd
+pppoptfile = /etc/ppp/options.xl2tpd
+length bit = yes
+EOF
+
+ # 为 PPP 服务写配置文件
+cat &gt; /etc/ppp/chap-secrets &lt;&lt;EOF
+${VPN_USER} l2tpd ${VPN_PASSWORD} *
+EOF
+
+cat &gt; /etc/ppp/options.xl2tpd &lt;&lt;EOF
+ipcp-accept-local
+ipcp-accept-remote
+ms-dns 8.8.8.8
+ms-dns 8.8.4.4
+noccp
+auth
+crtscts
+idle 1800
+mtu 1280
+mru 1280
+lock
+connect-delay 5000
+EOF
+
+iptables -t nat -A POSTROUTING -s 192.168.42.0/24 -o eth0 -j MASQUERADE
+echo 1 &gt; /proc/sys/net/ipv4/ip_forward
+iptables-save &gt; /etc/iptables.rules
+
+mkdir -p /etc/network/if-pre-up.d
+cat &gt; /etc/network/if-pre-up.d/iptablesload &lt;&lt;EOF
+#!/bin/sh
+iptables-restore &lt; /etc/iptables.rules
+echo 1 &gt; /proc/sys/net/ipv4/ip_forward
+exit 0
+EOF
+
+# 启动 VPN 服务器需要的服务
+service ipsec start &amp;&amp; service xl2tpd start
+# 配置 VPN 服务器的运行等级
+chkconfig ipsec on &amp;&amp; chkconfig xl2tpd on
+
+/opt/aws/bin/cfn-signal --stack $STACK_NAME --resource EC2Instance --region $REGION<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>终止虚拟服务器并清理环境：</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">aws cloudformation delete-stack --slack-name vpn</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-none"><code class="language-none">aws cloudformation delete-stack --slack-name vpn<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 
 
 
@@ -461,25 +714,35 @@
 </ol>
 <p>使用 Elastic Beanstalk 和 AWS CLI 创建应用、版本和环境，并部署一个 Etherpad 服务：</p>
 <p>1⃣️ 为 Elastic Beanstalk 服务创建一个应用：</p>
-<figure class="highlight sh"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">aws elasticbeanstalk create-application --application-name etherpad</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-sh" data-language="sh"><code class="language-sh">aws elasticbeanstalk create-application --application-name etherpad<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 
 
 
 <p>2⃣️ 为 AWS Elastic Beanstalk 创建版本</p>
-<figure class="highlight sh"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">aws elasticbeanstalk create-application-version \</span><br><span class="line">--application-name etherpad --version-label 1.5.2 \</span><br><span class="line">--<span class="built_in">source</span>-bundle S3Bucket=awsincation,S3Key=chapter5/etherpad.zip</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-sh" data-language="sh"><code class="language-sh">aws elasticbeanstalk create-application-version \
+--application-name etherpad --version-label 1.5.2 \
+--source-bundle S3Bucket=awsincation,S3Key=chapter5/etherpad.zip<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
 
 
 
 <p>3⃣️ 用 Elastic Beanstalk 创建一个环境来执行 Etherpad</p>
 <p>获取最新的 Node.js 环境脚本：</p>
-<figure class="highlight sh"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">aws elasticbeanstalk list-available-solution-stacks --output text \</span><br><span class="line">--query <span class="string">"SolutionStacks[?contains(@, 'running Node.js')] | [0]"</span> \</span><br><span class="line"></span><br><span class="line">64bit Amazon Linux 2015.03 v1.4.6 running Node.js</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-sh" data-language="sh"><code class="language-sh">aws elasticbeanstalk list-available-solution-stacks --output text \
+--query "SolutionStacks[?contains(@, 'running Node.js')] | [0]" \
+
+64bit Amazon Linux 2015.03 v1.4.6 running Node.js<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
 
 
 
-<figure class="highlight sh"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">aws elasticbeanstalk create-environment --environment-name etherpad \</span><br><span class="line">--application-name etherpad \</span><br><span class="line">--option-settings Namespace=aws:elasticbeanstalk:environment,\</span><br><span class="line">OptionName=EnvironmentType,Value=SingleInstance \ <span class="comment">## 启动一个不可变规模且无负载均衡的单台虚拟服务器</span></span><br><span class="line">--solution-stalk-name <span class="string">"<span class="variable">$SolutionStackName</span>"</span> \</span><br><span class="line">--version-label 1.5.2</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-sh" data-language="sh"><code class="language-sh">aws elasticbeanstalk create-environment --environment-name etherpad \
+--application-name etherpad \
+--option-settings Namespace=aws:elasticbeanstalk:environment,\
+OptionName=EnvironmentType,Value=SingleInstance \ ## 启动一个不可变规模且无负载均衡的单台虚拟服务器
+--solution-stalk-name "$SolutionStackName" \
+--version-label 1.5.2<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>4⃣️ 检查 Etherpad 环境的状态</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">aws elasticbeanstalk describe-environments --environment-names etherpad</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-none"><code class="language-none">aws elasticbeanstalk describe-environments --environment-names etherpad<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 
 
 
@@ -607,12 +870,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">2.1m</span>
+    <span title="站点总字数">2.3m</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">31:21</span>
+    <span title="站点阅读时长">34:09</span>
 </div>
   <div class="powered-by">由 <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZw==">NexT.Gemini</span> 强力驱动
   </div>

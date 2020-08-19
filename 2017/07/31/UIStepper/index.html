@@ -385,14 +385,14 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>2.8k</span>
+              <span>2.7k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>3 分钟</span>
+              <span>2 分钟</span>
             </span>
 
         </div>
@@ -469,7 +469,45 @@
 <p>设置用于控件的递增字形的图像。</p>
 </li>
 </ul>
-<h2 id="使用-UIStepper"><a href="#使用-UIStepper" class="headerlink" title="使用 UIStepper"></a>使用 UIStepper</h2><h3 id="示例代码："><a href="#示例代码：" class="headerlink" title="示例代码："></a>示例代码：</h3><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">@implementation ViewController</span><br><span class="line"></span><br><span class="line">#pragma mark - Lifecycle</span><br><span class="line"></span><br><span class="line">- (void)viewDidLoad {</span><br><span class="line">    [super viewDidLoad];</span><br><span class="line">    </span><br><span class="line">    // 标签，用于显示步进值</span><br><span class="line">    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(35, 100, 105, 29)];</span><br><span class="line">    label.backgroundColor = [UIColor flatWhiteColor];</span><br><span class="line">    label.textColor = [UIColor flatBlueColor];</span><br><span class="line">    label.textAlignment = NSTextAlignmentCenter;</span><br><span class="line">    self.label = label;</span><br><span class="line">    [self.view addSubview:self.label];</span><br><span class="line">    </span><br><span class="line">    // 创建 UIStepper 实例对象</span><br><span class="line">    UIStepper *stepper = [[UIStepper alloc] initWithFrame:CGRectMake(150, 100, 94, 29)];</span><br><span class="line">    // 用户交互时实时更新步进值</span><br><span class="line">    stepper.continuous = YES; // default = YES</span><br><span class="line">    // 用户持续按住，自动增加或减少</span><br><span class="line">    stepper.autorepeat = YES; // default = YES</span><br><span class="line">    // 如果设置为 YES, 值会在 min &lt;-&gt; max 之间循环</span><br><span class="line">    stepper.wraps = NO; // default = NO</span><br><span class="line">    stepper.minimumValue = 0;   // default 0</span><br><span class="line">    stepper.maximumValue = 100; // default 100</span><br><span class="line">    stepper.stepValue    = 1;   // default 1</span><br><span class="line">    // 设置 Target-Action</span><br><span class="line">    [stepper addTarget:self</span><br><span class="line">                action:@selector(stepperValueChanged:)</span><br><span class="line">      forControlEvents:UIControlEventValueChanged];</span><br><span class="line">    // 添加到视图</span><br><span class="line">    [self.view addSubview:stepper];</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">- (void)stepperValueChanged:(UIStepper *)stepper {</span><br><span class="line">    // 获取步进值</span><br><span class="line">    NSString *value = [NSString stringWithFormat:@"%f",stepper.value];</span><br><span class="line">    self.label.text = value;</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<h2 id="使用-UIStepper"><a href="#使用-UIStepper" class="headerlink" title="使用 UIStepper"></a>使用 UIStepper</h2><h3 id="示例代码："><a href="#示例代码：" class="headerlink" title="示例代码："></a>示例代码：</h3><pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">@implementation ViewController
+
+#pragma mark - Lifecycle
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+
+    // 标签，用于显示步进值
+    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(35, 100, 105, 29)];
+    label.backgroundColor = [UIColor flatWhiteColor];
+    label.textColor = [UIColor flatBlueColor];
+    label.textAlignment = NSTextAlignmentCenter;
+    self.label = label;
+    [self.view addSubview:self.label];
+
+    // 创建 UIStepper 实例对象
+    UIStepper *stepper = [[UIStepper alloc] initWithFrame:CGRectMake(150, 100, 94, 29)];
+    // 用户交互时实时更新步进值
+    stepper.continuous = YES; // default = YES
+    // 用户持续按住，自动增加或减少
+    stepper.autorepeat = YES; // default = YES
+    // 如果设置为 YES, 值会在 min &lt;-&gt; max 之间循环
+    stepper.wraps = NO; // default = NO
+    stepper.minimumValue = 0;   // default 0
+    stepper.maximumValue = 100; // default 100
+    stepper.stepValue    = 1;   // default 1
+    // 设置 Target-Action
+    [stepper addTarget:self
+                action:@selector(stepperValueChanged:)
+      forControlEvents:UIControlEventValueChanged];
+    // 添加到视图
+    [self.view addSubview:stepper];
+}
+
+- (void)stepperValueChanged:(UIStepper *)stepper {
+    // 获取步进值
+    NSString *value = [NSString stringWithFormat:@"%f",stepper.value];
+    self.label.text = value;
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <h3 id="效果"><a href="#效果" class="headerlink" title="效果"></a>效果</h3><p><img data-src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072908.gif"></p>
 <h3 id="参考设置大小"><a href="#参考设置大小" class="headerlink" title="参考设置大小"></a>参考设置大小</h3><p><img data-src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072908.jpg"></p>
@@ -598,12 +636,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">2.1m</span>
+    <span title="站点总字数">2.3m</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">31:21</span>
+    <span title="站点阅读时长">34:09</span>
 </div>
   <div class="powered-by">由 <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZw==">NexT.Gemini</span> 强力驱动
   </div>

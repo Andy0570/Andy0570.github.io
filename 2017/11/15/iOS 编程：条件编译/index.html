@@ -412,13 +412,43 @@
 <h3 id="ifdef、-endif、-else-和-ifndef-语句"><a href="#ifdef、-endif、-else-和-ifndef-语句" class="headerlink" title="ifdef、#endif、#else 和 #ifndef 语句"></a>ifdef、#endif、#else 和 #ifndef 语句</h3><p>如果程序编译时，<code>#ifdef</code> 行中所指定的符号已经通过 <code>#define</code> 语句或命令行定义了，那么编译器将处理从此处开始到 <code>#else</code>、<code>#elif</code> 或 <code>#endif</code> 的程序段，否则就忽略这个程序段。</p>
 <p> <code>#ifndef</code> 语句的含义与 <code>#ifdef</code> 相反，如果指定的符号没有定义，它将导致程序处理后续行。</p>
 <p>示例代码：</p>
-<h4 id="判断-iOS-系统版本"><a href="#判断-iOS-系统版本" class="headerlink" title="判断 iOS 系统版本"></a>判断 iOS 系统版本</h4><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">/* 如果是 iOS 11 系统，使用 barnHD.png 图片。否则，使用 barn.png 图片。*/</span><br><span class="line">#ifdef __iPhone_11_0 </span><br><span class="line">  #define KImageFile @"barnHD.png"</span><br><span class="line">#else</span><br><span class="line">  #define KImageFile @"barn.png"</span><br><span class="line">#endif</span><br></pre></td></tr></tbody></table></figure>
+<h4 id="判断-iOS-系统版本"><a href="#判断-iOS-系统版本" class="headerlink" title="判断 iOS 系统版本"></a>判断 iOS 系统版本</h4><pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">/* 如果是 iOS 11 系统，使用 barnHD.png 图片。否则，使用 barn.png 图片。*/
+#ifdef __iPhone_11_0 
+  #define KImageFile @"barnHD.png"
+#else
+  #define KImageFile @"barn.png"
+#endif<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
-<h4 id="判断-iOS-系统版本-1"><a href="#判断-iOS-系统版本-1" class="headerlink" title="判断 iOS 系统版本"></a>判断 iOS 系统版本</h4><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">#ifndef __iPhone_3_0</span><br><span class="line">#warning "This project uses features only available in iOS SDK 3.0 and later."</span><br><span class="line">#endif</span><br></pre></td></tr></tbody></table></figure>
+<h4 id="判断-iOS-系统版本-1"><a href="#判断-iOS-系统版本-1" class="headerlink" title="判断 iOS 系统版本"></a>判断 iOS 系统版本</h4><pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">#ifndef __iPhone_3_0
+#warning "This project uses features only available in iOS SDK 3.0 and later."
+#endif<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
 
-<h4 id="判断编程语言"><a href="#判断编程语言" class="headerlink" title="判断编程语言"></a>判断编程语言</h4><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">// 保证在#ifdef中的宏定义只会在OC的代码中被引用，</span><br><span class="line">// 否则，一旦引入C/C++的代码或者框架，就会出错！</span><br><span class="line">#ifdef __Objective-C__</span><br><span class="line">    #import &lt;UIKit/UIKit.h&gt;</span><br><span class="line">    #import &lt;Foundation/Foundation.h&gt;</span><br><span class="line">    #import &lt;QuartzCore/QuartzCore.h&gt;</span><br><span class="line"></span><br><span class="line">    //define this constant if you want to use Masonry without the 'mas_' prefix</span><br><span class="line">    #define MAS_SHORTHAND</span><br><span class="line"></span><br><span class="line">    //define this constant if you want to enable auto-boxing for default syntax</span><br><span class="line">    #define MAS_SHORTHAND_GLOBALS</span><br><span class="line"></span><br><span class="line">    #import "Masonry.h"</span><br><span class="line">#endif</span><br></pre></td></tr></tbody></table></figure>
+<h4 id="判断编程语言"><a href="#判断编程语言" class="headerlink" title="判断编程语言"></a>判断编程语言</h4><pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">// 保证在#ifdef中的宏定义只会在OC的代码中被引用，
+// 否则，一旦引入C/C++的代码或者框架，就会出错！
+#ifdef __Objective-C__
+    #import &lt;UIKit/UIKit.h&gt;
+    #import &lt;Foundation/Foundation.h&gt;
+    #import &lt;QuartzCore/QuartzCore.h&gt;
 
-<h4 id="判断开发模式：-debug-模式-release-模式"><a href="#判断开发模式：-debug-模式-release-模式" class="headerlink" title="判断开发模式： debug 模式/release 模式"></a>判断开发模式： debug 模式 /release 模式</h4><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">#ifdef __Objective-C__</span><br><span class="line"></span><br><span class="line">// 开发模式下打印日志，否则不打印</span><br><span class="line">#ifdef DEBUG</span><br><span class="line">  #define NSLog(fmt, ...) NSLog((@"%s [Line %d] " fmt), __PRETTY_FUNCTION__, __LINE__, ##__VA_ARGS__)</span><br><span class="line">#else</span><br><span class="line">  #define NSLog(...)</span><br><span class="line">#endif</span><br><span class="line"></span><br><span class="line">#endif</span><br></pre></td></tr></tbody></table></figure>
+    //define this constant if you want to use Masonry without the 'mas_' prefix
+    #define MAS_SHORTHAND
+
+    //define this constant if you want to enable auto-boxing for default syntax
+    #define MAS_SHORTHAND_GLOBALS
+
+    #import "Masonry.h"
+#endif<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h4 id="判断开发模式：-debug-模式-release-模式"><a href="#判断开发模式：-debug-模式-release-模式" class="headerlink" title="判断开发模式： debug 模式/release 模式"></a>判断开发模式： debug 模式 /release 模式</h4><pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">#ifdef __Objective-C__
+
+// 开发模式下打印日志，否则不打印
+#ifdef DEBUG
+  #define NSLog(fmt, ...) NSLog((@"%s [Line %d] " fmt), __PRETTY_FUNCTION__, __LINE__, ##__VA_ARGS__)
+#else
+  #define NSLog(...)
+#endif
+
+#endif<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>参数含义：</p>
 <ol>
@@ -431,22 +461,38 @@
 <li><code>#if</code> 预处理程序语句为控制条件编译提供了更通用的方法。</li>
 <li>如果满足<code>#if</code> 后面的条件，就编译<code>#if</code> 和<code>#endif</code> 之间的程序段，否则不编译。</li>
 </ul>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">#if defined (DEBUG)</span><br><span class="line">  //...</span><br><span class="line">#endif</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">#if defined (DEBUG)
+  //...
+#endif<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
 
 <p>效果同下：</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">#ifdef DEBUG</span><br><span class="line">  //...</span><br><span class="line">#endif</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">#ifdef DEBUG
+  //...
+#endif<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
 
-<h4 id="判断应用运行环境"><a href="#判断应用运行环境" class="headerlink" title="判断应用运行环境"></a>判断应用运行环境</h4><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">#if !TARGET_IPHONE_SIMULATOR</span><br><span class="line">    // 如果当前环境不是模拟器，则执行这里的代码或者方法。</span><br><span class="line">    // 一般用于需要打开手机硬件的场景，如相机、GPS、陀螺仪等。</span><br><span class="line">#endif</span><br></pre></td></tr></tbody></table></figure>
+<h4 id="判断应用运行环境"><a href="#判断应用运行环境" class="headerlink" title="判断应用运行环境"></a>判断应用运行环境</h4><pre class="line-numbers language-none"><code class="language-none">#if !TARGET_IPHONE_SIMULATOR
+    // 如果当前环境不是模拟器，则执行这里的代码或者方法。
+    // 一般用于需要打开手机硬件的场景，如相机、GPS、陀螺仪等。
+#endif<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
 
 
 <h4 id="undef-语句"><a href="#undef-语句" class="headerlink" title="#undef 语句"></a>#undef 语句</h4><ul>
-<li>使已经定义的名称成为未定义的，来消除特点名称的定义 </li>
+<li>使已经定义的名称成为未定义的，来消除特点名称的定义</li>
 </ul>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#undef name // 取消定义</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">#undef name // 取消定义<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 
-<h1 id="NS-DEPRECATED-IOS-与-NS-AVAILABLE-IOS"><a href="#NS-DEPRECATED-IOS-与-NS-AVAILABLE-IOS" class="headerlink" title="NS_DEPRECATED_IOS 与 NS_AVAILABLE_IOS"></a>NS_DEPRECATED_IOS 与 NS_AVAILABLE_IOS</h1><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">// NS_DEPRECATED_IOS(2_0, 10_0）表示该函数只能在 iOS 2.0 和 iOS 10.0 之间使用，是已被废弃的函数，</span><br><span class="line">// 但并不是说在 iOS 10.0 之后不能使用该函数了，是可以使用，但也需要考虑找其他替代方法了。</span><br><span class="line">- (BOOL)openURL:(NSURL*)url NS_DEPRECATED_IOS(2_0, 10_0, "Please use openURL:options:completionHandler: instead") NS_EXTENSION_UNAVAILABLE_IOS("");</span><br><span class="line"></span><br><span class="line">// NS_AVAILABLE_IOS(10_0)：表示自 iOS 10.0 开始支持该方法，若在 iOS 10.0 之前的版本使用该函数，则会导致 Crash。</span><br><span class="line">- (void)openURL:(NSURL*)url options:(NSDictionary&lt;NSString *, id&gt; *)options completionHandler:(void (^ __nullable)(BOOL success))completion NS_AVAILABLE_IOS(10_0) NS_EXTENSION_UNAVAILABLE_IOS("");</span><br></pre></td></tr></tbody></table></figure>
+<h1 id="NS-DEPRECATED-IOS-与-NS-AVAILABLE-IOS"><a href="#NS-DEPRECATED-IOS-与-NS-AVAILABLE-IOS" class="headerlink" title="NS_DEPRECATED_IOS 与 NS_AVAILABLE_IOS"></a>NS_DEPRECATED_IOS 与 NS_AVAILABLE_IOS</h1><pre class="line-numbers language-none"><code class="language-none">// NS_DEPRECATED_IOS(2_0, 10_0）表示该函数只能在 iOS 2.0 和 iOS 10.0 之间使用，是已被废弃的函数，
+// 但并不是说在 iOS 10.0 之后不能使用该函数了，是可以使用，但也需要考虑找其他替代方法了。
+- (BOOL)openURL:(NSURL*)url NS_DEPRECATED_IOS(2_0, 10_0, "Please use openURL:options:completionHandler: instead") NS_EXTENSION_UNAVAILABLE_IOS("");
+
+// NS_AVAILABLE_IOS(10_0)：表示自 iOS 10.0 开始支持该方法，若在 iOS 10.0 之前的版本使用该函数，则会导致 Crash。
+- (void)openURL:(NSURL*)url options:(NSDictionary&lt;NSString *, id&gt; *)options completionHandler:(void (^ __nullable)(BOOL success))completion NS_AVAILABLE_IOS(10_0) NS_EXTENSION_UNAVAILABLE_IOS("");<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>解决某些方法失效导致的版本兼容性问题：</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">if (@available(iOS 10.0, *)) {</span><br><span class="line">    [[UIApplication sharedApplication] openURL:url options:@{UIApplicationOpenURLOptionUniversalLinksOnly: @YES} completionHandler:nil];</span><br><span class="line">} else {</span><br><span class="line">    [[UIApplication sharedApplication] openURL:url];</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-none"><code class="language-none">if (@available(iOS 10.0, *)) {
+    [[UIApplication sharedApplication] openURL:url options:@{UIApplicationOpenURLOptionUniversalLinksOnly: @YES} completionHandler:nil];
+} else {
+    [[UIApplication sharedApplication] openURL:url];
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
     </div>
 
@@ -566,12 +612,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">2.1m</span>
+    <span title="站点总字数">2.3m</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">31:21</span>
+    <span title="站点阅读时长">34:09</span>
 </div>
   <div class="powered-by">由 <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZw==">NexT.Gemini</span> 强力驱动
   </div>

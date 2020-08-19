@@ -40,8 +40,8 @@
 <meta property="article:published_time" content="2018-10-23T13:05:00.000Z">
 <meta property="article:modified_time" content="2019-05-01T13:02:44.000Z">
 <meta property="article:author" content="独木舟的木">
-<meta property="article:tag" content="密码学">
 <meta property="article:tag" content="PKI">
+<meta property="article:tag" content="密码学">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/075355.jpg">
 
@@ -383,14 +383,14 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>2.9k</span>
+              <span>2.7k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>3 分钟</span>
+              <span>2 分钟</span>
             </span>
 
         </div>
@@ -428,14 +428,56 @@
 <p>以 <code>slap</code> 开头的命令（如： <code>slapcat</code> <code>slapcat</code>）是<strong>服务端</strong>工具。</p>
 <p>以 <code>ldap</code> 开头的命令（如： <code>ldapsearch</code>）是<strong>客户端</strong>工具；</p>
 </blockquote>
-<h3 id="第一步：安装和配置-OpenLDAP-服务器"><a href="#第一步：安装和配置-OpenLDAP-服务器" class="headerlink" title="第一步：安装和配置 OpenLDAP 服务器"></a>第一步：安装和配置 OpenLDAP 服务器</h3><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 安装 OpenLDAP:</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> slapd:OpenLDAP 服务端程序组件。</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> ldap-utils:OpenLDAP 命令行工具集。</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo apt-get update</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo apt-get install -y slapd ldap-utils</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 重新配置</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo dpkg-reconfigure slapd</span></span><br><span class="line">Domain Name:arling.com</span><br><span class="line">Organization Name:tonintech</span><br><span class="line">Password:paradise</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 打开防火墙LDAP端口（389、636）</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo ufw allow ldap</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> LDAP进程 slapd 生命周期管理</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo service slapd start   <span class="comment"># 开启</span></span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo serviec slapd stop    <span class="comment"># 关闭</span></span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo service slapd restart <span class="comment"># 重启</span></span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 获取 OpenLDAP 默认监听的端口</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> doc</span></span><br><span class="line">tcp        0      0 0.0.0.0:389             0.0.0.0:*               LISTEN      25135/slapd</span><br><span class="line">tcp6       0      0 :::389                  :::*                    LISTEN      25135/slapd</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 获取 OpenLDAP 进程的状态</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> ps aux | grep slapd | grep -v grep</span></span><br><span class="line">openldap 25135  0.0  0.0 1249408 7068 ?        Ssl  03:06   0:00 /usr/sbin/slapd -h ldap:/// ldapi:/// -g openldap -u openldap -F /etc/ldap/slapd.d</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 测试与 ldapwhoami 的 LDAP 连接</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> ldapwhoami -H ldap://18.217.226.78 -x</span></span><br><span class="line">anonymous</span><br></pre></td></tr></tbody></table></figure>
+<h3 id="第一步：安装和配置-OpenLDAP-服务器"><a href="#第一步：安装和配置-OpenLDAP-服务器" class="headerlink" title="第一步：安装和配置 OpenLDAP 服务器"></a>第一步：安装和配置 OpenLDAP 服务器</h3><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token comment"># 安装 OpenLDAP:</span>
+<span class="token comment"># slapd:OpenLDAP 服务端程序组件。</span>
+<span class="token comment"># ldap-utils:OpenLDAP 命令行工具集。</span>
+$ <span class="token function">sudo</span> <span class="token function">apt-get</span> update
+$ <span class="token function">sudo</span> <span class="token function">apt-get</span> <span class="token function">install</span> -y slapd ldap-utils
+
+
+<span class="token comment"># 重新配置</span>
+$ <span class="token function">sudo</span> dpkg-reconfigure slapd
+Domain Name:arling.com
+Organization Name:tonintech
+Password:paradise
+
+
+<span class="token comment"># 打开防火墙LDAP端口（389、636）</span>
+$ <span class="token function">sudo</span> ufw allow ldap
+
+
+<span class="token comment"># LDAP进程 slapd 生命周期管理</span>
+$ <span class="token function">sudo</span> <span class="token function">service</span> slapd start   <span class="token comment"># 开启</span>
+$ <span class="token function">sudo</span> serviec slapd stop    <span class="token comment"># 关闭</span>
+$ <span class="token function">sudo</span> <span class="token function">service</span> slapd restart <span class="token comment"># 重启</span>
+
+
+<span class="token comment"># 获取 OpenLDAP 默认监听的端口</span>
+$ doc
+tcp        <span class="token number">0</span>      <span class="token number">0</span> <span class="token number">0.0</span>.0.0:389             <span class="token number">0.0</span>.0.0:*               LISTEN      <span class="token number">25135</span>/slapd
+tcp6       <span class="token number">0</span>      <span class="token number">0</span> :::389                  :::*                    LISTEN      <span class="token number">25135</span>/slapd
+
+
+<span class="token comment"># 获取 OpenLDAP 进程的状态</span>
+$ <span class="token function">ps</span> aux <span class="token operator">|</span> <span class="token function">grep</span> slapd <span class="token operator">|</span> <span class="token function">grep</span> -v <span class="token function">grep</span>
+openldap <span class="token number">25135</span>  <span class="token number">0.0</span>  <span class="token number">0.0</span> <span class="token number">1249408</span> <span class="token number">7068</span> ?        Ssl  03:06   <span class="token number">0</span>:00 /usr/sbin/slapd -h ldap:/// ldapi:/// -g openldap -u openldap -F /etc/ldap/slapd.d
+
+
+<span class="token comment"># 测试与 ldapwhoami 的 LDAP 连接</span>
+$ ldapwhoami -H ldap://18.217.226.78 -x
+anonymous<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 
 
 <h4 id="LDAP-配置文件"><a href="#LDAP-配置文件" class="headerlink" title="LDAP 配置文件"></a>LDAP 配置文件</h4><ul>
 <li>通过 apt-get 命名安装 OpenLDAP 后，配置文件路径为：<code>/etc/ldap</code></li>
 </ul>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">/etc/ldap$</span><span class="bash"> ls -l</span></span><br><span class="line">total 16</span><br><span class="line">-rw-r--r-- 1 root     root      332 May 24 21:06 ldap.conf # 客户端配置文件</span><br><span class="line">drwxr-xr-x 2 root     root     4096 May 24 21:06 sasl2</span><br><span class="line">drwxr-xr-x 2 root     root     4096 Sep 14 09:32 schema</span><br><span class="line">drwxr-xr-x 3 openldap openldap 4096 Sep 17 08:27 slapd.d # 服务端配置文件</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">/etc/ldap$ <span class="token function">ls</span> -l
+total <span class="token number">16</span>
+-rw-r--r-- <span class="token number">1</span> root     root      <span class="token number">332</span> May <span class="token number">24</span> <span class="token number">21</span>:06 ldap.conf <span class="token comment"># 客户端配置文件</span>
+drwxr-xr-x <span class="token number">2</span> root     root     <span class="token number">4096</span> May <span class="token number">24</span> <span class="token number">21</span>:06 sasl2
+drwxr-xr-x <span class="token number">2</span> root     root     <span class="token number">4096</span> Sep <span class="token number">14</span> 09:32 schema
+drwxr-xr-x <span class="token number">3</span> openldap openldap <span class="token number">4096</span> Sep <span class="token number">17</span> 08:27 slapd.d <span class="token comment"># 服务端配置文件</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 
 
@@ -447,13 +489,27 @@
 </ul>
 </blockquote>
 <h3 id="第二步：安装和配置-phpLDAPadmin-Web-页面"><a href="#第二步：安装和配置-phpLDAPadmin-Web-页面" class="headerlink" title="第二步：安装和配置 phpLDAPadmin Web 页面"></a>第二步：安装和配置 phpLDAPadmin Web 页面</h3><p>安装 phpLDAPadmin：</p>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo apt-get install phpldapadmin</span></span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ <span class="token function">sudo</span> <span class="token function">apt-get</span> <span class="token function">install</span> phpldapadmin<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 
 <p>修改 phpLDAPadmin 配置文件 <code>/etc/phpldapadmin/config.php</code>：</p>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo vim /etc/phpldapadmin/config.php</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> ------ 配置内容如下 ------</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 1.LDAP 服务器名称</span></span><br><span class="line"><span class="meta">$</span><span class="bash">servers-&gt;setValue(<span class="string">'server'</span>,<span class="string">'name'</span>,<span class="string">'My LDAP Server'</span>); </span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 2.phpLDAPadmin LDAP 层次结构的根目录</span></span><br><span class="line"><span class="meta">$</span><span class="bash">servers-&gt;setValue(<span class="string">'server'</span>,<span class="string">'base'</span>,array(<span class="string">'dc=arling,dc=com'</span>)); </span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 3.注释掉登录bind_id配置行</span></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="variable">$servers</span>-&gt;setValue(<span class="string">'login'</span>,<span class="string">'bind_id'</span>,<span class="string">'cn=admin,dc=example,dc=com'</span>);</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 命令行模式下搜索：/hide_template_warning</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 4.隐藏 phpLDAPadmin 警告消息</span></span><br><span class="line"><span class="meta">$</span><span class="bash">config-&gt;custom-&gt;appearance[<span class="string">'hide_template_warning'</span>] = <span class="literal">true</span>;</span></span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ <span class="token function">sudo</span> <span class="token function">vim</span> /etc/phpldapadmin/config.php
+
+<span class="token comment"># ------ 配置内容如下 ------</span>
+<span class="token comment"># 1.LDAP 服务器名称</span>
+<span class="token variable">$servers</span>-<span class="token operator">&gt;</span>setValue<span class="token punctuation">(</span><span class="token string">'server'</span>,<span class="token string">'name'</span>,<span class="token string">'My LDAP Server'</span><span class="token punctuation">)</span><span class="token punctuation">;</span> 
+
+<span class="token comment"># 2.phpLDAPadmin LDAP 层次结构的根目录</span>
+<span class="token variable">$servers</span>-<span class="token operator">&gt;</span>setValue<span class="token punctuation">(</span><span class="token string">'server'</span>,<span class="token string">'base'</span>,array<span class="token punctuation">(</span><span class="token string">'dc=arling,dc=com'</span><span class="token punctuation">))</span><span class="token punctuation">;</span> 
+
+<span class="token comment"># 3.注释掉登录bind_id配置行</span>
+<span class="token comment">#$servers-&gt;setValue('login','bind_id','cn=admin,dc=example,dc=com');</span>
+
+<span class="token comment"># 命令行模式下搜索：/hide_template_warning</span>
+<span class="token comment"># 4.隐藏 phpLDAPadmin 警告消息</span>
+<span class="token variable">$config</span>-<span class="token operator">&gt;</span>custom-<span class="token operator">&gt;</span>appearance<span class="token punctuation">[</span><span class="token string">'hide_template_warning'</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>关闭 Apache2 服务</p>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo /etc/init.d/apache2 stop</span></span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ <span class="token function">sudo</span> /etc/init.d/apache2 stop<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 
 
 
@@ -514,8 +570,8 @@
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/%E5%AF%86%E7%A0%81%E5%AD%A6/" rel="tag"># 密码学</a>
               <a href="/tags/PKI/" rel="tag"># PKI</a>
+              <a href="/tags/%E5%AF%86%E7%A0%81%E5%AD%A6/" rel="tag"># 密码学</a>
           </div>
 
         
@@ -588,12 +644,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">2.1m</span>
+    <span title="站点总字数">2.3m</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">31:21</span>
+    <span title="站点阅读时长">34:09</span>
 </div>
   <div class="powered-by">由 <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZw==">NexT.Gemini</span> 强力驱动
   </div>

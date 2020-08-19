@@ -388,7 +388,7 @@
                 <i class="far fa-clock"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>16 分钟</span>
+              <span>15 分钟</span>
             </span>
 
         </div>
@@ -449,44 +449,182 @@
 <li>Objective-C 2.0 的快速遍历法（fast enumeration)。</li>
 <li>基于块的遍历方式。</li>
 </ol>
-<h4 id="for-循环"><a href="#for-循环" class="headerlink" title="for 循环"></a>for 循环</h4><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">/** NSArray */</span><br><span class="line">NSArray *array;</span><br><span class="line">for (int i = 0; i &lt; array.count; i++) {</span><br><span class="line">    id object = array[i];</span><br><span class="line">    // Do something with 'object'</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">/** NSDictionary */</span><br><span class="line">NSDictionary *dictionary;</span><br><span class="line">NSArray *keys = [dictionary allKeys];</span><br><span class="line">for (int i = 0; i &lt; keys.count; i++) {</span><br><span class="line">    id key = keys[i];</span><br><span class="line">    id value = dictionary[key];</span><br><span class="line">    // Do something with 'key' and 'value'</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">/** NSSet */</span><br><span class="line">NSSet *set;</span><br><span class="line">NSArray *objects = [set allObjects];</span><br><span class="line">for (int i = 0; i &lt; objects.count; i++) {</span><br><span class="line">    id object = object[i];</span><br><span class="line">    // Do something with 'object'</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<h4 id="for-循环"><a href="#for-循环" class="headerlink" title="for 循环"></a>for 循环</h4><pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">/** NSArray */
+NSArray *array;
+for (int i = 0; i &lt; array.count; i++) {
+    id object = array[i];
+    // Do something with 'object'
+}
+
+/** NSDictionary */
+NSDictionary *dictionary;
+NSArray *keys = [dictionary allKeys];
+for (int i = 0; i &lt; keys.count; i++) {
+    id key = keys[i];
+    id value = dictionary[key];
+    // Do something with 'key' and 'value'
+}
+
+/** NSSet */
+NSSet *set;
+NSArray *objects = [set allObjects];
+for (int i = 0; i &lt; objects.count; i++) {
+    id object = object[i];
+    // Do something with 'object'
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <blockquote>
 <p>根据定义，字典与 set 都是 “无序的”（imoniered)，所以无法根据特定的整数下标来直接访问其中的值。于是，就需要先获取字典里的所有键或是 set 里的所有对象，这两种情况下，都可以在获取到的有序数组上遍历，以便借此访问原字典及原 set 中的值。创建这个附加数组会有额外开销，而且还会多创建一个数组对象，它会保留 collection 中的所有元素对象。</p>
 </blockquote>
 <h4 id="使用-Objective-C-1-0-的-NSEnumerator-遍历"><a href="#使用-Objective-C-1-0-的-NSEnumerator-遍历" class="headerlink" title="使用 Objective-C 1.0 的 NSEnumerator 遍历"></a>使用 Objective-C 1.0 的 NSEnumerator 遍历</h4><p><strong>NSEnumerator.h</strong></p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">typedef struct {</span><br><span class="line">    unsigned long state;</span><br><span class="line">    id __unsafe_unretained _Nullable * _Nullable itemsPtr;</span><br><span class="line">    unsigned long * _Nullable mutationsPtr;</span><br><span class="line">    unsigned long extra[5];</span><br><span class="line">} NSFastEnumerationState;</span><br><span class="line"></span><br><span class="line">@protocol NSFastEnumeration</span><br><span class="line"></span><br><span class="line">- (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state objects:(id __unsafe_unretained _Nullable [_Nonnull])buffer count:(NSUInteger)len;</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">@interface NSEnumerator&lt;ObjectType&gt; : NSObject &lt;NSFastEnumeration&gt;</span><br><span class="line"></span><br><span class="line">//❇️ 返回枚举里的下个对象。每次调用该方法时，其内部数据结构都会更新，使得下次调用方法时能返回下个对象。等到枚举中的全部对象都已返回之后，再调用就将返回nil，这表示达到枚举末端了。</span><br><span class="line">- (nullable ObjectType)nextObject;</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">@interface NSEnumerator&lt;ObjectType&gt; (NSExtendedEnumerator)</span><br><span class="line"></span><br><span class="line">@property (readonly, copy) NSArray&lt;ObjectType&gt; *allObjects;</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">typedef struct {
+    unsigned long state;
+    id __unsafe_unretained _Nullable * _Nullable itemsPtr;
+    unsigned long * _Nullable mutationsPtr;
+    unsigned long extra[5];
+} NSFastEnumerationState;
+
+@protocol NSFastEnumeration
+
+- (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state objects:(id __unsafe_unretained _Nullable [_Nonnull])buffer count:(NSUInteger)len;
+
+@end
+
+@interface NSEnumerator&lt;ObjectType&gt; : NSObject &lt;NSFastEnumeration&gt;
+
+//❇️ 返回枚举里的下个对象。每次调用该方法时，其内部数据结构都会更新，使得下次调用方法时能返回下个对象。等到枚举中的全部对象都已返回之后，再调用就将返回nil，这表示达到枚举末端了。
+- (nullable ObjectType)nextObject;
+
+@end
+
+@interface NSEnumerator&lt;ObjectType&gt; (NSExtendedEnumerator)
+
+@property (readonly, copy) NSArray&lt;ObjectType&gt; *allObjects;
+
+@end<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>使用示例：</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">/** NSArray */</span><br><span class="line">NSArray *array;</span><br><span class="line">NSEnumerator *enumerator = [array objectEnumerator];</span><br><span class="line">id object;</span><br><span class="line">while ((object = [enumerator nextObject]) != nil) {</span><br><span class="line">    // Do something with 'object'</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">/** NSDictionary */</span><br><span class="line">NSDictionary *dictionary;</span><br><span class="line">NSEnumerator *enumerator = [dictionary keyEnumerator];</span><br><span class="line">id key;</span><br><span class="line">while ((key = [enumerator nextObject]) != nil) {</span><br><span class="line">    id value = dictionary[key];</span><br><span class="line">    // Do something with 'key' and 'value'</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">/** NSSet */</span><br><span class="line">NSSet *set;</span><br><span class="line">NSEnumerator *enumerator = [set objectEnumerator];</span><br><span class="line">id object;</span><br><span class="line">while ((object = [enumerator nextObject]) != nil) {</span><br><span class="line">    // Do something with 'object'</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">/** NSArray */
+NSArray *array;
+NSEnumerator *enumerator = [array objectEnumerator];
+id object;
+while ((object = [enumerator nextObject]) != nil) {
+    // Do something with 'object'
+}
+
+/** NSDictionary */
+NSDictionary *dictionary;
+NSEnumerator *enumerator = [dictionary keyEnumerator];
+id key;
+while ((key = [enumerator nextObject]) != nil) {
+    id value = dictionary[key];
+    // Do something with 'key' and 'value'
+}
+
+/** NSSet */
+NSSet *set;
+NSEnumerator *enumerator = [set objectEnumerator];
+id object;
+while ((object = [enumerator nextObject]) != nil) {
+    // Do something with 'object'
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <ul>
 <li><p>优点：不论遍历哪种 collection，都可以采用这套相似的语法。</p>
 </li>
 <li><p><strong>NSEnumerator</strong> 还有多种 “枚举器”（enumerator) 可供使用，如反向遍历数组：</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">/** NSArray */</span><br><span class="line">NSArray *array;</span><br><span class="line">// reverseObjectEnumerator：反向遍历数组</span><br><span class="line">NSEnumerator *enumerator = [array reverseObjectEnumerator];</span><br><span class="line">id object;</span><br><span class="line">while ((object = [enumerator nextObject]) != nil) {</span><br><span class="line">    // Do something with 'object'</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">/** NSArray */
+NSArray *array;
+// reverseObjectEnumerator：反向遍历数组
+NSEnumerator *enumerator = [array reverseObjectEnumerator];
+id object;
+while ((object = [enumerator nextObject]) != nil) {
+  // Do something with 'object'
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 </li>
 </ul>
-<h4 id="快速遍历"><a href="#快速遍历" class="headerlink" title="快速遍历"></a>快速遍历</h4><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">/** NSArray */</span><br><span class="line">NSArray *array;</span><br><span class="line">for (id object in array) {</span><br><span class="line">    // Do something with 'object'</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">/** NSDictionary */</span><br><span class="line">NSDictionary *dictionary;</span><br><span class="line">for (id key in dictionary) {</span><br><span class="line">    id value = dictionary[key];</span><br><span class="line">    // Do something with 'key' and 'value'</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">/** NSSet */</span><br><span class="line">NSSet *set;</span><br><span class="line">for (id object in set) {</span><br><span class="line">    // Do something with 'object'</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<h4 id="快速遍历"><a href="#快速遍历" class="headerlink" title="快速遍历"></a>快速遍历</h4><pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">/** NSArray */
+NSArray *array;
+for (id object in array) {
+    // Do something with 'object'
+}
+
+/** NSDictionary */
+NSDictionary *dictionary;
+for (id key in dictionary) {
+    id value = dictionary[key];
+    // Do something with 'key' and 'value'
+}
+
+/** NSSet */
+NSSet *set;
+for (id object in set) {
+    // Do something with 'object'
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>如果某个类的对象支持快速遍历，那么就可以宣称自己遵从名为 <strong>NSFastEmimeraticm</strong> 的协议，从而令开发者可以采用此语法来迭代该对象。</p>
 <p><strong>该方法允许类实例同时返回多个对象，使得循环遍历操作更为髙效。</strong></p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">@protocol NSFastEnumeration</span><br><span class="line"></span><br><span class="line">- (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state</span><br><span class="line">                                  objects:(id __unsafe_unretained _Nullable [_Nonnull])buffer</span><br><span class="line">                                    count:(NSUInteger)len;</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">@protocol NSFastEnumeration
+
+- (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state
+                                  objects:(id __unsafe_unretained _Nullable [_Nonnull])buffer
+                                    count:(NSUInteger)len;
+
+@end<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <h4 id="基于块的遍历方式"><a href="#基于块的遍历方式" class="headerlink" title="基于块的遍历方式"></a>基于块的遍历方式</h4><p><strong>方法列表</strong>:</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">/** NSArray */</span><br><span class="line">- (void)enumerateObjectsUsingBlock:(void (NS_NOESCAPE ^)(ObjectType obj, NSUInteger idx, BOOL *stop))block;</span><br><span class="line">- (void)enumerateObjectsWithOptions:(NSEnumerationOptions)opts usingBlock:(void (NS_NOESCAPE ^)(ObjectType obj, NSUInteger idx, BOOL *stop))block;</span><br><span class="line">- (void)enumerateObjectsAtIndexes:(NSIndexSet *)s options:(NSEnumerationOptions)opts usingBlock:(void (NS_NOESCAPE ^)(ObjectType obj, NSUInteger idx, BOOL *stop))block;</span><br><span class="line"></span><br><span class="line">/** NSDictionary */</span><br><span class="line">- (void)enumerateKeysAndObjectsUsingBlock:(void (NS_NOESCAPE ^)(KeyType key, ObjectType obj, BOOL *stop))block;</span><br><span class="line">- (void)enumerateKeysAndObjectsWithOptions:(NSEnumerationOptions)opts usingBlock:(void (NS_NOESCAPE ^)(KeyType key, ObjectType obj, BOOL *stop))block;</span><br><span class="line"></span><br><span class="line">/** NSSet */</span><br><span class="line">- (void)enumerateObjectsUsingBlock:(void (NS_NOESCAPE ^)(ObjectType obj, BOOL *stop))block;</span><br><span class="line">- (void)enumerateObjectsWithOptions:(NSEnumerationOptions)opts usingBlock:(void (NS_NOESCAPE ^)(ObjectType obj, BOOL *stop))block;</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">/** NSArray */
+- (void)enumerateObjectsUsingBlock:(void (NS_NOESCAPE ^)(ObjectType obj, NSUInteger idx, BOOL *stop))block;
+- (void)enumerateObjectsWithOptions:(NSEnumerationOptions)opts usingBlock:(void (NS_NOESCAPE ^)(ObjectType obj, NSUInteger idx, BOOL *stop))block;
+- (void)enumerateObjectsAtIndexes:(NSIndexSet *)s options:(NSEnumerationOptions)opts usingBlock:(void (NS_NOESCAPE ^)(ObjectType obj, NSUInteger idx, BOOL *stop))block;
+
+/** NSDictionary */
+- (void)enumerateKeysAndObjectsUsingBlock:(void (NS_NOESCAPE ^)(KeyType key, ObjectType obj, BOOL *stop))block;
+- (void)enumerateKeysAndObjectsWithOptions:(NSEnumerationOptions)opts usingBlock:(void (NS_NOESCAPE ^)(KeyType key, ObjectType obj, BOOL *stop))block;
+
+/** NSSet */
+- (void)enumerateObjectsUsingBlock:(void (NS_NOESCAPE ^)(ObjectType obj, BOOL *stop))block;
+- (void)enumerateObjectsWithOptions:(NSEnumerationOptions)opts usingBlock:(void (NS_NOESCAPE ^)(ObjectType obj, BOOL *stop))block;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>示例代码：</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">/** NSArray */</span><br><span class="line">NSArray *array;</span><br><span class="line">[array enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {</span><br><span class="line">    // Do something with 'object'</span><br><span class="line">    if (shouldStop) {</span><br><span class="line">        *stop = YES;</span><br><span class="line">    }</span><br><span class="line">}];</span><br><span class="line"></span><br><span class="line">/** NSDictionary */</span><br><span class="line">NSDictionary *dictionary;</span><br><span class="line">[dictionary enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, id  _Nonnull obj, BOOL * _Nonnull stop) {</span><br><span class="line">    // Do something with 'key' and 'value'</span><br><span class="line">    if (shouldStop) {</span><br><span class="line">        *stop = YES;</span><br><span class="line">    }</span><br><span class="line">}];</span><br><span class="line"></span><br><span class="line">/** NSSet */</span><br><span class="line">NSSet *set;</span><br><span class="line">[set enumerateObjectsUsingBlock:^(id  _Nonnull obj, BOOL * _Nonnull stop) {</span><br><span class="line">    // Do something with 'object'</span><br><span class="line">    if (shouldStop) {</span><br><span class="line">        *stop = YES;</span><br><span class="line">    }</span><br><span class="line">}];</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">/** NSArray */
+NSArray *array;
+[array enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+    // Do something with 'object'
+    if (shouldStop) {
+        *stop = YES;
+    }
+}];
+
+/** NSDictionary */
+NSDictionary *dictionary;
+[dictionary enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, id  _Nonnull obj, BOOL * _Nonnull stop) {
+    // Do something with 'key' and 'value'
+    if (shouldStop) {
+        *stop = YES;
+    }
+}];
+
+/** NSSet */
+NSSet *set;
+[set enumerateObjectsUsingBlock:^(id  _Nonnull obj, BOOL * _Nonnull stop) {
+    // Do something with 'object'
+    if (shouldStop) {
+        *stop = YES;
+    }
+}];<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>此方式的优点：</p>
 <ol>
 <li><p>遍历时可以直接从块里获取更多信息。</p>
 </li>
 <li><p>能够修改块的方法签名，以免进行类型转换操作，从效果上讲，相当于把本来需要执行的类型转换操作交给块方法签名来做。</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">// for-in 遍历：</span><br><span class="line">NSDictionary *dictionary;</span><br><span class="line">for (NSString *key in dictionary) {</span><br><span class="line">    NSString *object = (NSString *)dictionary[key];</span><br><span class="line">    // Do something with 'key' and 'value'</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">// 基于块的遍历，可以在块方法签名中直接转换数据类型：</span><br><span class="line">[dictionary enumerateKeysAndObjectsUsingBlock:^(NSString *key, NSString *obj, BOOL *stop) {</span><br><span class="line">    // Do something with 'key' and 'value'</span><br><span class="line">}];</span><br></pre></td></tr></tbody></table></figure>
-</li>
+<p>&lt;!–hexoPostRenderEscape:</p><pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">// for-in 遍历：<br>NSDictionary *dictionary;<br>for (NSString *key in dictionary) {<br> NSString *object = (NSString *)dictionary[key];<br> // Do something with 'key' and 'value'<br>}<p></p>
+</code></pre></li><code class="language-objective-c">
+</code></ol><code class="language-objective-c">
+</code><p><code class="language-objective-c">// 基于块的遍历，可以在块方法签名中直接转换数据类型：<br>[dictionary enumerateKeysAndObjectsUsingBlock:^(NSString *key, NSString *obj, BOOL *stop) {<br>    // Do something with 'key' and 'value'<br>}];<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code>:hexoPostRenderEscape–&gt;</p>
+<ol start="3">
 <li><p>反向遍历：设置 <strong>NSEnumerationOptions</strong> 选项为 <code>NSEnumerationReverse</code>。</p>
 </li>
 <li><p>并行执行：设置 <strong>NSEnumerationOptions</strong> 选项为 <code>NSEnumerationConcurrent</code>。</p>
@@ -498,7 +636,12 @@
 <li>若提前知道待遍历的 collection 含有何种对象，则应修改块签名，指出对象的具体类型。</li>
 </ul>
 <h3 id="第49条：对自定义其内存管理语义的-collection-使用无缝桥接"><a href="#第49条：对自定义其内存管理语义的-collection-使用无缝桥接" class="headerlink" title="第49条：对自定义其内存管理语义的 collection 使用无缝桥接"></a>第 49 条：对自定义其内存管理语义的 collection 使用无缝桥接</h3><p><strong>无缝桥接</strong>：可以在定义于 <strong>Foundation</strong> 框架中的 Objective-C 类和定义于 <strong>CoreFoundation</strong> 框架中的 C 数据结构之间互相转换。</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">// NSArray → CFArray</span><br><span class="line">NSArray *anNSArray = @[@1, @2, @3, @4, @5];</span><br><span class="line">// CFArray 需要通过 CFArrayRef 来引用，</span><br><span class="line">// CFArrayRef 是指向 struct__CFArray 的指针</span><br><span class="line">CFArrayRef aCFArray = (__bridge CFArrayRef)anNSArray;</span><br><span class="line">NSLog(@"Size of array = %li", CFArrayGetCount(aCFArray));</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">// NSArray → CFArray
+NSArray *anNSArray = @[@1, @2, @3, @4, @5];
+// CFArray 需要通过 CFArrayRef 来引用，
+// CFArrayRef 是指向 struct__CFArray 的指针
+CFArrayRef aCFArray = (__bridge CFArrayRef)anNSArray;
+NSLog(@"Size of array = %li", CFArrayGetCount(aCFArray));<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <h4 id="桥式转换"><a href="#桥式转换" class="headerlink" title="桥式转换"></a>桥式转换</h4><ul>
 <li><code>__bridge</code> 告诉 ARC (参见第 30 条）如何处理转换所涉及的 Objective-C 对象。</li>
@@ -512,7 +655,12 @@
 <p>创建 <strong>CFMutableDictionary</strong> 时，可以通过下列方法来指定键和值的内存管理语义:</p>
 </li>
 </ul>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">CFMutableDictionaryRef CFDictionaryCreateMutable(</span><br><span class="line">    CFAllocatorRef allocator,</span><br><span class="line">    CFIndex capacity,</span><br><span class="line">    const CFDictionaryKeyCallBacks *keyCallBacks,</span><br><span class="line">    const CFDictionaryValueCallBacks *valueCallBacks</span><br><span class="line">);</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">CFMutableDictionaryRef CFDictionaryCreateMutable(
+    CFAllocatorRef allocator,
+    CFIndex capacity,
+    const CFDictionaryKeyCallBacks *keyCallBacks,
+    const CFDictionaryValueCallBacks *valueCallBacks
+);<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <ul>
 <li><p><code>CFAllocatorRef</code>：将要使用的内存分配器（allocator) 。<strong>CoreFoundation</strong> 对象里的数据结构需要占用内存，而分配器负责分配及回收这些内存。开发者通常为这个参数传人 <strong>NULL</strong>，表示采用默认的分配器。</p>
@@ -520,8 +668,19 @@
 <li><p><code>CFIndex</code>：定义字典的初始大小。它并不会限制字典的最大容景，只是向分配器提示一开始应该分配多少内存。假如要创建的字典含有 10 个对象，那就向该参数传入 10。</p>
 </li>
 <li><p>最后两个参数值得注意。它们定义了许多回调函数，用于指示字典中的键和值在遇到各种事件时应该执行何种操作。这两个参数都是指向结构体的指针，二者所对应的结构体如下：</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">typedef struct {</span><br><span class="line">    CFIndex                version;</span><br><span class="line">    CFDictionaryRetainCallBack        retain;</span><br><span class="line">    CFDictionaryReleaseCallBack        release;</span><br><span class="line">    CFDictionaryCopyDescriptionCallBack    copyDescription;</span><br><span class="line">    CFDictionaryEqualCallBack        equal;</span><br><span class="line">    CFDictionaryHashCallBack        hash;</span><br><span class="line">} CFDictionaryKeyCallBacks;</span><br><span class="line"></span><br><span class="line">typedef struct {</span><br><span class="line">    CFIndex                version;</span><br><span class="line">    CFDictionaryRetainCallBack        retain;</span><br><span class="line">    CFDictionaryReleaseCallBack        release;</span><br><span class="line">    CFDictionaryCopyDescriptionCallBack    copyDescription;</span><br><span class="line">    CFDictionaryEqualCallBack        equal;</span><br><span class="line">} CFDictionaryValueCallBacks;</span><br><span class="line"></span><br><span class="line">/*</span><br><span class="line"> * version参数目前应设为0。当前编程时总是取这个值，不过将来苹果公司也许会修改此结构体，所以</span><br><span class="line"> * 要预留该值以表示版本号。这个参数可以用于检测新版与旧版数据结构之间是否兼容。</span><br><span class="line"> * 结构体中的其余成员都是函数指针，它们定义了当各种事件发生时应该采用哪个函数来执行相关任务。</span><br><span class="line"> */</span><br></pre></td></tr></tbody></table></figure>
-
+<p>&lt;!–hexoPostRenderEscape:</p><pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">typedef struct {<br>  CFIndex                version;<br>  CFDictionaryRetainCallBack        retain;<br>  CFDictionaryReleaseCallBack        release;<br>  CFDictionaryCopyDescriptionCallBack    copyDescription;<br>  CFDictionaryEqualCallBack        equal;<br>  CFDictionaryHashCallBack        hash;<br>} CFDictionaryKeyCallBacks;<p></p>
+</code></pre></li><code class="language-objective-c">
+</code></ul><code class="language-objective-c">
+<p>typedef struct {<br>    CFIndex                version;<br>    CFDictionaryRetainCallBack        retain;<br>    CFDictionaryReleaseCallBack        release;<br>    CFDictionaryCopyDescriptionCallBack    copyDescription;<br>    CFDictionaryEqualCallBack        equal;<br>} CFDictionaryValueCallBacks;</p>
+<p>/*</p>
+</code><ul><code class="language-objective-c">
+<li><p>version参数目前应设为0。当前编程时总是取这个值，不过将来苹果公司也许会修改此结构体，所以</p>
+</li>
+<li><p>要预留该值以表示版本号。这个参数可以用于检测新版与旧版数据结构之间是否兼容。</p>
+</li>
+<li><p>结构体中的其余成员都是函数指针，它们定义了当各种事件发生时应该采用哪个函数来执行相关任务。</p>
+</li>
+</code><li><code class="language-objective-c"></code><p><code class="language-objective-c">/<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code>:hexoPostRenderEscape–&gt;</p>
 <blockquote>
 <p>底层实现有点复杂，暂缓研究😂</p>
 </blockquote>
@@ -539,11 +698,100 @@
 <li>开发者可以操控缓存删减其内容的时机。有两个与系统资源相关的尺度可供调整，其一是缓存中的对象总数，其二是所有对象的 “总开销”（overall cost)。</li>
 </ul>
 <p>示例代码：</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line">// EOCNetworkFetcher.h</span><br><span class="line">#import &lt;Foundation/Foundation.h&gt;</span><br><span class="line"></span><br><span class="line">// Network fetcher class</span><br><span class="line">typedef void(^EOCNetworkFetcherCompletionHandler)</span><br><span class="line">                                (NSData *data);</span><br><span class="line"></span><br><span class="line">@interface EOCNetworkFetcher : NSObject</span><br><span class="line">@property (nonatomic, strong, readonly) NSURL *url;</span><br><span class="line">- (instancetype)initWithURL:(NSURL *)url;</span><br><span class="line">- (void)startWithCompletionHandler:</span><br><span class="line">            (EOCNetworkFetcherCompletionHandler)completion;</span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">// EOCNetworkFetcher.m</span><br><span class="line">#import "EOCNetworkFetcher.h"</span><br><span class="line"></span><br><span class="line">@implementation EOCNetworkFetcher {</span><br><span class="line">    NSCache *_cache;</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">- (instancetype)init {</span><br><span class="line">    if (self = [super init]) {</span><br><span class="line">        _cache = [NSCache new];</span><br><span class="line">        </span><br><span class="line">        // Cache a maximu of 100 URLs</span><br><span class="line">        // 可缓存的总对象数目上限</span><br><span class="line">        _cache.countLimit = 100;</span><br><span class="line">        </span><br><span class="line">        /**</span><br><span class="line">         * The size in bytes of data is used as the cost,</span><br><span class="line">         * 开销值 以 字节 为单位</span><br><span class="line">         * so this sets a cost limit of 5MB</span><br><span class="line">         * 因此需要将 MB 换算为 字节</span><br><span class="line">         */</span><br><span class="line">        _cache.totalCostLimit = 5 * 1024 * 1024;</span><br><span class="line">    }</span><br><span class="line">    return self;</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">- (instancetype)initWithURL:(NSURL *)url {</span><br><span class="line">    if (self = [super init]) {</span><br><span class="line">        _url = url;</span><br><span class="line">    }</span><br><span class="line">    return self;</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">- (void)downloadDataForURL:(NSURL *)url {</span><br><span class="line">    NSData *cacheData = [_cache objectForKey:url];</span><br><span class="line">    if (cacheData) {</span><br><span class="line">        // Cache hit</span><br><span class="line">        [self useData:cacheData];</span><br><span class="line">    }else {</span><br><span class="line">        // Cache miss,缓存中没有访问者所需的数据</span><br><span class="line">        EOCNetworkFetcher *fetcher = [[EOCNetworkFetcher alloc] initWithURL:url];</span><br><span class="line">        [fetcher startWithCompletionHandler:^(NSData *data) {</span><br><span class="line">            [self useData:data];</span><br><span class="line">        }];</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">// EOCNetworkFetcher.h
+#import &lt;Foundation/Foundation.h&gt;
+
+// Network fetcher class
+typedef void(^EOCNetworkFetcherCompletionHandler)
+                                (NSData *data);
+
+@interface EOCNetworkFetcher : NSObject
+@property (nonatomic, strong, readonly) NSURL *url;
+- (instancetype)initWithURL:(NSURL *)url;
+- (void)startWithCompletionHandler:
+            (EOCNetworkFetcherCompletionHandler)completion;
+@end
+
+// EOCNetworkFetcher.m
+#import "EOCNetworkFetcher.h"
+
+@implementation EOCNetworkFetcher {
+    NSCache *_cache;
+}
+
+- (instancetype)init {
+    if (self = [super init]) {
+        _cache = [NSCache new];
+
+        // Cache a maximu of 100 URLs
+        // 可缓存的总对象数目上限
+        _cache.countLimit = 100;
+
+        /**
+         * The size in bytes of data is used as the cost,
+         * 开销值 以 字节 为单位
+         * so this sets a cost limit of 5MB
+         * 因此需要将 MB 换算为 字节
+         */
+        _cache.totalCostLimit = 5 * 1024 * 1024;
+    }
+    return self;
+}
+
+- (instancetype)initWithURL:(NSURL *)url {
+    if (self = [super init]) {
+        _url = url;
+    }
+    return self;
+}
+
+- (void)downloadDataForURL:(NSURL *)url {
+    NSData *cacheData = [_cache objectForKey:url];
+    if (cacheData) {
+        // Cache hit
+        [self useData:cacheData];
+    }else {
+        // Cache miss,缓存中没有访问者所需的数据
+        EOCNetworkFetcher *fetcher = [[EOCNetworkFetcher alloc] initWithURL:url];
+        [fetcher startWithCompletionHandler:^(NSData *data) {
+            [self useData:data];
+        }];
+    }
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <ul>
 <li><p><strong>NSPurgeableData</strong> 类，<strong>NSMutableData</strong> 的子类。如果某个对象所占的内存能够根据需要随时丢弃，那么就可以实现 <strong>NSDiscardableContent</strong> 协议所定义的接口。</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">- (void)downloadDataForURL:(NSURL *)url {</span><br><span class="line">    NSPurgeableData *cacheData = [_cache objectForKey:url];</span><br><span class="line">    if (cacheData) {</span><br><span class="line">        // Stop the data being purged</span><br><span class="line">        [cacheData beginContentAccess];</span><br><span class="line">        </span><br><span class="line">        // Use the cached data</span><br><span class="line">        [self useData:cacheData];</span><br><span class="line">        </span><br><span class="line">        // Mark that the data may be purged again</span><br><span class="line">        [cacheData endContentAccess];</span><br><span class="line">    }else {</span><br><span class="line">        // Cache miss</span><br><span class="line">        EOCNetworkFetcher *fetcher = [[EOCNetworkFetcher alloc] initWithURL:url];</span><br><span class="line">        [fetcher startWithCompletionHandler:^(NSData *data) {</span><br><span class="line">            NSPurgeableData *purgeableData = [NSPurgeableData dataWithData:data];</span><br><span class="line">            [_cache setObject:purgeableData</span><br><span class="line">                       forKey:url</span><br><span class="line">                         cost:purgeableData.length];</span><br><span class="line">            </span><br><span class="line">            // Don't need to beginContentAccess as it begins</span><br><span class="line">            // with access already marked</span><br><span class="line">            </span><br><span class="line">            // Use the retrieved data</span><br><span class="line">            [self useData:data];</span><br><span class="line">            </span><br><span class="line">            // Mark that the data may be purged now</span><br><span class="line">            [cacheData endContentAccess];</span><br><span class="line">        }];</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">- (void)downloadDataForURL:(NSURL *)url {
+  NSPurgeableData *cacheData = [_cache objectForKey:url];
+  if (cacheData) {
+      // Stop the data being purged
+      [cacheData beginContentAccess];
+
+      // Use the cached data
+      [self useData:cacheData];
+
+      // Mark that the data may be purged again
+      [cacheData endContentAccess];
+  }else {
+      // Cache miss
+      EOCNetworkFetcher *fetcher = [[EOCNetworkFetcher alloc] initWithURL:url];
+      [fetcher startWithCompletionHandler:^(NSData *data) {
+          NSPurgeableData *purgeableData = [NSPurgeableData dataWithData:data];
+          [_cache setObject:purgeableData
+                     forKey:url
+                       cost:purgeableData.length];
+
+          // Don't need to beginContentAccess as it begins
+          // with access already marked
+
+          // Use the retrieved data
+          [self useData:data];
+
+          // Mark that the data may be purged now
+          [cacheData endContentAccess];
+      }];
+  }
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 </li>
 </ul>
@@ -553,7 +801,7 @@
 <li>将 <strong>NSPurgeableData</strong> 与 <strong>NSCache</strong> 搭配使用，可实现自动清除数据的功能，也就是说，当 <strong>NSPurgeableData</strong> 对象所占内存为系统丢弃时，该对象自身也会从缓存中移除。</li>
 <li>如果缓存使用得当。那么应用程序的响应速度就能提高。只有那种重新计算起来很费事的数据，才值得放入缓存，比如那些需要从网络获取或从磁盘读取的数据。</li>
 </ul>
-<h3 id="第51条：精简-initialize-与-load-的实现代码"><a href="#第51条：精简-initialize-与-load-的实现代码" class="headerlink" title="第51条：精简 initialize 与 load 的实现代码"></a>第 51 条：精简 initialize 与 load 的实现代码</h3><h4 id="load-方法"><a href="#load-方法" class="headerlink" title="load 方法"></a>load 方法</h4><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">+ (void)load;</span><br></pre></td></tr></tbody></table></figure>
+<h3 id="第51条：精简-initialize-与-load-的实现代码"><a href="#第51条：精简-initialize-与-load-的实现代码" class="headerlink" title="第51条：精简 initialize 与 load 的实现代码"></a>第 51 条：精简 initialize 与 load 的实现代码</h3><h4 id="load-方法"><a href="#load-方法" class="headerlink" title="load 方法"></a>load 方法</h4><pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">+ (void)load;<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 
 <ul>
 <li>对于加入运行期系统中的每个类（class) 及分类（category) 来说，必定会调用此方法，而且仅调用一次。当包含类或分类的程序库载入系统时，就会执行此方法，而这通常就是指应用程序启动的时候，若程序是为 iOS 平台设计的，则肯定会在此时执行。</li>
@@ -563,7 +811,7 @@
 <li>而且 <code>load</code> 方法务必实现得精简一些，也就是要尽量减少其所执行的操作，因为整个应用程序在执行 <code>load</code> 方法时都会阻塞。应用程序必须阻塞并等着所有类的 <code>load</code> 都执行完，才能继续。</li>
 <li><code>load</code> 方法真正用途仅在于调试程序，比如可以在分类里编写此方法，用来判断该分类是否已经正确载入系统中。也许此方法一度很有用处，但现在完全可以说：时下编写 Objective-C 代码时，不需要用它。</li>
 </ul>
-<h4 id="initialize-方法"><a href="#initialize-方法" class="headerlink" title="initialize 方法"></a>initialize 方法</h4><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">+ (void)initialize;</span><br></pre></td></tr></tbody></table></figure>
+<h4 id="initialize-方法"><a href="#initialize-方法" class="headerlink" title="initialize 方法"></a>initialize 方法</h4><pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">+ (void)initialize;<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 
 <ul>
 <li>对于每个类来说，该方法会在程序首次用该类之前调用，且只调用一次。它是由运行期系统来调用的，绝不应该通过代码直接调用。</li>
@@ -587,24 +835,94 @@
 <li><strong>Foundation</strong> 框架中有个类叫做 <strong>NSTimer</strong> ，开发者可以指定绝对的日期与时间，以便到时执行任务，也可以指定执行任务的相对延迟时间。计时器还可以重复运行任务，有个与之相关联的 “间隔值”（interval) 可用来指定任务的触发频率。</li>
 <li>只有把计时器放在运行循环里，它才能正常触发任务。</li>
 </ul>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">+ (NSTimer *)scheduledTimerWithTimeInterval:(NSTimeInterval)ti</span><br><span class="line">                                     target:(id)aTarget</span><br><span class="line">                                   selector:(SEL)aSelector</span><br><span class="line">                                   userInfo:(nullable id)userInfo</span><br><span class="line">                                    repeats:(BOOL)yesOrNo;</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">+ (NSTimer *)scheduledTimerWithTimeInterval:(NSTimeInterval)ti
+                                     target:(id)aTarget
+                                   selector:(SEL)aSelector
+                                   userInfo:(nullable id)userInfo
+                                    repeats:(BOOL)yesOrNo;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <ul>
 <li><p>用此方法创建出来的计时器，会在指定的间隔时间之后执行任务。也可以令其反复执行任务，直到开发者稍后将其手动关闭为止。target 与 selector 参数表示计时器将在哪个对象上调用哪个方法。计时器会保留其目标对象，等到自身 “失效” 时再释放此对象。调用 <code>invalidate</code> 方法可令计时器失效；执行完相关任务之后，一次性的计时器也会失效。开发者若将计时器设置成重复执行模式，那么必须自己调用 <code>invalidate</code> 方法，才能令其停止。</p>
 </li>
 <li><p>由于计时器会保留其目标对象，所以反复执行任务通常会导致应用程序出问题。也就是说，设置成重复执行模式的那种计时器，很容易引人 “保留环”。</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line">//  EOCClass.h</span><br><span class="line">#import &lt;Foundation/Foundation.h&gt;</span><br><span class="line"></span><br><span class="line">@interface EOCClass : NSObject</span><br><span class="line">- (void)startPolling;</span><br><span class="line">- (void)stopPolling;</span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">//  EOCClass.m</span><br><span class="line">#import "EOCClass.h"</span><br><span class="line"></span><br><span class="line">@implementation EOCClass {</span><br><span class="line">    // ❇️ EOCClass → _pollTimer</span><br><span class="line">    NSTimer *_pollTimer;</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">- (instancetype)init {</span><br><span class="line">    return [super init];</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">- (void)dealloc {</span><br><span class="line">    [_pollTimer invalidate];</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">- (void)startPolling {</span><br><span class="line">    // ❇️ _pollTimer → EOCClass</span><br><span class="line">    _pollTimer =</span><br><span class="line">    [NSTimer scheduledTimerWithTimeInterval:5.0</span><br><span class="line">                                     target:self</span><br><span class="line">                                   selector:@selector(p_doPoll)</span><br><span class="line">                                   userInfo:nil</span><br><span class="line">                                    repeats:YES];</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">- (void)stopPolling {</span><br><span class="line">    [_pollTimer invalidate];</span><br><span class="line">    _pollTimer = nil;</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">- (void)p_doPoll {</span><br><span class="line">    // Poll the resource</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></tbody></table></figure>
-
-<p>解决引用循环方法：</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">//  NSTimer+EOCBlocksSupport.h</span><br><span class="line">#import &lt;Foundation/Foundation.h&gt;</span><br><span class="line"></span><br><span class="line">@interface NSTimer (EOCBlocksSupport)</span><br><span class="line"></span><br><span class="line">+ (NSTimer *)eoc_scheduledTimerWithTimeInterval:(NSTimeInterval)interval</span><br><span class="line">                                          block:(void(^)())block</span><br><span class="line">                                        repeats:(BOOL)repeats;</span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">//  NSTimer+EOCBlocksSupport.m</span><br><span class="line">#import "NSTimer+EOCBlocksSupport.h"</span><br><span class="line"></span><br><span class="line">@implementation NSTimer (EOCBlocksSupport)</span><br><span class="line"></span><br><span class="line">+ (NSTimer *)eoc_scheduledTimerWithTimeInterval:(NSTimeInterval)interval</span><br><span class="line">                                          block:(void(^)())block</span><br><span class="line">                                        repeats:(BOOL)repeats {</span><br><span class="line">    return [self scheduledTimerWithTimeInterval:interval</span><br><span class="line">                                         target:self</span><br><span class="line">                                       selector:@selector(eoc_blockInvoke:) userInfo:[block copy] repeats:repeats];</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">+ (void)eoc_blockInvoke:(NSTimer *)timer {</span><br><span class="line">    void (^block)() = timer.userInfo;</span><br><span class="line">    if (block) {</span><br><span class="line">        block();</span><br><span class="line">    }</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></tbody></table></figure>
-
-<p>将计时器所应执行的任务封装成 block 。在调用计时器函数时，把它作为 userlnfo 参数传进去。该参数可用来存放不透明值 (opaque value)，只要计时器还有效，就会一直保留着它。传人参数时要通过 copy 方法将 block 拷贝到 “堆” 上（参见第 37 条)，否则等到稍后要执行它的时候，该块可能已经无效了。计时器现在的 target 是 NSTimer 类对象，这是个单例，因此计时器是否会保留它，其实都无所谓。此处依然有保留环，然而因为类对象（classobject) 无须回收，所以不用担心。</p>
-<p>优化：</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">- (void)startPolling {</span><br><span class="line">    __weak EOCClass *weakSelf = self;</span><br><span class="line">    _pollTimer =</span><br><span class="line">    [NSTimer eoc_scheduledTimerWithTimeInterval:5.0</span><br><span class="line">                                          block:^{</span><br><span class="line">                                              EOCClass *strongSelf = weakSelf;</span><br><span class="line">                                              [strongSelf p_doPoll];</span><br><span class="line">                                          }</span><br><span class="line">                                        repeats:YES];</span><br><span class="line">    </span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
-
+<p>&lt;!–hexoPostRenderEscape:</p><pre class="line-numbers language-none"><code class="language-none">//  EOCClass.h<br>#import &lt;Foundation/Foundation.h&gt;<p></p>
+</code></pre></li><code class="language-none">
+</code></ul><code class="language-none">
+<p>@interface EOCClass : NSObject</p>
+<ul>
+<li>(void)startPolling;</li>
+<li>(void)stopPolling;<br>@end</li>
+</ul>
+<p>//  EOCClass.m<br>#import "EOCClass.h"</p>
+<p>@implementation EOCClass {<br>    // ❇️ EOCClass → _pollTimer<br>    NSTimer *_pollTimer;<br>}</p>
+<ul>
+<li><p>(instancetype)init {<br>  return [super init];<br>}</p>
+</li>
+<li><p>(void)dealloc {<br>  [_pollTimer invalidate];<br>}</p>
+</li>
+<li><p>(void)startPolling {<br>  // ❇️ _pollTimer → EOCClass<br>  _pollTimer =<br>  [NSTimer scheduledTimerWithTimeInterval:5.0</p>
+<pre><code>                               target:self
+                             selector:@selector(p_doPoll)
+                             userInfo:nil
+                              repeats:YES];</code></pre>
+<p>}</p>
+</li>
+<li><p>(void)stopPolling {<br>  [_pollTimer invalidate];<br>  _pollTimer = nil;<br>}</p>
+</li>
+<li><p>(void)p_doPoll {<br>  // Poll the resource<br>}</p>
 </li>
 </ul>
-<h4 id="iOS-10-0-中已经引入了该方法"><a href="#iOS-10-0-中已经引入了该方法" class="headerlink" title="iOS 10.0 中已经引入了该方法"></a>iOS 10.0 中已经引入了该方法</h4><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">+ (NSTimer *)timerWithTimeInterval:(NSTimeInterval)interval repeats:(BOOL)repeats block:(void (^)(NSTimer *timer))block;</span><br><span class="line"></span><br><span class="line">+ (NSTimer *)scheduledTimerWithTimeInterval:(NSTimeInterval)interval repeats:(BOOL)repeats block:(void (^)(NSTimer *timer))block;</span><br></pre></td></tr></tbody></table></figure>
+</code><p><code class="language-none">@end<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code>:hexoPostRenderEscape–&gt;</p>
+<p>  解决引用循环方法：</p>
+  <pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">//  NSTimer+EOCBlocksSupport.h
+#import &lt;Foundation/Foundation.h&gt;
+
+@interface NSTimer (EOCBlocksSupport)
+
++ (NSTimer *)eoc_scheduledTimerWithTimeInterval:(NSTimeInterval)interval
+                                          block:(void(^)())block
+                                        repeats:(BOOL)repeats;
+@end
+
+//  NSTimer+EOCBlocksSupport.m
+#import "NSTimer+EOCBlocksSupport.h"
+
+@implementation NSTimer (EOCBlocksSupport)
+
++ (NSTimer *)eoc_scheduledTimerWithTimeInterval:(NSTimeInterval)interval
+                                          block:(void(^)())block
+                                        repeats:(BOOL)repeats {
+    return [self scheduledTimerWithTimeInterval:interval
+                                         target:self
+                                       selector:@selector(eoc_blockInvoke:) userInfo:[block copy] repeats:repeats];
+}
+
++ (void)eoc_blockInvoke:(NSTimer *)timer {
+    void (^block)() = timer.userInfo;
+    if (block) {
+        block();
+    }
+}
+
+@end<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>  将计时器所应执行的任务封装成 block 。在调用计时器函数时，把它作为 userlnfo 参数传进去。该参数可用来存放不透明值 (opaque value)，只要计时器还有效，就会一直保留着它。传人参数时要通过 copy 方法将 block 拷贝到 “堆” 上（参见第 37 条)，否则等到稍后要执行它的时候，该块可能已经无效了。计时器现在的 target 是 NSTimer 类对象，这是个单例，因此计时器是否会保留它，其实都无所谓。此处依然有保留环，然而因为类对象（classobject) 无须回收，所以不用担心。</p>
+<p>  优化：</p>
+  <pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">- (void)startPolling {
+    __weak EOCClass *weakSelf = self;
+    _pollTimer =
+    [NSTimer eoc_scheduledTimerWithTimeInterval:5.0
+                                          block:^{
+                                              EOCClass *strongSelf = weakSelf;
+                                              [strongSelf p_doPoll];
+                                          }
+                                        repeats:YES];
+
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h4 id="iOS-10-0-中已经引入了该方法"><a href="#iOS-10-0-中已经引入了该方法" class="headerlink" title="iOS 10.0 中已经引入了该方法"></a>iOS 10.0 中已经引入了该方法</h4><pre class="line-numbers language-none"><code class="language-none">+ (NSTimer *)timerWithTimeInterval:(NSTimeInterval)interval repeats:(BOOL)repeats block:(void (^)(NSTimer *timer))block;
+
++ (NSTimer *)scheduledTimerWithTimeInterval:(NSTimeInterval)interval repeats:(BOOL)repeats block:(void (^)(NSTimer *timer))block;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
 
 
 <h4 id="要点-5"><a href="#要点-5" class="headerlink" title="要点"></a>要点</h4><ul>
@@ -731,12 +1049,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">2.1m</span>
+    <span title="站点总字数">2.3m</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">31:21</span>
+    <span title="站点阅读时长">34:09</span>
 </div>
   <div class="powered-by">由 <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZw==">NexT.Gemini</span> 强力驱动
   </div>

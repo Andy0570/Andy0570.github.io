@@ -381,7 +381,7 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>2.4k</span>
+              <span>2.3k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -412,13 +412,29 @@
 
 <p>Objective-C 端通过如下方法注册：</p>
 <h5 id="bridge-registerHandler-NSString-handlerName-handler-WVJBHandler-handler"><a href="#bridge-registerHandler-NSString-handlerName-handler-WVJBHandler-handler" class="headerlink" title="[bridge registerHandler:(NSString*)handlerName handler:(WVJBHandler)handler]"></a><code>[bridge registerHandler:(NSString*)handlerName handler:(WVJBHandler)handler]</code></h5><p>示例：</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">// 1. JS 调用 OC</span><br><span class="line">// 在 ObjC 中注册一个名为 testObjcCallback 的处理程序</span><br><span class="line">// JavaScript 端就可以通过 WebViewJavascriptBridge.callHandler("testObjcCallback") 方法来调用该处理程序了。</span><br><span class="line">// JS 可以给 OC 传参数，放在 data 中。</span><br><span class="line">// OC 也可以返回参数给 JS，放在 responseCallback 中。</span><br><span class="line">[_bridge registerHandler:@"testObjcCallback" handler:^(id data, WVJBResponseCallback responseCallback) {</span><br><span class="line">    // data 是 JS 传过来的参数内容</span><br><span class="line">    NSLog(@"testObjcCallback called: %@", data);</span><br><span class="line"></span><br><span class="line">    if (responseCallback) {</span><br><span class="line">        // OC 返回给 JS 的内容</span><br><span class="line">        responseCallback(@"Response from testObjcCallback");</span><br><span class="line">    }</span><br><span class="line">}];</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">// 1. JS 调用 OC
+// 在 ObjC 中注册一个名为 testObjcCallback 的处理程序
+// JavaScript 端就可以通过 WebViewJavascriptBridge.callHandler("testObjcCallback") 方法来调用该处理程序了。
+// JS 可以给 OC 传参数，放在 data 中。
+// OC 也可以返回参数给 JS，放在 responseCallback 中。
+[_bridge registerHandler:@"testObjcCallback" handler:^(id data, WVJBResponseCallback responseCallback) {
+    // data 是 JS 传过来的参数内容
+    NSLog(@"testObjcCallback called: %@", data);
+
+    if (responseCallback) {
+        // OC 返回给 JS 的内容
+        responseCallback(@"Response from testObjcCallback");
+    }
+}];<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 
 
 <p>JavaScript 端通过如下方法调用：</p>
 <h5 id="bridge-callHandler-quot-handlerName-quot-data"><a href="#bridge-callHandler-quot-handlerName-quot-data" class="headerlink" title="bridge.callHandler(&quot;handlerName&quot;, data)"></a><code>bridge.callHandler("handlerName", data)</code></h5><h5 id="bridge-callHandler-quot-handlerName-quot-data-function-responseCallback-responseData"><a href="#bridge-callHandler-quot-handlerName-quot-data-function-responseCallback-responseData" class="headerlink" title="bridge.callHandler(&quot;handlerName&quot;, data, function responseCallback(responseData) { ... })"></a><code>bridge.callHandler("handlerName", data, function responseCallback(responseData) { ... })</code></h5><p>示例：</p>
-<figure class="highlight javascript"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;!-- <span class="number">1.</span> JS 调用 OC --&gt;</span><br><span class="line">bridge.callHandler(<span class="string">'testObjcCallback'</span>, {<span class="string">'foo'</span>: <span class="string">'bar'</span>}, <span class="function"><span class="keyword">function</span>(<span class="params">response</span>) </span>{</span><br><span class="line">    log(<span class="string">'JS got response'</span>, response)</span><br><span class="line">})</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token operator">&lt;</span><span class="token operator">!</span><span class="token operator">--</span> <span class="token number">1.</span> <span class="token constant">JS</span> 调用 <span class="token constant">OC</span> <span class="token operator">--</span><span class="token operator">&gt;</span>
+bridge<span class="token punctuation">.</span><span class="token function">callHandler</span><span class="token punctuation">(</span><span class="token string">'testObjcCallback'</span><span class="token punctuation">,</span> <span class="token punctuation">{</span><span class="token string">'foo'</span><span class="token operator">:</span> <span class="token string">'bar'</span><span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token keyword">function</span><span class="token punctuation">(</span><span class="token parameter">response</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'JS got response'</span><span class="token punctuation">,</span> response<span class="token punctuation">)</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>JS 调用名为 testObjcCallback 的 Objective-C 方法，同时给 Objective-C 传递了参数<code>'foo': 'bar'</code>，JS 还接受并打印了 Objective-C 返回的参数内容 response。</p>
 <h2 id="2-Objective-C-调用-JavaScript-方法"><a href="#2-Objective-C-调用-JavaScript-方法" class="headerlink" title="2. Objective-C 调用 JavaScript 方法"></a>2. Objective-C 调用 JavaScript 方法</h2><blockquote>
@@ -426,14 +442,23 @@
 </blockquote>
 <p>JavaScript 端通过如下方法注册：</p>
 <h5 id="bridge-registerHandler-quot-handlerName-quot-function-responseData"><a href="#bridge-registerHandler-quot-handlerName-quot-function-responseData" class="headerlink" title="bridge.registerHandler(&quot;handlerName&quot;, function(responseData) { ... })"></a><code>bridge.registerHandler("handlerName", function(responseData) { ... })</code></h5><p>示例：</p>
-<figure class="highlight javascript"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&lt;!-- <span class="number">2.</span> OC 调用 JS 的方法 --&gt;</span><br><span class="line">bridge.registerHandler(<span class="string">'testJavascriptHandler'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">data, responseCallback</span>) </span>{</span><br><span class="line">    log(<span class="string">'ObjC called testJavascriptHandler with'</span>, data)</span><br><span class="line">    <span class="keyword">var</span> responseData = { <span class="string">'Javascript Says'</span>:<span class="string">'Right back atcha!'</span> }</span><br><span class="line">    log(<span class="string">'JS responding with'</span>, responseData)</span><br><span class="line">    responseCallback(responseData)</span><br><span class="line">})</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token operator">&lt;</span><span class="token operator">!</span><span class="token operator">--</span> <span class="token number">2.</span> <span class="token constant">OC</span> 调用 <span class="token constant">JS</span> 的方法 <span class="token operator">--</span><span class="token operator">&gt;</span>
+bridge<span class="token punctuation">.</span><span class="token function">registerHandler</span><span class="token punctuation">(</span><span class="token string">'testJavascriptHandler'</span><span class="token punctuation">,</span> <span class="token keyword">function</span><span class="token punctuation">(</span><span class="token parameter">data<span class="token punctuation">,</span> responseCallback</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'ObjC called testJavascriptHandler with'</span><span class="token punctuation">,</span> data<span class="token punctuation">)</span>
+    <span class="token keyword">var</span> responseData <span class="token operator">=</span> <span class="token punctuation">{</span> <span class="token string">'Javascript Says'</span><span class="token operator">:</span><span class="token string">'Right back atcha!'</span> <span class="token punctuation">}</span>
+    <span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'JS responding with'</span><span class="token punctuation">,</span> responseData<span class="token punctuation">)</span>
+    <span class="token function">responseCallback</span><span class="token punctuation">(</span>responseData<span class="token punctuation">)</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 
 
 
 
 <p>Objective-C 端通过如下方法调用：</p>
-<h5 id="bridge-callHandler-NSString-handlerName"><a href="#bridge-callHandler-NSString-handlerName" class="headerlink" title="[bridge callHandler:(NSString*)handlerName"></a><code>[bridge callHandler:(NSString*)handlerName</code></h5><h5 id="bridge-callHandler-NSString-handlerName-data-id-data"><a href="#bridge-callHandler-NSString-handlerName-data-id-data" class="headerlink" title="[bridge callHandler:(NSString*)handlerName data:(id)data]"></a><code>[bridge callHandler:(NSString*)handlerName data:(id)data]</code></h5><h5 id="bridge-callHandler-NSString-handlerName-data-id-data-responseCallback-WVJBResponseCallback-callback"><a href="#bridge-callHandler-NSString-handlerName-data-id-data-responseCallback-WVJBResponseCallback-callback" class="headerlink" title="[bridge callHandler:(NSString*)handlerName data:(id)data responseCallback:(WVJBResponseCallback)callback]"></a><code>[bridge callHandler:(NSString*)handlerName data:(id)data responseCallback:(WVJBResponseCallback)callback]</code></h5><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">// 2. OC 调用 JS, 同时传参数给 JS。</span><br><span class="line">// 调用名为 handlerName 的 javascript 处理程序。</span><br><span class="line">// 如果给出了 responseCallback 块，则 javascript 处理程序可以响应。</span><br><span class="line">[_bridge callHandler:@"testJavascriptHandler" data:@{ @"foo":@"before ready" }];</span><br></pre></td></tr></tbody></table></figure>
+<h5 id="bridge-callHandler-NSString-handlerName"><a href="#bridge-callHandler-NSString-handlerName" class="headerlink" title="[bridge callHandler:(NSString*)handlerName"></a><code>[bridge callHandler:(NSString*)handlerName</code></h5><h5 id="bridge-callHandler-NSString-handlerName-data-id-data"><a href="#bridge-callHandler-NSString-handlerName-data-id-data" class="headerlink" title="[bridge callHandler:(NSString*)handlerName data:(id)data]"></a><code>[bridge callHandler:(NSString*)handlerName data:(id)data]</code></h5><h5 id="bridge-callHandler-NSString-handlerName-data-id-data-responseCallback-WVJBResponseCallback-callback"><a href="#bridge-callHandler-NSString-handlerName-data-id-data-responseCallback-WVJBResponseCallback-callback" class="headerlink" title="[bridge callHandler:(NSString*)handlerName data:(id)data responseCallback:(WVJBResponseCallback)callback]"></a><code>[bridge callHandler:(NSString*)handlerName data:(id)data responseCallback:(WVJBResponseCallback)callback]</code></h5><pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">// 2. OC 调用 JS, 同时传参数给 JS。
+// 调用名为 handlerName 的 javascript 处理程序。
+// 如果给出了 responseCallback 块，则 javascript 处理程序可以响应。
+[_bridge callHandler:@"testJavascriptHandler" data:@{ @"foo":@"before ready" }];<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
 
 
 
@@ -560,12 +585,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">2.1m</span>
+    <span title="站点总字数">2.3m</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">31:21</span>
+    <span title="站点阅读时长">34:09</span>
 </div>
   <div class="powered-by">由 <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZw==">NexT.Gemini</span> 强力驱动
   </div>

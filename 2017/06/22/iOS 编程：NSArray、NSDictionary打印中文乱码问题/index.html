@@ -404,11 +404,59 @@
 </blockquote>
 <a id="more"></a>
 
-<h3 id="NSArray-Extension"><a href="#NSArray-Extension" class="headerlink" title="NSArray+Extension"></a>NSArray+Extension</h3><figure class="highlight objc"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">-(<span class="built_in">NSString</span> *)descriptionWithLocale:(<span class="keyword">id</span>)locale</span><br><span class="line">{</span><br><span class="line">    <span class="built_in">NSMutableString</span> *msr = [<span class="built_in">NSMutableString</span> string];</span><br><span class="line">    [msr appendString:<span class="string">@"["</span>];</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">id</span> obj <span class="keyword">in</span> <span class="keyword">self</span>) {</span><br><span class="line">        [msr appendFormat:<span class="string">@"\n\t%@,"</span>,obj];</span><br><span class="line">    }</span><br><span class="line">    <span class="comment">//去掉最后一个逗号（,）</span></span><br><span class="line">    <span class="keyword">if</span> ([msr hasSuffix:<span class="string">@","</span>]) {</span><br><span class="line">        <span class="built_in">NSString</span> *str = [msr substringToIndex:msr.length - <span class="number">1</span>];</span><br><span class="line">        msr = [<span class="built_in">NSMutableString</span> stringWithString:str];</span><br><span class="line">    }</span><br><span class="line">    [msr appendString:<span class="string">@"\n]"</span>];</span><br><span class="line">    <span class="keyword">return</span> msr;</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<h3 id="NSArray-Extension"><a href="#NSArray-Extension" class="headerlink" title="NSArray+Extension"></a>NSArray+Extension</h3><pre class="line-numbers language-objc" data-language="objc"><code class="language-objc">-(NSString *)descriptionWithLocale:(id)locale
+{
+    NSMutableString *msr = [NSMutableString string];
+    [msr appendString:@"["];
+    for (id obj in self) {
+        [msr appendFormat:@"\n\t%@,",obj];
+    }
+    //去掉最后一个逗号（,）
+    if ([msr hasSuffix:@","]) {
+        NSString *str = [msr substringToIndex:msr.length - 1];
+        msr = [NSMutableString stringWithString:str];
+    }
+    [msr appendString:@"\n]"];
+    return msr;
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
-<h3 id="NSDictionary-Extension"><a href="#NSDictionary-Extension" class="headerlink" title="NSDictionary+Extension"></a>NSDictionary+Extension</h3><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">-(NSString *)descriptionWithLocale:(id)locale</span><br><span class="line">{</span><br><span class="line">    NSMutableString *msr = [NSMutableString string];</span><br><span class="line">    [msr appendString:@"{"];</span><br><span class="line">    [self enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {</span><br><span class="line">        [msr appendFormat:@"\n\t%@ = %@,",key,obj];</span><br><span class="line">    }];</span><br><span class="line">    //去掉最后一个逗号（,）</span><br><span class="line">    if ([msr hasSuffix:@","]) {</span><br><span class="line">        NSString *str = [msr substringToIndex:msr.length - 1];</span><br><span class="line">        msr = [NSMutableString stringWithString:str];</span><br><span class="line">    }</span><br><span class="line">    [msr appendString:@"\n}"];</span><br><span class="line">    return msr;</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<h3 id="NSDictionary-Extension"><a href="#NSDictionary-Extension" class="headerlink" title="NSDictionary+Extension"></a>NSDictionary+Extension</h3><pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">-(NSString *)descriptionWithLocale:(id)locale
+{
+    NSMutableString *msr = [NSMutableString string];
+    [msr appendString:@"{"];
+    [self enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
+        [msr appendFormat:@"\n\t%@ = %@,",key,obj];
+    }];
+    //去掉最后一个逗号（,）
+    if ([msr hasSuffix:@","]) {
+        NSString *str = [msr substringToIndex:msr.length - 1];
+        msr = [NSMutableString stringWithString:str];
+    }
+    [msr appendString:@"\n}"];
+    return msr;
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
-<h2 id="NSDictionary-的-value为空造成的crash"><a href="#NSDictionary-的-value为空造成的crash" class="headerlink" title="NSDictionary 的 value为空造成的crash"></a><strong>NSDictionary</strong> 的 value 为空造成的 crash</h2><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line"> 填充value为空造成的crash</span><br><span class="line"></span><br><span class="line"> @return 修改后的NSDictionary</span><br><span class="line"> */</span><br><span class="line">//.h</span><br><span class="line">- (NSDictionary *)deleteAllNULLValue;</span><br><span class="line"></span><br><span class="line">//.m</span><br><span class="line">- (NSDictionary *)deleteAllNULLValue {</span><br><span class="line">    NSMutableDictionary *mutableDic = [[NSMutableDictionary alloc] init];</span><br><span class="line">    for (NSString *keyStr in self.allKeys) {</span><br><span class="line">        if ([[self objectForKey:keyStr] isEqual:[NSNull null]]) {</span><br><span class="line">            [mutableDic setObject:@"null" forKey:keyStr];</span><br><span class="line">        }</span><br><span class="line">        else{</span><br><span class="line">            [mutableDic setObject:[self objectForKey:keyStr] forKey:keyStr];</span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line">    return mutableDic;</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<h2 id="NSDictionary-的-value为空造成的crash"><a href="#NSDictionary-的-value为空造成的crash" class="headerlink" title="NSDictionary 的 value为空造成的crash"></a><strong>NSDictionary</strong> 的 value 为空造成的 crash</h2><pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">/**
+ 填充value为空造成的crash
+
+ @return 修改后的NSDictionary
+ */
+//.h
+- (NSDictionary *)deleteAllNULLValue;
+
+//.m
+- (NSDictionary *)deleteAllNULLValue {
+    NSMutableDictionary *mutableDic = [[NSMutableDictionary alloc] init];
+    for (NSString *keyStr in self.allKeys) {
+        if ([[self objectForKey:keyStr] isEqual:[NSNull null]]) {
+            [mutableDic setObject:@"null" forKey:keyStr];
+        }
+        else{
+            [mutableDic setObject:[self objectForKey:keyStr] forKey:keyStr];
+        }
+    }
+    return mutableDic;
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 
 <p>其他方法</p>
@@ -534,12 +582,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">2.1m</span>
+    <span title="站点总字数">2.3m</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">31:21</span>
+    <span title="站点阅读时长">34:09</span>
 </div>
   <div class="powered-by">由 <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZw==">NexT.Gemini</span> 强力驱动
   </div>

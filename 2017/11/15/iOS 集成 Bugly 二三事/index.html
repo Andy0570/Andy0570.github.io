@@ -385,14 +385,14 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>7.5k</span>
+              <span>7.1k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>7 分钟</span>
+              <span>6 分钟</span>
             </span>
 
         </div>
@@ -411,54 +411,269 @@
 <a id="more"></a>
 
 <h2 id="初始化-Bugly-的注意点"><a href="#初始化-Bugly-的注意点" class="headerlink" title="初始化 Bugly 的注意点"></a>初始化 Bugly 的注意点</h2><h3 id="方式一，最简单"><a href="#方式一，最简单" class="headerlink" title="方式一，最简单"></a>方式一，最简单</h3><p>在工程 <code>AppDelegate.m</code> 的 <code>application:didFinishLaunchingWithOptions:</code> 方法中初始化：</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">#import "AppDelegate.h"</span><br><span class="line">#import &lt;Bugly/Bugly.h&gt;</span><br><span class="line"></span><br><span class="line">// Bugly 帐号中创建产品后，产品信息中的 AppId</span><br><span class="line">static NSString *const KBuglyAppId = @"**********"; </span><br><span class="line"></span><br><span class="line">@implementation AppDelegate</span><br><span class="line">  </span><br><span class="line">- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {</span><br><span class="line">    [Bugly startWithAppId:KBuglyAppId];</span><br><span class="line">    return YES;</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">#import "AppDelegate.h"
+#import &lt;Bugly/Bugly.h&gt;
+
+// Bugly 帐号中创建产品后，产品信息中的 AppId
+static NSString *const KBuglyAppId = @"**********"; 
+
+@implementation AppDelegate
+
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    [Bugly startWithAppId:KBuglyAppId];
+    return YES;
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <h3 id="方式二，官方文档中的”高级功能”"><a href="#方式二，官方文档中的”高级功能”" class="headerlink" title="方式二，官方文档中的”高级功能”"></a>方式二，官方文档中的” 高级功能”</h3><p>Bugly 支持读取 <code>Info.plist</code> 文件读取 SDK 初始化参数，可配置的参数如下：</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">- Appid</span><br><span class="line">    - Key: BuglyAppIDString</span><br><span class="line">    - Value: 字符串类型</span><br><span class="line">- 渠道标识</span><br><span class="line">    - Key: BuglyAppChannelString</span><br><span class="line">    - Value: 字符串类型</span><br><span class="line">- 版本信息</span><br><span class="line">    - Key: BuglyAppVersionString</span><br><span class="line">    - Value: 字符串类型</span><br><span class="line">- 开启Debug信息显示</span><br><span class="line">    - Key: BuglyDebugEnable</span><br><span class="line">    - Value: BOOL类型</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-none"><code class="language-none">- Appid
+    - Key: BuglyAppIDString
+    - Value: 字符串类型
+- 渠道标识
+    - Key: BuglyAppChannelString
+    - Value: 字符串类型
+- 版本信息
+    - Key: BuglyAppVersionString
+    - Value: 字符串类型
+- 开启Debug信息显示
+    - Key: BuglyDebugEnable
+    - Value: BOOL类型<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>我们设置 <code>Info.plist</code> 文件如下：</p>
 <p><img data-src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072334.jpg" alt="image"></p>
 <p>如下初始化方式，则会读取 <code>Info.plist</code> 内添加的 key-value 配置进行 SDK 初始化：</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {</span><br><span class="line">    // 读取Info.plist中的参数初始化SDK</span><br><span class="line">    [Bugly startWithAppId:nil];</span><br><span class="line">    return YES;</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    // 读取Info.plist中的参数初始化SDK
+    [Bugly startWithAppId:nil];
+    return YES;
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>以上方式初始化 Bugly 确实没问题，可是默认的 <code>BuglyConfig</code> 还有几个监控开关没开，我也想顺便开启一下：</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">// 可能存在问题的代码</span><br><span class="line">- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {</span><br><span class="line">  </span><br><span class="line">    BuglyConfig *config = [[BuglyConfig alloc] init];</span><br><span class="line">    config.blockMonitorEnable = YES; // 卡顿监控开关，默认关闭</span><br><span class="line">    config.blockMonitorTimeout = 5;</span><br><span class="line">    config.unexpectedTerminatingDetectionEnable = YES; // 非正常退出事件记录开关，默认关闭</span><br><span class="line"></span><br><span class="line">    // 读取Info.plist中的参数初始化SDK</span><br><span class="line">    [Bugly startWithAppId:nil config:config];</span><br><span class="line">    </span><br><span class="line">    return YES;</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">// 可能存在问题的代码
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+
+    BuglyConfig *config = [[BuglyConfig alloc] init];
+    config.blockMonitorEnable = YES; // 卡顿监控开关，默认关闭
+    config.blockMonitorTimeout = 5;
+    config.unexpectedTerminatingDetectionEnable = YES; // 非正常退出事件记录开关，默认关闭
+
+    // 读取Info.plist中的参数初始化SDK
+    [Bugly startWithAppId:nil config:config];
+
+    return YES;
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>⚠️ 注意，这样初始化就会有问题，如果配置了 <code>Info.plist</code> 字段，又在初始化时传入了自定义的 <code>BuglyConfig</code> 实例，那么在 <code>Info.plist</code> 中配置的 <code>BuglyAppChannelString</code>、<code>BuglyAppVersionString</code>、<code>BuglyDebugEnable</code> 会因为被覆盖而失效。</p>
 <h3 id="方式三，自定义配置"><a href="#方式三，自定义配置" class="headerlink" title="方式三，自定义配置"></a>方式三，自定义配置</h3><p>如果需要自定义配置  <code>BuglyConfig</code> 实例，这里就不建议不同时配置 <code>Info.plist</code> 字段（或者可以只配置 <code>BuglyAppIDString</code> 字段）：</p>
 <p>完整代码：</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">#import "AppDelegate.h"</span><br><span class="line">#import &lt;Bugly/Bugly.h&gt;</span><br><span class="line"></span><br><span class="line">static NSString *const KBuglyAppId = @"**********";</span><br><span class="line"></span><br><span class="line">@implementation AppDelegate</span><br><span class="line"></span><br><span class="line">#pragma mark - UIApplicationDelegate</span><br><span class="line"></span><br><span class="line">- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {</span><br><span class="line">    </span><br><span class="line">    [self p_configureForBugly]; </span><br><span class="line">  </span><br><span class="line">    return YES;</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">#pragma mark - Private</span><br><span class="line"></span><br><span class="line">- (void)p_configureForBugly {</span><br><span class="line">    BuglyConfig *config = [[BuglyConfig alloc] init];</span><br><span class="line">    config.channel = @"App Store";</span><br><span class="line">    config.blockMonitorEnable = YES; // 卡顿监控开关，默认关闭</span><br><span class="line">    config.blockMonitorTimeout = 5;</span><br><span class="line">    config.unexpectedTerminatingDetectionEnable = YES; // 非正常退出事件记录开关，默认关闭</span><br><span class="line">    config.delegate = self;</span><br><span class="line"></span><br><span class="line">#ifdef DEBUG</span><br><span class="line">    config.debugMode = YES; // debug 模式下，开启调试模式</span><br><span class="line">    config.reportLogLevel = BuglyLogLevelVerbose; // 设置打印日志级别</span><br><span class="line">#else</span><br><span class="line">    config.debugMode = NO; // release 模式下，关闭调试模式</span><br><span class="line">    config.reportLogLevel = BuglyLogLevelWarn; // 设置自定义日志上报的级别，默认不上报自定义日志</span><br><span class="line">#endif</span><br><span class="line">    </span><br><span class="line">    [Bugly startWithAppId:KBuglyAppId config:config];</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">#import "AppDelegate.h"
+#import &lt;Bugly/Bugly.h&gt;
+
+static NSString *const KBuglyAppId = @"**********";
+
+@implementation AppDelegate
+
+#pragma mark - UIApplicationDelegate
+
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+
+    [self p_configureForBugly]; 
+
+    return YES;
+}
+
+#pragma mark - Private
+
+- (void)p_configureForBugly {
+    BuglyConfig *config = [[BuglyConfig alloc] init];
+    config.channel = @"App Store";
+    config.blockMonitorEnable = YES; // 卡顿监控开关，默认关闭
+    config.blockMonitorTimeout = 5;
+    config.unexpectedTerminatingDetectionEnable = YES; // 非正常退出事件记录开关，默认关闭
+    config.delegate = self;
+
+#ifdef DEBUG
+    config.debugMode = YES; // debug 模式下，开启调试模式
+    config.reportLogLevel = BuglyLogLevelVerbose; // 设置打印日志级别
+#else
+    config.debugMode = NO; // release 模式下，关闭调试模式
+    config.reportLogLevel = BuglyLogLevelWarn; // 设置自定义日志上报的级别，默认不上报自定义日志
+#endif
+
+    [Bugly startWithAppId:KBuglyAppId config:config];
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>⚠️ 如果你配置完 Bugly 之后，</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">BLYLogError(fmt, ...)</span><br><span class="line">BLYLogWarn(fmt, ...)</span><br><span class="line">BLYLogInfo(fmt, ...)</span><br><span class="line">BLYLogDebug(fmt, ...)</span><br><span class="line">BLYLogVerbose(fmt, ...)</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">BLYLogError(fmt, ...)
+BLYLogWarn(fmt, ...)
+BLYLogInfo(fmt, ...)
+BLYLogDebug(fmt, ...)
+BLYLogVerbose(fmt, ...)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>如上的日志不会在控制台输出，或者部分类型日志不会输出，那你应该注意到需要设置这段代码：</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">#ifdef DEBUG</span><br><span class="line">    config.debugMode = YES; // debug 模式下，开启调试模式</span><br><span class="line">    config.reportLogLevel = BuglyLogLevelVerbose; // 设置打印日志级别</span><br><span class="line">#else</span><br><span class="line">    config.debugMode = NO; // release 模式下，关闭调试模式</span><br><span class="line">    config.reportLogLevel = BuglyLogLevelWarn; // 设置自定义日志上报的级别，默认不上报自定义日志</span><br><span class="line">#endif</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-none"><code class="language-none">#ifdef DEBUG
+    config.debugMode = YES; // debug 模式下，开启调试模式
+    config.reportLogLevel = BuglyLogLevelVerbose; // 设置打印日志级别
+#else
+    config.debugMode = NO; // release 模式下，关闭调试模式
+    config.reportLogLevel = BuglyLogLevelWarn; // 设置自定义日志上报的级别，默认不上报自定义日志
+#endif<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 
 
 <h2 id="关于-SDK-回调问题"><a href="#关于-SDK-回调问题" class="headerlink" title="关于 SDK 回调问题"></a>关于 SDK 回调问题</h2><p><code>BuglyConfig.h</code> 文件中还有一个可以遵守的协议 <code>BuglyDelegate</code> 用于在系统崩溃时可以同时上传自定义数据。</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">@protocol BuglyDelegate &lt;NSObject&gt;</span><br><span class="line"></span><br><span class="line">@optional</span><br><span class="line">/**</span><br><span class="line"> *  发生异常时回调</span><br><span class="line"> *</span><br><span class="line"> *  @param exception 异常信息</span><br><span class="line"> *</span><br><span class="line"> *  @return 返回需上报记录，随异常上报一起上报</span><br><span class="line"> */</span><br><span class="line">- (NSString * BLY_NULLABLE)attachmentForException:(NSException * BLY_NULLABLE)exception;</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">@protocol BuglyDelegate &lt;NSObject&gt;
+
+@optional
+/**
+ *  发生异常时回调
+ *
+ *  @param exception 异常信息
+ *
+ *  @return 返回需上报记录，随异常上报一起上报
+ */
+- (NSString * BLY_NULLABLE)attachmentForException:(NSException * BLY_NULLABLE)exception;
+
+@end<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>我遇到的问题是，出于代码清晰的目的，将应用初始化配置、第三方框架初始化配置、推送、分享相关的代码都放在分类中了：</p>
 <p><img data-src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072335.jpg" alt="image"></p>
 <p>并且在分类中遵守了 <code>&lt;BuglyDelegate&gt;</code> 协议，也实现了简单的回调方法：</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">- (NSString * BLY_NULLABLE)attachmentForException:(NSException * BLY_NULLABLE)exception {</span><br><span class="line">    return @"需要上传的数据...";</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">- (NSString * BLY_NULLABLE)attachmentForException:(NSException * BLY_NULLABLE)exception {
+    return @"需要上传的数据...";
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
 
 <p>正常情况下，应用发生崩溃后，Bugly 会立即上报异常，同时在「崩溃分析」-「跟踪数据」-「附件信息」中显示回调方法中上传的数据文件 <strong>crash_attach.log</strong>：</p>
 <p><img data-src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072336.jpg" alt="image"></p>
 <p>实际上把回调代码写在分类中时，应用发生崩溃时，并不会触发协议方法。所以<strong>务必要把所有与 Bugly 初始化及回调代码写在 <code>AppDelegate.m    </code> 文件中</strong>。</p>
 <p>最后，附上 Bugly 集成的完整正确代码示例：</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line">#import "AppDelegate.h"</span><br><span class="line">#import &lt;Bugly/Bugly.h&gt;</span><br><span class="line"></span><br><span class="line">static NSString *const KBuglyAppId = @"**********";</span><br><span class="line"></span><br><span class="line">@interface AppDelegate () &lt;BuglyDelegate&gt;</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">@implementation AppDelegate</span><br><span class="line"></span><br><span class="line">#pragma mark - UIApplicationDelegate</span><br><span class="line"></span><br><span class="line">- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {</span><br><span class="line">    </span><br><span class="line">    [self p_configureForBugly];</span><br><span class="line">  </span><br><span class="line">    return YES;</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">#pragma mark - Private</span><br><span class="line"></span><br><span class="line">- (void)p_configureForBugly {</span><br><span class="line">    BuglyConfig *config = [[BuglyConfig alloc] init];</span><br><span class="line">    config.channel = @"App Store";</span><br><span class="line">    config.blockMonitorEnable = YES; // 卡顿监控开关，默认关闭</span><br><span class="line">    config.blockMonitorTimeout = 5;</span><br><span class="line">    config.unexpectedTerminatingDetectionEnable = YES; // 非正常退出事件记录开关，默认关闭</span><br><span class="line">    config.delegate = self;</span><br><span class="line"></span><br><span class="line">#ifdef DEBUG</span><br><span class="line">    config.debugMode = YES; // debug 模式下，开启调试模式</span><br><span class="line">    config.reportLogLevel = BuglyLogLevelVerbose; // 设置自定义日志上报的级别，默认不上报自定义日志</span><br><span class="line">#else</span><br><span class="line">    config.debugMode = NO; // release 模式下，关闭调试模式</span><br><span class="line">    config.reportLogLevel = BuglyLogLevelWarn;</span><br><span class="line">#endif</span><br><span class="line">    </span><br><span class="line">    [Bugly startWithAppId:KBuglyAppId config:config];</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">#pragma mark - BuglyDelegate</span><br><span class="line"></span><br><span class="line">- (NSString * BLY_NULLABLE)attachmentForException:(NSException * BLY_NULLABLE)exception {</span><br><span class="line">    NSDictionary *dictionary = @{@"Name":exception.name,</span><br><span class="line">                                 @"Reason":exception.reason};</span><br><span class="line">    return [NSString stringWithFormat:@"Exception:%@",dictionary];</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">#import "AppDelegate.h"
+#import &lt;Bugly/Bugly.h&gt;
+
+static NSString *const KBuglyAppId = @"**********";
+
+@interface AppDelegate () &lt;BuglyDelegate&gt;
+
+@end
+
+@implementation AppDelegate
+
+#pragma mark - UIApplicationDelegate
+
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+
+    [self p_configureForBugly];
+
+    return YES;
+}
+
+#pragma mark - Private
+
+- (void)p_configureForBugly {
+    BuglyConfig *config = [[BuglyConfig alloc] init];
+    config.channel = @"App Store";
+    config.blockMonitorEnable = YES; // 卡顿监控开关，默认关闭
+    config.blockMonitorTimeout = 5;
+    config.unexpectedTerminatingDetectionEnable = YES; // 非正常退出事件记录开关，默认关闭
+    config.delegate = self;
+
+#ifdef DEBUG
+    config.debugMode = YES; // debug 模式下，开启调试模式
+    config.reportLogLevel = BuglyLogLevelVerbose; // 设置自定义日志上报的级别，默认不上报自定义日志
+#else
+    config.debugMode = NO; // release 模式下，关闭调试模式
+    config.reportLogLevel = BuglyLogLevelWarn;
+#endif
+
+    [Bugly startWithAppId:KBuglyAppId config:config];
+}
+
+#pragma mark - BuglyDelegate
+
+- (NSString * BLY_NULLABLE)attachmentForException:(NSException * BLY_NULLABLE)exception {
+    NSDictionary *dictionary = @{@"Name":exception.name,
+                                 @"Reason":exception.reason};
+    return [NSString stringWithFormat:@"Exception:%@",dictionary];
+}
+
+@end<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <blockquote>
 <p>过早的优化是万恶之源。——<span class="exturl" data-url="aHR0cHM6Ly9lbi53aWtpcGVkaWEub3JnL3dpa2kvRG9uYWxkX0tudXRoI0NvbXB1dGVyX1Byb2dyYW1taW5nX2FzX2FydF8uMjgxOTc0LjI5"> 高德纳<i class="fa fa-external-link-alt"></i></span></p>
 </blockquote>
 <h2 id="对依赖进行抽象化和封装"><a href="#对依赖进行抽象化和封装" class="headerlink" title="对依赖进行抽象化和封装"></a>对依赖进行抽象化和封装</h2><p>参考对 Flurry 的封装方法</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line">#import &lt;Foundation/Foundation.h&gt;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> 封装 Flurry 埋点</span><br><span class="line"> */</span><br><span class="line">@interface HPInstrumentation : NSObject</span><br><span class="line"></span><br><span class="line">+(void)startWithAPIKey:(NSString *)apiKey;</span><br><span class="line">+(void)logEvent:(NSString *)name;</span><br><span class="line">+(void)logEvent:(NSString *)name withParams:(NSDictionary *)params;</span><br><span class="line"></span><br><span class="line">+(void)logPageViewForTabBarController:(UITabBarController *)vc;</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">#import "HPInstrumentation.h"</span><br><span class="line">#import "Flurry.h"</span><br><span class="line"></span><br><span class="line">@implementation HPInstrumentation</span><br><span class="line"></span><br><span class="line">+(void)startWithAPIKey:(NSString *)apiKey</span><br><span class="line">{</span><br><span class="line">    [Flurry startSession:apiKey];</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">+(void)logEvent:(NSString *)name</span><br><span class="line">{</span><br><span class="line">    NSLog(@"&lt;HPInst&gt; %@", name);</span><br><span class="line">    [Flurry logEvent:name];</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">+(void)logEvent:(NSString *)name withParams:(NSDictionary *)params</span><br><span class="line">{</span><br><span class="line">    NSLog(@"&lt;HPInst&gt; %@ -&gt; %@", name, params);</span><br><span class="line">    [Flurry logEvent:name withParameters:params];</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">+(void)logPageViewForTabBarController:(UITabBarController *)vc {</span><br><span class="line">    NSLog(@"&lt;HPInst&gt; PV: %@", [vc class]);</span><br><span class="line">    [Flurry logAllPageViewsForTarget:vc];</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-none"><code class="language-none">#import &lt;Foundation/Foundation.h&gt;
+
+/**
+ 封装 Flurry 埋点
+ */
+@interface HPInstrumentation : NSObject
+
++(void)startWithAPIKey:(NSString *)apiKey;
++(void)logEvent:(NSString *)name;
++(void)logEvent:(NSString *)name withParams:(NSDictionary *)params;
+
++(void)logPageViewForTabBarController:(UITabBarController *)vc;
+
+@end
+
+#import "HPInstrumentation.h"
+#import "Flurry.h"
+
+@implementation HPInstrumentation
+
++(void)startWithAPIKey:(NSString *)apiKey
+{
+    [Flurry startSession:apiKey];
+}
+
++(void)logEvent:(NSString *)name
+{
+    NSLog(@"&lt;HPInst&gt; %@", name);
+    [Flurry logEvent:name];
+}
+
++(void)logEvent:(NSString *)name withParams:(NSDictionary *)params
+{
+    NSLog(@"&lt;HPInst&gt; %@ -&gt; %@", name, params);
+    [Flurry logEvent:name withParameters:params];
+}
+
++(void)logPageViewForTabBarController:(UITabBarController *)vc {
+    NSLog(@"&lt;HPInst&gt; PV: %@", [vc class]);
+    [Flurry logAllPageViewsForTarget:vc];
+}
+
+@end<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>尝试对 Bugly 进行封装</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">#import &lt;Foundation/Foundation.h&gt;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> 对依赖进行抽象化和封装</span><br><span class="line"> 如果直接在项目中使用崩溃报告系统，那么埋点会分散在项目中的各个角落，不利于后期替换或更改。</span><br><span class="line"> 低耦合：增加一个中间层之后，可以随时对依赖的第三方框架进行切换，无须再去修改分散在各个类中的代码。</span><br><span class="line"> */</span><br><span class="line">@interface HQLInstrumentation : NSObject</span><br><span class="line"></span><br><span class="line">+ (void)logEvent:(NSString *)name;</span><br><span class="line">+ (void)logEvent:(NSString *)name withParamenters:(NSString *)parameters;</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">#import "HQLInstrumentation.h"</span><br><span class="line">#import &lt;Bugly/Bugly.h&gt;</span><br><span class="line"></span><br><span class="line">@implementation HQLInstrumentation</span><br><span class="line"></span><br><span class="line">+ (void)logEvent:(NSString *)name {</span><br><span class="line">    [BuglyLog log:@"%@", name];</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">+ (void)logEvent:(NSString *)name withParamenters:(NSString *)parameters {</span><br><span class="line">    [BuglyLog log:@"%@:%@",name,parameters];</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-none"><code class="language-none">#import &lt;Foundation/Foundation.h&gt;
+
+/**
+ 对依赖进行抽象化和封装
+ 如果直接在项目中使用崩溃报告系统，那么埋点会分散在项目中的各个角落，不利于后期替换或更改。
+ 低耦合：增加一个中间层之后，可以随时对依赖的第三方框架进行切换，无须再去修改分散在各个类中的代码。
+ */
+@interface HQLInstrumentation : NSObject
+
++ (void)logEvent:(NSString *)name;
++ (void)logEvent:(NSString *)name withParamenters:(NSString *)parameters;
+
+@end
+
+#import "HQLInstrumentation.h"
+#import &lt;Bugly/Bugly.h&gt;
+
+@implementation HQLInstrumentation
+
++ (void)logEvent:(NSString *)name {
+    [BuglyLog log:@"%@", name];
+}
+
++ (void)logEvent:(NSString *)name withParamenters:(NSString *)parameters {
+    [BuglyLog log:@"%@:%@",name,parameters];
+}
+
+@end<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <h3 id="相关框架"><a href="#相关框架" class="headerlink" title="相关框架"></a>相关框架</h3><ul>
 <li><span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2plenptZW1vL0pKRXhjZXB0aW9u">JJException<i class="fa fa-external-link-alt"></i></span> - 保护 Objective-C 应用不闪退的框架。</li>
@@ -590,12 +805,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">2.1m</span>
+    <span title="站点总字数">2.3m</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">31:21</span>
+    <span title="站点阅读时长">34:09</span>
 </div>
   <div class="powered-by">由 <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZw==">NexT.Gemini</span> 强力驱动
   </div>

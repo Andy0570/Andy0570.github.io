@@ -387,7 +387,7 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>7.1k</span>
+              <span>6.9k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -438,19 +438,122 @@
 <p>Safari 浏览器 - 开发 - 显示页面资源 - 打开图像并下载：</p>
 <p><img data-src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/075659.jpg"></p>
 <h2 id="核心方法"><a href="#核心方法" class="headerlink" title="核心方法"></a>核心方法</h2><p>设置一个枚举类型表示猫头鹰当前的动画状态：</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">// 猫头鹰动画</span><br><span class="line">typedef NS_ENUM(NSUInteger, RMIOLoginViewOwlAnimationState) {</span><br><span class="line">    RMIOLoginViewOwlAnimationStateDefaule, // 默认初始状态</span><br><span class="line">    RMIOLoginViewOwlAnimationStateDown,    // 睁眼状态（输入用户名时）</span><br><span class="line">    RMIOLoginViewOwlAnimationStateUp,      // 遮眼状态（输入密码时）</span><br><span class="line">};</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">// 猫头鹰动画
+typedef NS_ENUM(NSUInteger, RMIOLoginViewOwlAnimationState) {
+    RMIOLoginViewOwlAnimationStateDefaule, // 默认初始状态
+    RMIOLoginViewOwlAnimationStateDown,    // 睁眼状态（输入用户名时）
+    RMIOLoginViewOwlAnimationStateUp,      // 遮眼状态（输入密码时）
+};<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 
 
 <p>我将抬手动画和打开双手的两个动画分别封装在两个方法中，方便复用：</p>
-<h3 id="抬起左右手遮眼动画方法"><a href="#抬起左右手遮眼动画方法" class="headerlink" title="抬起左右手遮眼动画方法"></a>抬起左右手遮眼动画方法</h3><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">// 抬起左右手动画：打开双手状态 -&gt; 遮住眼睛状态</span><br><span class="line">- (void)armUpImageAnimation {</span><br><span class="line">    </span><br><span class="line">    [UIView animateWithDuration:KOwlAnimationDuration animations:^{</span><br><span class="line">        </span><br><span class="line">        // 眼睛图片 alpha 值从0变为1</span><br><span class="line">        self.owlEyeImgView.alpha = 1;</span><br><span class="line">        </span><br><span class="line">        // 【放下时的左右手】向右平移并缩小到0</span><br><span class="line">        CGRect armDownLeftRect = CGRectMake(_faceRect.origin.x +29, 148, 0, 0);</span><br><span class="line">        self.armDownLeftImgView.frame = armDownLeftRect;</span><br><span class="line">        CGRect armDownRightRect = CGRectMake(CGRectGetMaxX(_faceRect) - 29, 148, 0, 0);</span><br><span class="line">        self.armDownRightImgView.frame = armDownRightRect;</span><br><span class="line">        </span><br><span class="line">        // 抬起时的左右手】向右平移并放大</span><br><span class="line">        CGRect armUpLeftRect = CGRectMake(_faceRect.origin.x - 6, 108, 51, 42);</span><br><span class="line">        self.armUpLeftImgView.frame = armUpLeftRect;</span><br><span class="line">        CGRect armUpRightRect = CGRectMake(_faceRect.origin.x + 60, 107, 51, 43);</span><br><span class="line">        self.armUpRightImgView.frame = armUpRightRect;</span><br><span class="line">    }];</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<h3 id="抬起左右手遮眼动画方法"><a href="#抬起左右手遮眼动画方法" class="headerlink" title="抬起左右手遮眼动画方法"></a>抬起左右手遮眼动画方法</h3><pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">// 抬起左右手动画：打开双手状态 -&gt; 遮住眼睛状态
+- (void)armUpImageAnimation {
 
-<h3 id="放下左右手睁眼动画方法"><a href="#放下左右手睁眼动画方法" class="headerlink" title="放下左右手睁眼动画方法"></a>放下左右手睁眼动画方法</h3><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">// 放下左右手动画：遮住眼睛状态-&gt;打开双手状态</span><br><span class="line">- (void)armDownImageAnimation {</span><br><span class="line">    [UIView animateWithDuration:KOwlAnimationDuration animations:^{</span><br><span class="line">        </span><br><span class="line">        // 眼睛图片 alpha 值从1变为0</span><br><span class="line">        self.owlEyeImgView.alpha = 0;</span><br><span class="line">        </span><br><span class="line">        // 【放下时的左右手】向左平移还原</span><br><span class="line">        CGRect armDownLeftRect = CGRectMake(_faceRect.origin.x - 36, 134, 43, 25);</span><br><span class="line">        self.armDownLeftImgView.frame = armDownLeftRect;</span><br><span class="line">        CGRect armDownRightRect = CGRectMake(CGRectGetMaxX(_faceRect), 134, 43, 26);</span><br><span class="line">        self.armDownRightImgView.frame = armDownRightRect;</span><br><span class="line">        </span><br><span class="line">        // 抬起时的左右手】向左平移并缩小到0</span><br><span class="line">        CGRect armUpLeftRect = CGRectMake(_faceRect.origin.x - 15, 150, 0, 0);</span><br><span class="line">        self.armUpLeftImgView.frame = armUpLeftRect;</span><br><span class="line">        CGRect armUpRightRect = CGRectMake(CGRectGetMaxX(_faceRect) + 15, 150, 0, 0);</span><br><span class="line">        self.armUpRightImgView.frame = armUpRightRect;</span><br><span class="line">    }];</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+    [UIView animateWithDuration:KOwlAnimationDuration animations:^{
+
+        // 眼睛图片 alpha 值从0变为1
+        self.owlEyeImgView.alpha = 1;
+
+        // 【放下时的左右手】向右平移并缩小到0
+        CGRect armDownLeftRect = CGRectMake(_faceRect.origin.x +29, 148, 0, 0);
+        self.armDownLeftImgView.frame = armDownLeftRect;
+        CGRect armDownRightRect = CGRectMake(CGRectGetMaxX(_faceRect) - 29, 148, 0, 0);
+        self.armDownRightImgView.frame = armDownRightRect;
+
+        // 抬起时的左右手】向右平移并放大
+        CGRect armUpLeftRect = CGRectMake(_faceRect.origin.x - 6, 108, 51, 42);
+        self.armUpLeftImgView.frame = armUpLeftRect;
+        CGRect armUpRightRect = CGRectMake(_faceRect.origin.x + 60, 107, 51, 43);
+        self.armUpRightImgView.frame = armUpRightRect;
+    }];
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="放下左右手睁眼动画方法"><a href="#放下左右手睁眼动画方法" class="headerlink" title="放下左右手睁眼动画方法"></a>放下左右手睁眼动画方法</h3><pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">// 放下左右手动画：遮住眼睛状态-&gt;打开双手状态
+- (void)armDownImageAnimation {
+    [UIView animateWithDuration:KOwlAnimationDuration animations:^{
+
+        // 眼睛图片 alpha 值从1变为0
+        self.owlEyeImgView.alpha = 0;
+
+        // 【放下时的左右手】向左平移还原
+        CGRect armDownLeftRect = CGRectMake(_faceRect.origin.x - 36, 134, 43, 25);
+        self.armDownLeftImgView.frame = armDownLeftRect;
+        CGRect armDownRightRect = CGRectMake(CGRectGetMaxX(_faceRect), 134, 43, 26);
+        self.armDownRightImgView.frame = armDownRightRect;
+
+        // 抬起时的左右手】向左平移并缩小到0
+        CGRect armUpLeftRect = CGRectMake(_faceRect.origin.x - 15, 150, 0, 0);
+        self.armUpLeftImgView.frame = armUpLeftRect;
+        CGRect armUpRightRect = CGRectMake(CGRectGetMaxX(_faceRect) + 15, 150, 0, 0);
+        self.armUpRightImgView.frame = armUpRightRect;
+    }];
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 
 
 <p>需要实现 <code>UITextFieldDelegate</code> 部分协议以调用动画方法：</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line">#pragma mark - UITextFieldDelegate</span><br><span class="line"></span><br><span class="line">// 开始编辑</span><br><span class="line">- (void)textFieldDidBeginEditing:(UITextField *)textField {</span><br><span class="line">    // 1.开始输入用户名</span><br><span class="line">    if (textField.tag == KUsernameTextFieldTag) {</span><br><span class="line">        switch (self.owlAnimationState) {</span><br><span class="line">            case RMIOLoginViewOwlAnimationStateDefaule: {</span><br><span class="line">                self.owlAnimationState = RMIOLoginViewOwlAnimationStateDown;</span><br><span class="line">                break;</span><br><span class="line">            }</span><br><span class="line">            case RMIOLoginViewOwlAnimationStateDown: {</span><br><span class="line">                break;</span><br><span class="line">            }</span><br><span class="line">            case RMIOLoginViewOwlAnimationStateUp: {</span><br><span class="line">                self.owlAnimationState = RMIOLoginViewOwlAnimationStateDown;</span><br><span class="line">                [self armDownImageAnimation];</span><br><span class="line">                break;</span><br><span class="line">            }</span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line">    </span><br><span class="line">    // 2.开始输入密码</span><br><span class="line">    if (textField.tag == KPasswordTextFieldTag) {</span><br><span class="line">        switch (self.owlAnimationState) {</span><br><span class="line">            case RMIOLoginViewOwlAnimationStateDefaule:</span><br><span class="line">            case RMIOLoginViewOwlAnimationStateDown: {</span><br><span class="line">                self.owlAnimationState = RMIOLoginViewOwlAnimationStateUp;</span><br><span class="line">                [self armUpImageAnimation];</span><br><span class="line">                break;</span><br><span class="line">            }</span><br><span class="line">            case RMIOLoginViewOwlAnimationStateUp: {</span><br><span class="line">                break;</span><br><span class="line">            }</span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">/*</span><br><span class="line"> 结束编辑</span><br><span class="line"> 每当密码输入结束编辑时，需要打开双手。</span><br><span class="line"> 遮住眼睛-&gt;打开双手：</span><br><span class="line"> * 密码输入时，返回到账号输入，打开双手。</span><br><span class="line"> * 密码输入时，点击空白部分或点击登录，打开双手。</span><br><span class="line"> </span><br><span class="line"> */</span><br><span class="line">- (void)textFieldDidEndEditing:(UITextField *)textField {</span><br><span class="line">    if (textField.tag == KPasswordTextFieldTag) {</span><br><span class="line">        if (self.owlAnimationState == RMIOLoginViewOwlAnimationStateUp) {</span><br><span class="line">            self.owlAnimationState = RMIOLoginViewOwlAnimationStateDown;</span><br><span class="line">            [self armDownImageAnimation];</span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">// 用户点击键盘"Return"按钮</span><br><span class="line">- (BOOL)textFieldShouldReturn:(UITextField *)textField {</span><br><span class="line">    [self endEditing:YES];</span><br><span class="line">    return YES;</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">#pragma mark - UITextFieldDelegate
+
+// 开始编辑
+- (void)textFieldDidBeginEditing:(UITextField *)textField {
+    // 1.开始输入用户名
+    if (textField.tag == KUsernameTextFieldTag) {
+        switch (self.owlAnimationState) {
+            case RMIOLoginViewOwlAnimationStateDefaule: {
+                self.owlAnimationState = RMIOLoginViewOwlAnimationStateDown;
+                break;
+            }
+            case RMIOLoginViewOwlAnimationStateDown: {
+                break;
+            }
+            case RMIOLoginViewOwlAnimationStateUp: {
+                self.owlAnimationState = RMIOLoginViewOwlAnimationStateDown;
+                [self armDownImageAnimation];
+                break;
+            }
+        }
+    }
+
+    // 2.开始输入密码
+    if (textField.tag == KPasswordTextFieldTag) {
+        switch (self.owlAnimationState) {
+            case RMIOLoginViewOwlAnimationStateDefaule:
+            case RMIOLoginViewOwlAnimationStateDown: {
+                self.owlAnimationState = RMIOLoginViewOwlAnimationStateUp;
+                [self armUpImageAnimation];
+                break;
+            }
+            case RMIOLoginViewOwlAnimationStateUp: {
+                break;
+            }
+        }
+    }
+}
+
+/*
+ 结束编辑
+ 每当密码输入结束编辑时，需要打开双手。
+ 遮住眼睛-&gt;打开双手：
+ * 密码输入时，返回到账号输入，打开双手。
+ * 密码输入时，点击空白部分或点击登录，打开双手。
+
+ */
+- (void)textFieldDidEndEditing:(UITextField *)textField {
+    if (textField.tag == KPasswordTextFieldTag) {
+        if (self.owlAnimationState == RMIOLoginViewOwlAnimationStateUp) {
+            self.owlAnimationState = RMIOLoginViewOwlAnimationStateDown;
+            [self armDownImageAnimation];
+        }
+    }
+}
+
+// 用户点击键盘"Return"按钮
+- (BOOL)textFieldShouldReturn:(UITextField *)textField {
+    [self endEditing:YES];
+    return YES;
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>看看实现效果如何：</p>
 <p>bingo！I Do It！🎉🎉🎉<br><img data-src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/075704.gif" alt="iOS 实现效果图.gif"></p>
 <p>放慢 10 倍速度看看：</p>
@@ -478,10 +581,49 @@
 </li>
 </ul>
 <h4 id="关于像素对齐"><a href="#关于像素对齐" class="headerlink" title="关于像素对齐"></a>关于像素对齐</h4><p>我在设置猫头鹰图片 Frame 时的方法：</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">self.faceRect = CGRectMake(CGFloatPixelRound((kScreenWidth - 116) / 2), 69, 116, 92); //第 203 行</span><br><span class="line"></span><br><span class="line">// 【原因解析】</span><br><span class="line">// 在 iPhone 7 （尺寸为 375*667）上的值为：(129.5,69,116,92)，因为 Scale = 2，所以实际像素值为（259，138，232，184），像素对齐</span><br><span class="line">// 在 iPhone X (尺寸为 375*812)上的值为(129.666667,69.000000,116.000000,92.000000),因为 Scale = 3 ，所以实际像素值为 （389，207，348，276），像素对齐</span><br><span class="line"></span><br><span class="line">//-------------------------</span><br><span class="line">// 如果不使用像素对齐函数，那么</span><br><span class="line">// 在 iPhone 7 上的值为(129.5,69,116,92)，实际像素值为：（259，138，232，184），像素对齐</span><br><span class="line">// 在 iPhone X 上的值为(129.5,69,116,92)，实际像素值为：（388.5，207，348，276），像素没有对齐⚠️</span><br><span class="line"></span><br><span class="line">// 【总结】</span><br><span class="line">// 设置 CGRect 值的时候尽量小心，特别是如果你用到了除法（如 KScreenSize / 5），可能会导致最终取出来的值不是整数，</span><br><span class="line">// 就会造成像素不对齐，就会增加 CPU/GPU 的消耗，会影响性能或者说页面不会以 60 FPS 进行渲染，造成页面卡顿。</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">self.faceRect = CGRectMake(CGFloatPixelRound((kScreenWidth - 116) / 2), 69, 116, 92); //第 203 行
+
+// 【原因解析】
+// 在 iPhone 7 （尺寸为 375*667）上的值为：(129.5,69,116,92)，因为 Scale = 2，所以实际像素值为（259，138，232，184），像素对齐
+// 在 iPhone X (尺寸为 375*812)上的值为(129.666667,69.000000,116.000000,92.000000),因为 Scale = 3 ，所以实际像素值为 （389，207，348，276），像素对齐
+
+//-------------------------
+// 如果不使用像素对齐函数，那么
+// 在 iPhone 7 上的值为(129.5,69,116,92)，实际像素值为：（259，138，232，184），像素对齐
+// 在 iPhone X 上的值为(129.5,69,116,92)，实际像素值为：（388.5，207，348，276），像素没有对齐⚠️
+
+// 【总结】
+// 设置 CGRect 值的时候尽量小心，特别是如果你用到了除法（如 KScreenSize / 5），可能会导致最终取出来的值不是整数，
+// 就会造成像素不对齐，就会增加 CPU/GPU 的消耗，会影响性能或者说页面不会以 60 FPS 进行渲染，造成页面卡顿。<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>其中有一个 <code>CGFloatPixelRound()</code> 函数可以设置像素对齐值（CGFloat），来自于 <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2liaXJlbWUvWVlLaXQ=">YYKit<i class="fa fa-external-link-alt"></i></span> 框架的 <strong>YYCGUtilities.h</strong> 类中，里面还有其他像设置像素对齐点（CGPoint）、像素对齐大小（CGSize）、像素对齐矩形（CGRect）等方法：</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">// 像素对齐值</span><br><span class="line">CGFloatPixelFloor(CGFloat value)</span><br><span class="line">CGFloatPixelRound(CGFloat value)</span><br><span class="line">CGFloatPixelCeil(CGFloat value)</span><br><span class="line">CGFloatPixelHalf(CGFloat value)</span><br><span class="line"></span><br><span class="line">// 像素对齐点</span><br><span class="line">CGPointPixelFloor(CGPoint point)</span><br><span class="line">CGPointPixelRound(CGPoint point)</span><br><span class="line">CGPointPixelCeil(CGPoint point)</span><br><span class="line">CGPointPixelHalf(CGPoint point)</span><br><span class="line"></span><br><span class="line">// 像素对齐大小</span><br><span class="line">CGSizePixelFloor(CGSize size)</span><br><span class="line">CGSizePixelRound(CGSize size)</span><br><span class="line">CGSizePixelCeil(CGSize size)</span><br><span class="line">CGSizePixelHalf(CGSize size)</span><br><span class="line"></span><br><span class="line">// 像素对齐矩形</span><br><span class="line">CGRectPixelFloor(CGRect rect)</span><br><span class="line">CGRectPixelRound(CGRect rect)</span><br><span class="line">CGRectPixelCeil(CGRect rect)</span><br><span class="line">CGRectPixelHalf(CGRect rect)</span><br><span class="line"></span><br><span class="line">// 像素对齐边缘插入量</span><br><span class="line">UIEdgeInsetPixelFloor(UIEdgeInsets insets)</span><br><span class="line">UIEdgeInsetPixelCeil(UIEdgeInsets insets)</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">// 像素对齐值
+CGFloatPixelFloor(CGFloat value)
+CGFloatPixelRound(CGFloat value)
+CGFloatPixelCeil(CGFloat value)
+CGFloatPixelHalf(CGFloat value)
+
+// 像素对齐点
+CGPointPixelFloor(CGPoint point)
+CGPointPixelRound(CGPoint point)
+CGPointPixelCeil(CGPoint point)
+CGPointPixelHalf(CGPoint point)
+
+// 像素对齐大小
+CGSizePixelFloor(CGSize size)
+CGSizePixelRound(CGSize size)
+CGSizePixelCeil(CGSize size)
+CGSizePixelHalf(CGSize size)
+
+// 像素对齐矩形
+CGRectPixelFloor(CGRect rect)
+CGRectPixelRound(CGRect rect)
+CGRectPixelCeil(CGRect rect)
+CGRectPixelHalf(CGRect rect)
+
+// 像素对齐边缘插入量
+UIEdgeInsetPixelFloor(UIEdgeInsets insets)
+UIEdgeInsetPixelCeil(UIEdgeInsets insets)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>其中底层调用的 Floor ()、Round ()、Ceil () 分别是数学函数：</p>
 <ul>
@@ -628,12 +770,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">2.1m</span>
+    <span title="站点总字数">2.3m</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">31:21</span>
+    <span title="站点阅读时长">34:09</span>
 </div>
   <div class="powered-by">由 <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZw==">NexT.Gemini</span> 强力驱动
   </div>

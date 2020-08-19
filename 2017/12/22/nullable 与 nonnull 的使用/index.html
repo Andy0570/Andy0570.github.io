@@ -381,7 +381,7 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>2.6k</span>
+              <span>2.5k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -428,26 +428,57 @@
 <li>单下划线和双下划线的需要放在类型定义之后。</li>
 <li>无下划线的需要放在类型定义之前。</li>
 </ol>
-<h3 id="使用示例："><a href="#使用示例：" class="headerlink" title="使用示例："></a>使用示例：</h3><h4 id="声明属性"><a href="#声明属性" class="headerlink" title="声明属性"></a>声明属性</h4><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">@property (nonatomic, copy, nullable) NSString *name;</span><br><span class="line">@property (nonatomic, copy) NSString *__nullable firstName;</span><br><span class="line">@property (nonatomic, copy) NSString *_Nullable lastName;</span><br></pre></td></tr></tbody></table></figure>
+<h3 id="使用示例："><a href="#使用示例：" class="headerlink" title="使用示例："></a>使用示例：</h3><h4 id="声明属性"><a href="#声明属性" class="headerlink" title="声明属性"></a>声明属性</h4><pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">@property (nonatomic, copy, nullable) NSString *name;
+@property (nonatomic, copy) NSString *__nullable firstName;
+@property (nonatomic, copy) NSString *_Nullable lastName;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
 
-<h4 id="修饰方法返回值"><a href="#修饰方法返回值" class="headerlink" title="修饰方法返回值"></a>修饰方法返回值</h4><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">- (nullable NSString *)method1;</span><br><span class="line">- (NSString *__nullable)method2;</span><br><span class="line">- (NSString *_Nullable)method3;</span><br></pre></td></tr></tbody></table></figure>
+<h4 id="修饰方法返回值"><a href="#修饰方法返回值" class="headerlink" title="修饰方法返回值"></a>修饰方法返回值</h4><pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">- (nullable NSString *)method1;
+- (NSString *__nullable)method2;
+- (NSString *_Nullable)method3;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
 
-<h4 id="修饰方法参数"><a href="#修饰方法参数" class="headerlink" title="修饰方法参数"></a>修饰方法参数</h4><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">- (void)methodWithString1:(nullable NSString *)aString;</span><br><span class="line">- (void)methodWithString2:(NSString *__nullable)aString;</span><br><span class="line">- (void)methodWithString3:(NSString *_Nullable)aString;</span><br></pre></td></tr></tbody></table></figure>
+<h4 id="修饰方法参数"><a href="#修饰方法参数" class="headerlink" title="修饰方法参数"></a>修饰方法参数</h4><pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">- (void)methodWithString1:(nullable NSString *)aString;
+- (void)methodWithString2:(NSString *__nullable)aString;
+- (void)methodWithString3:(NSString *_Nullable)aString;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
 
 <h4 id="例外情况"><a href="#例外情况" class="headerlink" title="例外情况"></a>例外情况</h4><p> ⚠️双指针类型对象、Block 的返回值、Block 的传入参数等，不能用 <code>nonnull</code>/<code>nullable</code> 修饰，只能用带下划线的 <code>__nonnull</code>/<code>__nullable</code> 或者 <code>_Nonnull</code>/<code>_Nullable</code>。</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">- (void)methodwithError1:(NSError * _Nullable * __null_unspecified)error;</span><br><span class="line">- (void)methodwithError2:(NSError * nullable * null_unspecified)error;</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">- (void)methodwithError1:(NSError * _Nullable * __null_unspecified)error;
+- (void)methodwithError2:(NSError * nullable * null_unspecified)error;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 
 
 
-<h4 id="Block-返回值"><a href="#Block-返回值" class="headerlink" title="Block 返回值"></a>Block 返回值</h4><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">- (void)methodWithBlock1:(nullable void(^)(void))block;</span><br><span class="line">// ⚠️ 以上 nullable 修饰的是方法传入参数，表示传入的 Block 可以为空，而不是修饰 BlocK 返回值。</span><br><span class="line"></span><br><span class="line">- (void)methodWithBlock2:(void (^ _Nullable)(void))block;</span><br><span class="line">- (void)methodWithBlock3:(void (^ __nullable)(void))block;</span><br></pre></td></tr></tbody></table></figure>
+<h4 id="Block-返回值"><a href="#Block-返回值" class="headerlink" title="Block 返回值"></a>Block 返回值</h4><pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">- (void)methodWithBlock1:(nullable void(^)(void))block;
+// ⚠️ 以上 nullable 修饰的是方法传入参数，表示传入的 Block 可以为空，而不是修饰 BlocK 返回值。
+
+- (void)methodWithBlock2:(void (^ _Nullable)(void))block;
+- (void)methodWithBlock3:(void (^ __nullable)(void))block;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 
 
-<h4 id="Block-传入参数"><a href="#Block-传入参数" class="headerlink" title="Block 传入参数"></a>Block 传入参数</h4><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">- (void)methodWithBlock21:(nullable id nonnull(^)(id nullable parameters))block;</span><br><span class="line">// ⚠️ 以上 nullable 修饰的是方法传入参数，表示传入的 BlocK 可以为空。而 __nonnull 用于修饰 Block 返回值 id 不能为空。</span><br><span class="line"></span><br><span class="line">- (void)methodWithBlock22:(id  nonnull(^ nullable)(id _Nullable parameters))block;</span><br><span class="line">- (void)methodWithBlock23:(id  _Nonnull (^ _Nonnull)(id _Nullable parameters))block;</span><br></pre></td></tr></tbody></table></figure>
+<h4 id="Block-传入参数"><a href="#Block-传入参数" class="headerlink" title="Block 传入参数"></a>Block 传入参数</h4><pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">- (void)methodWithBlock21:(nullable id nonnull(^)(id nullable parameters))block;
+// ⚠️ 以上 nullable 修饰的是方法传入参数，表示传入的 BlocK 可以为空。而 __nonnull 用于修饰 Block 返回值 id 不能为空。
+
+- (void)methodWithBlock22:(id  nonnull(^ nullable)(id _Nullable parameters))block;
+- (void)methodWithBlock23:(id  _Nonnull (^ _Nonnull)(id _Nullable parameters))block;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 
 
-<h3 id="宏-NS-ASSUME-NONNULL-BEGIN-与-NS-ASSUME-NONNULL-END"><a href="#宏-NS-ASSUME-NONNULL-BEGIN-与-NS-ASSUME-NONNULL-END" class="headerlink" title="宏 NS_ASSUME_NONNULL_BEGIN 与 NS_ASSUME_NONNULL_END"></a>宏 NS_ASSUME_NONNULL_BEGIN 与 NS_ASSUME_NONNULL_END</h3><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">#import &lt;Foundation/Foundation.h&gt;</span><br><span class="line"></span><br><span class="line">// 在这两个宏之间的代码，所有简单指针对象都被假定为 nonnull ，因此我们只需要去指定那些 nullable 指针对象即可。</span><br><span class="line">NS_ASSUME_NONNULL_BEGIN</span><br><span class="line"></span><br><span class="line">@interface MyObject : NSObject</span><br><span class="line"></span><br><span class="line">// 默认为 nonnull</span><br><span class="line">@property (nonatomic, copy) NSString *aString;</span><br><span class="line"></span><br><span class="line">// 方法返回值默认为 nonnull</span><br><span class="line">// 方法的参数显式声明为 nullabel,表示入参可以为空</span><br><span class="line">- (id)methodWithString:(nullable NSString *)string;</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">NS_ASSUME_NONNULL_END</span><br></pre></td></tr></tbody></table></figure>
+<h3 id="宏-NS-ASSUME-NONNULL-BEGIN-与-NS-ASSUME-NONNULL-END"><a href="#宏-NS-ASSUME-NONNULL-BEGIN-与-NS-ASSUME-NONNULL-END" class="headerlink" title="宏 NS_ASSUME_NONNULL_BEGIN 与 NS_ASSUME_NONNULL_END"></a>宏 NS_ASSUME_NONNULL_BEGIN 与 NS_ASSUME_NONNULL_END</h3><pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">#import &lt;Foundation/Foundation.h&gt;
+
+// 在这两个宏之间的代码，所有简单指针对象都被假定为 nonnull ，因此我们只需要去指定那些 nullable 指针对象即可。
+NS_ASSUME_NONNULL_BEGIN
+
+@interface MyObject : NSObject
+
+// 默认为 nonnull
+@property (nonatomic, copy) NSString *aString;
+
+// 方法返回值默认为 nonnull
+// 方法的参数显式声明为 nullabel,表示入参可以为空
+- (id)methodWithString:(nullable NSString *)string;
+
+@end
+
+NS_ASSUME_NONNULL_END<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 
 
@@ -577,12 +608,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">2.1m</span>
+    <span title="站点总字数">2.3m</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">31:21</span>
+    <span title="站点阅读时长">34:09</span>
 </div>
   <div class="powered-by">由 <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZw==">NexT.Gemini</span> 强力驱动
   </div>

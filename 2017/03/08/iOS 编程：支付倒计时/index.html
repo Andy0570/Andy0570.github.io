@@ -29,12 +29,12 @@
     var CONFIG = {"hostname":"andy0570.com","root":"/","scheme":"Gemini","version":"8.0.0-rc.5","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":"mac","bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":true,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":true,"nav":null,"activeClass":"valine"},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"algolia":{"appID":"0E2AON8EZF","apiKey":"22fbefd84c8343239f5c04365b9728de","indexName":"MyBlogPlatform","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"path":"search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":true,"preload":false}};
   </script>
 
-  <meta name="description" content="15 分钟支付倒计时   12345678910111213141516171819202122232425&#x2F;&#x2F; 支付倒计时- (void)secondsCountDown:(UILabel *)label {    __block int timeout &#x3D; 900;    dispatch_queue_t queue &#x3D; dispatch_get_global_queue(DISPATCH_">
+  <meta name="description" content="15 分钟支付倒计时   &#x2F;&#x2F; 支付倒计时 - (void)secondsCountDown:(UILabel *)label {     __block int timeout &#x3D; 900;     dispatch_queue_t queue &#x3D; dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);     dispat">
 <meta property="og:type" content="article">
 <meta property="og:title" content="iOS 编程：支付倒计时">
 <meta property="og:url" content="https://andy0570.com/2017/03/08/iOS%20%E7%BC%96%E7%A8%8B%EF%BC%9A%E6%94%AF%E4%BB%98%E5%80%92%E8%AE%A1%E6%97%B6/index.html">
 <meta property="og:site_name" content="独木舟的木">
-<meta property="og:description" content="15 分钟支付倒计时   12345678910111213141516171819202122232425&#x2F;&#x2F; 支付倒计时- (void)secondsCountDown:(UILabel *)label {    __block int timeout &#x3D; 900;    dispatch_queue_t queue &#x3D; dispatch_get_global_queue(DISPATCH_">
+<meta property="og:description" content="15 分钟支付倒计时   &#x2F;&#x2F; 支付倒计时 - (void)secondsCountDown:(UILabel *)label {     __block int timeout &#x3D; 900;     dispatch_queue_t queue &#x3D; dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);     dispat">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2017-03-08T06:39:00.000Z">
 <meta property="article:modified_time" content="2019-05-01T13:51:52.000Z">
@@ -380,7 +380,7 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>1k</span>
+              <span>995</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -400,7 +400,31 @@
         <ul>
 <li>15 分钟支付倒计时 </li>
 </ul>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">// 支付倒计时</span><br><span class="line">- (void)secondsCountDown:(UILabel *)label {</span><br><span class="line">    __block int timeout = 900;</span><br><span class="line">    dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);</span><br><span class="line">    dispatch_source_t _timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, queue);</span><br><span class="line">    dispatch_source_set_timer(_timer, dispatch_walltime(NULL, 0), 1.0*NSEC_PER_SEC, 0);//每秒执行</span><br><span class="line">    dispatch_source_set_event_handler(_timer, ^{</span><br><span class="line">        if (timeout&lt;=0) {</span><br><span class="line">            dispatch_source_cancel(_timer);</span><br><span class="line">            dispatch_async(dispatch_get_main_queue(), ^{</span><br><span class="line">                // 隐藏密码输入界面，禁用支付按钮</span><br><span class="line">                [MBProgressHUD showMessage:@"付款超时，请返回重新选择座位"];</span><br><span class="line">            });</span><br><span class="line">        }else {</span><br><span class="line">            int minutes = timeout/60;</span><br><span class="line">            int seconds = timeout%60;</span><br><span class="line">            NSString *strTime = [NSString stringWithFormat:@"%d 分 %d 秒", minutes, seconds];</span><br><span class="line">            dispatch_async(dispatch_get_main_queue(), ^{</span><br><span class="line">                label.text = [NSString stringWithFormat:@"请在 %@ 内完成付款，晚了座位就没有了哦",strTime];</span><br><span class="line">            });</span><br><span class="line">            timeout--;</span><br><span class="line">        }</span><br><span class="line">    });</span><br><span class="line">    dispatch_resume(_timer);</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">// 支付倒计时
+- (void)secondsCountDown:(UILabel *)label {
+    __block int timeout = 900;
+    dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+    dispatch_source_t _timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, queue);
+    dispatch_source_set_timer(_timer, dispatch_walltime(NULL, 0), 1.0*NSEC_PER_SEC, 0);//每秒执行
+    dispatch_source_set_event_handler(_timer, ^{
+        if (timeout&lt;=0) {
+            dispatch_source_cancel(_timer);
+            dispatch_async(dispatch_get_main_queue(), ^{
+                // 隐藏密码输入界面，禁用支付按钮
+                [MBProgressHUD showMessage:@"付款超时，请返回重新选择座位"];
+            });
+        }else {
+            int minutes = timeout/60;
+            int seconds = timeout%60;
+            NSString *strTime = [NSString stringWithFormat:@"%d 分 %d 秒", minutes, seconds];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                label.text = [NSString stringWithFormat:@"请在 %@ 内完成付款，晚了座位就没有了哦",strTime];
+            });
+            timeout--;
+        }
+    });
+    dispatch_resume(_timer);
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><ul>
 <li><span class="exturl" data-url="aHR0cDovL3d3dy5jbmJsb2dzLmNvbS9zaXdlbnNzL3AvNjQyODkwMy5odG1s">iOS 中常用的验证码倒计时，支付半小时倒计时.<i class="fa fa-external-link-alt"></i></span></li>
@@ -523,12 +547,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">2.1m</span>
+    <span title="站点总字数">2.3m</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">31:21</span>
+    <span title="站点阅读时长">34:09</span>
 </div>
   <div class="powered-by">由 <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZw==">NexT.Gemini</span> 强力驱动
   </div>

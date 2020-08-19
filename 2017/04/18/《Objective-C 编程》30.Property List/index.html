@@ -384,7 +384,7 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>2k</span>
+              <span>1.9k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -413,7 +413,29 @@
 <a id="more"></a>
 
 <h3 id="读取或写入-property-list-文件"><a href="#读取或写入-property-list-文件" class="headerlink" title="读取或写入 property list 文件"></a>读取或写入 property list 文件</h3><p>示例：</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">// 创建一个包含多个 NSDictionary 对象的 NSArray 对象</span><br><span class="line">NSMutableArray *stocks = [[NSMutableArray alloc] init];</span><br><span class="line">NSMutableDictionary *stock;</span><br><span class="line"></span><br><span class="line">stock = [NSMutableDictionary dictionary];</span><br><span class="line">[stock setObject:@"AAPL" forKey:@"symbol"];</span><br><span class="line">[stock setObject:[NSNumber numberWithInt:200] forKey:@"shares"];</span><br><span class="line">[stocks addObject:stock];</span><br><span class="line"></span><br><span class="line">stock = [NSMutableDictionary dictionary];</span><br><span class="line">[stock setObject:@"GOOG" forKey:@"symbol"];</span><br><span class="line">[stock setObject:[NSNumber numberWithInt:160] forKey:@"shares"];</span><br><span class="line">[stocks addObject:stock];</span><br><span class="line"></span><br><span class="line">// 写入 property list 文件</span><br><span class="line">[stocks writeToFile:@"/tmp/stocks.plist" atomically:YES];</span><br><span class="line"></span><br><span class="line">// 读取之前生成的 property list 文件</span><br><span class="line">NSArray *stockList = [NSArray arrayWithContentsOfFile:@"/tmp/stocks.plist"];</span><br><span class="line">for (NSDictionary *d in stockList) {</span><br><span class="line">    NSLog(@"I have %@ shares of %@",</span><br><span class="line">          [d objectForKey:@"shares"],[d objectForKey:@"symbol"]);</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">// 创建一个包含多个 NSDictionary 对象的 NSArray 对象
+NSMutableArray *stocks = [[NSMutableArray alloc] init];
+NSMutableDictionary *stock;
+
+stock = [NSMutableDictionary dictionary];
+[stock setObject:@"AAPL" forKey:@"symbol"];
+[stock setObject:[NSNumber numberWithInt:200] forKey:@"shares"];
+[stocks addObject:stock];
+
+stock = [NSMutableDictionary dictionary];
+[stock setObject:@"GOOG" forKey:@"symbol"];
+[stock setObject:[NSNumber numberWithInt:160] forKey:@"shares"];
+[stocks addObject:stock];
+
+// 写入 property list 文件
+[stocks writeToFile:@"/tmp/stocks.plist" atomically:YES];
+
+// 读取之前生成的 property list 文件
+NSArray *stockList = [NSArray arrayWithContentsOfFile:@"/tmp/stocks.plist"];
+for (NSDictionary *d in stockList) {
+    NSLog(@"I have %@ shares of %@",
+          [d objectForKey:@"shares"],[d objectForKey:@"symbol"]);
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>使用 <strong>Xcode</strong> 内置的专用编辑器查看：</p>
 <p><img data-src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/073859.jpg" alt="image"></p>
@@ -427,7 +449,13 @@
 <ul>
 <li>代码中读取 property list 文件：</li>
 </ul>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">- (NSArray *)rootArray {</span><br><span class="line">    if (!_rootArray) {</span><br><span class="line">        NSString *path = [[NSBundle mainBundle] pathForResource:@"navigationButton" ofType:@"plist"];</span><br><span class="line">        _rootArray = [NSArray arrayWithContentsOfFile:path];</span><br><span class="line">    }</span><br><span class="line">    return _rootArray;</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">- (NSArray *)rootArray {
+    if (!_rootArray) {
+        NSString *path = [[NSBundle mainBundle] pathForResource:@"navigationButton" ofType:@"plist"];
+        _rootArray = [NSArray arrayWithContentsOfFile:path];
+    }
+    return _rootArray;
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 
 <pre><code>// 读/写 property list 文件：
@@ -558,12 +586,12 @@ NSMutableDictionary *anotherDict = [[NSMutableDictionary alloc] initWithContents
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">2.1m</span>
+    <span title="站点总字数">2.3m</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">31:21</span>
+    <span title="站点阅读时长">34:09</span>
 </div>
   <div class="powered-by">由 <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZw==">NexT.Gemini</span> 强力驱动
   </div>

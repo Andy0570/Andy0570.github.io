@@ -381,7 +381,7 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>10k</span>
+              <span>9.8k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -402,11 +402,118 @@
 <a id="more"></a>
 
 <h2 id="第4章-协议与分类"><a href="#第4章-协议与分类" class="headerlink" title="第4章 协议与分类"></a>第 4 章 协议与分类</h2><h3 id="第23条：通过委托与数据源协议进行对象间通信"><a href="#第23条：通过委托与数据源协议进行对象间通信" class="headerlink" title="第23条：通过委托与数据源协议进行对象间通信"></a>第 23 条：通过委托与数据源协议进行对象间通信</h3><h4 id="委托模式（Delegate-pattern）"><a href="#委托模式（Delegate-pattern）" class="headerlink" title="委托模式（Delegate pattern）"></a>委托模式（Delegate pattern）</h4><p>主旨：定义一套接口，某个对象若想接受另一个对象的委托，则需要遵从此接口，以便成为其 “委托对象”（delegate）。而这 “另一个对象” 则可以给其委托对象回传一些信息，也可以在发生相关事件时通知委托对象。</p>
-<h5 id="EOCNetworkFetcherDelegate-h"><a href="#EOCNetworkFetcherDelegate-h" class="headerlink" title="EOCNetworkFetcherDelegate.h"></a>EOCNetworkFetcherDelegate.h</h5><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">#import &lt;Foundation/Foundation.h&gt;</span><br><span class="line">@class EOCNetworkFetcher;</span><br><span class="line"></span><br><span class="line">// 委托协议名通常是在相关类名后面加上 Delegate。</span><br><span class="line">// 委托模式:对象把应对某个行为的责任委托给另一个类。</span><br><span class="line">@protocol EOCNetworkFetcherDelegate &lt;NSObject&gt;</span><br><span class="line">@optional</span><br><span class="line">- (void)networkFetcher:(EOCNetworkFetcher *)fetcher</span><br><span class="line">        didReceiveData:(NSData *)data;</span><br><span class="line">- (void)networkFetcher:(EOCNetworkFetcher *)fetcher</span><br><span class="line">      didFailWithError:(NSError *)error;</span><br><span class="line">- (void)networkFetcher:(EOCNetworkFetcher *)fetcher</span><br><span class="line">        didUpdateProgressTo:(float)progress;</span><br><span class="line">- (BOOL)networkFetcher:(EOCNetworkFetcher *)fetcher</span><br><span class="line">        shouldFollowRedirectToURL:(NSURL *)url;</span><br><span class="line">@end</span><br></pre></td></tr></tbody></table></figure>
+<h5 id="EOCNetworkFetcherDelegate-h"><a href="#EOCNetworkFetcherDelegate-h" class="headerlink" title="EOCNetworkFetcherDelegate.h"></a>EOCNetworkFetcherDelegate.h</h5><pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">#import &lt;Foundation/Foundation.h&gt;
+@class EOCNetworkFetcher;
 
-<h5 id="EOCNetworkFetcher-类"><a href="#EOCNetworkFetcher-类" class="headerlink" title="EOCNetworkFetcher 类"></a>EOCNetworkFetcher 类</h5><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line">//  EOCNetworkFetcher.h</span><br><span class="line">#import &lt;Foundation/Foundation.h&gt;</span><br><span class="line">#import "EOCNetworkFetcherDelegate.h"</span><br><span class="line"></span><br><span class="line">@interface EOCNetworkFetcher : NSObject</span><br><span class="line">// 使用属性定义其委托对象</span><br><span class="line">// 使用 weak 关键字，避免引用循环</span><br><span class="line">@property (nonatomic, weak) id&lt;EOCNetworkFetcherDelegate&gt; delegate;</span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">#import "EOCNetworkFetcher.h"</span><br><span class="line"></span><br><span class="line">//  EOCNetworkFetcher.m</span><br><span class="line">@interface EOCNetworkFetcher () {</span><br><span class="line">    // ❇️ 使用 bitfield 数据类型</span><br><span class="line">    // 缓存委托对象是否能响应协议中的相关方法</span><br><span class="line">    struct {</span><br><span class="line">        unsigned int didReceiveData            : 1;</span><br><span class="line">        unsigned int didFailWithError          : 1;</span><br><span class="line">        unsigned int didUpdateProgressTo       : 1;</span><br><span class="line">        unsigned int shouldFollowRedirectToURL : 1;</span><br><span class="line">    } _delegateFlags;</span><br><span class="line">}</span><br><span class="line">@end</span><br><span class="line">@implementation EOCNetworkFetcher</span><br><span class="line"></span><br><span class="line">- (void)setDelegate:(id&lt;EOCNetworkFetcherDelegate&gt;)delegate {</span><br><span class="line">    _delegate = delegate;</span><br><span class="line">    // ① ❇️实现缓存功能</span><br><span class="line">    _delegateFlags.didReceiveData = [delegate respondsToSelector:@selector(networkFetcher:didReceiveData:)];</span><br><span class="line">    _delegateFlags.didFailWithError = [delegate respondsToSelector:@selector(networkFetcher:didFailWithError:)];</span><br><span class="line">    _delegateFlags.didUpdateProgressTo = [delegate respondsToSelector:@selector(networkFetcher:didUpdateProgressTo:)];</span><br><span class="line">    _delegateFlags.shouldFollowRedirectToURL = [delegate respondsToSelector:@selector(networkFetcher:shouldFollowRedirectToURL:)];</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">- (void)testMethod {</span><br><span class="line">    // data obtained from network</span><br><span class="line">    NSData *data;</span><br><span class="line">    // ❇️在委托对象上调动可选方法，必须提前使用类型信息查询方法判断这个委托对象能否响应相关选择子</span><br><span class="line">    if ([_delegate respondsToSelector:</span><br><span class="line">            @selector(networkFetcher:didReceiveData:)]) {</span><br><span class="line">        [_delegate networkFetcher:self didReceiveData:data];</span><br><span class="line">    }</span><br><span class="line">    </span><br><span class="line">    float currentProgress = 0.0;</span><br><span class="line">    // ② ❇️查询结构体标志</span><br><span class="line">    // 不必每次使用类型信息查询方法，对需要调用很多次的方法时，值得进行这种优化</span><br><span class="line">    if (_delegateFlags.didUpdateProgressTo) {</span><br><span class="line">        [_delegate networkFetcher:self didUpdateProgressTo:currentProgress];</span><br><span class="line">    }</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></tbody></table></figure>
+// 委托协议名通常是在相关类名后面加上 Delegate。
+// 委托模式:对象把应对某个行为的责任委托给另一个类。
+@protocol EOCNetworkFetcherDelegate &lt;NSObject&gt;
+@optional
+- (void)networkFetcher:(EOCNetworkFetcher *)fetcher
+        didReceiveData:(NSData *)data;
+- (void)networkFetcher:(EOCNetworkFetcher *)fetcher
+      didFailWithError:(NSError *)error;
+- (void)networkFetcher:(EOCNetworkFetcher *)fetcher
+        didUpdateProgressTo:(float)progress;
+- (BOOL)networkFetcher:(EOCNetworkFetcher *)fetcher
+        shouldFollowRedirectToURL:(NSURL *)url;
+@end<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
-<h5 id="EOCDataModel"><a href="#EOCDataModel" class="headerlink" title="EOCDataModel"></a>EOCDataModel</h5><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line">//  EOCDataModel.h</span><br><span class="line">#import &lt;Foundation/Foundation.h&gt;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> EOCDataModel 对象是 EOCNetworkFetcher 的委托对象</span><br><span class="line"> */</span><br><span class="line">@interface EOCDataModel : NSObject</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">//  EOCDataModel.m</span><br><span class="line">#import "EOCDataModel.h"</span><br><span class="line">#import "EOCNetworkFetcherDelegate.h"</span><br><span class="line">#import "EOCNetworkFetcher.h"</span><br><span class="line"></span><br><span class="line">// 1.声明此类遵从委托协议</span><br><span class="line">@interface EOCDataModel () &lt;EOCNetworkFetcherDelegate&gt;</span><br><span class="line">@property (nonatomic, strong) EOCNetworkFetcher *myFetcherA;</span><br><span class="line">@property (nonatomic, strong) EOCNetworkFetcher *myFetcherB;</span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">@implementation EOCDataModel</span><br><span class="line"></span><br><span class="line">// 2.实现委托协议中的方法</span><br><span class="line">- (void)networkFetcher:(EOCNetworkFetcher *)fetcher</span><br><span class="line">        didReceiveData:(NSData *)data {</span><br><span class="line">    // ❇️调用 delegate 中的方法时，总是应该把发起委托的实例也一并传入方法中,</span><br><span class="line">    // 这样，delegate 对象在实现相关方法时，就能根据传入的实例分别执行不同的代码了。</span><br><span class="line">    if (fetcher == _myFetcherA) {</span><br><span class="line">        // handle data</span><br><span class="line">    }else if (fetcher == _myFetcherB) {</span><br><span class="line">        // handle data</span><br><span class="line">    }</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">- (void)networkFetcher:(EOCNetworkFetcher *)fetcher</span><br><span class="line">      didFailWithError:(NSError *)error {</span><br><span class="line">    // handle error</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></tbody></table></figure>
+<h5 id="EOCNetworkFetcher-类"><a href="#EOCNetworkFetcher-类" class="headerlink" title="EOCNetworkFetcher 类"></a>EOCNetworkFetcher 类</h5><pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">//  EOCNetworkFetcher.h
+#import &lt;Foundation/Foundation.h&gt;
+#import "EOCNetworkFetcherDelegate.h"
+
+@interface EOCNetworkFetcher : NSObject
+// 使用属性定义其委托对象
+// 使用 weak 关键字，避免引用循环
+@property (nonatomic, weak) id&lt;EOCNetworkFetcherDelegate&gt; delegate;
+@end
+
+#import "EOCNetworkFetcher.h"
+
+//  EOCNetworkFetcher.m
+@interface EOCNetworkFetcher () {
+    // ❇️ 使用 bitfield 数据类型
+    // 缓存委托对象是否能响应协议中的相关方法
+    struct {
+        unsigned int didReceiveData            : 1;
+        unsigned int didFailWithError          : 1;
+        unsigned int didUpdateProgressTo       : 1;
+        unsigned int shouldFollowRedirectToURL : 1;
+    } _delegateFlags;
+}
+@end
+@implementation EOCNetworkFetcher
+
+- (void)setDelegate:(id&lt;EOCNetworkFetcherDelegate&gt;)delegate {
+    _delegate = delegate;
+    // ① ❇️实现缓存功能
+    _delegateFlags.didReceiveData = [delegate respondsToSelector:@selector(networkFetcher:didReceiveData:)];
+    _delegateFlags.didFailWithError = [delegate respondsToSelector:@selector(networkFetcher:didFailWithError:)];
+    _delegateFlags.didUpdateProgressTo = [delegate respondsToSelector:@selector(networkFetcher:didUpdateProgressTo:)];
+    _delegateFlags.shouldFollowRedirectToURL = [delegate respondsToSelector:@selector(networkFetcher:shouldFollowRedirectToURL:)];
+}
+
+- (void)testMethod {
+    // data obtained from network
+    NSData *data;
+    // ❇️在委托对象上调动可选方法，必须提前使用类型信息查询方法判断这个委托对象能否响应相关选择子
+    if ([_delegate respondsToSelector:
+            @selector(networkFetcher:didReceiveData:)]) {
+        [_delegate networkFetcher:self didReceiveData:data];
+    }
+
+    float currentProgress = 0.0;
+    // ② ❇️查询结构体标志
+    // 不必每次使用类型信息查询方法，对需要调用很多次的方法时，值得进行这种优化
+    if (_delegateFlags.didUpdateProgressTo) {
+        [_delegate networkFetcher:self didUpdateProgressTo:currentProgress];
+    }
+}
+
+@end<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h5 id="EOCDataModel"><a href="#EOCDataModel" class="headerlink" title="EOCDataModel"></a>EOCDataModel</h5><pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">//  EOCDataModel.h
+#import &lt;Foundation/Foundation.h&gt;
+
+/**
+ EOCDataModel 对象是 EOCNetworkFetcher 的委托对象
+ */
+@interface EOCDataModel : NSObject
+
+@end
+
+//  EOCDataModel.m
+#import "EOCDataModel.h"
+#import "EOCNetworkFetcherDelegate.h"
+#import "EOCNetworkFetcher.h"
+
+// 1.声明此类遵从委托协议
+@interface EOCDataModel () &lt;EOCNetworkFetcherDelegate&gt;
+@property (nonatomic, strong) EOCNetworkFetcher *myFetcherA;
+@property (nonatomic, strong) EOCNetworkFetcher *myFetcherB;
+@end
+
+@implementation EOCDataModel
+
+// 2.实现委托协议中的方法
+- (void)networkFetcher:(EOCNetworkFetcher *)fetcher
+        didReceiveData:(NSData *)data {
+    // ❇️调用 delegate 中的方法时，总是应该把发起委托的实例也一并传入方法中,
+    // 这样，delegate 对象在实现相关方法时，就能根据传入的实例分别执行不同的代码了。
+    if (fetcher == _myFetcherA) {
+        // handle data
+    }else if (fetcher == _myFetcherB) {
+        // handle data
+    }
+}
+
+- (void)networkFetcher:(EOCNetworkFetcher *)fetcher
+      didFailWithError:(NSError *)error {
+    // handle error
+}
+
+@end<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <h4 id="要点"><a href="#要点" class="headerlink" title="要点"></a>要点</h4><ul>
 <li>委托模式为对象提供了一套接口，使其可由此将相关事件告知其他对象。</li>
@@ -417,9 +524,58 @@
 <h3 id="第24条：将类的实现代码分散到便于管理的数个分类之中"><a href="#第24条：将类的实现代码分散到便于管理的数个分类之中" class="headerlink" title="第24条：将类的实现代码分散到便于管理的数个分类之中"></a>第 24 条：将类的实现代码分散到便于管理的数个分类之中</h3><ul>
 <li>通过 <strong>Objectice-C</strong> 的” 分类”（<strong>Category</strong>）机制，把类代码按逻辑划入几个分区中，这对开发与调试都有好处。</li>
 </ul>
-<h5 id="不使用-Category-分类："><a href="#不使用-Category-分类：" class="headerlink" title="不使用 Category 分类："></a>不使用 Category 分类：</h5><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">#import &lt;Foundation/Foundation.h&gt;</span><br><span class="line"></span><br><span class="line">@interface EOCPerson : NSObject</span><br><span class="line">@property (nonatomic, copy, readonly) NSString *firstName;</span><br><span class="line">@property (nonatomic, copy, readonly) NSString *lastName;</span><br><span class="line">@property (nonatomic, strong, readonly) NSSet *friends;</span><br><span class="line"></span><br><span class="line">- (instancetype)initWithFirstName:(NSString *)firstName</span><br><span class="line">                      andLastName:(NSString *)lastName;</span><br><span class="line"></span><br><span class="line">/** Friendship methods */</span><br><span class="line">- (void)addFirend:(EOCPerson *)person;</span><br><span class="line">- (void)removeFriend:(EOCPerson *)person;</span><br><span class="line">- (BOOL)isFriendsWith:(EOCPerson *)person;</span><br><span class="line"></span><br><span class="line">/* Word methods */</span><br><span class="line">- (void)performDaysWork;</span><br><span class="line">- (void)takeVacationFromWork;</span><br><span class="line"></span><br><span class="line">/** Play methods */</span><br><span class="line">- (void)goToTheCinema;</span><br><span class="line">- (void)goToSportsGame;</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></tbody></table></figure>
+<h5 id="不使用-Category-分类："><a href="#不使用-Category-分类：" class="headerlink" title="不使用 Category 分类："></a>不使用 Category 分类：</h5><pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">#import &lt;Foundation/Foundation.h&gt;
 
-<h5 id="使用-Category-分类："><a href="#使用-Category-分类：" class="headerlink" title="使用 Category 分类："></a>使用 Category 分类：</h5><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">//  EOCPerson.h</span><br><span class="line">#import &lt;Foundation/Foundation.h&gt;</span><br><span class="line"></span><br><span class="line">@interface EOCPerson : NSObject</span><br><span class="line">@property (nonatomic, copy, readonly) NSString *firstName;</span><br><span class="line">@property (nonatomic, copy, readonly) NSString *lastName;</span><br><span class="line">@property (nonatomic, strong, readonly) NSSet *friends;</span><br><span class="line"></span><br><span class="line">- (instancetype)initWithFirstName:(NSString *)firstName</span><br><span class="line">                      andLastName:(NSString *)lastName;</span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">@interface EOCPerson (Friendship)</span><br><span class="line">- (void)addFirend:(EOCPerson *)person;</span><br><span class="line">- (void)removeFriend:(EOCPerson *)person;</span><br><span class="line">- (BOOL)isFriendsWith:(EOCPerson *)person;</span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">@interface EOCPerson (Work)</span><br><span class="line">- (void)performDaysWork;</span><br><span class="line">- (void)takeVacationFromWork;</span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">@interface EOCPerson (Play)</span><br><span class="line">- (void)goToTheCinema;</span><br><span class="line">- (void)goToSportsGame;</span><br><span class="line">@end</span><br></pre></td></tr></tbody></table></figure>
+@interface EOCPerson : NSObject
+@property (nonatomic, copy, readonly) NSString *firstName;
+@property (nonatomic, copy, readonly) NSString *lastName;
+@property (nonatomic, strong, readonly) NSSet *friends;
+
+- (instancetype)initWithFirstName:(NSString *)firstName
+                      andLastName:(NSString *)lastName;
+
+/** Friendship methods */
+- (void)addFirend:(EOCPerson *)person;
+- (void)removeFriend:(EOCPerson *)person;
+- (BOOL)isFriendsWith:(EOCPerson *)person;
+
+/* Word methods */
+- (void)performDaysWork;
+- (void)takeVacationFromWork;
+
+/** Play methods */
+- (void)goToTheCinema;
+- (void)goToSportsGame;
+
+@end<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h5 id="使用-Category-分类："><a href="#使用-Category-分类：" class="headerlink" title="使用 Category 分类："></a>使用 Category 分类：</h5><pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">//  EOCPerson.h
+#import &lt;Foundation/Foundation.h&gt;
+
+@interface EOCPerson : NSObject
+@property (nonatomic, copy, readonly) NSString *firstName;
+@property (nonatomic, copy, readonly) NSString *lastName;
+@property (nonatomic, strong, readonly) NSSet *friends;
+
+- (instancetype)initWithFirstName:(NSString *)firstName
+                      andLastName:(NSString *)lastName;
+@end
+
+@interface EOCPerson (Friendship)
+- (void)addFirend:(EOCPerson *)person;
+- (void)removeFriend:(EOCPerson *)person;
+- (BOOL)isFriendsWith:(EOCPerson *)person;
+@end
+
+@interface EOCPerson (Work)
+- (void)performDaysWork;
+- (void)takeVacationFromWork;
+@end
+
+@interface EOCPerson (Play)
+- (void)goToTheCinema;
+- (void)goToSportsGame;
+@end<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>使用 <strong>Category</strong> 分类机制：</p>
 <ul>
@@ -447,7 +603,18 @@
 <li>以命名空间来区别各个<strong>分类的名称</strong>与其中所定义的<strong>方法</strong>。</li>
 <li>给相关名称都加上某个共用的前缀。</li>
 </ol>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">//  NSString+ABC_HTTP.h</span><br><span class="line">#import &lt;Foundation/Foundation.h&gt;</span><br><span class="line"></span><br><span class="line">@interface NSString (ABC_HTTP)</span><br><span class="line"></span><br><span class="line">// Encode a string with URL encoding</span><br><span class="line">- (NSString *)abc_urlEncodedString;</span><br><span class="line"></span><br><span class="line">// Decode a URL encoded string</span><br><span class="line">- (NSString *)abc_urlDecodedString;</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">//  NSString+ABC_HTTP.h
+#import &lt;Foundation/Foundation.h&gt;
+
+@interface NSString (ABC_HTTP)
+
+// Encode a string with URL encoding
+- (NSString *)abc_urlEncodedString;
+
+// Decode a URL encoded string
+- (NSString *)abc_urlDecodedString;
+
+@end<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <h4 id="要点-2"><a href="#要点-2" class="headerlink" title="要点"></a>要点</h4><ul>
 <li>向第三方类中添加分类时，总应给其<strong>名称</strong>加上你专用的前缀。</li>
@@ -463,18 +630,42 @@
 <li><p><strong>Category</strong> 分类的作用是扩展类的功能，而非封装数据。</p>
 </li>
 <li><p>可以在 <strong>Category</strong> 分类中使用只读（readonly）属性：</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">//  NSCalendar+EOC_Additions.h</span><br><span class="line">#import &lt;Foundation/Foundation.h&gt;</span><br><span class="line"></span><br><span class="line">@interface NSCalendar (EOC_Additions)</span><br><span class="line">@property (nonatomic, strong, readonly) NSArray *eoc_allMonths;</span><br><span class="line"></span><br><span class="line">- ()</span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">//  NSCalendar+EOC_Additions.m</span><br><span class="line">#import "NSCalendar+EOC_Additions.h"</span><br><span class="line"></span><br><span class="line">@implementation NSCalendar (EOC_Additions)</span><br><span class="line">// ❇️ readonly，不需要设置 set 方法。</span><br><span class="line">// ❇️ get方法不会访问类数据，属性也不需要由实例变量来实现</span><br><span class="line">- (NSArray *)eoc_allMonths {</span><br><span class="line">    if ([self.calendarIdentifier</span><br><span class="line">            isEqualToString:NSCalendarIdentifierGregorian]) {</span><br><span class="line">        return @[@"January",@"Feburary",</span><br><span class="line">                 @"March",@"April",</span><br><span class="line">                 @"May",@"June",</span><br><span class="line">                 @"July",@"August",</span><br><span class="line">                 @"September",@"October",</span><br><span class="line">                 @"November",@"December",];</span><br><span class="line">    }else if (/** other calendar identifier */) {</span><br><span class="line">        /** return months for other calendars */</span><br><span class="line">    }</span><br><span class="line">}</span><br><span class="line">@end</span><br></pre></td></tr></tbody></table></figure>
-</li>
-<li><p>上例中，直接声明一个方法或许更好：</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">#import &lt;Foundation/Foundation.h&gt;</span><br><span class="line"></span><br><span class="line">@interface NSCalendar (EOC_Additions)</span><br><span class="line">- (NSArray *)eoc_allMonths;</span><br><span class="line">@end</span><br></pre></td></tr></tbody></table></figure>
-
-</li>
+<p>&lt;!–hexoPostRenderEscape:</p><pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">//  NSCalendar+EOC_Additions.h<br>#import &lt;Foundation/Foundation.h&gt;<p></p>
+</code></pre></li><code class="language-objective-c">
+</code></ul><code class="language-objective-c">
+<p>@interface NSCalendar (EOC_Additions)<br>@property (nonatomic, strong, readonly) NSArray *eoc_allMonths;</p>
+<ul>
+<li>()<br>@end</li>
+</ul>
+<p>//  NSCalendar+EOC_Additions.m<br>#import "NSCalendar+EOC_Additions.h"</p>
+<p>@implementation NSCalendar (EOC_Additions)<br>// ❇️ readonly，不需要设置 set 方法。<br>// ❇️ get方法不会访问类数据，属性也不需要由实例变量来实现</p>
+</code><ul><code class="language-objective-c">
+</code><li><code class="language-objective-c">(NSArray *)eoc_allMonths {<br>  if ([self.calendarIdentifier<pre><code>      isEqualToString:NSCalendarIdentifierGregorian]) &amp;#123;
+  return @[@&amp;quot;January&amp;quot;,@&amp;quot;Feburary&amp;quot;,
+           @&amp;quot;March&amp;quot;,@&amp;quot;April&amp;quot;,
+           @&amp;quot;May&amp;quot;,@&amp;quot;June&amp;quot;,
+           @&amp;quot;July&amp;quot;,@&amp;quot;August&amp;quot;,
+           @&amp;quot;September&amp;quot;,@&amp;quot;October&amp;quot;,
+           @&amp;quot;November&amp;quot;,@&amp;quot;December&amp;quot;,];</code></pre>
+  }else if (/** other calendar identifier */) {<pre><code>  &amp;#x2F;** return months for other calendars *&amp;#x2F;</code></pre>
+  }<br>}<br>@end<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code>:hexoPostRenderEscape–&gt;</li>
+</ul>
+<ul>
+<li><p> 上例中，直接声明一个方法或许更好：</p>
+<p>&lt;!–hexoPostRenderEscape:</p><pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">#import &lt;Foundation/Foundation.h&gt;<p></p>
+</code></pre></li><code class="language-objective-c">
+</code></ul><code class="language-objective-c">
+<p>@interface NSCalendar (EOC_Additions)</p>
+</code><ul><code class="language-objective-c">
+</code><li><code class="language-objective-c">(NSArray *)eoc_allMonths;<br>@end<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code>:hexoPostRenderEscape–&gt;</li>
 </ul>
 <h4 id="要点-3"><a href="#要点-3" class="headerlink" title="要点"></a>要点</h4><ul>
 <li>把封装数据所用的全部属性都定义在主接口里。</li>
 <li>在 “class-continuation” 分类之外的其他分类中，可以定义存取方法，但尽量不要定义属性。</li>
 </ul>
-<h3 id="第27条：使用-“class-continuation分类”-隐藏实现细节"><a href="#第27条：使用-“class-continuation分类”-隐藏实现细节" class="headerlink" title="第27条：使用  “class-continuation分类”  隐藏实现细节"></a>第 27 条：使用 “class-continuation 分类” 隐藏实现细节</h3><h4 id="Objectice-C-Class-Extension"><a href="#Objectice-C-Class-Extension" class="headerlink" title="Objectice-C Class Extension"></a>Objectice-C Class Extension</h4><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">@interface &lt;#class name#&gt; ()</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></tbody></table></figure>
+<h3 id="第27条：使用-“class-continuation分类”-隐藏实现细节"><a href="#第27条：使用-“class-continuation分类”-隐藏实现细节" class="headerlink" title="第27条：使用  “class-continuation分类”  隐藏实现细节"></a>第 27 条：使用 “class-continuation 分类” 隐藏实现细节</h3><h4 id="Objectice-C-Class-Extension"><a href="#Objectice-C-Class-Extension" class="headerlink" title="Objectice-C Class Extension"></a>Objectice-C Class Extension</h4><pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">@interface &lt;#class name#&gt; ()
+
+@end<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
 
 <ul>
 <li>可以将<u>私有实例变量</u>和<u>私有方法</u>声明在 “class-continuation 分类” 中，实现对外隐藏。</li>
@@ -493,7 +684,7 @@
 <li><p>将返回的对象设计为遵从协议的纯 <code>id</code> 类型。</p>
 </li>
 <li><p>“匿名对象”（anonymous object）：</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">@property (nonatomic, weak) id&lt;EOCNetworkFetcherDelegate&gt; delegate;</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">@property (nonatomic, weak) id&lt;EOCNetworkFetcherDelegate&gt; delegate;<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 </li>
 <li><p>有时候对象类型并不重要，重要的是对象有没有实现某些方法。</p>
 </li>
@@ -502,7 +693,59 @@
 <blockquote>
 <h3 id="让-Cells-可复用"><a href="#让-Cells-可复用" class="headerlink" title="让 Cells 可复用"></a>让 Cells 可复用</h3><p>有时多种 model 对象需要用同一类型的 cell 来表示，这种情况下，我们可以进一步让 cell 可以复用。首先，我们给 cell 定义一个 protocol，需要用这个 cell 显示的对象必须遵循这个 protocol。然后简单修改 category 中的设置方法，让它可以接受遵循这个 protocol 的任何对象。这些简单的步骤让 cell 和任何特殊的 model 对象之间得以解耦，让它可适应不同的数据类型。</p>
 </blockquote>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line">// ****************************************************</span><br><span class="line">//  UITableViewCell+ConfigureModel.h</span><br><span class="line">#import &lt;UIKit/UIKit.h&gt;</span><br><span class="line"></span><br><span class="line">@protocol HQLTableViewCellConfigureDelegate &lt;NSObject&gt;</span><br><span class="line">@required</span><br><span class="line">- (NSString *)imageName;</span><br><span class="line">- (NSString *)titleLabelText;</span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">@protocol HQLTableViewCellKeyValueConfigureDelegate &lt;NSObject&gt;</span><br><span class="line">@required</span><br><span class="line">- (NSString *)titleLabelText;</span><br><span class="line">- (NSString *)detailLabelText;</span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">@interface UITableViewCell (ConfigureModel)</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> 配置查询功能 Cell</span><br><span class="line"></span><br><span class="line"> @param model 模型：图片 + 标题 + 指示箭头&gt;</span><br><span class="line"> */</span><br><span class="line">- (void)hql_configureForModel:(id&lt;HQLTableViewCellConfigureDelegate&gt;)model;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> 配置数据显示 Cell</span><br><span class="line"></span><br><span class="line"> @param model 模型：titleLabel + detailLabel</span><br><span class="line"> */</span><br><span class="line">- (void)hql_configureForKeyValueModel:(id&lt;HQLTableViewCellKeyValueConfigureDelegate&gt;)model;</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line">  </span><br><span class="line">// ****************************************************</span><br><span class="line">//  UITableViewCell+ConfigureModel.m</span><br><span class="line">#import "UITableViewCell+ConfigureModel.h"</span><br><span class="line"></span><br><span class="line">@implementation UITableViewCell (ConfigureModel)</span><br><span class="line"></span><br><span class="line">- (void)hql_configureForModel:(id&lt;HQLTableViewCellConfigureDelegate&gt;)model {</span><br><span class="line">    self.imageView.image = [UIImage imageNamed:model.imageName];</span><br><span class="line">    self.textLabel.text  = model.titleLabelText;</span><br><span class="line">    self.accessoryType   = UITableViewCellAccessoryDisclosureIndicator;</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">- (void)hql_configureForKeyValueModel:(id&lt;HQLTableViewCellKeyValueConfigureDelegate&gt;)model {</span><br><span class="line">    self.textLabel.text       = model.titleLabelText;</span><br><span class="line">    self.detailTextLabel.text = model.detailLabelText;</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">// ****************************************************
+//  UITableViewCell+ConfigureModel.h
+#import &lt;UIKit/UIKit.h&gt;
+
+@protocol HQLTableViewCellConfigureDelegate &lt;NSObject&gt;
+@required
+- (NSString *)imageName;
+- (NSString *)titleLabelText;
+@end
+
+@protocol HQLTableViewCellKeyValueConfigureDelegate &lt;NSObject&gt;
+@required
+- (NSString *)titleLabelText;
+- (NSString *)detailLabelText;
+@end
+
+@interface UITableViewCell (ConfigureModel)
+
+/**
+ 配置查询功能 Cell
+
+ @param model 模型：图片 + 标题 + 指示箭头&gt;
+ */
+- (void)hql_configureForModel:(id&lt;HQLTableViewCellConfigureDelegate&gt;)model;
+
+
+/**
+ 配置数据显示 Cell
+
+ @param model 模型：titleLabel + detailLabel
+ */
+- (void)hql_configureForKeyValueModel:(id&lt;HQLTableViewCellKeyValueConfigureDelegate&gt;)model;
+
+@end
+
+// ****************************************************
+//  UITableViewCell+ConfigureModel.m
+#import "UITableViewCell+ConfigureModel.h"
+
+@implementation UITableViewCell (ConfigureModel)
+
+- (void)hql_configureForModel:(id&lt;HQLTableViewCellConfigureDelegate&gt;)model {
+    self.imageView.image = [UIImage imageNamed:model.imageName];
+    self.textLabel.text  = model.titleLabelText;
+    self.accessoryType   = UITableViewCellAccessoryDisclosureIndicator;
+}
+
+- (void)hql_configureForKeyValueModel:(id&lt;HQLTableViewCellKeyValueConfigureDelegate&gt;)model {
+    self.textLabel.text       = model.titleLabelText;
+    self.detailTextLabel.text = model.detailLabelText;
+}
+
+@end<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <h4 id="要点-5"><a href="#要点-5" class="headerlink" title="要点"></a>要点</h4><ul>
 <li>协议可在某种程度上提供匿名类型。具体的对象类型可以淡化成遵从某协议的 id 类型，协议里规定了对象所应实现的方法。</li>
@@ -628,12 +871,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">2.1m</span>
+    <span title="站点总字数">2.3m</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">31:21</span>
+    <span title="站点阅读时长">34:09</span>
 </div>
   <div class="powered-by">由 <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZw==">NexT.Gemini</span> 强力驱动
   </div>

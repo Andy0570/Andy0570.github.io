@@ -384,14 +384,14 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>9.3k</span>
+              <span>8.2k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>8 分钟</span>
+              <span>7 分钟</span>
             </span>
 
         </div>
@@ -461,54 +461,418 @@
 </tr>
 </tbody></table>
 <h2 id="一、编辑系统配置文件：vim-etc-sysctl-conf"><a href="#一、编辑系统配置文件：vim-etc-sysctl-conf" class="headerlink" title="一、编辑系统配置文件：vim /etc/sysctl.conf"></a>一、编辑系统配置文件：<code>vim /etc/sysctl.conf</code></h2><p>EC2_01、EC2_02 实例修改如下：</p>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> Uncomment the next line to <span class="built_in">enable</span> packet forwarding <span class="keyword">for</span> IPv4</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 开启 IPv4 数据包转发功能</span></span><br><span class="line">net.ipv4.ip_forward=1</span><br><span class="line"><span class="meta">#</span><span class="bash"> 允许绑定非本机的IP</span></span><br><span class="line">net.ipv4.ip_nonlocal_bind=1</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token comment"># Uncomment the next line to enable packet forwarding for IPv4</span>
+<span class="token comment"># 开启 IPv4 数据包转发功能</span>
+net.ipv4.ip_forward<span class="token operator">=</span><span class="token number">1</span>
+<span class="token comment"># 允许绑定非本机的IP</span>
+net.ipv4.ip_nonlocal_bind<span class="token operator">=</span><span class="token number">1</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>EC2_03、EC2_04 实例修改如下：</p>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> Uncomment the next two lines to <span class="built_in">enable</span> Spoof protection (reverse-path filter)</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> Turn on Source Address Verification <span class="keyword">in</span> all interfaces to</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> prevent some spoofing attacks</span></span><br><span class="line">net.ipv4.conf.default.rp_filter=0</span><br><span class="line">net.ipv4.conf.all.rp_filter=0</span><br><span class="line">net.ipv4.conf.eth0.rp_filter=0</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token comment"># Uncomment the next two lines to enable Spoof protection (reverse-path filter)</span>
+<span class="token comment"># Turn on Source Address Verification in all interfaces to</span>
+<span class="token comment"># prevent some spoofing attacks</span>
+net.ipv4.conf.default.rp_filter<span class="token operator">=</span><span class="token number">0</span>
+net.ipv4.conf.all.rp_filter<span class="token operator">=</span><span class="token number">0</span>
+net.ipv4.conf.eth0.rp_filter<span class="token operator">=</span><span class="token number">0</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>使配置文件立即生效：</p>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo sysctl -p</span></span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ <span class="token function">sudo</span> sysctl -p<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <p>参考：</p>
 <ul>
 <li><span class="exturl" data-url="aHR0cHM6Ly9oZWxwLmFsaXl1bi5jb20va25vd2xlZGdlX2RldGFpbC8zOTQyOC5odG1s">ECS 做负载均衡需要用户做额外的配置吗？<i class="fa fa-external-link-alt"></i></span></li>
 <li><span class="exturl" data-url="aHR0cHM6Ly9oZWxwLmFsaXl1bi5jb20va25vd2xlZGdlX2RldGFpbC80MTMzNC5odG1s">Linux 实例常用内核网络参数介绍与常见问题处理<i class="fa fa-external-link-alt"></i></span></li>
 </ul>
-<h2 id="二、下载安装-Keepalived-等相关软件"><a href="#二、下载安装-Keepalived-等相关软件" class="headerlink" title="二、下载安装 Keepalived 等相关软件"></a>二、下载安装 Keepalived 等相关软件</h2><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 1. 更新 apt 软件包</span></span><br><span class="line">apt-get update &amp;&amp; apt-get upgrade</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 2. 安装相关软件包</span></span><br><span class="line">apt-get install -y libssl-dev openssl libpopt-dev</span><br><span class="line">apt install jq</span><br><span class="line">apt install awscli</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 3. 配置 AWS CLI </span></span><br><span class="line"><span class="meta">$</span><span class="bash"> aws configure </span></span><br><span class="line">AWS Access Key ID [None]:  # AWS 访问密钥 ID</span><br><span class="line">AWS Secret Access Key [None]:  # AWS 私有访问密钥</span><br><span class="line">Default region name [None]: us-east-1 # 默认区域名称，弗吉尼亚北部数据中心（us-east-1）</span><br><span class="line">Default output format [None]: json # 默认输出格式</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 3. 下载安装 Keepalived</span></span><br><span class="line">apt-get install keepalived</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 4. 查看 Keepalived 安装版本</span></span><br><span class="line">keepalived --version</span><br><span class="line">Keepalived v1.3.9 (10/21,2017)</span><br><span class="line">...</span><br></pre></td></tr></tbody></table></figure>
+<h2 id="二、下载安装-Keepalived-等相关软件"><a href="#二、下载安装-Keepalived-等相关软件" class="headerlink" title="二、下载安装 Keepalived 等相关软件"></a>二、下载安装 Keepalived 等相关软件</h2><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token comment"># 1. 更新 apt 软件包</span>
+<span class="token function">apt-get</span> update <span class="token operator">&amp;&amp;</span> <span class="token function">apt-get</span> upgrade
+
+<span class="token comment"># 2. 安装相关软件包</span>
+<span class="token function">apt-get</span> <span class="token function">install</span> -y libssl-dev openssl libpopt-dev
+<span class="token function">apt</span> <span class="token function">install</span> jq
+<span class="token function">apt</span> <span class="token function">install</span> awscli
+
+<span class="token comment"># 3. 配置 AWS CLI </span>
+$ aws configure 
+AWS Access Key ID <span class="token punctuation">[</span>None<span class="token punctuation">]</span>:  <span class="token comment"># AWS 访问密钥 ID</span>
+AWS Secret Access Key <span class="token punctuation">[</span>None<span class="token punctuation">]</span>:  <span class="token comment"># AWS 私有访问密钥</span>
+Default region name <span class="token punctuation">[</span>None<span class="token punctuation">]</span>: us-east-1 <span class="token comment"># 默认区域名称，弗吉尼亚北部数据中心（us-east-1）</span>
+Default output <span class="token function">format</span> <span class="token punctuation">[</span>None<span class="token punctuation">]</span>: json <span class="token comment"># 默认输出格式</span>
+
+<span class="token comment"># 3. 下载安装 Keepalived</span>
+<span class="token function">apt-get</span> <span class="token function">install</span> keepalived
+
+<span class="token comment"># 4. 查看 Keepalived 安装版本</span>
+keepalived --version
+Keepalived v1.3.9 <span class="token punctuation">(</span><span class="token number">10</span>/21,2017<span class="token punctuation">)</span>
+<span class="token punctuation">..</span>.<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 
 
-<h2 id="三、keepalived-conf-配置文件"><a href="#三、keepalived-conf-配置文件" class="headerlink" title="三、keepalived.conf 配置文件"></a>三、keepalived.conf 配置文件</h2><h3 id="1-EC2-01-Keepalived-conf-文件"><a href="#1-EC2-01-Keepalived-conf-文件" class="headerlink" title="1. EC2_01 Keepalived.conf 文件"></a>1. EC2_01 Keepalived.conf 文件</h3><figure class="highlight"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br></pre></td><td class="code"><pre><span class="line">! Configuration File for keepalived</span><br><span class="line"></span><br><span class="line"># 全局配置</span><br><span class="line">global_defs {</span><br><span class="line"></span><br><span class="line">    # 邮件通知设置</span><br><span class="line">    notification_email {</span><br><span class="line">       testuser@163.com</span><br><span class="line">    }</span><br><span class="line">    notification_email_from andywhm@163.com</span><br><span class="line">    smtp_server 192.168.200.1</span><br><span class="line">    smtp_connect_timeout 30</span><br><span class="line">    router_id LVS_Master</span><br><span class="line"></span><br><span class="line">    # 通知脚本设置</span><br><span class="line">    script_user root        # 设置脚本运行账户为 root</span><br><span class="line">    enable_script_security  # 设置脚本可运行</span><br><span class="line"></span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"># VRRP 的实例 Group_LVS_1 配置</span><br><span class="line">vrrp_instance Group_LVS_1 {</span><br><span class="line">    state MASTER　　　　　　  # 配置为主服务</span><br><span class="line">    interface eth0</span><br><span class="line">    virtual_router_id 51      # 虚拟路由标识</span><br><span class="line">    priority 100              # 定义优先级，数字越大，优先级越高  </span><br><span class="line">    advert_int 1              # 主备服务器之间同步检查的时间间隔</span><br><span class="line"></span><br><span class="line">    track_interface {</span><br><span class="line">        eth0</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    # AWS 上 VRRP 协议的组播被禁止，因此这里配置心跳通知为单播模式</span><br><span class="line">    unicast_src_ip 10.0.0.36  # 本机 IP</span><br><span class="line">    unicast_peer {            # 单播对象 IP</span><br><span class="line">        <span class="number">10.0</span><span class="number">.0</span><span class="number">.56</span></span><br><span class="line">    }</span><br><span class="line">    # nopreempt                 # 设置 HA 集群的不抢占功能</span><br><span class="line">    # preemtp_delay 300         # 设置抢占延时时间，单位是秒。</span><br><span class="line"></span><br><span class="line">    authentication {          # 验证类型和密码</span><br><span class="line">        auth_type PASS</span><br><span class="line">        auth_pass 123456</span><br><span class="line">    }</span><br><span class="line">    </span><br><span class="line">    virtual_ipaddress {       # 虚拟 IP 地址</span><br><span class="line">        <span class="number">10.0</span><span class="number">.0</span><span class="number">.100</span></span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    # 切换虚拟 IP 的脚本文件</span><br><span class="line">    notify_master "/etc/keepalived/scripts/assign_private_ip.sh eipalloc-09ce336dc7a1e8da7 10.0.0.100 i-0260f608cf698958c"</span><br><span class="line">    notify_backup "/etc/keepalived/scripts/unassign_private_ip.sh eipalloc-09ce336dc7a1e8da7 10.0.0.100 i-0260f608cf698958c"</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"># LVS 虚拟服务器配置</span><br><span class="line">virtual_server 10.0.0.100 80 {</span><br><span class="line">    delay_loop 6              # 设置健康状态检查时间间隔，单位是秒。</span><br><span class="line">    lb_algo rr                # 设置 LVS 负载调度算法，rr 为轮叫算法</span><br><span class="line">    lb_kind DR                # 设置 LVS IP负载均衡模式，有NAT、TUN、DR三个模式</span><br><span class="line">    protocol TCP              # 指定转发协议类型，TCP</span><br><span class="line">    persistence_timeout 60    # 会话保持时间</span><br><span class="line"></span><br><span class="line">    # Real Server Nginx 1 的配置</span><br><span class="line">    real_server 10.0.0.80 80 {</span><br><span class="line">        weight 3</span><br><span class="line">    inhibit_on_failure</span><br><span class="line">        TCP_CHECK {</span><br><span class="line">            connect_timeout 10　　　　 # 响应超时时间</span><br><span class="line">            retry 3　　　　　　        # 超时重试次数</span><br><span class="line">            delay_before_retry 3　　　 # 超时重试间隔</span><br><span class="line">            connect_port 80</span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    # Real Server Nginx_2 的配置</span><br><span class="line">    real_server 10.0.0.194 80 {</span><br><span class="line">        weight 3</span><br><span class="line">    inhibit_on_failure</span><br><span class="line">        TCP_CHECK {</span><br><span class="line">            connect_timeout 10</span><br><span class="line">            retry 3</span><br><span class="line">            delay_before_retry 3</span><br><span class="line">            connect_port 80</span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<h2 id="三、keepalived-conf-配置文件"><a href="#三、keepalived-conf-配置文件" class="headerlink" title="三、keepalived.conf 配置文件"></a>三、keepalived.conf 配置文件</h2><h3 id="1-EC2-01-Keepalived-conf-文件"><a href="#1-EC2-01-Keepalived-conf-文件" class="headerlink" title="1. EC2_01 Keepalived.conf 文件"></a>1. EC2_01 Keepalived.conf 文件</h3><pre class="line-numbers language-json" data-language="json"><code class="language-json">! Configuration File for keepalived
+
+# 全局配置
+global_defs <span class="token punctuation">{</span>
+
+    # 邮件通知设置
+    notification_email <span class="token punctuation">{</span>
+       testuser@<span class="token number">163</span>.com
+    <span class="token punctuation">}</span>
+    notification_email_from andywhm@<span class="token number">163</span>.com
+    smtp_server <span class="token number">192.168</span>.<span class="token number">200.1</span>
+    smtp_connect_timeout <span class="token number">30</span>
+    router_id LVS_Master
+
+    # 通知脚本设置
+    script_user root        # 设置脚本运行账户为 root
+    enable_script_security  # 设置脚本可运行
+
+<span class="token punctuation">}</span>
+
+# VRRP 的实例 Group_LVS_1 配置
+vrrp_instance Group_LVS_1 <span class="token punctuation">{</span>
+    state MASTER　　　　　　  # 配置为主服务
+    interface eth0
+    virtual_router_id <span class="token number">51</span>      # 虚拟路由标识
+    priority <span class="token number">100</span>              # 定义优先级，数字越大，优先级越高  
+    advert_int <span class="token number">1</span>              # 主备服务器之间同步检查的时间间隔
+
+    track_interface <span class="token punctuation">{</span>
+        eth0
+    <span class="token punctuation">}</span>
+
+    # AWS 上 VRRP 协议的组播被禁止，因此这里配置心跳通知为单播模式
+    unicast_src_ip <span class="token number">10.0</span>.<span class="token number">0.36</span>  # 本机 IP
+    unicast_peer <span class="token punctuation">{</span>            # 单播对象 IP
+        <span class="token number">10.0</span>.<span class="token number">0.56</span>
+    <span class="token punctuation">}</span>
+    # nopreempt                 # 设置 HA 集群的不抢占功能
+    # preemtp_delay <span class="token number">300</span>         # 设置抢占延时时间，单位是秒。
+
+    authentication <span class="token punctuation">{</span>          # 验证类型和密码
+        auth_type PASS
+        auth_pass <span class="token number">123456</span>
+    <span class="token punctuation">}</span>
+
+    virtual_ipaddress <span class="token punctuation">{</span>       # 虚拟 IP 地址
+        <span class="token number">10.0</span>.<span class="token number">0.100</span>
+    <span class="token punctuation">}</span>
+
+    # 切换虚拟 IP 的脚本文件
+    notify_master <span class="token string">"/etc/keepalived/scripts/assign_private_ip.sh eipalloc-09ce336dc7a1e8da7 10.0.0.100 i-0260f608cf698958c"</span>
+    notify_backup <span class="token string">"/etc/keepalived/scripts/unassign_private_ip.sh eipalloc-09ce336dc7a1e8da7 10.0.0.100 i-0260f608cf698958c"</span>
+<span class="token punctuation">}</span>
+
+# LVS 虚拟服务器配置
+virtual_server <span class="token number">10.0</span>.<span class="token number">0.100</span> <span class="token number">80</span> <span class="token punctuation">{</span>
+    delay_loop <span class="token number">6</span>              # 设置健康状态检查时间间隔，单位是秒。
+    lb_algo rr                # 设置 LVS 负载调度算法，rr 为轮叫算法
+    lb_kind DR                # 设置 LVS IP负载均衡模式，有NAT、TUN、DR三个模式
+    protocol TCP              # 指定转发协议类型，TCP
+    persistence_timeout <span class="token number">60</span>    # 会话保持时间
+
+    # Real Server Nginx <span class="token number">1</span> 的配置
+    real_server <span class="token number">10.0</span>.<span class="token number">0.80</span> <span class="token number">80</span> <span class="token punctuation">{</span>
+        weight <span class="token number">3</span>
+    inhibit_on_failure
+        TCP_CHECK <span class="token punctuation">{</span>
+            connect_timeout <span class="token number">10</span>　　　　 # 响应超时时间
+            retry <span class="token number">3</span>　　　　　　        # 超时重试次数
+            delay_before_retry <span class="token number">3</span>　　　 # 超时重试间隔
+            connect_port <span class="token number">80</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+
+    # Real Server Nginx_2 的配置
+    real_server <span class="token number">10.0</span>.<span class="token number">0.194</span> <span class="token number">80</span> <span class="token punctuation">{</span>
+        weight <span class="token number">3</span>
+    inhibit_on_failure
+        TCP_CHECK <span class="token punctuation">{</span>
+            connect_timeout <span class="token number">10</span>
+            retry <span class="token number">3</span>
+            delay_before_retry <span class="token number">3</span>
+            connect_port <span class="token number">80</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 
 
-<h3 id="2-EC2-02-Keepalived-conf-文件"><a href="#2-EC2-02-Keepalived-conf-文件" class="headerlink" title="2. EC2_02 Keepalived.conf 文件"></a>2. EC2_02 Keepalived.conf 文件</h3><figure class="highlight"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br></pre></td><td class="code"><pre><span class="line">! Configuration File for keepalived</span><br><span class="line"></span><br><span class="line"># 全局配置</span><br><span class="line">global_defs {</span><br><span class="line"></span><br><span class="line">    # 邮件通知设置</span><br><span class="line">    notification_email {</span><br><span class="line">       testuser@163.com</span><br><span class="line">    }</span><br><span class="line">    notification_email_from andywhm@163.com</span><br><span class="line">    smtp_server 192.168.200.1</span><br><span class="line">    smtp_connect_timeout 30</span><br><span class="line">    router_id LVS_Master</span><br><span class="line"></span><br><span class="line">    # 通知脚本设置</span><br><span class="line">    script_user root        # 设置脚本运行账户为 root</span><br><span class="line">    enable_script_security  # 设置脚本可运行</span><br><span class="line"></span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"># VRRP 的实例 Group_LVS_1 配置</span><br><span class="line">vrrp_instance Group_LVS_1 {</span><br><span class="line">    state BACKUP　　　　　    # 配置为从服务器</span><br><span class="line">    interface eth0</span><br><span class="line">    virtual_router_id 51      # 虚拟路由标识</span><br><span class="line">    priority 90               # 定义优先级，数字越大，优先级越高  </span><br><span class="line">    advert_int 1              # 主备服务器之间同步检查的时间间隔</span><br><span class="line"></span><br><span class="line">    track_interface {</span><br><span class="line">        eth0</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    # AWS 上 VRRP 协议的组播被禁止，因此这里配置心跳通知为单播模式</span><br><span class="line">    unicast_src_ip 10.0.0.56  # 本机 IP</span><br><span class="line">    unicast_peer {            # 单播对象 IP</span><br><span class="line">        <span class="number">10.0</span><span class="number">.0</span><span class="number">.36</span></span><br><span class="line">    }</span><br><span class="line">    # nopreempt                 # 设置 HA 集群的不抢占功能</span><br><span class="line">    # preemtp_delay 300         # 设置抢占延时时间，单位是秒。</span><br><span class="line"></span><br><span class="line">    authentication {          # 验证类型和密码</span><br><span class="line">        auth_type PASS</span><br><span class="line">        auth_pass 123456</span><br><span class="line">    }</span><br><span class="line">    </span><br><span class="line">    virtual_ipaddress {       # 虚拟 IP 地址</span><br><span class="line">        <span class="number">10.0</span><span class="number">.0</span><span class="number">.100</span></span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    # 切换虚拟 IP 的脚本文件</span><br><span class="line">    notify_master "/etc/keepalived/scripts/assign_private_ip.sh eipalloc-09ce336dc7a1e8da7 10.0.0.100 i-0f74aba2dc5e49679"</span><br><span class="line">    notify_backup "/etc/keepalived/scripts/unassign_private_ip.sh eipalloc-09ce336dc7a1e8da7 10.0.0.100 i-0f74aba2dc5e49679"</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"># LVS 虚拟服务器配置</span><br><span class="line">virtual_server 10.0.0.100 80 {</span><br><span class="line">    delay_loop 6              # 设置健康状态检查时间间隔，单位是秒。</span><br><span class="line">    lb_kind DR                # 设置 LVS IP负载均衡模式，有NAT、TUN、DR三个模式</span><br><span class="line">    lb_algo rr                # 设置 LVS 负载调度算法，rr 为轮叫算法</span><br><span class="line">    protocol TCP              # 指定转发协议类型，TCP</span><br><span class="line">    persistence_timeout 60    # 会话保持时间</span><br><span class="line"></span><br><span class="line">    # Real Server Nginx 1 的配置</span><br><span class="line">    real_server 10.0.0.80 80 {</span><br><span class="line">        weight 3</span><br><span class="line">    inhibit_on_failure</span><br><span class="line">        TCP_CHECK {</span><br><span class="line">            connect_timeout 10　　　　 # 响应超时时间</span><br><span class="line">            retry 3　　　　　　        # 超时重试次数</span><br><span class="line">            delay_before_retry 3　　　 # 超时重试间隔</span><br><span class="line">            connect_port 80</span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    # Real Server Nginx_2 的配置</span><br><span class="line">    real_server 10.0.0.194 80 {</span><br><span class="line">        weight 3</span><br><span class="line">    inhibit_on_failure</span><br><span class="line">        TCP_CHECK {</span><br><span class="line">            connect_timeout 10</span><br><span class="line">            retry 3</span><br><span class="line">            delay_before_retry 3</span><br><span class="line">            connect_port 80</span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<h3 id="2-EC2-02-Keepalived-conf-文件"><a href="#2-EC2-02-Keepalived-conf-文件" class="headerlink" title="2. EC2_02 Keepalived.conf 文件"></a>2. EC2_02 Keepalived.conf 文件</h3><pre class="line-numbers language-json" data-language="json"><code class="language-json">! Configuration File for keepalived
+
+# 全局配置
+global_defs <span class="token punctuation">{</span>
+
+    # 邮件通知设置
+    notification_email <span class="token punctuation">{</span>
+       testuser@<span class="token number">163</span>.com
+    <span class="token punctuation">}</span>
+    notification_email_from andywhm@<span class="token number">163</span>.com
+    smtp_server <span class="token number">192.168</span>.<span class="token number">200.1</span>
+    smtp_connect_timeout <span class="token number">30</span>
+    router_id LVS_Master
+
+    # 通知脚本设置
+    script_user root        # 设置脚本运行账户为 root
+    enable_script_security  # 设置脚本可运行
+
+<span class="token punctuation">}</span>
+
+# VRRP 的实例 Group_LVS_1 配置
+vrrp_instance Group_LVS_1 <span class="token punctuation">{</span>
+    state BACKUP　　　　　    # 配置为从服务器
+    interface eth0
+    virtual_router_id <span class="token number">51</span>      # 虚拟路由标识
+    priority <span class="token number">90</span>               # 定义优先级，数字越大，优先级越高  
+    advert_int <span class="token number">1</span>              # 主备服务器之间同步检查的时间间隔
+
+    track_interface <span class="token punctuation">{</span>
+        eth0
+    <span class="token punctuation">}</span>
+
+    # AWS 上 VRRP 协议的组播被禁止，因此这里配置心跳通知为单播模式
+    unicast_src_ip <span class="token number">10.0</span>.<span class="token number">0.56</span>  # 本机 IP
+    unicast_peer <span class="token punctuation">{</span>            # 单播对象 IP
+        <span class="token number">10.0</span>.<span class="token number">0.36</span>
+    <span class="token punctuation">}</span>
+    # nopreempt                 # 设置 HA 集群的不抢占功能
+    # preemtp_delay <span class="token number">300</span>         # 设置抢占延时时间，单位是秒。
+
+    authentication <span class="token punctuation">{</span>          # 验证类型和密码
+        auth_type PASS
+        auth_pass <span class="token number">123456</span>
+    <span class="token punctuation">}</span>
+
+    virtual_ipaddress <span class="token punctuation">{</span>       # 虚拟 IP 地址
+        <span class="token number">10.0</span>.<span class="token number">0.100</span>
+    <span class="token punctuation">}</span>
+
+    # 切换虚拟 IP 的脚本文件
+    notify_master <span class="token string">"/etc/keepalived/scripts/assign_private_ip.sh eipalloc-09ce336dc7a1e8da7 10.0.0.100 i-0f74aba2dc5e49679"</span>
+    notify_backup <span class="token string">"/etc/keepalived/scripts/unassign_private_ip.sh eipalloc-09ce336dc7a1e8da7 10.0.0.100 i-0f74aba2dc5e49679"</span>
+<span class="token punctuation">}</span>
+
+# LVS 虚拟服务器配置
+virtual_server <span class="token number">10.0</span>.<span class="token number">0.100</span> <span class="token number">80</span> <span class="token punctuation">{</span>
+    delay_loop <span class="token number">6</span>              # 设置健康状态检查时间间隔，单位是秒。
+    lb_kind DR                # 设置 LVS IP负载均衡模式，有NAT、TUN、DR三个模式
+    lb_algo rr                # 设置 LVS 负载调度算法，rr 为轮叫算法
+    protocol TCP              # 指定转发协议类型，TCP
+    persistence_timeout <span class="token number">60</span>    # 会话保持时间
+
+    # Real Server Nginx <span class="token number">1</span> 的配置
+    real_server <span class="token number">10.0</span>.<span class="token number">0.80</span> <span class="token number">80</span> <span class="token punctuation">{</span>
+        weight <span class="token number">3</span>
+    inhibit_on_failure
+        TCP_CHECK <span class="token punctuation">{</span>
+            connect_timeout <span class="token number">10</span>　　　　 # 响应超时时间
+            retry <span class="token number">3</span>　　　　　　        # 超时重试次数
+            delay_before_retry <span class="token number">3</span>　　　 # 超时重试间隔
+            connect_port <span class="token number">80</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+
+    # Real Server Nginx_2 的配置
+    real_server <span class="token number">10.0</span>.<span class="token number">0.194</span> <span class="token number">80</span> <span class="token punctuation">{</span>
+        weight <span class="token number">3</span>
+    inhibit_on_failure
+        TCP_CHECK <span class="token punctuation">{</span>
+            connect_timeout <span class="token number">10</span>
+            retry <span class="token number">3</span>
+            delay_before_retry <span class="token number">3</span>
+            connect_port <span class="token number">80</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 
 
-<h3 id="3-shell-脚本切换IP：-etc-keepalive-scripts-assign-private-ip-sh"><a href="#3-shell-脚本切换IP：-etc-keepalive-scripts-assign-private-ip-sh" class="headerlink" title="3. shell 脚本切换IP：/etc/keepalive/scripts/assign_private_ip.sh"></a>3. shell 脚本切换 IP：/etc/keepalive/scripts/assign_private_ip.sh</h3><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">!/bin/bash</span></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment">##### ###### ###### ###### ###### ###### ###### ######</span></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> Description:</span></span><br><span class="line"><span class="meta">#</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> attaches an IP of your choice to the primary NIC</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> an instance you specify</span></span><br><span class="line"><span class="meta">#</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> Setup:</span></span><br><span class="line"><span class="meta">#</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> You need, at a minimum, the following permissions:</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> {</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> <span class="string">"Statement"</span>: [</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> {</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> <span class="string">"Action"</span>: [</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> <span class="string">"ec2:AssignPrivateIpAddresses"</span>,</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> <span class="string">"ec2:DescribeInstances"</span></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> ],</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> <span class="string">"Effect"</span>: <span class="string">"Allow"</span>,</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> <span class="string">"Resource"</span>: <span class="string">"*"</span></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> }</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> ]</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> }</span></span><br><span class="line"><span class="meta">#</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> Usage:</span></span><br><span class="line"><span class="meta">#</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> ./assign_private_ip.sh allocation_id private_ip_address instance_id</span></span><br><span class="line"><span class="meta">#</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> Example:</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> ./assign_private_ip.sh <span class="string">'eipalloc-09ce336dc7a1e8da7'</span> <span class="string">'10.0.0.100'</span> <span class="string">'i-100ffabd'</span></span></span><br><span class="line"><span class="meta">#</span></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment">##### ###### ###### ###### ###### ###### ###### ######</span></span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> http://www.davidpashley.com/articles/writing-robust-shell-scripts/</span></span><br><span class="line">set -o errexit</span><br><span class="line">set -o nounset</span><br><span class="line"></span><br><span class="line">ASSOCIATION_ID=$1</span><br><span class="line">PRIVATE_IP=$2</span><br><span class="line">INSTANCE_ID=$3</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 1.根据实例 ID 找到网卡 ID</span></span><br><span class="line">ENI=$(\</span><br><span class="line">  aws ec2 describe-instances \</span><br><span class="line">  --instance-ids $INSTANCE_ID | \</span><br><span class="line">  jq -r \</span><br><span class="line">  '.Reservations[0].Instances[0].NetworkInterfaces[0].NetworkInterfaceId' \</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 2.绑定辅助私有 IP 地址到网卡</span></span><br><span class="line">aws ec2 assign-private-ip-addresses \</span><br><span class="line">  --network-interface-id $ENI \</span><br><span class="line">  --private-ip-addresses $PRIVATE_IP \</span><br><span class="line">  --allow-reassignment</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 3 关联弹性 IP 地址到辅助私有 IP 地址</span></span><br><span class="line">aws ec2 associate-address \</span><br><span class="line">  --allocation-id  $ASSOCIATION_ID \</span><br><span class="line">  --network-interface-id $ENI \</span><br><span class="line">  --private-ip-address $PRIVATE_IP \</span><br><span class="line">  --allow-reassociation</span><br><span class="line"></span><br><span class="line">echo "Adding ELASTIC IP to ENI $ENI"</span><br></pre></td></tr></tbody></table></figure>
+<h3 id="3-shell-脚本切换IP：-etc-keepalive-scripts-assign-private-ip-sh"><a href="#3-shell-脚本切换IP：-etc-keepalive-scripts-assign-private-ip-sh" class="headerlink" title="3. shell 脚本切换IP：/etc/keepalive/scripts/assign_private_ip.sh"></a>3. shell 脚本切换 IP：/etc/keepalive/scripts/assign_private_ip.sh</h3><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token shebang important">#!/bin/bash</span>
+<span class="token comment">###### ###### ###### ###### ###### ###### ###### ######</span>
+<span class="token comment"># Description:</span>
+<span class="token comment">#</span>
+<span class="token comment"># attaches an IP of your choice to the primary NIC</span>
+<span class="token comment"># an instance you specify</span>
+<span class="token comment">#</span>
+<span class="token comment"># Setup:</span>
+<span class="token comment">#</span>
+<span class="token comment"># You need, at a minimum, the following permissions:</span>
+<span class="token comment"># {</span>
+<span class="token comment"># "Statement": [</span>
+<span class="token comment"># {</span>
+<span class="token comment"># "Action": [</span>
+<span class="token comment"># "ec2:AssignPrivateIpAddresses",</span>
+<span class="token comment"># "ec2:DescribeInstances"</span>
+<span class="token comment"># ],</span>
+<span class="token comment"># "Effect": "Allow",</span>
+<span class="token comment"># "Resource": "*"</span>
+<span class="token comment"># }</span>
+<span class="token comment"># ]</span>
+<span class="token comment"># }</span>
+<span class="token comment">#</span>
+<span class="token comment"># Usage:</span>
+<span class="token comment">#</span>
+<span class="token comment"># ./assign_private_ip.sh allocation_id private_ip_address instance_id</span>
+<span class="token comment">#</span>
+<span class="token comment"># Example:</span>
+<span class="token comment"># ./assign_private_ip.sh 'eipalloc-09ce336dc7a1e8da7' '10.0.0.100' 'i-100ffabd'</span>
+<span class="token comment">#</span>
+<span class="token comment">###### ###### ###### ###### ###### ###### ###### ######</span>
+
+
+<span class="token comment"># http://www.davidpashley.com/articles/writing-robust-shell-scripts/</span>
+<span class="token builtin class-name">set</span> -o errexit
+<span class="token builtin class-name">set</span> -o nounset
+
+<span class="token assign-left variable">ASSOCIATION_ID</span><span class="token operator">=</span><span class="token variable">$1</span>
+<span class="token assign-left variable">PRIVATE_IP</span><span class="token operator">=</span><span class="token variable">$2</span>
+<span class="token assign-left variable">INSTANCE_ID</span><span class="token operator">=</span><span class="token variable">$3</span>
+
+<span class="token comment"># 1.根据实例 ID 找到网卡 ID</span>
+<span class="token assign-left variable">ENI</span><span class="token operator">=</span><span class="token variable"><span class="token variable">$(</span><span class="token punctuation">\</span>
+  aws ec2 describe-instances <span class="token punctuation">\</span>
+  --instance-ids $INSTANCE_ID <span class="token operator">|</span> <span class="token punctuation">\</span>
+  jq -r <span class="token punctuation">\</span>
+  <span class="token string">'.Reservations[0].Instances[0].NetworkInterfaces[0].NetworkInterfaceId'</span> <span class="token punctuation">\</span>
+<span class="token variable">)</span></span>
+
+<span class="token comment"># 2.绑定辅助私有 IP 地址到网卡</span>
+aws ec2 assign-private-ip-addresses <span class="token punctuation">\</span>
+  --network-interface-id <span class="token variable">$ENI</span> <span class="token punctuation">\</span>
+  --private-ip-addresses <span class="token variable">$PRIVATE_IP</span> <span class="token punctuation">\</span>
+  --allow-reassignment
+
+<span class="token comment"># 3 关联弹性 IP 地址到辅助私有 IP 地址</span>
+aws ec2 associate-address <span class="token punctuation">\</span>
+  --allocation-id  <span class="token variable">$ASSOCIATION_ID</span> <span class="token punctuation">\</span>
+  --network-interface-id <span class="token variable">$ENI</span> <span class="token punctuation">\</span>
+  --private-ip-address <span class="token variable">$PRIVATE_IP</span> <span class="token punctuation">\</span>
+  --allow-reassociation
+
+<span class="token builtin class-name">echo</span> <span class="token string">"Adding ELASTIC IP to ENI <span class="token variable">$ENI</span>"</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 
 
 
 
-<h3 id="4-shell-脚本切换IP：-etc-keepalive-scripts-unassign-private-ip-sh"><a href="#4-shell-脚本切换IP：-etc-keepalive-scripts-unassign-private-ip-sh" class="headerlink" title="4. shell 脚本切换IP：/etc/keepalive/scripts/unassign_private_ip.sh"></a>4. shell 脚本切换 IP：/etc/keepalive/scripts/unassign_private_ip.sh</h3><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">!/bin/bash </span></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment">##### ###### ###### ###### ###### ###### ###### ######</span></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> Description:</span></span><br><span class="line"><span class="meta">#</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> attaches an IP of your choice to the primary NIC</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> an instance you specify</span></span><br><span class="line"><span class="meta">#</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> Setup:</span></span><br><span class="line"><span class="meta">#</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> You need, at a minimum, the following permissions:</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> {</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> <span class="string">"Statement"</span>: [</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> {</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> <span class="string">"Action"</span>: [</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> <span class="string">"ec2:AssignPrivateIpAddresses"</span>,</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> <span class="string">"ec2:DescribeInstances"</span></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> ],</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> <span class="string">"Effect"</span>: <span class="string">"Allow"</span>,</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> <span class="string">"Resource"</span>: <span class="string">"*"</span></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> }</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> ]</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> }</span></span><br><span class="line"><span class="meta">#</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> Usage:</span></span><br><span class="line"><span class="meta">#</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> ./unassign_private_ip.sh ASSOCIATION_ID private_ip_address instance_id</span></span><br><span class="line"><span class="meta">#</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> Example:</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> ./unassign_private_ip.sh <span class="string">'eipassoc-09fe640e36c9d53b1'</span> <span class="string">'10.0.0.100'</span> <span class="string">'i-100ffabd'</span></span></span><br><span class="line"><span class="meta">#</span></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment">##### ###### ###### ###### ###### ###### ###### ######</span></span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> http://www.davidpashley.com/articles/writing-robust-shell-scripts/</span></span><br><span class="line">set -o errexit</span><br><span class="line">set -o nounset</span><br><span class="line"></span><br><span class="line">ASSOCIATION_ID=$1</span><br><span class="line">PRIVATE_IP=$2</span><br><span class="line">INSTANCE_ID=$3</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 1.根据实例 ID 找到网卡 ID</span></span><br><span class="line">ENI=$(\</span><br><span class="line">  aws ec2 describe-instances \</span><br><span class="line">  --instance-ids $INSTANCE_ID | \</span><br><span class="line">  jq -r \</span><br><span class="line">  '.Reservations[0].Instances[0].NetworkInterfaces[0].NetworkInterfaceId' \</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 2.解绑辅助私有 IP 地址</span></span><br><span class="line">aws ec2 unassign-private-ip-addresses \</span><br><span class="line">  --network-interface-id $ENI \</span><br><span class="line">  --private-ip-addresses $PRIVATE_IP</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 3.1 取消关联弹性 IP 地址，需要传关联 ID（不是分配 ID）。</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> aws ec2 disassociate-address --association-id <span class="variable">$ASSOCIATION_ID</span></span></span><br><span class="line"></span><br><span class="line">echo "Removing ELASTIC IP from ENI $ENI"</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+<h3 id="4-shell-脚本切换IP：-etc-keepalive-scripts-unassign-private-ip-sh"><a href="#4-shell-脚本切换IP：-etc-keepalive-scripts-unassign-private-ip-sh" class="headerlink" title="4. shell 脚本切换IP：/etc/keepalive/scripts/unassign_private_ip.sh"></a>4. shell 脚本切换 IP：/etc/keepalive/scripts/unassign_private_ip.sh</h3><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token shebang important">#!/bin/bash </span>
+<span class="token comment">###### ###### ###### ###### ###### ###### ###### ######</span>
+<span class="token comment"># Description:</span>
+<span class="token comment">#</span>
+<span class="token comment"># attaches an IP of your choice to the primary NIC</span>
+<span class="token comment"># an instance you specify</span>
+<span class="token comment">#</span>
+<span class="token comment"># Setup:</span>
+<span class="token comment">#</span>
+<span class="token comment"># You need, at a minimum, the following permissions:</span>
+<span class="token comment"># {</span>
+<span class="token comment"># "Statement": [</span>
+<span class="token comment"># {</span>
+<span class="token comment"># "Action": [</span>
+<span class="token comment"># "ec2:AssignPrivateIpAddresses",</span>
+<span class="token comment"># "ec2:DescribeInstances"</span>
+<span class="token comment"># ],</span>
+<span class="token comment"># "Effect": "Allow",</span>
+<span class="token comment"># "Resource": "*"</span>
+<span class="token comment"># }</span>
+<span class="token comment"># ]</span>
+<span class="token comment"># }</span>
+<span class="token comment">#</span>
+<span class="token comment"># Usage:</span>
+<span class="token comment">#</span>
+<span class="token comment"># ./unassign_private_ip.sh ASSOCIATION_ID private_ip_address instance_id</span>
+<span class="token comment">#</span>
+<span class="token comment"># Example:</span>
+<span class="token comment"># ./unassign_private_ip.sh 'eipassoc-09fe640e36c9d53b1' '10.0.0.100' 'i-100ffabd'</span>
+<span class="token comment">#</span>
+<span class="token comment">###### ###### ###### ###### ###### ###### ###### ######</span>
+
+
+<span class="token comment"># http://www.davidpashley.com/articles/writing-robust-shell-scripts/</span>
+<span class="token builtin class-name">set</span> -o errexit
+<span class="token builtin class-name">set</span> -o nounset
+
+<span class="token assign-left variable">ASSOCIATION_ID</span><span class="token operator">=</span><span class="token variable">$1</span>
+<span class="token assign-left variable">PRIVATE_IP</span><span class="token operator">=</span><span class="token variable">$2</span>
+<span class="token assign-left variable">INSTANCE_ID</span><span class="token operator">=</span><span class="token variable">$3</span>
+
+<span class="token comment"># 1.根据实例 ID 找到网卡 ID</span>
+<span class="token assign-left variable">ENI</span><span class="token operator">=</span><span class="token variable"><span class="token variable">$(</span><span class="token punctuation">\</span>
+  aws ec2 describe-instances <span class="token punctuation">\</span>
+  --instance-ids $INSTANCE_ID <span class="token operator">|</span> <span class="token punctuation">\</span>
+  jq -r <span class="token punctuation">\</span>
+  <span class="token string">'.Reservations[0].Instances[0].NetworkInterfaces[0].NetworkInterfaceId'</span> <span class="token punctuation">\</span>
+<span class="token variable">)</span></span>
+
+<span class="token comment"># 2.解绑辅助私有 IP 地址</span>
+aws ec2 unassign-private-ip-addresses <span class="token punctuation">\</span>
+  --network-interface-id <span class="token variable">$ENI</span> <span class="token punctuation">\</span>
+  --private-ip-addresses <span class="token variable">$PRIVATE_IP</span>
+
+<span class="token comment"># 3.1 取消关联弹性 IP 地址，需要传关联 ID（不是分配 ID）。</span>
+<span class="token comment"># aws ec2 disassociate-address --association-id $ASSOCIATION_ID</span>
+
+<span class="token builtin class-name">echo</span> <span class="token string">"Removing ELASTIC IP from ENI <span class="token variable">$ENI</span>"</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 
 
 <p>⚠️ scripts 脚本文件需要设置用户权限：</p>
-<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">root@ip-10-0-0-56:/etc/keepalived<span class="comment"># mkdir scripts</span></span><br><span class="line">root@ip-10-0-0-56:/etc/keepalived<span class="comment"># chmod 744 scripts/</span></span><br><span class="line"></span><br><span class="line">root@ip-10-0-0-56:/etc/keepalived/scripts<span class="comment"># vim assign_private_ip.sh</span></span><br><span class="line">root@ip-10-0-0-56:/etc/keepalived/scripts<span class="comment"># vim unassign_private_ip.sh</span></span><br><span class="line">root@ip-10-0-0-56:/etc/keepalived/scripts<span class="comment"># chmod -R 744 assign_private_ip.sh</span></span><br><span class="line">root@ip-10-0-0-56:/etc/keepalived/scripts<span class="comment"># chmod -R 744 unassign_private_ip.sh</span></span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">root@ip-10-0-0-56:/etc/keepalived<span class="token comment"># mkdir scripts</span>
+root@ip-10-0-0-56:/etc/keepalived<span class="token comment"># chmod 744 scripts/</span>
+
+root@ip-10-0-0-56:/etc/keepalived/scripts<span class="token comment"># vim assign_private_ip.sh</span>
+root@ip-10-0-0-56:/etc/keepalived/scripts<span class="token comment"># vim unassign_private_ip.sh</span>
+root@ip-10-0-0-56:/etc/keepalived/scripts<span class="token comment"># chmod -R 744 assign_private_ip.sh</span>
+root@ip-10-0-0-56:/etc/keepalived/scripts<span class="token comment"># chmod -R 744 unassign_private_ip.sh</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 
 
 <h2 id="四、EC2-03、EC2-04-Script-文件"><a href="#四、EC2-03、EC2-04-Script-文件" class="headerlink" title="四、EC2_03、EC2_04 Script 文件"></a>四、EC2_03、EC2_04 Script 文件</h2><p>EC2_03、EC2_04 运行 Nginx 服务：</p>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> apt-get update &amp;&amp; apt-get upgrade</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> apt-get install nginx</span></span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ <span class="token function">apt-get</span> update <span class="token operator">&amp;&amp;</span> <span class="token function">apt-get</span> upgrade
+$ <span class="token function">apt-get</span> <span class="token function">install</span> nginx<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 
 <p>设置 Script 文件（/etc/init.d/lvsrs）：</p>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo -s</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> vim /etc/init.d/lvsrs</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> chmod 755 /etc/init.d/lvsrs</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> /etc/init.d/lvsrs start</span></span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ <span class="token function">sudo</span> -s
+$ <span class="token function">vim</span> /etc/init.d/lvsrs
+$ <span class="token function">chmod</span> <span class="token number">755</span> /etc/init.d/lvsrs
+$ /etc/init.d/lvsrs start<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
 
 
 
-<h3 id="etc-init-d-lvsrs-文件"><a href="#etc-init-d-lvsrs-文件" class="headerlink" title="/etc/init.d/lvsrs 文件"></a>/etc/init.d/lvsrs 文件</h3><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">!/bin/bash</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 配置realserver的lo和noarp</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> chmod 755 /etc/init.d/lvsrs</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 执行server，启动realserver的LVS服务，/etc/init.d/lvsrs start</span></span><br><span class="line"></span><br><span class="line">VIP=10.0.0.100</span><br><span class="line"></span><br><span class="line">/etc/rc.d/init.d/functions</span><br><span class="line"></span><br><span class="line">case "$1" in</span><br><span class="line">start)</span><br><span class="line"> ifconfig lo:0 $VIP netmask 255.255.255.255 broadcast $VIP</span><br><span class="line"> /sbin/route add -host $VIP dev lo:0</span><br><span class="line"> echo "1" &gt;/proc/sys/net/ipv4/conf/lo/arp_ignore</span><br><span class="line"> echo "2" &gt;/proc/sys/net/ipv4/conf/lo/arp_announce</span><br><span class="line"> echo "1" &gt;/proc/sys/net/ipv4/conf/all/arp_ignore</span><br><span class="line"> echo "2" &gt;/proc/sys/net/ipv4/conf/all/arp_announce</span><br><span class="line"> sysctl -p &gt;/dev/null 2&gt;&amp;1</span><br><span class="line"> echo "RealServer Start OK"</span><br><span class="line"> ;;</span><br><span class="line">stop)</span><br><span class="line"> ifconfig lo:0 down</span><br><span class="line"> route del $VIP &gt;/dev/null 2&gt;&amp;1</span><br><span class="line"> echo "0" &gt;/proc/sys/net/ipv4/conf/lo/arp_ignore</span><br><span class="line"> echo "0" &gt;/proc/sys/net/ipv4/conf/lo/arp_announce</span><br><span class="line"> echo "0" &gt;/proc/sys/net/ipv4/conf/all/arp_ignore</span><br><span class="line"> echo "0" &gt;/proc/sys/net/ipv4/conf/all/arp_announce</span><br><span class="line"> echo "RealServer Stoped"</span><br><span class="line"> ;;</span><br><span class="line">*)</span><br><span class="line"> echo "Usage: $0 {start|stop}"</span><br><span class="line"> exit 1</span><br><span class="line">esac</span><br><span class="line"></span><br><span class="line">exit 0</span><br></pre></td></tr></tbody></table></figure>
+<h3 id="etc-init-d-lvsrs-文件"><a href="#etc-init-d-lvsrs-文件" class="headerlink" title="/etc/init.d/lvsrs 文件"></a>/etc/init.d/lvsrs 文件</h3><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token shebang important">#!/bin/bash</span>
+<span class="token comment"># 配置realserver的lo和noarp</span>
+<span class="token comment"># chmod 755 /etc/init.d/lvsrs</span>
+<span class="token comment"># 执行server，启动realserver的LVS服务，/etc/init.d/lvsrs start</span>
+
+<span class="token assign-left variable">VIP</span><span class="token operator">=</span><span class="token number">10.0</span>.0.100
+
+/etc/rc.d/init.d/functions
+
+<span class="token keyword">case</span> <span class="token string">"<span class="token variable">$1</span>"</span> <span class="token keyword">in</span>
+start<span class="token punctuation">)</span>
+ <span class="token function">ifconfig</span> lo:0 <span class="token variable">$VIP</span> netmask <span class="token number">255.255</span>.255.255 broadcast <span class="token variable">$VIP</span>
+ /sbin/route <span class="token function">add</span> -host <span class="token variable">$VIP</span> dev lo:0
+ <span class="token builtin class-name">echo</span> <span class="token string">"1"</span> <span class="token operator">&gt;</span>/proc/sys/net/ipv4/conf/lo/arp_ignore
+ <span class="token builtin class-name">echo</span> <span class="token string">"2"</span> <span class="token operator">&gt;</span>/proc/sys/net/ipv4/conf/lo/arp_announce
+ <span class="token builtin class-name">echo</span> <span class="token string">"1"</span> <span class="token operator">&gt;</span>/proc/sys/net/ipv4/conf/all/arp_ignore
+ <span class="token builtin class-name">echo</span> <span class="token string">"2"</span> <span class="token operator">&gt;</span>/proc/sys/net/ipv4/conf/all/arp_announce
+ sysctl -p <span class="token operator">&gt;</span>/dev/null <span class="token operator"><span class="token file-descriptor important">2</span>&gt;</span><span class="token file-descriptor important">&amp;1</span>
+ <span class="token builtin class-name">echo</span> <span class="token string">"RealServer Start OK"</span>
+ <span class="token punctuation">;</span><span class="token punctuation">;</span>
+stop<span class="token punctuation">)</span>
+ <span class="token function">ifconfig</span> lo:0 down
+ route del <span class="token variable">$VIP</span> <span class="token operator">&gt;</span>/dev/null <span class="token operator"><span class="token file-descriptor important">2</span>&gt;</span><span class="token file-descriptor important">&amp;1</span>
+ <span class="token builtin class-name">echo</span> <span class="token string">"0"</span> <span class="token operator">&gt;</span>/proc/sys/net/ipv4/conf/lo/arp_ignore
+ <span class="token builtin class-name">echo</span> <span class="token string">"0"</span> <span class="token operator">&gt;</span>/proc/sys/net/ipv4/conf/lo/arp_announce
+ <span class="token builtin class-name">echo</span> <span class="token string">"0"</span> <span class="token operator">&gt;</span>/proc/sys/net/ipv4/conf/all/arp_ignore
+ <span class="token builtin class-name">echo</span> <span class="token string">"0"</span> <span class="token operator">&gt;</span>/proc/sys/net/ipv4/conf/all/arp_announce
+ <span class="token builtin class-name">echo</span> <span class="token string">"RealServer Stoped"</span>
+ <span class="token punctuation">;</span><span class="token punctuation">;</span>
+*<span class="token punctuation">)</span>
+ <span class="token builtin class-name">echo</span> <span class="token string">"Usage: <span class="token variable">$0</span> {start|stop}"</span>
+ <span class="token builtin class-name">exit</span> <span class="token number">1</span>
+<span class="token keyword">esac</span>
+
+<span class="token builtin class-name">exit</span> <span class="token number">0</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
     </div>
 
@@ -629,12 +993,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">2.1m</span>
+    <span title="站点总字数">2.3m</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">31:21</span>
+    <span title="站点阅读时长">34:09</span>
 </div>
   <div class="powered-by">由 <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZw==">NexT.Gemini</span> 强力驱动
   </div>

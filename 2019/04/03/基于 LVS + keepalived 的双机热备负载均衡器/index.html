@@ -386,14 +386,14 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>17k</span>
+              <span>16k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>15 分钟</span>
+              <span>14 分钟</span>
             </span>
 
         </div>
@@ -410,18 +410,45 @@
 <h3 id="LVS-集群的负载调度"><a href="#LVS-集群的负载调度" class="headerlink" title="LVS 集群的负载调度"></a>LVS 集群的负载调度</h3><p><img data-src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/080021.jpg" alt="LVS 内核中的连接调度算法"></p>
 <p>详情参考：<a target="_blank" rel="noopener" href="http://www.linuxvirtualserver.org/zh/lvs4.html"><strong>LVS 集群的负载调度 @章文嵩博士</strong></a></p>
 <p>查看 ipvsadm 版本：</p>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> ipvsadm --version</span></span><br><span class="line">ipvsadm v1.28 2015/02/09 (compiled with popt and IPVS v1.2.1)</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token comment"># ipvsadm --version</span>
+ipvsadm v1.28 <span class="token number">2015</span>/02/09 <span class="token punctuation">(</span>compiled with popt and IPVS v1.2.1<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 
 
 
 <h1 id="Keepalived"><a href="#Keepalived" class="headerlink" title="Keepalived"></a>Keepalived</h1><h2 id="Keepalived-架构"><a href="#Keepalived-架构" class="headerlink" title="Keepalived 架构"></a>Keepalived 架构</h2><p><img data-src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/080022.jpg" alt="Keepalived 架构图"></p>
 <h2 id="Keepalived-安装及配置"><a href="#Keepalived-安装及配置" class="headerlink" title="Keepalived 安装及配置"></a>Keepalived 安装及配置</h2><h3 id="查询本机网络接口"><a href="#查询本机网络接口" class="headerlink" title="查询本机网络接口"></a>查询本机网络接口</h3><p>查询本机 <code>IP</code> 地址命令：<code>ip addr list</code>、<code>ip addr show</code>、<code>ip a</code></p>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> ip a</span></span><br><span class="line">1: lo: &lt;LOOPBACK,UP,LOWER_UP&gt; mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000</span><br><span class="line">    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00</span><br><span class="line">    inet 127.0.0.1/8 scope host lo</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br><span class="line">    inet6 ::1/128 scope host </span><br><span class="line">       valid_lft forever preferred_lft forever</span><br><span class="line">2: eth0: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 9001 qdisc fq_codel state UP group default qlen 1000</span><br><span class="line">    link/ether 02:a2:63:89:23:50 brd ff:ff:ff:ff:ff:ff</span><br><span class="line">    inet 10.0.0.62/24 brd 10.0.0.255 scope global dynamic eth0</span><br><span class="line">       valid_lft 3505sec preferred_lft 3505sec</span><br><span class="line">    inet6 fe80::a2:63ff:fe89:2350/64 scope link </span><br><span class="line">       valid_lft forever preferred_lft forever</span><br><span class="line">       </span><br><span class="line"><span class="meta">#</span><span class="bash"> 配置并启动网络接口</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 配置虚拟IP</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 将网络接口 eth0:1 的 IP 地址设置为：172.27.0.10，子网掩码设置为：255.255.255.255，</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> up：启动网络接口</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> down：关闭网络接口</span></span><br><span class="line">ifconfig eth0:1 172.27.0.10 broadcast 172.27.0.10 netmask 255.255.255.255 up</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 关闭网络接口</span></span><br><span class="line">ifconfig eth0:1 172.27.0.10 broadcast 172.27.0.10 netmask 255.255.255.255 down</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token comment"># ip a</span>
+<span class="token number">1</span>: lo: <span class="token operator">&lt;</span>LOOPBACK,UP,LOWER_UP<span class="token operator">&gt;</span> mtu <span class="token number">65536</span> qdisc noqueue state UNKNOWN group default qlen <span class="token number">1000</span>
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet <span class="token number">127.0</span>.0.1/8 scope <span class="token function">host</span> lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope <span class="token function">host</span> 
+       valid_lft forever preferred_lft forever
+<span class="token number">2</span>: eth0: <span class="token operator">&lt;</span>BROADCAST,MULTICAST,UP,LOWER_UP<span class="token operator">&gt;</span> mtu <span class="token number">9001</span> qdisc fq_codel state UP group default qlen <span class="token number">1000</span>
+    link/ether 02:a2:63:89:23:50 brd ff:ff:ff:ff:ff:ff
+    inet <span class="token number">10.0</span>.0.62/24 brd <span class="token number">10.0</span>.0.255 scope global dynamic eth0
+       valid_lft 3505sec preferred_lft 3505sec
+    inet6 fe80::a2:63ff:fe89:2350/64 scope <span class="token function">link</span> 
+       valid_lft forever preferred_lft forever
+
+<span class="token comment"># 配置并启动网络接口</span>
+<span class="token comment"># 配置虚拟IP</span>
+<span class="token comment"># 将网络接口 eth0:1 的 IP 地址设置为：172.27.0.10，子网掩码设置为：255.255.255.255，</span>
+<span class="token comment"># up：启动网络接口</span>
+<span class="token comment"># down：关闭网络接口</span>
+<span class="token function">ifconfig</span> eth0:1 <span class="token number">172.27</span>.0.10 broadcast <span class="token number">172.27</span>.0.10 netmask <span class="token number">255.255</span>.255.255 up
+
+<span class="token comment"># 关闭网络接口</span>
+<span class="token function">ifconfig</span> eth0:1 <span class="token number">172.27</span>.0.10 broadcast <span class="token number">172.27</span>.0.10 netmask <span class="token number">255.255</span>.255.255 down<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 
 
 <h3 id="修改系统配置文件"><a href="#修改系统配置文件" class="headerlink" title="修改系统配置文件"></a>修改系统配置文件</h3><h4 id="编辑系统配置文件：vim-etc-sysctl-conf"><a href="#编辑系统配置文件：vim-etc-sysctl-conf" class="headerlink" title="编辑系统配置文件：vim /etc/sysctl.conf"></a>编辑系统配置文件：<code>vim /etc/sysctl.conf</code></h4><p>前端 LVS 配置：</p>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> Uncomment the next line to <span class="built_in">enable</span> packet forwarding <span class="keyword">for</span> IPv4</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 开启 IPv4 数据包转发功能</span></span><br><span class="line">net.ipv4.ip_forward=1</span><br><span class="line"><span class="meta">#</span><span class="bash"> 允许绑定非本机的IP</span></span><br><span class="line">net.ipv4.ip_nonlocal_bind=1</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token comment"># Uncomment the next line to enable packet forwarding for IPv4</span>
+<span class="token comment"># 开启 IPv4 数据包转发功能</span>
+net.ipv4.ip_forward<span class="token operator">=</span><span class="token number">1</span>
+<span class="token comment"># 允许绑定非本机的IP</span>
+net.ipv4.ip_nonlocal_bind<span class="token operator">=</span><span class="token number">1</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>参考：</p>
 <ul>
@@ -429,20 +456,46 @@
 <li><span class="exturl" data-url="aHR0cHM6Ly9oZWxwLmFsaXl1bi5jb20va25vd2xlZGdlX2RldGFpbC80MTMzNC5odG1s">Linux 实例常用内核网络参数介绍与常见问题处理<i class="fa fa-external-link-alt"></i></span></li>
 </ul>
 <p>后端 Server 配置：</p>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> Uncomment the next two lines to <span class="built_in">enable</span> Spoof protection (reverse-path filter)</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> Turn on Source Address Verification <span class="keyword">in</span> all interfaces to</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> prevent some spoofing attacks</span></span><br><span class="line">net.ipv4.conf.default.rp_filter=0</span><br><span class="line">net.ipv4.conf.all.rp_filter=0</span><br><span class="line">net.ipv4.conf.eth0.rp_filter=0</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token comment"># Uncomment the next two lines to enable Spoof protection (reverse-path filter)</span>
+<span class="token comment"># Turn on Source Address Verification in all interfaces to</span>
+<span class="token comment"># prevent some spoofing attacks</span>
+net.ipv4.conf.default.rp_filter<span class="token operator">=</span><span class="token number">0</span>
+net.ipv4.conf.all.rp_filter<span class="token operator">=</span><span class="token number">0</span>
+net.ipv4.conf.eth0.rp_filter<span class="token operator">=</span><span class="token number">0</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 
 
 <h4 id="使配置文件生效"><a href="#使配置文件生效" class="headerlink" title="使配置文件生效"></a>使配置文件生效</h4><p>每次系统启动时，初始化脚本 /etc/rc.d/rc.sysinit 会读取 /etc/sysctl.conf 文件的内容，所以修改此文件后每次系统重启时都会开启 IP 转发功能。但是只修改 sysctl 文件不会马上生效，如果需要使修改马上生效可以执行下面的命令：</p>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 使配置文件马上生效</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo sysctl -p</span></span><br><span class="line">net.ipv4.ip_forward = 1</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token comment"># 使配置文件马上生效</span>
+$ <span class="token function">sudo</span> sysctl -p
+net.ipv4.ip_forward <span class="token operator">=</span> <span class="token number">1</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
 
 
 
-<h4 id="验证配置是否生效"><a href="#验证配置是否生效" class="headerlink" title="验证配置是否生效"></a>验证配置是否生效</h4><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 查看 ip_forward 文件内容，默认值 0 表示禁止 IP 转发，1 表示开启 IP 转发功能。</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> cat /proc/sys/net/ipv4/ip_forward</span></span><br><span class="line">1</span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> cat /proc/sys/net/ipv4/ip_nonlocal_bind</span></span><br><span class="line">1</span><br></pre></td></tr></tbody></table></figure>
+<h4 id="验证配置是否生效"><a href="#验证配置是否生效" class="headerlink" title="验证配置是否生效"></a>验证配置是否生效</h4><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token comment"># 查看 ip_forward 文件内容，默认值 0 表示禁止 IP 转发，1 表示开启 IP 转发功能。</span>
+$ <span class="token function">cat</span> /proc/sys/net/ipv4/ip_forward
+<span class="token number">1</span>
+
+$ <span class="token function">cat</span> /proc/sys/net/ipv4/ip_nonlocal_bind
+<span class="token number">1</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 
 
-<h3 id="下载安装-Keepalived"><a href="#下载安装-Keepalived" class="headerlink" title="下载安装 Keepalived"></a>下载安装 Keepalived</h3><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 1. 更新 apt 软件包</span></span><br><span class="line">apt-get update &amp;&amp; apt-get upgrade</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 2. 安装相关软件包</span></span><br><span class="line">apt-get install -y libssl-dev openssl libpopt-dev</span><br><span class="line">apt install jq</span><br><span class="line">apt install awscli</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 3. 下载安装 Keepalived</span></span><br><span class="line">apt-get install keepalived</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 4. 查看 Keepalived 安装版本</span></span><br><span class="line">keepalived --version</span><br><span class="line">Keepalived v1.3.9 (10/21,2017)</span><br><span class="line">...</span><br></pre></td></tr></tbody></table></figure>
+<h3 id="下载安装-Keepalived"><a href="#下载安装-Keepalived" class="headerlink" title="下载安装 Keepalived"></a>下载安装 Keepalived</h3><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token comment"># 1. 更新 apt 软件包</span>
+<span class="token function">apt-get</span> update <span class="token operator">&amp;&amp;</span> <span class="token function">apt-get</span> upgrade
+
+<span class="token comment"># 2. 安装相关软件包</span>
+<span class="token function">apt-get</span> <span class="token function">install</span> -y libssl-dev openssl libpopt-dev
+<span class="token function">apt</span> <span class="token function">install</span> jq
+<span class="token function">apt</span> <span class="token function">install</span> awscli
+
+<span class="token comment"># 3. 下载安装 Keepalived</span>
+<span class="token function">apt-get</span> <span class="token function">install</span> keepalived
+
+<span class="token comment"># 4. 查看 Keepalived 安装版本</span>
+keepalived --version
+Keepalived v1.3.9 <span class="token punctuation">(</span><span class="token number">10</span>/21,2017<span class="token punctuation">)</span>
+<span class="token punctuation">..</span>.<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 
 
@@ -465,26 +518,126 @@
 </li>
 </ul>
 <p><img data-src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/080023.jpg" alt="Keepalived.conf 文件结构"></p>
-<figure class="highlight"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"># Define the script used to check if haproxy is still working</span><br><span class="line"># 检查 haproxy 是否正常运行的脚本</span><br><span class="line">vrrp_script chk_haproxy { </span><br><span class="line">    script "killall -0 haproxy"</span><br><span class="line">    interval 2 </span><br><span class="line">    weight 2 </span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-json" data-language="json"><code class="language-json"># Define the script used to check if haproxy is still working
+# 检查 haproxy 是否正常运行的脚本
+vrrp_script chk_haproxy <span class="token punctuation">{</span> 
+    script <span class="token string">"killall -0 haproxy"</span>
+    interval <span class="token number">2</span> 
+    weight <span class="token number">2</span> 
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 
 
 
 
 <h3 id="Keepalived-的全局配置"><a href="#Keepalived-的全局配置" class="headerlink" title="Keepalived 的全局配置"></a>Keepalived 的全局配置</h3><p>全局配置就是对整个 Keepalived 都生效的配置。</p>
-<figure class="highlight"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"># Configuration File for keepalived</span><br><span class="line"></span><br><span class="line"># ------ 全局配置 ------</span><br><span class="line"># 报警邮件通知设置</span><br><span class="line"># 全局配置以 “global_defs” 作为标识符</span><br><span class="line">global_defs {</span><br><span class="line">    notification_email {</span><br><span class="line">        your@emailaddress.com    # 报警邮件地址，可以设置多个，每行一个。</span><br><span class="line">                                 # 开启邮件报警需要开启本机的 Sendmail 服务。 </span><br><span class="line">    }</span><br><span class="line">    notification_email_from loadb01@domain.ext  # 报警邮件发送的地址。</span><br><span class="line">    smtp_server 127.0.0.1     # 邮件的 SMTP 服务器地址。</span><br><span class="line">    smtp_connect_timeout 15   # 连接 SMTP 服务器的超时时间。</span><br><span class="line">    router_id lVS_DEVER       # 运行 Keepalived 服务器的一个标识符，</span><br><span class="line">                              # 是发邮件时显示在邮件主题中的信息。</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-json" data-language="json"><code class="language-json"># Configuration File for keepalived
+
+# ------ 全局配置 ------
+# 报警邮件通知设置
+# 全局配置以 “global_defs” 作为标识符
+global_defs <span class="token punctuation">{</span>
+    notification_email <span class="token punctuation">{</span>
+        your@emailaddress.com    # 报警邮件地址，可以设置多个，每行一个。
+                                 # 开启邮件报警需要开启本机的 Sendmail 服务。 
+    <span class="token punctuation">}</span>
+    notification_email_from loadb01@domain.ext  # 报警邮件发送的地址。
+    smtp_server <span class="token number">127.0</span>.<span class="token number">0.1</span>     # 邮件的 SMTP 服务器地址。
+    smtp_connect_timeout <span class="token number">15</span>   # 连接 SMTP 服务器的超时时间。
+    router_id lVS_DEVER       # 运行 Keepalived 服务器的一个标识符，
+                              # 是发邮件时显示在邮件主题中的信息。
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>​        </p>
 <h3 id="Keepalived-的-VRRPD-配置"><a href="#Keepalived-的-VRRPD-配置" class="headerlink" title="Keepalived 的 VRRPD 配置"></a>Keepalived 的 VRRPD 配置</h3><p>VRRPD 配置是 Keepalived 所有配置的核心，主要用来实现 Keepalived  的<strong>高可用</strong>功能。<br>从结构上来看，VRRPD 配置可以分为 <strong>VRRP 同步组配置</strong> 和 <strong>VRRP 实例配置</strong>。</p>
 <h4 id="VRRP-同步组配置"><a href="#VRRP-同步组配置" class="headerlink" title="VRRP 同步组配置"></a>VRRP 同步组配置</h4><p>同步组是相对于多个 VRRP 实例而言的，在多个 VRRP 实例的环境中，每个 VRRP 实例所对应的网络环境会有所不同，假设一个实例处于网段 A，另一个实例处于网段 B，而如果 VRPD 只配置了 A 网段的检测，那么当 B 网段主机出现故障时， VRRPD 会认为自身仍处于正常状态，进而不会进行主备节点的切换，这样问题就出现了。同步组就是用来解决这个问题的，将所有 VRRP 实例都加入到同步组中，这样任何一个实例出现问题，都会导致 Keepalived 进行主备切换。</p>
-<figure class="highlight"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">vrrp_sync_group G1 {</span><br><span class="line">    # G1 同步组包含 VI_1、VI_2、VI_5 三个 VRRP 实例</span><br><span class="line">    group {</span><br><span class="line">       # name of the vrrp_instance (see below)</span><br><span class="line">       # Set of VRRP_Instance string</span><br><span class="line">       VI_1</span><br><span class="line">       VI_2</span><br><span class="line">       VI_5</span><br><span class="line">    }</span><br><span class="line">   # to MASTER transition</span><br><span class="line">   # 指定当 Keepalived 进入 Master 状态时要执行的脚本，</span><br><span class="line">   # 这个脚本可以是一个状态报警脚本，也可以是一个服务管理脚本。</span><br><span class="line">   # Keepalived 允许脚本传入参数，因此灵活性很强。</span><br><span class="line">   notify_master "usr/local/bin/vrrp.mast arg1 arg2"</span><br><span class="line"></span><br><span class="line">   # to BACKUP transition</span><br><span class="line">   # 指定当 Keepalived 进入 Backup 状态时要执行的脚本，</span><br><span class="line">   # 这个脚本可以是一个状态报警脚本，也可以是一个服务管理脚本。</span><br><span class="line">   notify_backup "usr/local/bin/vrrp.back arg1 arg2"</span><br><span class="line"></span><br><span class="line">   # FAULT transition</span><br><span class="line">   # 指定当 Keepalived 进入 Fault 状态时要执行的脚本</span><br><span class="line">   notify_fault "usr/local/bin/vrrp.fault arg1 arg2"</span><br><span class="line"></span><br><span class="line">   # executed when stopping vrrp</span><br><span class="line">   # 指定 Keepalived 程序终止时需要执行的脚本。</span><br><span class="line">   notify_stop "usr/local/bin/vrrp.stop arg1 arg2"                                   </span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">vrrp_sync_group G2 {</span><br><span class="line">   # G2 同步组包含 VI_3、VI_4 三个 VRRP 实例</span><br><span class="line">   group {</span><br><span class="line">       VI_3</span><br><span class="line">       VI_4</span><br><span class="line">    }                                </span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-json" data-language="json"><code class="language-json">vrrp_sync_group G1 <span class="token punctuation">{</span>
+    # G1 同步组包含 VI_1、VI_2、VI_5 三个 VRRP 实例
+    group <span class="token punctuation">{</span>
+       # name of the vrrp_instance (see below)
+       # Set of VRRP_Instance string
+       VI_1
+       VI_2
+       VI_5
+    <span class="token punctuation">}</span>
+   # to MASTER transition
+   # 指定当 Keepalived 进入 Master 状态时要执行的脚本，
+   # 这个脚本可以是一个状态报警脚本，也可以是一个服务管理脚本。
+   # Keepalived 允许脚本传入参数，因此灵活性很强。
+   notify_master <span class="token string">"usr/local/bin/vrrp.mast arg1 arg2"</span>
+
+   # to BACKUP transition
+   # 指定当 Keepalived 进入 Backup 状态时要执行的脚本，
+   # 这个脚本可以是一个状态报警脚本，也可以是一个服务管理脚本。
+   notify_backup <span class="token string">"usr/local/bin/vrrp.back arg1 arg2"</span>
+
+   # FAULT transition
+   # 指定当 Keepalived 进入 Fault 状态时要执行的脚本
+   notify_fault <span class="token string">"usr/local/bin/vrrp.fault arg1 arg2"</span>
+
+   # executed when stopping vrrp
+   # 指定 Keepalived 程序终止时需要执行的脚本。
+   notify_stop <span class="token string">"usr/local/bin/vrrp.stop arg1 arg2"</span>                                   
+<span class="token punctuation">}</span>
+
+vrrp_sync_group G2 <span class="token punctuation">{</span>
+   # G2 同步组包含 VI_3、VI_4 三个 VRRP 实例
+   group <span class="token punctuation">{</span>
+       VI_3
+       VI_4
+    <span class="token punctuation">}</span>                                
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 
 
 <h4 id="VRRP-实例配置"><a href="#VRRP-实例配置" class="headerlink" title="VRRP 实例配置"></a>VRRP 实例配置</h4><p>VRRP 实例配置 —— 配置 Keepalived 的高可用功能。</p>
 <p>VRRP 实例段主要用来配置节点角色（主或从）、实例绑定的网络接口、节点间验证机制、集群服务 IP 等。</p>
 <p>从调度器的配置与主调度器基本相同，也包括全局参数、热备参数、服务器池配置，只需要调整 router_id、state、prority 参数即可，其余内容完全相同，配置完成以后重启 keepalived 服务。</p>
-<figure class="highlight"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"># ------ 虚拟服务器配置 ------</span><br><span class="line"># vrrp 实例配置</span><br><span class="line"># VRRP 配置以 “vrrp_instance” 作为标识符</span><br><span class="line">vrrp_instance VI_1 {</span><br><span class="line">    state MASTER        # 指定 Keepalived 的角色。</span><br><span class="line">                        # MASTER 表示此主机是主服务器，Backup 表示此主机是备用服务器。</span><br><span class="line">                        # 因此，在另一台服务器上设置该值为 BACKUP。</span><br><span class="line">    interface eth0      # 指定 HA 监测网络的接口。</span><br><span class="line">    virtual_router_id 51 # 虚拟路由ID(0-255)，在一个VRRP实例中主备服务器ID必须一样</span><br><span class="line">    priority 101        # 定义节点优先级。set this to 100 on the other machine</span><br><span class="line">    advert_int 1        # 用于设定 MASTER 与 BACKUP 主机之间同步检查的时间间隔，单位是秒。</span><br><span class="line">    mcast_src_ip &lt;IPADDR&gt; # 发送多播包的地址。</span><br><span class="line">    garp_master_delay 10</span><br><span class="line">    smtp_alert          # Activate email notifications</span><br><span class="line">  </span><br><span class="line">    # 设置一些额外的网络监控接口</span><br><span class="line">    track_interface {</span><br><span class="line">    eth0</span><br><span class="line">    eth1</span><br><span class="line">    }</span><br><span class="line">    </span><br><span class="line">    # 设定节点间通信验证类型和密码</span><br><span class="line">    authentication {</span><br><span class="line">        auth_type PSAA            # 验证类型，有 PASS 和 AH 两种模式。</span><br><span class="line">        auth_pass myPassw0rd      # Set this to some secret phrase</span><br><span class="line">    }</span><br><span class="line">  </span><br><span class="line">    # The virtual ip address shared between the two loadbalancers</span><br><span class="line">    # 虚拟 IP 地址</span><br><span class="line">    virtual_ipaddress {</span><br><span class="line">        #&lt;IPADDR&gt;/&lt;MASK&gt; brd &lt;IPADDR&gt; dev &lt;STRING&gt; scope &lt;SCOPT&gt; label &lt;LABEL&gt;</span><br><span class="line">        <span class="number">192.168</span><span class="number">.0</span><span class="number">.200</span></span><br><span class="line">        192.168.200.17 dev eth1</span><br><span class="line">        192.168.200.18 dev eth2</span><br><span class="line">    }</span><br><span class="line">     </span><br><span class="line">    # Use the script above to check if we should fail over</span><br><span class="line">    track_script {</span><br><span class="line">        chk_haproxy</span><br><span class="line">    }</span><br><span class="line">    </span><br><span class="line">    nopreempt          # 设置高可用集群中的不抢占功能。</span><br><span class="line">                       # nopreempt 表示主节点故障恢复后不再切回到主节点，让服务一直在备用节点下工作，直到备用节点出现故障才会进行切换。</span><br><span class="line">    preemtp_delay 300  # 设置抢占延时时间，单位是秒。</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-json" data-language="json"><code class="language-json"># ------ 虚拟服务器配置 ------
+# vrrp 实例配置
+# VRRP 配置以 “vrrp_instance” 作为标识符
+vrrp_instance VI_1 <span class="token punctuation">{</span>
+    state MASTER        # 指定 Keepalived 的角色。
+                        # MASTER 表示此主机是主服务器，Backup 表示此主机是备用服务器。
+                        # 因此，在另一台服务器上设置该值为 BACKUP。
+    interface eth0      # 指定 HA 监测网络的接口。
+    virtual_router_id <span class="token number">51</span> # 虚拟路由ID(<span class="token number">0</span><span class="token number">-255</span>)，在一个VRRP实例中主备服务器ID必须一样
+    priority <span class="token number">101</span>        # 定义节点优先级。set this to <span class="token number">100</span> on the other machine
+    advert_int <span class="token number">1</span>        # 用于设定 MASTER 与 BACKUP 主机之间同步检查的时间间隔，单位是秒。
+    mcast_src_ip &lt;IPADDR&gt; # 发送多播包的地址。
+    garp_master_delay <span class="token number">10</span>
+    smtp_alert          # Activate email notifications
+
+    # 设置一些额外的网络监控接口
+    track_interface <span class="token punctuation">{</span>
+    eth0
+    eth1
+    <span class="token punctuation">}</span>
+
+    # 设定节点间通信验证类型和密码
+    authentication <span class="token punctuation">{</span>
+        auth_type PSAA            # 验证类型，有 PASS 和 AH 两种模式。
+        auth_pass myPassw0rd      # Set this to some secret phrase
+    <span class="token punctuation">}</span>
+
+    # The virtual ip address shared between the two loadbalancers
+    # 虚拟 IP 地址
+    virtual_ipaddress <span class="token punctuation">{</span>
+        #&lt;IPADDR&gt;/&lt;MASK&gt; brd &lt;IPADDR&gt; dev &lt;STRING&gt; scope &lt;SCOPT&gt; label &lt;LABEL&gt;
+        <span class="token number">192.168</span>.<span class="token number">0.200</span>
+        <span class="token number">192.168</span>.<span class="token number">200.17</span> dev eth1
+        <span class="token number">192.168</span>.<span class="token number">200.18</span> dev eth2
+    <span class="token punctuation">}</span>
+
+    # Use the script above to check if we should fail over
+    track_script <span class="token punctuation">{</span>
+        chk_haproxy
+    <span class="token punctuation">}</span>
+
+    nopreempt          # 设置高可用集群中的不抢占功能。
+                       # nopreempt 表示主节点故障恢复后不再切回到主节点，让服务一直在备用节点下工作，直到备用节点出现故障才会进行切换。
+    preemtp_delay <span class="token number">300</span>  # 设置抢占延时时间，单位是秒。
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 
 
@@ -494,25 +647,103 @@
 <li>real_server 段；</li>
 <li>健康检测段；</li>
 </ol>
-<figure class="highlight"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"># 虚拟服务器配置</span><br><span class="line"># LVS 段的配置以“virtual_server”作为开始标识。</span><br><span class="line">virtual_server 192.168.80.200 80 {  # 设置虚拟 IP 地址和服务端口</span><br><span class="line">    delay_loop 6 # 设置健康检查的时间间隔，单位是秒                    </span><br><span class="line">    lb_kind DR # 设置 LVS IP负载均衡模式，有NAT、TUN、DR三个模式</span><br><span class="line">    lb_algo rr # 设置 LVS 负载调度算法，rr                  </span><br><span class="line">    persistence_timeout 50 # 会话保持时间，单位是秒。</span><br><span class="line">    persistence_granularity &lt;NETMASK&gt; # 子网掩码。表示持久连接的粒度。默认是255.255.255.255</span><br><span class="line">    protocol TCP # 指定转发协议类型。有 TCP 和 UDP 两种选项。</span><br><span class="line">    ha_suspend   # 节点状态从 Master 到 Backup 切换时，暂不启用 real server 节点的健康检查。</span><br><span class="line">    virtualhost &lt;string&gt; # 健康检查时，指定 Web 服务器的虚拟主机地址。</span><br><span class="line">    sorry_server &lt;IPADDR&gt; &lt;PORT&gt; # 当所有 real server 失效后，指定的 Web 服务器的虚拟主机地址。</span><br><span class="line">    </span><br><span class="line">    # -------- real_server 段配置 --------</span><br><span class="line">    real_server 192.168.80.102 80 {  # 指定 real server1 的IP地址</span><br><span class="line">        weight 3   # 配置节点权值，数字越大权重越高</span><br><span class="line">        inhibit_on_faliure # 在检测到 real_server 节点失效后，把它的 “Weight” 值设置为0，而不是从 IPVS 中删除。</span><br><span class="line">        notify_up &lt;STRING&gt; | &lt;QUOTED-STRING&gt; # 在检测到 real_server 节点服务处于 UP 状态后执行的脚本</span><br><span class="line">        notify_down &lt;STRING&gt; | &lt;QUOTED-STRING&gt; # 在检测到 real_server 节点服务处于 DOWN 状态后执行的脚本</span><br><span class="line">        </span><br><span class="line">        # -------- 健康检测段配置 -------</span><br><span class="line">        TCP_CHECK { # 配置为 TCP_CHECK 检测方式</span><br><span class="line">            connect_port 80      # 健康检查的端口</span><br><span class="line">            connect_timeout 10   # 无响应超时时间。单位是秒。     </span><br><span class="line">            retry 3       # 重试次数</span><br><span class="line">            delay_before_retry 3 # 重试间隔 </span><br><span class="line">        }  </span><br><span class="line">    }  </span><br><span class="line">    real_server 192.168.80.103 80 {  # 指定 real server2 的IP地址</span><br><span class="line">        weight 3  # 配置节点权值，数字越大权重越高  </span><br><span class="line">        TCP_CHECK {  </span><br><span class="line">          connect_port 80</span><br><span class="line">            connect_timeout 10  </span><br><span class="line">            retry 3  </span><br><span class="line">            delay_before_retry 3    </span><br><span class="line">        }  </span><br><span class="line">     }  </span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-json" data-language="json"><code class="language-json"># 虚拟服务器配置
+# LVS 段的配置以“virtual_server”作为开始标识。
+virtual_server <span class="token number">192.168</span>.<span class="token number">80.200</span> <span class="token number">80</span> <span class="token punctuation">{</span>  # 设置虚拟 IP 地址和服务端口
+    delay_loop <span class="token number">6</span> # 设置健康检查的时间间隔，单位是秒                    
+    lb_kind DR # 设置 LVS IP负载均衡模式，有NAT、TUN、DR三个模式
+    lb_algo rr # 设置 LVS 负载调度算法，rr                  
+    persistence_timeout <span class="token number">50</span> # 会话保持时间，单位是秒。
+    persistence_granularity &lt;NETMASK&gt; # 子网掩码。表示持久连接的粒度。默认是<span class="token number">255.255</span>.<span class="token number">255.255</span>
+    protocol TCP # 指定转发协议类型。有 TCP 和 UDP 两种选项。
+    ha_suspend   # 节点状态从 Master 到 Backup 切换时，暂不启用 real server 节点的健康检查。
+    virtualhost &lt;string&gt; # 健康检查时，指定 Web 服务器的虚拟主机地址。
+    sorry_server &lt;IPADDR&gt; &lt;PORT&gt; # 当所有 real server 失效后，指定的 Web 服务器的虚拟主机地址。
+
+    # -------- real_server 段配置 --------
+    real_server <span class="token number">192.168</span>.<span class="token number">80.102</span> <span class="token number">80</span> <span class="token punctuation">{</span>  # 指定 real server1 的IP地址
+        weight <span class="token number">3</span>   # 配置节点权值，数字越大权重越高
+        inhibit_on_faliure # 在检测到 real_server 节点失效后，把它的 “Weight” 值设置为<span class="token number">0</span>，而不是从 IPVS 中删除。
+        notify_up &lt;STRING&gt; | &lt;QUOTED-STRING&gt; # 在检测到 real_server 节点服务处于 UP 状态后执行的脚本
+        notify_down &lt;STRING&gt; | &lt;QUOTED-STRING&gt; # 在检测到 real_server 节点服务处于 DOWN 状态后执行的脚本
+
+        # -------- 健康检测段配置 -------
+        TCP_CHECK <span class="token punctuation">{</span> # 配置为 TCP_CHECK 检测方式
+            connect_port <span class="token number">80</span>      # 健康检查的端口
+            connect_timeout <span class="token number">10</span>   # 无响应超时时间。单位是秒。     
+            retry <span class="token number">3</span>       # 重试次数
+            delay_before_retry <span class="token number">3</span> # 重试间隔 
+        <span class="token punctuation">}</span>  
+    <span class="token punctuation">}</span>  
+    real_server <span class="token number">192.168</span>.<span class="token number">80.103</span> <span class="token number">80</span> <span class="token punctuation">{</span>  # 指定 real server2 的IP地址
+        weight <span class="token number">3</span>  # 配置节点权值，数字越大权重越高  
+        TCP_CHECK <span class="token punctuation">{</span>  
+          connect_port <span class="token number">80</span>
+            connect_timeout <span class="token number">10</span>  
+            retry <span class="token number">3</span>  
+            delay_before_retry <span class="token number">3</span>    
+        <span class="token punctuation">}</span>  
+     <span class="token punctuation">}</span>  
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 
 
-<h2 id="启动与停止服务"><a href="#启动与停止服务" class="headerlink" title="启动与停止服务"></a>启动与停止服务</h2><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 方式一</span></span><br><span class="line">/etc/init.d/keepalived status # 查看状态</span><br><span class="line">/etc/init.d/keepalived stop  # 停止</span><br><span class="line">/etc/init.d/keepalived start # 启动</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 方式二</span></span><br><span class="line">sudo service keepalived status</span><br><span class="line">sudo service keepalived start </span><br><span class="line">sudo service keepalived stop</span><br><span class="line">sudo service keepalived restart</span><br></pre></td></tr></tbody></table></figure>
+<h2 id="启动与停止服务"><a href="#启动与停止服务" class="headerlink" title="启动与停止服务"></a>启动与停止服务</h2><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token comment"># 方式一</span>
+/etc/init.d/keepalived status <span class="token comment"># 查看状态</span>
+/etc/init.d/keepalived stop  <span class="token comment"># 停止</span>
+/etc/init.d/keepalived start <span class="token comment"># 启动</span>
+
+<span class="token comment"># 方式二</span>
+<span class="token function">sudo</span> <span class="token function">service</span> keepalived status
+<span class="token function">sudo</span> <span class="token function">service</span> keepalived start 
+<span class="token function">sudo</span> <span class="token function">service</span> keepalived stop
+<span class="token function">sudo</span> <span class="token function">service</span> keepalived restart<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 
 
 <h2 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h2><h3 id="查看服务进程状态：ip"><a href="#查看服务进程状态：ip" class="headerlink" title="查看服务进程状态：ip"></a>查看服务进程状态：<code>ip</code></h3><p>必须要有三个 keepalived 的进程，这三个分别是 keepalived 父进程，vrrp 子进程、check 子进程；两个子进程都被系统 watchlog 看管，两个子进程各自负责复杂自己的事</p>
 <h4 id="其次ip-addr查看虚拟-ip-是否创建成功，ping-虚拟-ip-是否相通。"><a href="#其次ip-addr查看虚拟-ip-是否创建成功，ping-虚拟-ip-是否相通。" class="headerlink" title="其次ip addr查看虚拟 ip 是否创建成功，ping 虚拟 ip 是否相通。"></a>其次 <code>ip addr</code> 查看虚拟 ip 是否创建成功，ping 虚拟 ip 是否相通。</h4><h4 id="查看集群中服务器ip信息：ipvsadm-ln"><a href="#查看集群中服务器ip信息：ipvsadm-ln" class="headerlink" title="查看集群中服务器ip信息：ipvsadm -ln"></a>查看集群中服务器 ip 信息：<code>ipvsadm -ln</code></h4><h4 id="查看-Keepalived-日志：cat-var-log-syslog-grep-Keepalived"><a href="#查看-Keepalived-日志：cat-var-log-syslog-grep-Keepalived" class="headerlink" title="查看 Keepalived 日志：cat /var/log/syslog | grep Keepalived"></a>查看 Keepalived 日志：<code>cat /var/log/syslog | grep Keepalived</code></h4><p><span class="exturl" data-url="aHR0cHM6Ly93d3cuamlhbnNodS5jb20vcC8xOGQwZDcxNjkyODk=">简书：ipvsadm 指令详解<i class="fa fa-external-link-alt"></i></span></p>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 查看 ipvsadm 版本</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> ipvsadm --version</span></span><br><span class="line">ipvsadm v1.28 2015/02/09 (compiled with popt and IPVS v1.2.1)</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 查看集群中服务器ip信息</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> -l、-list:列出虚拟服务器表</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> -n:IP 地址和端口号将以数字格式打印，而不是作为主机名和服务分别打印，这是默认设置。</span></span><br><span class="line">ipvsadm -ln</span><br><span class="line">IP Virtual Server version 1.2.1 (size=4096)</span><br><span class="line">Prot LocalAddress:Port Scheduler Flags</span><br><span class="line"><span class="meta">  -&gt;</span><span class="bash"> RemoteAddress:Port           Forward Weight ActiveConn InActConn</span></span><br><span class="line">TCP  10.0.0.100:80 lc persistent 60</span><br><span class="line"><span class="meta">  -&gt;</span><span class="bash"> 10.0.0.102:80                Route   3      0          0</span></span><br><span class="line"><span class="meta">  -&gt;</span><span class="bash"> 10.0.0.202:80                Route   3      0          0</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> -c:连接输出。使用此选项的 list 命令将列出当前的 IPVS 连接</span></span><br><span class="line">ipvsadm -lnc</span><br><span class="line">IPVS connection entries</span><br><span class="line">pro expire state       source             virtual            destination</span><br><span class="line">TCP 00:48  NONE        111.187.40.59:0    10.0.0.138:80      10.0.0.214:80</span><br><span class="line">TCP 00:59  SYN_RECV    111.187.40.59:5196 10.0.0.138:80      10.0.0.214:80</span><br><span class="line">TCP 00:59  SYN_RECV    111.187.40.59:5197 10.0.0.138:80      10.0.0.214:80</span><br><span class="line">TCP 00:59  SYN_RECV    111.187.40.59:5198 10.0.0.138:80      10.0.0.214:80</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 查看</span></span><br><span class="line">arp -n</span><br><span class="line">Address                  HWtype  HWaddress           Flags Mask            Iface</span><br><span class="line">10.0.0.202               ether   02:fb:fd:00:12:ae   C                     eth0</span><br><span class="line">10.0.0.1                 ether   02:06:a0:5b:39:d2   C                     eth0</span><br><span class="line">10.0.0.2                 ether   02:06:a0:5b:39:d2   C                     eth0</span><br><span class="line">10.0.0.102               ether   02:2b:7d:01:b6:68   C                     eth0</span><br><span class="line">10.0.0.199               ether   02:63:16:9e:f2:08   C                     eth0</span><br><span class="line">10.0.0.100                       (incomplete)                              eth0</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token comment"># 查看 ipvsadm 版本</span>
+$ ipvsadm --version
+ipvsadm v1.28 <span class="token number">2015</span>/02/09 <span class="token punctuation">(</span>compiled with popt and IPVS v1.2.1<span class="token punctuation">)</span>
+
+<span class="token comment"># 查看集群中服务器ip信息</span>
+<span class="token comment"># -l、-list:列出虚拟服务器表</span>
+<span class="token comment"># -n:IP 地址和端口号将以数字格式打印，而不是作为主机名和服务分别打印，这是默认设置。</span>
+ipvsadm -ln
+IP Virtual Server version <span class="token number">1.2</span>.1 <span class="token punctuation">(</span>size<span class="token operator">=</span><span class="token number">4096</span><span class="token punctuation">)</span>
+Prot LocalAddress:Port Scheduler Flags
+  -<span class="token operator">&gt;</span> RemoteAddress:Port           Forward Weight ActiveConn InActConn
+TCP  <span class="token number">10.0</span>.0.100:80 lc persistent <span class="token number">60</span>
+  -<span class="token operator">&gt;</span> <span class="token number">10.0</span>.0.102:80                Route   <span class="token number">3</span>      <span class="token number">0</span>          <span class="token number">0</span>
+  -<span class="token operator">&gt;</span> <span class="token number">10.0</span>.0.202:80                Route   <span class="token number">3</span>      <span class="token number">0</span>          <span class="token number">0</span>
+
+<span class="token comment"># -c:连接输出。使用此选项的 list 命令将列出当前的 IPVS 连接</span>
+ipvsadm -lnc
+IPVS connection entries
+pro expire state       <span class="token builtin class-name">source</span>             virtual            destination
+TCP 00:48  NONE        <span class="token number">111.187</span>.40.59:0    <span class="token number">10.0</span>.0.138:80      <span class="token number">10.0</span>.0.214:80
+TCP 00:59  SYN_RECV    <span class="token number">111.187</span>.40.59:5196 <span class="token number">10.0</span>.0.138:80      <span class="token number">10.0</span>.0.214:80
+TCP 00:59  SYN_RECV    <span class="token number">111.187</span>.40.59:5197 <span class="token number">10.0</span>.0.138:80      <span class="token number">10.0</span>.0.214:80
+TCP 00:59  SYN_RECV    <span class="token number">111.187</span>.40.59:5198 <span class="token number">10.0</span>.0.138:80      <span class="token number">10.0</span>.0.214:80
+
+<span class="token comment"># 查看</span>
+arp -n
+Address                  HWtype  HWaddress           Flags Mask            Iface
+<span class="token number">10.0</span>.0.202               ether   02:fb:fd:00:12:ae   C                     eth0
+<span class="token number">10.0</span>.0.1                 ether   02:06:a0:5b:39:d2   C                     eth0
+<span class="token number">10.0</span>.0.2                 ether   02:06:a0:5b:39:d2   C                     eth0
+<span class="token number">10.0</span>.0.102               ether   02:2b:7d:01:b6:68   C                     eth0
+<span class="token number">10.0</span>.0.199               ether   02:63:16:9e:f2:08   C                     eth0
+<span class="token number">10.0</span>.0.100                       <span class="token punctuation">(</span>incomplete<span class="token punctuation">)</span>                              eth0<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 
 
-<h4 id="验证-VIP-漂移"><a href="#验证-VIP-漂移" class="headerlink" title="验证 VIP 漂移"></a>验证 VIP 漂移</h4><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl stop keepalived.service</span><br></pre></td></tr></tbody></table></figure>
+<h4 id="验证-VIP-漂移"><a href="#验证-VIP-漂移" class="headerlink" title="验证 VIP 漂移"></a>验证 VIP 漂移</h4><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">systemctl stop keepalived.service<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 
 
 
-<h4 id="测试抓取数据包"><a href="#测试抓取数据包" class="headerlink" title="测试抓取数据包"></a>测试抓取数据包</h4><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tcpdump -i eth0 -p -n -vv port 80</span><br></pre></td></tr></tbody></table></figure>
+<h4 id="测试抓取数据包"><a href="#测试抓取数据包" class="headerlink" title="测试抓取数据包"></a>测试抓取数据包</h4><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">tcpdump -i eth0 -p -n -vv port <span class="token number">80</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 
 
 
@@ -525,66 +756,308 @@
 <p>在私有环境中部署 keepalived 本身并没有好说的，但是 aws 中存在诸多限制，其中三个需要明确指出的： </p>
 <ol>
 <li><p>VRRP 协议的组播被禁止，也就是说 keepalived 需要调整心跳的通知方式，修改 /etc/keepalived/keepalived.conf 配置文件中的通知为单播模式，一般配 web 服务器上数量较少，所以也不会损失太多网络带宽。 </p>
-<figure class="highlight"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">unicast_src_ip 172.*.*.1 # 本机IP</span><br><span class="line"></span><br><span class="line">unicast_peer {</span><br><span class="line">172.*.*.124 # 备用节点 IP</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
-
-<p><span class="exturl" data-url="aHR0cHM6Ly9hd3MuYW1hem9uLmNvbS9jbi9ibG9ncy9jaGluYS9hd3MtYXJjaGl0ZWN0dXJlLWZhaWx1cmUtY29tbW9uLXByb2JsZW1zLw==">AWS 常见问题汇总<i class="fa fa-external-link-alt"></i></span></p>
-</li>
+<p>&lt;!–hexoPostRenderEscape:</p><pre class="line-numbers language-json" data-language="json"><code class="language-json">unicast_src_ip <span class="token number">172</span>.<em>.</em>.<span class="token number">1</span> # 本机IP<p></p>
+</code></pre></li><code class="language-json">
+</code></ol><code class="language-json">
+</code><p><code class="language-json">unicast_peer <span class="token punctuation">{</span><br><span class="token number">172</span>.<em>.</em>.<span class="token number">124</span> # 备用节点 IP<br><span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code>:hexoPostRenderEscape–&gt;</p>
+<p>   <span class="exturl" data-url="aHR0cHM6Ly9hd3MuYW1hem9uLmNvbS9jbi9ibG9ncy9jaGluYS9hd3MtYXJjaGl0ZWN0dXJlLWZhaWx1cmUtY29tbW9uLXByb2JsZW1zLw==">AWS 常见问题汇总<i class="fa fa-external-link-alt"></i></span></p>
+<ol start="2">
 <li><p>配置了 VIP（floating ip）以后，AWS 的 VPC 并不知道，尝试下 arp 也学习不到该 vip 的 mac 地址，所以必须要通过配置 ENI（Elastic Network Interface 弹性网络接口）使得该 VIP 可达。 </p>
 </li>
 <li><p>然而当你关了 Master 以后，ENI 的网络配置并不会自动切换漂移 IP，为了故障切换，我利用切换 VIP 的通知机制，通过调用添加和移除 private-ip-addresses 的方式达到漂移 IP 的效果。下面详细介绍。</p>
 </li>
 </ol>
 <p>还要新建一个 IAM 账户，以允许运行 AWS CLI 命令，并在服务器上进行注册。</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">aws configure</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-none"><code class="language-none">aws configure<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 
 
 
 <h3 id="绑定辅助私有IP-⭐️⭐️⭐️"><a href="#绑定辅助私有IP-⭐️⭐️⭐️" class="headerlink" title="绑定辅助私有IP ⭐️⭐️⭐️"></a>绑定辅助私有 IP ⭐️⭐️⭐️</h3><p>亚马逊云虽然不允许广播 ARP，但可以用命令行指定网卡（ENI）的 Secondary-private-ip-address。这个命令的具体形式如下：</p>
 <p><span class="exturl" data-url="aHR0cHM6Ly9kb2NzLmF3cy5hbWF6b24uY29tL2NsaS9sYXRlc3QvcmVmZXJlbmNlL2VjMi9hc3NpZ24tcHJpdmF0ZS1pcC1hZGRyZXNzZXMuaHRtbA==">AWS CLI Command Reference：assign-private-ip-addresses<i class="fa fa-external-link-alt"></i></span></p>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 将一个或多个辅助私有 IP 地址分配给指定的网络接口。</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> ENI：网卡实例 ID</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> VIP：虚拟 IP 地址</span></span><br><span class="line">aws ec2 assign-private-ip-addresses \</span><br><span class="line">--network-interface-id $ENI \ </span><br><span class="line">--private-ip-addresses $VIP \ </span><br><span class="line">--allow-reassignment</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 示例：指定一个IP地址（10.0.0.100）作为网卡的私有IP地址</span></span><br><span class="line">aws ec2 assign-private-ip-addresses --network-interface-id eni-0a8a8f03710ecbb9e --private-ip-addresses 10.0.0.100 --allow-reassignment</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">aws ec2 assign-private-ip-addresses --network-interface-id eni-0eff36fde0c99958e --private-ip-addresses 10.0.0.100 --allow-reassignment</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token comment"># 将一个或多个辅助私有 IP 地址分配给指定的网络接口。</span>
+<span class="token comment"># ENI：网卡实例 ID</span>
+<span class="token comment"># VIP：虚拟 IP 地址</span>
+aws ec2 assign-private-ip-addresses <span class="token punctuation">\</span>
+--network-interface-id <span class="token variable">$ENI</span> <span class="token punctuation">\</span> 
+--private-ip-addresses <span class="token variable">$VIP</span> <span class="token punctuation">\</span> 
+--allow-reassignment
+
+
+<span class="token comment"># 示例：指定一个IP地址（10.0.0.100）作为网卡的私有IP地址</span>
+aws ec2 assign-private-ip-addresses --network-interface-id eni-0a8a8f03710ecbb9e --private-ip-addresses <span class="token number">10.0</span>.0.100 --allow-reassignment
+
+
+aws ec2 assign-private-ip-addresses --network-interface-id eni-0eff36fde0c99958e --private-ip-addresses <span class="token number">10.0</span>.0.100 --allow-reassignment<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 
 
 <p>keepalived 配置：</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">notify_master "/home/keepalived/scripts/mysql_be_master.sh 172.*.*.201 eni-*"</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-none"><code class="language-none">notify_master "/home/keepalived/scripts/mysql_be_master.sh 172.*.*.201 eni-*"<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 
 
 <h2 id="弹性IP配置的脚本文件"><a href="#弹性IP配置的脚本文件" class="headerlink" title="弹性IP配置的脚本文件"></a>弹性 IP 配置的脚本文件</h2><h3 id="add-eip-sh"><a href="#add-eip-sh" class="headerlink" title="add_eip.sh"></a>add_eip.sh</h3><p>作用：分离弹性 ip，并将弹性 ip 绑定到自身网口上</p>
 <p>授权：chmod -R 711 /etc/keepalived/scripts</p>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">/bin/bash</span></span><br><span class="line">EIP=13.*.*.201 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;# 弹性 ip 地址（公网 ip）</span><br><span class="line">INSTANCE_ID=i-0b2d************* &nbsp; #此服务器（EC2）的实例的 id</span><br><span class="line">aws ec2 disassociate-address --public-ip $EIP</span><br><span class="line"></span><br><span class="line">aws ec2 associate-address --public-ip $EIP --instance-id $INSTANCE_ID</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token comment">#/bin/bash</span>
+<span class="token assign-left variable">EIP</span><span class="token operator">=</span><span class="token number">13</span>.*.*.201                          <span class="token comment"># 弹性 ip 地址（公网 ip）</span>
+<span class="token assign-left variable">INSTANCE_ID</span><span class="token operator">=</span>i-0b2d*************   <span class="token comment">#此服务器（EC2）的实例的 id</span>
+aws ec2 disassociate-address --public-ip <span class="token variable">$EIP</span>
+
+aws ec2 associate-address --public-ip <span class="token variable">$EIP</span> --instance-id <span class="token variable">$INSTANCE_ID</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 
 
 <h3 id="del-eip-sh"><a href="#del-eip-sh" class="headerlink" title="del_eip.sh"></a>del_eip.sh</h3><p>授权             chmod +x ./add_eip.sh    chmod -R 711 add_eip.sh</p>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">/bin/bash</span></span><br><span class="line">EIP=13.*.*.201 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; #弹性 ip 地址（公网 ip）</span><br><span class="line">INSTANCE_ID=i-0b2d************* &nbsp; #备服务器（EC2）的实例的 id</span><br><span class="line">aws ec2 disassociate-address --public-ip $EIP</span><br><span class="line"></span><br><span class="line">aws ec2 associate-address --public-ip $EIP --instance-id $INSTANCE_ID</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 取消关联需要传关联 ID，而不是分配 ID。</span></span><br><span class="line">aws ec2 disassociate-address --association-id $ASSOCIATION_ID</span><br><span class="line">aws ec2 disassociate-address --association-id eipassoc-09fe640e36c9d53b1</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token comment">#/bin/bash</span>
+<span class="token assign-left variable">EIP</span><span class="token operator">=</span><span class="token number">13</span>.*.*.201                                 <span class="token comment">#弹性 ip 地址（公网 ip）</span>
+<span class="token assign-left variable">INSTANCE_ID</span><span class="token operator">=</span>i-0b2d*************   <span class="token comment">#备服务器（EC2）的实例的 id</span>
+aws ec2 disassociate-address --public-ip <span class="token variable">$EIP</span>
+
+aws ec2 associate-address --public-ip <span class="token variable">$EIP</span> --instance-id <span class="token variable">$INSTANCE_ID</span>
+
+
+<span class="token comment"># 取消关联需要传关联 ID，而不是分配 ID。</span>
+aws ec2 disassociate-address --association-id <span class="token variable">$ASSOCIATION_ID</span>
+aws ec2 disassociate-address --association-id eipassoc-09fe640e36c9d53b1<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 
 
 <p>把外网 EIP 作为 VIP，先释放，再关联给一个网卡的辅助私有 IP 地址：</p>
 <p>参考：<span class="exturl" data-url="aHR0cHM6Ly9kb2NzLmF3cy5hbWF6b24uY29tL3poX2NuL2NsaS9sYXRlc3QvcmVmZXJlbmNlL2VjMi9hc3NvY2lhdGUtYWRkcmVzcy5odG1s">AWS CLI:associate-address<i class="fa fa-external-link-alt"></i></span></p>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">aws ec2 disassociate-address --public-ip $EIP</span><br><span class="line"></span><br><span class="line">aws ec2 associate-address \</span><br><span class="line">  --allocation-id eipalloc-09ce336dc7a1e8da7 \ # 分配 ID</span><br><span class="line">  --network-interface-id eni-0a8a8f03710ecbb9e \</span><br><span class="line">  --private-ip-address 10.0.0.100 \</span><br><span class="line">  --allow-reassociation</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 关联弹性公网 IP 到 网卡</span></span><br><span class="line">aws ec2 associate-address --allocation-id eipalloc-09ce336dc7a1e8da7 --network-interface-id eni-0a8a8f03710ecbb9e --private-ip-address 10.0.0.100 --allow-reassociation</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">aws ec2 disassociate-address --public-ip <span class="token variable">$EIP</span>
+
+aws ec2 associate-address <span class="token punctuation">\</span>
+  --allocation-id eipalloc-09ce336dc7a1e8da7 <span class="token punctuation">\</span> <span class="token comment"># 分配 ID</span>
+  --network-interface-id eni-0a8a8f03710ecbb9e <span class="token punctuation">\</span>
+  --private-ip-address <span class="token number">10.0</span>.0.100 <span class="token punctuation">\</span>
+  --allow-reassociation
+
+
+<span class="token comment"># 关联弹性公网 IP 到 网卡</span>
+aws ec2 associate-address --allocation-id eipalloc-09ce336dc7a1e8da7 --network-interface-id eni-0a8a8f03710ecbb9e --private-ip-address <span class="token number">10.0</span>.0.100 --allow-reassociation<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 
 
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 根据实例 ID 找到网卡 ID</span></span><br><span class="line">aws ec2 describe-instances \</span><br><span class="line">  --instance-ids i-0260f608cf698958c | \</span><br><span class="line">  jq -r \</span><br><span class="line">  '.Reservations[0].Instances[0].NetworkInterfaces[0].NetworkInterfaceId'</span><br><span class="line">  </span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 实例</span></span><br><span class="line">aws ec2 describe-instances --instance-ids i-0260f608cf698958c | jq -r '.Reservations[0].Instances[0].NetworkInterfaces[0].NetworkInterfaceId'</span><br><span class="line">eni-0a8a8f03710ecbb9e</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token comment"># 根据实例 ID 找到网卡 ID</span>
+aws ec2 describe-instances <span class="token punctuation">\</span>
+  --instance-ids i-0260f608cf698958c <span class="token operator">|</span> <span class="token punctuation">\</span>
+  jq -r <span class="token punctuation">\</span>
+  <span class="token string">'.Reservations[0].Instances[0].NetworkInterfaces[0].NetworkInterfaceId'</span>
+
+
+<span class="token comment"># 实例</span>
+aws ec2 describe-instances --instance-ids i-0260f608cf698958c <span class="token operator">|</span> jq -r <span class="token string">'.Reservations[0].Instances[0].NetworkInterfaces[0].NetworkInterfaceId'</span>
+eni-0a8a8f03710ecbb9e<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 
 
 
 
-<h1 id="配置文件"><a href="#配置文件" class="headerlink" title="配置文件"></a>配置文件</h1><h2 id="EC2-01"><a href="#EC2-01" class="headerlink" title="EC2_01"></a>EC2_01</h2><figure class="highlight"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br></pre></td><td class="code"><pre><span class="line"># Keepalived的全局配置</span><br><span class="line">global_defs {</span><br><span class="line">    router_id LVS_Master</span><br><span class="line"></span><br><span class="line">    # 通知脚本设置</span><br><span class="line">    script_user root        </span><br><span class="line">    enable_script_security  </span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"># VRRP的实例Group_LVS_1配置</span><br><span class="line">vrrp_instance Group_LVS_1 {</span><br><span class="line">    state MASTER</span><br><span class="line">    interface eth0</span><br><span class="line">    virtual_router_id 51</span><br><span class="line">    priority 100</span><br><span class="line">    advert_int 1</span><br><span class="line"></span><br><span class="line">    track_interface {</span><br><span class="line">        eth0</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    # AWS 上 VRRP 协议的组播被禁止，因此这里配置心跳通知为单播模式</span><br><span class="line">    unicast_src_ip 10.0.0.36  </span><br><span class="line">    unicast_peer {            </span><br><span class="line">        <span class="number">10.0</span><span class="number">.0</span><span class="number">.56</span></span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    authentication {</span><br><span class="line">        auth_type PASS</span><br><span class="line">        auth_pass 123456</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    virtual_ipaddress {</span><br><span class="line">        <span class="number">10.0</span><span class="number">.0</span><span class="number">.100</span></span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    # 切换虚拟 IP 的脚本文件</span><br><span class="line">    notify_master "/etc/keepalived/scripts/assign_private_ip.sh 18.223.129.244 10.0.0.100 i-0260f608cf698958c"</span><br><span class="line">    notify_backup "/etc/keepalived/scripts/unassign_private_ip.sh 18.223.129.244 10.0.0.100 i-0260f608cf698958c"</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"># Virtual Server 的配置 for Real Service</span><br><span class="line">virtual_server 10.0.0.100 80 {</span><br><span class="line">    delay_loop 5</span><br><span class="line">    lb_algo lc</span><br><span class="line">    lb_kind DR</span><br><span class="line">    persistence_timeout 60</span><br><span class="line">    protocol TCP</span><br><span class="line"></span><br><span class="line">    # Real Server 1 的配置</span><br><span class="line">    real_server 10.0.0.80 80 {</span><br><span class="line">        weight 3</span><br><span class="line">        inhibit_on_failure</span><br><span class="line">        TCP_CHECK {</span><br><span class="line">            connect_timeout 10</span><br><span class="line">            retry 3</span><br><span class="line">            delay_before_retry 3</span><br><span class="line">            connect_port 80</span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    # Real Server 2 的配置</span><br><span class="line">    real_server 10.0.0.194 80 {</span><br><span class="line">        weight 3</span><br><span class="line">        inhibit_on_failure</span><br><span class="line">        TCP_CHECK {</span><br><span class="line">            connect_timeout 10</span><br><span class="line">            retry 3</span><br><span class="line">            delay_before_retry 3</span><br><span class="line">            connect_port 80</span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<h1 id="配置文件"><a href="#配置文件" class="headerlink" title="配置文件"></a>配置文件</h1><h2 id="EC2-01"><a href="#EC2-01" class="headerlink" title="EC2_01"></a>EC2_01</h2><pre class="line-numbers language-json" data-language="json"><code class="language-json"># Keepalived的全局配置
+global_defs <span class="token punctuation">{</span>
+    router_id LVS_Master
+
+    # 通知脚本设置
+    script_user root        
+    enable_script_security  
+<span class="token punctuation">}</span>
+
+# VRRP的实例Group_LVS_1配置
+vrrp_instance Group_LVS_1 <span class="token punctuation">{</span>
+    state MASTER
+    interface eth0
+    virtual_router_id <span class="token number">51</span>
+    priority <span class="token number">100</span>
+    advert_int <span class="token number">1</span>
+
+    track_interface <span class="token punctuation">{</span>
+        eth0
+    <span class="token punctuation">}</span>
+
+    # AWS 上 VRRP 协议的组播被禁止，因此这里配置心跳通知为单播模式
+    unicast_src_ip <span class="token number">10.0</span>.<span class="token number">0.36</span>  
+    unicast_peer <span class="token punctuation">{</span>            
+        <span class="token number">10.0</span>.<span class="token number">0.56</span>
+    <span class="token punctuation">}</span>
+
+    authentication <span class="token punctuation">{</span>
+        auth_type PASS
+        auth_pass <span class="token number">123456</span>
+    <span class="token punctuation">}</span>
+
+    virtual_ipaddress <span class="token punctuation">{</span>
+        <span class="token number">10.0</span>.<span class="token number">0.100</span>
+    <span class="token punctuation">}</span>
+
+    # 切换虚拟 IP 的脚本文件
+    notify_master <span class="token string">"/etc/keepalived/scripts/assign_private_ip.sh 18.223.129.244 10.0.0.100 i-0260f608cf698958c"</span>
+    notify_backup <span class="token string">"/etc/keepalived/scripts/unassign_private_ip.sh 18.223.129.244 10.0.0.100 i-0260f608cf698958c"</span>
+<span class="token punctuation">}</span>
+
+# Virtual Server 的配置 for Real Service
+virtual_server <span class="token number">10.0</span>.<span class="token number">0.100</span> <span class="token number">80</span> <span class="token punctuation">{</span>
+    delay_loop <span class="token number">5</span>
+    lb_algo lc
+    lb_kind DR
+    persistence_timeout <span class="token number">60</span>
+    protocol TCP
+
+    # Real Server <span class="token number">1</span> 的配置
+    real_server <span class="token number">10.0</span>.<span class="token number">0.80</span> <span class="token number">80</span> <span class="token punctuation">{</span>
+        weight <span class="token number">3</span>
+        inhibit_on_failure
+        TCP_CHECK <span class="token punctuation">{</span>
+            connect_timeout <span class="token number">10</span>
+            retry <span class="token number">3</span>
+            delay_before_retry <span class="token number">3</span>
+            connect_port <span class="token number">80</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+
+    # Real Server <span class="token number">2</span> 的配置
+    real_server <span class="token number">10.0</span>.<span class="token number">0.194</span> <span class="token number">80</span> <span class="token punctuation">{</span>
+        weight <span class="token number">3</span>
+        inhibit_on_failure
+        TCP_CHECK <span class="token punctuation">{</span>
+            connect_timeout <span class="token number">10</span>
+            retry <span class="token number">3</span>
+            delay_before_retry <span class="token number">3</span>
+            connect_port <span class="token number">80</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 
 
-<h2 id="EC2-02"><a href="#EC2-02" class="headerlink" title="EC2_02"></a>EC2_02</h2><figure class="highlight"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br></pre></td><td class="code"><pre><span class="line"># Keepalived的全局配置</span><br><span class="line">global_defs {</span><br><span class="line">    router_id LVS_Master</span><br><span class="line"></span><br><span class="line">    # 通知脚本设置</span><br><span class="line">    script_user root</span><br><span class="line">    enable_script_security</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"># VRRP的实例Group_LVS_1配置</span><br><span class="line">vrrp_instance Group_LVS_1 {</span><br><span class="line">    state BACKUP</span><br><span class="line">    interface eth0</span><br><span class="line">    virtual_router_id 51</span><br><span class="line">    priority 90</span><br><span class="line">    advert_int 1</span><br><span class="line"></span><br><span class="line">    track_interface {</span><br><span class="line">        eth0</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    # AWS 上 VRRP 协议的组播被禁止，因此这里配置心跳通知为单播模式</span><br><span class="line">    unicast_src_ip 10.0.0.56</span><br><span class="line">    unicast_peer {            </span><br><span class="line">        <span class="number">10.0</span><span class="number">.0</span><span class="number">.36</span></span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    authentication {</span><br><span class="line">        auth_type PASS</span><br><span class="line">        auth_pass 123456</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    virtual_ipaddress {</span><br><span class="line">        <span class="number">10.0</span><span class="number">.0</span><span class="number">.100</span></span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    # 切换虚拟 IP 的脚本文件</span><br><span class="line">    notify_master "/etc/keepalived/scripts/assign_private_ip.sh 18.223.129.244 10.0.0.100  i-0f74aba2dc5e49679"</span><br><span class="line">    notify_backup "/etc/keepalived/scripts/unassign_private_ip.sh 18.223.129.244 10.0.0.100 i-0f74aba2dc5e49679"</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"># Virtual Server 的配置 for Real Service</span><br><span class="line">virtual_server 10.0.0.100 80 {</span><br><span class="line">    delay_loop 5</span><br><span class="line">    lb_algo lc</span><br><span class="line">    lb_kind DR</span><br><span class="line">    persistence_timeout 60</span><br><span class="line">    protocol TCP</span><br><span class="line"></span><br><span class="line">    # Real Server 1 的配置</span><br><span class="line">    real_server 10.0.0.80 80 {</span><br><span class="line">        weight 3</span><br><span class="line">        inhibit_on_failure</span><br><span class="line">        TCP_CHECK {</span><br><span class="line">            connect_timeout 10</span><br><span class="line">            retry 3</span><br><span class="line">            delay_before_retry 3</span><br><span class="line">            connect_port 80</span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    # Real Server 2 的配置</span><br><span class="line">    real_server 10.0.0.194 80 {</span><br><span class="line">        weight 3</span><br><span class="line">        inhibit_on_failure</span><br><span class="line">        TCP_CHECK {</span><br><span class="line">            connect_timeout 10</span><br><span class="line">            retry 3</span><br><span class="line">            delay_before_retry 3</span><br><span class="line">            connect_port 80</span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<h2 id="EC2-02"><a href="#EC2-02" class="headerlink" title="EC2_02"></a>EC2_02</h2><pre class="line-numbers language-json" data-language="json"><code class="language-json"># Keepalived的全局配置
+global_defs <span class="token punctuation">{</span>
+    router_id LVS_Master
+
+    # 通知脚本设置
+    script_user root
+    enable_script_security
+<span class="token punctuation">}</span>
+
+# VRRP的实例Group_LVS_1配置
+vrrp_instance Group_LVS_1 <span class="token punctuation">{</span>
+    state BACKUP
+    interface eth0
+    virtual_router_id <span class="token number">51</span>
+    priority <span class="token number">90</span>
+    advert_int <span class="token number">1</span>
+
+    track_interface <span class="token punctuation">{</span>
+        eth0
+    <span class="token punctuation">}</span>
+
+    # AWS 上 VRRP 协议的组播被禁止，因此这里配置心跳通知为单播模式
+    unicast_src_ip <span class="token number">10.0</span>.<span class="token number">0.56</span>
+    unicast_peer <span class="token punctuation">{</span>            
+        <span class="token number">10.0</span>.<span class="token number">0.36</span>
+    <span class="token punctuation">}</span>
+
+    authentication <span class="token punctuation">{</span>
+        auth_type PASS
+        auth_pass <span class="token number">123456</span>
+    <span class="token punctuation">}</span>
+
+    virtual_ipaddress <span class="token punctuation">{</span>
+        <span class="token number">10.0</span>.<span class="token number">0.100</span>
+    <span class="token punctuation">}</span>
+
+    # 切换虚拟 IP 的脚本文件
+    notify_master <span class="token string">"/etc/keepalived/scripts/assign_private_ip.sh 18.223.129.244 10.0.0.100  i-0f74aba2dc5e49679"</span>
+    notify_backup <span class="token string">"/etc/keepalived/scripts/unassign_private_ip.sh 18.223.129.244 10.0.0.100 i-0f74aba2dc5e49679"</span>
+<span class="token punctuation">}</span>
+
+# Virtual Server 的配置 for Real Service
+virtual_server <span class="token number">10.0</span>.<span class="token number">0.100</span> <span class="token number">80</span> <span class="token punctuation">{</span>
+    delay_loop <span class="token number">5</span>
+    lb_algo lc
+    lb_kind DR
+    persistence_timeout <span class="token number">60</span>
+    protocol TCP
+
+    # Real Server <span class="token number">1</span> 的配置
+    real_server <span class="token number">10.0</span>.<span class="token number">0.80</span> <span class="token number">80</span> <span class="token punctuation">{</span>
+        weight <span class="token number">3</span>
+        inhibit_on_failure
+        TCP_CHECK <span class="token punctuation">{</span>
+            connect_timeout <span class="token number">10</span>
+            retry <span class="token number">3</span>
+            delay_before_retry <span class="token number">3</span>
+            connect_port <span class="token number">80</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+
+    # Real Server <span class="token number">2</span> 的配置
+    real_server <span class="token number">10.0</span>.<span class="token number">0.194</span> <span class="token number">80</span> <span class="token punctuation">{</span>
+        weight <span class="token number">3</span>
+        inhibit_on_failure
+        TCP_CHECK <span class="token punctuation">{</span>
+            connect_timeout <span class="token number">10</span>
+            retry <span class="token number">3</span>
+            delay_before_retry <span class="token number">3</span>
+            connect_port <span class="token number">80</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 
 
-<h3 id="Server-服务器脚本"><a href="#Server-服务器脚本" class="headerlink" title="Server 服务器脚本"></a>Server 服务器脚本</h3><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">#!/bin/bash</span><br><span class="line"># 配置realserver的lo和运用noarp</span><br><span class="line"># chmod 755 /usr/local/sbin/server</span><br><span class="line"># 执行server，启动realserver的LVS服务，/etc/init.d/lvsrs start</span><br><span class="line"></span><br><span class="line">VIP=10.0.0.100</span><br><span class="line">/sbin/ifconfig lo:0 $VIP broadcast $VIP netmask 255.255.255.255 up</span><br><span class="line">/sbin/route add -host $VIP dev lo:0</span><br><span class="line"></span><br><span class="line">echo "1" &gt;/proc/sys/net/ipv4/conf/lo/arp_ignore</span><br><span class="line">echo "2" &gt;/proc/sys/net/ipv4/conf/lo/arp_announce</span><br><span class="line">echo "1" &gt;/proc/sys/net/ipv4/conf/all/arp_ignore</span><br><span class="line">echo "2" &gt;/proc/sys/net/ipv4/conf/all/arp_announce</span><br><span class="line"></span><br><span class="line">sysctl -p</span><br><span class="line">#end</span><br></pre></td></tr></tbody></table></figure>
+<h3 id="Server-服务器脚本"><a href="#Server-服务器脚本" class="headerlink" title="Server 服务器脚本"></a>Server 服务器脚本</h3><pre class="line-numbers language-none"><code class="language-none">#!/bin/bash
+# 配置realserver的lo和运用noarp
+# chmod 755 /usr/local/sbin/server
+# 执行server，启动realserver的LVS服务，/etc/init.d/lvsrs start
+
+VIP=10.0.0.100
+/sbin/ifconfig lo:0 $VIP broadcast $VIP netmask 255.255.255.255 up
+/sbin/route add -host $VIP dev lo:0
+
+echo "1" &gt;/proc/sys/net/ipv4/conf/lo/arp_ignore
+echo "2" &gt;/proc/sys/net/ipv4/conf/lo/arp_announce
+echo "1" &gt;/proc/sys/net/ipv4/conf/all/arp_ignore
+echo "2" &gt;/proc/sys/net/ipv4/conf/all/arp_announce
+
+sysctl -p
+#end<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 
 
-<h3 id="etc-init-d-lvsrs-start"><a href="#etc-init-d-lvsrs-start" class="headerlink" title="/etc/init.d/lvsrs start"></a>/etc/init.d/lvsrs start</h3><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">#!/bin/bash</span><br><span class="line"># 配置realserver的lo和noarp</span><br><span class="line"># chmod 755 /etc/init.d/lvsrs</span><br><span class="line"># 执行server，启动realserver的LVS服务，/etc/init.d/lvsrs start</span><br><span class="line"></span><br><span class="line">VIP=10.0.0.100</span><br><span class="line"></span><br><span class="line">/etc/rc.d/init.d/functions</span><br><span class="line"></span><br><span class="line">case "$1" in</span><br><span class="line">start)</span><br><span class="line"> ifconfig lo:0 $VIP netmask 255.255.255.255 broadcast $VIP</span><br><span class="line"> /sbin/route add -host $VIP dev lo:0</span><br><span class="line"> echo "1" &gt;/proc/sys/net/ipv4/conf/lo/arp_ignore</span><br><span class="line"> echo "2" &gt;/proc/sys/net/ipv4/conf/lo/arp_announce</span><br><span class="line"> echo "1" &gt;/proc/sys/net/ipv4/conf/all/arp_ignore</span><br><span class="line"> echo "2" &gt;/proc/sys/net/ipv4/conf/all/arp_announce</span><br><span class="line"> sysctl -p &gt;/dev/null 2&gt;&amp;1</span><br><span class="line"> echo "RealServer Start OK"</span><br><span class="line"> ;;</span><br><span class="line">stop)</span><br><span class="line"> ifconfig lo:0 down</span><br><span class="line"> route del $VIP &gt;/dev/null 2&gt;&amp;1</span><br><span class="line"> echo "0" &gt;/proc/sys/net/ipv4/conf/lo/arp_ignore</span><br><span class="line"> echo "0" &gt;/proc/sys/net/ipv4/conf/lo/arp_announce</span><br><span class="line"> echo "0" &gt;/proc/sys/net/ipv4/conf/all/arp_ignore</span><br><span class="line"> echo "0" &gt;/proc/sys/net/ipv4/conf/all/arp_announce</span><br><span class="line"> echo "RealServer Stoped"</span><br><span class="line"> ;;</span><br><span class="line">*)</span><br><span class="line"> echo "Usage: $0 {start|stop}"</span><br><span class="line"> exit 1</span><br><span class="line">esac</span><br><span class="line"></span><br><span class="line">exit 0</span><br></pre></td></tr></tbody></table></figure>
+<h3 id="etc-init-d-lvsrs-start"><a href="#etc-init-d-lvsrs-start" class="headerlink" title="/etc/init.d/lvsrs start"></a>/etc/init.d/lvsrs start</h3><pre class="line-numbers language-none"><code class="language-none">#!/bin/bash
+# 配置realserver的lo和noarp
+# chmod 755 /etc/init.d/lvsrs
+# 执行server，启动realserver的LVS服务，/etc/init.d/lvsrs start
+
+VIP=10.0.0.100
+
+/etc/rc.d/init.d/functions
+
+case "$1" in
+start)
+ ifconfig lo:0 $VIP netmask 255.255.255.255 broadcast $VIP
+ /sbin/route add -host $VIP dev lo:0
+ echo "1" &gt;/proc/sys/net/ipv4/conf/lo/arp_ignore
+ echo "2" &gt;/proc/sys/net/ipv4/conf/lo/arp_announce
+ echo "1" &gt;/proc/sys/net/ipv4/conf/all/arp_ignore
+ echo "2" &gt;/proc/sys/net/ipv4/conf/all/arp_announce
+ sysctl -p &gt;/dev/null 2&gt;&amp;1
+ echo "RealServer Start OK"
+ ;;
+stop)
+ ifconfig lo:0 down
+ route del $VIP &gt;/dev/null 2&gt;&amp;1
+ echo "0" &gt;/proc/sys/net/ipv4/conf/lo/arp_ignore
+ echo "0" &gt;/proc/sys/net/ipv4/conf/lo/arp_announce
+ echo "0" &gt;/proc/sys/net/ipv4/conf/all/arp_ignore
+ echo "0" &gt;/proc/sys/net/ipv4/conf/all/arp_announce
+ echo "RealServer Stoped"
+ ;;
+*)
+ echo "Usage: $0 {start|stop}"
+ exit 1
+esac
+
+exit 0<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 
 <h2 id="参考-1"><a href="#参考-1" class="headerlink" title="参考"></a>参考</h2><h3 id="1-LVS"><a href="#1-LVS" class="headerlink" title="1. LVS"></a>1. LVS</h3><ul>
@@ -739,12 +1212,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">2.1m</span>
+    <span title="站点总字数">2.3m</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">31:21</span>
+    <span title="站点阅读时长">34:09</span>
 </div>
   <div class="powered-by">由 <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZw==">NexT.Gemini</span> 强力驱动
   </div>

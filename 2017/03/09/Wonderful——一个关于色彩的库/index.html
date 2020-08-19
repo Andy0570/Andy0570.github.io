@@ -393,7 +393,7 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>7.4k</span>
+              <span>7.2k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -480,7 +480,24 @@ UIColor *lineColor = [bgColor up:3 num:20]; // 不管背景是什么颜色 线�
 <p>4. 支持增加传入一个数组，然后搭建一个多个颜色过渡的 view。<br><br><img data-src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/074420.png" alt="Drawing"><br></p>
 <hr>
 <h4 id="四、SXMarquee"><a href="#四、SXMarquee" class="headerlink" title="四、SXMarquee"></a>四、SXMarquee</h4><p>1. 实现任何样式的跑马灯。<br><br>跑马灯方法：</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">- (instancetype)initWithFrame:(CGRect)frame</span><br><span class="line">                        speed:(SXMarqueeSpeedLevel)speed</span><br><span class="line">                          Msg:(NSString *)msg</span><br><span class="line">                      bgColor:(UIColor *)bgColor</span><br><span class="line">                     txtColor:(UIColor *)txtColor;</span><br><span class="line"></span><br><span class="line">// 点击动作，默认点击停止</span><br><span class="line">- (void)changeTapMarqueeAction:(void(^)())action;</span><br><span class="line"></span><br><span class="line">// 改变字体大小</span><br><span class="line">- (void)changeMarqueeLabelFont:(UIFont *)font;</span><br><span class="line"></span><br><span class="line">- (void)start;</span><br><span class="line"></span><br><span class="line">- (void)stop;</span><br><span class="line"></span><br><span class="line">- (void)restart;</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-none"><code class="language-none">- (instancetype)initWithFrame:(CGRect)frame
+                        speed:(SXMarqueeSpeedLevel)speed
+                          Msg:(NSString *)msg
+                      bgColor:(UIColor *)bgColor
+                     txtColor:(UIColor *)txtColor;
+
+// 点击动作，默认点击停止
+- (void)changeTapMarqueeAction:(void(^)())action;
+
+// 改变字体大小
+- (void)changeMarqueeLabelFont:(UIFont *)font;
+
+- (void)start;
+
+- (void)stop;
+
+- (void)restart;
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>Demo:</p>
 <pre><code>SXMarquee *mar = [[SXMarquee alloc] initWithFrame:CGRectMake(20, 255, 335, 35)
@@ -498,9 +515,61 @@ UIColor *lineColor = [bgColor up:3 num:20]; // 不管背景是什么颜色 线�
 [mar start];</code></pre>
 <p>2. 跑马灯的背景可以设置任何颜色，这个是基于颜色过渡 view 做的。<br></p>
 <p>3. 跑马灯可以实现点击拖动，或者绑定更多点击事件。<br></p>
-<h6 id="📌-源码解析"><a href="#📌-源码解析" class="headerlink" title="📌 源码解析"></a>📌 源码解析</h6><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line">/*</span><br><span class="line"> // Label 的宽度是根据字符串长度计算而来</span><br><span class="line"> UIFont *fnt = [UIFont fontWithName:@"HelveticaNeue" size:14.0f];</span><br><span class="line"> CGSize msgSize = [_marqueeLbl.text sizeWithAttributes:@{NSFontAttributeName:fnt}];</span><br><span class="line"> */</span><br><span class="line"></span><br><span class="line">#pragma mark - 核心动画</span><br><span class="line">- (void)moveAction {</span><br><span class="line">    // 以 Label 的中心点运动</span><br><span class="line">    // 贝塞尔曲线 起点</span><br><span class="line">    CGPoint fromPoint = CGPointMake(self.frame.size.width + self.marqueeLbl.frame.size.width/2, self.frame.size.height/2);</span><br><span class="line">    // 贝塞尔曲线 终点</span><br><span class="line">    CGPoint toPoint = CGPointMake(-self.marqueeLbl.frame.size.width/2, self.frame.size.height/2);</span><br><span class="line">    </span><br><span class="line">    self.marqueeLbl.center = fromPoint;</span><br><span class="line">    UIBezierPath *movePath = [UIBezierPath bezierPath];</span><br><span class="line">    [movePath moveToPoint:fromPoint];</span><br><span class="line">    [movePath addLineToPoint:toPoint];</span><br><span class="line">    </span><br><span class="line">    // 创建动画实例</span><br><span class="line">    CAKeyframeAnimation *moveAnim = [CAKeyframeAnimation animationWithKeyPath:@"position"];</span><br><span class="line">    // 设置动画路径</span><br><span class="line">    moveAnim.path = movePath.CGPath;</span><br><span class="line">    // 完成后移除</span><br><span class="line">    moveAnim.removedOnCompletion = YES;</span><br><span class="line">    // 设置延迟</span><br><span class="line">    moveAnim.duration = self.marqueeLbl.frame.size.width * self.speedLevel * 0.01;</span><br><span class="line">    // 委托协议，动画完成后重复该动画</span><br><span class="line">    moveAnim.delegate = self;</span><br><span class="line">    // 在图层上添加动画</span><br><span class="line">    [self.marqueeLbl.layer addAnimation:moveAnim forKey:nil];</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">#pragma mark - CAAnimationDelegate</span><br><span class="line"></span><br><span class="line">- (void)animationDidStop:(CAAnimation *)anim finished:(BOOL)flag{</span><br><span class="line">    if (flag) {</span><br><span class="line">        [self moveAction];</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<h6 id="📌-源码解析"><a href="#📌-源码解析" class="headerlink" title="📌 源码解析"></a>📌 源码解析</h6><pre class="line-numbers language-none"><code class="language-none">/*
+ // Label 的宽度是根据字符串长度计算而来
+ UIFont *fnt = [UIFont fontWithName:@"HelveticaNeue" size:14.0f];
+ CGSize msgSize = [_marqueeLbl.text sizeWithAttributes:@{NSFontAttributeName:fnt}];
+ */
+
+#pragma mark - 核心动画
+- (void)moveAction {
+    // 以 Label 的中心点运动
+    // 贝塞尔曲线 起点
+    CGPoint fromPoint = CGPointMake(self.frame.size.width + self.marqueeLbl.frame.size.width/2, self.frame.size.height/2);
+    // 贝塞尔曲线 终点
+    CGPoint toPoint = CGPointMake(-self.marqueeLbl.frame.size.width/2, self.frame.size.height/2);
+
+    self.marqueeLbl.center = fromPoint;
+    UIBezierPath *movePath = [UIBezierPath bezierPath];
+    [movePath moveToPoint:fromPoint];
+    [movePath addLineToPoint:toPoint];
+
+    // 创建动画实例
+    CAKeyframeAnimation *moveAnim = [CAKeyframeAnimation animationWithKeyPath:@"position"];
+    // 设置动画路径
+    moveAnim.path = movePath.CGPath;
+    // 完成后移除
+    moveAnim.removedOnCompletion = YES;
+    // 设置延迟
+    moveAnim.duration = self.marqueeLbl.frame.size.width * self.speedLevel * 0.01;
+    // 委托协议，动画完成后重复该动画
+    moveAnim.delegate = self;
+    // 在图层上添加动画
+    [self.marqueeLbl.layer addAnimation:moveAnim forKey:nil];
+}
+
+#pragma mark - CAAnimationDelegate
+
+- (void)animationDidStop:(CAAnimation *)anim finished:(BOOL)flag{
+    if (flag) {
+        [self moveAction];
+    }
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <h5 id="SXHeadLine"><a href="#SXHeadLine" class="headerlink" title="SXHeadLine"></a>SXHeadLine</h5><p>方法：</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">- (void)setBgColor:(UIColor *)bgColor</span><br><span class="line">         textColor:(UIColor *)textColor</span><br><span class="line">          textFont:(UIFont *)textFont;</span><br><span class="line"></span><br><span class="line">// 设置时间间隔</span><br><span class="line">- (void)setScrollDuration:(NSTimeInterval)scrollDuration</span><br><span class="line">             stayDuration:(NSTimeInterval)stayDuration;</span><br><span class="line"></span><br><span class="line">// 改变点击动作，默认点击停止</span><br><span class="line">- (void)changeTapMarqueeAction:(actionBlock)action;</span><br><span class="line"></span><br><span class="line">- (void)start;</span><br><span class="line"></span><br><span class="line">- (void)stop;</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-none"><code class="language-none">- (void)setBgColor:(UIColor *)bgColor
+         textColor:(UIColor *)textColor
+          textFont:(UIFont *)textFont;
+
+// 设置时间间隔
+- (void)setScrollDuration:(NSTimeInterval)scrollDuration
+             stayDuration:(NSTimeInterval)stayDuration;
+
+// 改变点击动作，默认点击停止
+- (void)changeTapMarqueeAction:(actionBlock)action;
+
+- (void)start;
+
+- (void)stop;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>Demo:</p>
 <pre><code>SXHeadLine *headLine3 = [[SXHeadLine alloc]initWithFrame:CGRectMake(100, 530, 250, 30)];
@@ -535,7 +604,23 @@ sxlbl3.text = @"一定要：[通知&lt;Peter&gt;和&lt;Robin&gt;去开会]";
 [self.bodyView addSubview:sxlbl3];</code></pre>
 <p><img data-src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/074449.png" alt="Drawing"><br></p>
 <h5 id="📌-源码解析-1"><a href="#📌-源码解析-1" class="headerlink" title="📌 源码解析"></a>📌 源码解析</h5><p>在同一个 Label 中设置不同字体颜色的方法参考如下，源码中只是在字符串中放了标记符号 &lt;&gt;、[]、遍历删除这些标记符号的同时将他们的范围、长度记录下来设置不同的字体和颜色。</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">- (UILabel *)titleLabel {</span><br><span class="line">    if (!_titleLabel) {</span><br><span class="line">        _titleLabel = [[UILabel alloc] initWithFrame:CGRectMake((MaxX(self.imageView)+10), MinY(self.imageView), 245, 40)];</span><br><span class="line">        _titleLabel.numberOfLines = 2;</span><br><span class="line">        _titleLabel.lineBreakMode = NSLineBreakByWordWrapping;</span><br><span class="line">        _titleLabel.font = [UIFont systemFontOfSize:16];</span><br><span class="line">        </span><br><span class="line">        NSString *strPrice = [NSString stringWithFormat:@"%d元 - %d元", (int)self.data.minPrice, (int)self.data.maxPrice];</span><br><span class="line">        NSString *strTitle = self.data.title;</span><br><span class="line">        NSMutableAttributedString *string = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@ %@", strTitle, strPrice]];</span><br><span class="line">        [string setAttributes:@{NSForegroundColorAttributeName: COLOR_RGB(34, 34, 39)} range:NSMakeRange(0, strTitle.length)];</span><br><span class="line">        [string setAttributes:@{NSForegroundColorAttributeName: COLOR_RGB(255, 77, 100)} range:NSMakeRange((strTitle.length+1), strPrice.length)];</span><br><span class="line">        _titleLabel.attributedText = string;</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    return _titleLabel;</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-none"><code class="language-none">- (UILabel *)titleLabel {
+    if (!_titleLabel) {
+        _titleLabel = [[UILabel alloc] initWithFrame:CGRectMake((MaxX(self.imageView)+10), MinY(self.imageView), 245, 40)];
+        _titleLabel.numberOfLines = 2;
+        _titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
+        _titleLabel.font = [UIFont systemFontOfSize:16];
+
+        NSString *strPrice = [NSString stringWithFormat:@"%d元 - %d元", (int)self.data.minPrice, (int)self.data.maxPrice];
+        NSString *strTitle = self.data.title;
+        NSMutableAttributedString *string = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@ %@", strTitle, strPrice]];
+        [string setAttributes:@{NSForegroundColorAttributeName: COLOR_RGB(34, 34, 39)} range:NSMakeRange(0, strTitle.length)];
+        [string setAttributes:@{NSForegroundColorAttributeName: COLOR_RGB(255, 77, 100)} range:NSMakeRange((strTitle.length+1), strPrice.length)];
+        _titleLabel.attributedText = string;
+    }
+
+    return _titleLabel;
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p><em>旧版 demo</em><br><br><em>颜色列表</em><br><br><img data-src="https://github.com/dsxNiubility/Wonderful/raw/master/screenshots/002.gif" alt="image"></p>
 
     </div>
@@ -656,12 +741,12 @@ sxlbl3.text = @"一定要：[通知&lt;Peter&gt;和&lt;Robin&gt;去开会]";
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">2.1m</span>
+    <span title="站点总字数">2.3m</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">31:21</span>
+    <span title="站点阅读时长">34:09</span>
 </div>
   <div class="powered-by">由 <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZw==">NexT.Gemini</span> 强力驱动
   </div>

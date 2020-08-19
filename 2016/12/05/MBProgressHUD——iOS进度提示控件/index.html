@@ -399,14 +399,14 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>32k</span>
+              <span>31k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>29 分钟</span>
+              <span>28 分钟</span>
             </span>
 
         </div>
@@ -435,103 +435,873 @@
 <li>CoreGraphics.framework</li>
 </ul>
 <h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><p>使用 <strong>MBProgressHUD</strong> 最重要的一点是：当执行需要较长时间的任务时，保证主线程是空闲的，这样可以使 UI 实时更新。因此： 推荐的做法是在主线程中使用 <strong>MBProgressHUD</strong>，把其他你想要执行的任务分发到其他的线程里:</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[MBProgressHUD showHUDAddedTo:self.view animated:YES];</span><br><span class="line">dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{</span><br><span class="line">    // Do something...</span><br><span class="line">    dispatch_async(dispatch_get_main_queue(), ^{</span><br><span class="line">        [MBProgressHUD hideHUDForView:self.view animated:YES];</span><br><span class="line">    });</span><br><span class="line">});</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">[MBProgressHUD showHUDAddedTo:self.view animated:YES];
+dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
+    // Do something...
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [MBProgressHUD hideHUDForView:self.view animated:YES];
+    });
+});<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>你可以在任何视图或窗口中添加 HUD。 但是，请尽量避免将 HUD 添加到具有复杂视图层次结构的某些 <strong>UIKit</strong> 视图（如 <strong>UITableView</strong> 或 <strong>UICollectionView</strong> ）中。 那些视图可以以意想不到的方式变换他们的子视图，从而影响 HUD 的显示。</p>
 <p>如果你想配置 HUD, 你可以使用由  <code>showHUDAddedTo:animated: </code> 方法返回的 <strong>MBProgressHUD</strong> 的实例.</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];</span><br><span class="line">hud.mode = MBProgressHUDModeAnnularDeterminate;</span><br><span class="line">hud.labelText = @"Loading";</span><br><span class="line">[self doSomethingInBackgroundWithProgressCallback:^(float progress) {</span><br><span class="line">    hud.progress = progress;</span><br><span class="line">} completionCallback:^{</span><br><span class="line">    [hud hide:YES];</span><br><span class="line">}];</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+hud.mode = MBProgressHUDModeAnnularDeterminate;
+hud.labelText = @"Loading";
+[self doSomethingInBackgroundWithProgressCallback:^(float progress) {
+    hud.progress = progress;
+} completionCallback:^{
+    [hud hide:YES];
+}];<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>你也可以使用 <strong>NSProgress</strong> 对象，当通过该对象报告进度时，<strong>MBProgressHUD</strong> 将自动更新。</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];</span><br><span class="line">hud.mode = MBProgressHUDModeAnnularDeterminate;</span><br><span class="line">hud.labelText = @"Loading";</span><br><span class="line">NSProgress *progress = [self doSomethingInBackgroundCompletion:^{</span><br><span class="line">    [hud hide:YES];</span><br><span class="line">}];</span><br><span class="line">hud.progressObject = progress;</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+hud.mode = MBProgressHUDModeAnnularDeterminate;
+hud.labelText = @"Loading";
+NSProgress *progress = [self doSomethingInBackgroundCompletion:^{
+    [hud hide:YES];
+}];
+hud.progressObject = progress;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>UI 更新应该通常总是在主线程完成。但是某些 <strong>MBProgressHUD</strong> 设置器，考虑到了<strong>线程安全</strong> , 并且可以在后台线程里被调用。这些设置器，具体指的是: <code>setMode:</code>,<code>setCustomView:</code>, <code>setLabelText:</code>, <code>setLabelFont:</code>, <code>setDetailsLabelText:</code>,<code>setDetailsLabelFont:</code> 和 <code>setProgress:</code>。</p>
 <p>如果你需要在主线程执行需要长时间运行的任务，你应该在短暂的延迟后再执行这个任务，这样在你的任务阻塞主线程之前，UIKit 就有足够的时间来更新 UI (如，绘制 HUD).</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[MBProgressHUD showHUDAddedTo:self.view animated:YES];</span><br><span class="line">// 延迟 0.01s 后执行</span><br><span class="line">dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, 0.01 * NSEC_PER_SEC);</span><br><span class="line">dispatch_after(popTime, dispatch_get_main_queue(), ^(void){</span><br><span class="line">    // Do something...</span><br><span class="line">    [MBProgressHUD hideHUDForView:self.view animated:YES];</span><br><span class="line">});</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">[MBProgressHUD showHUDAddedTo:self.view animated:YES];
+// 延迟 0.01s 后执行
+dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, 0.01 * NSEC_PER_SEC);
+dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+    // Do something...
+    [MBProgressHUD hideHUDForView:self.view animated:YES];
+});<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>你应该知道，在 Block 块完成之前，上述 Block 块中发出的任何 HUD 更新消息将不会被显示。</p>
-<h1 id="源码"><a href="#源码" class="headerlink" title="源码"></a>源码</h1><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br><span class="line">249</span><br><span class="line">250</span><br><span class="line">251</span><br><span class="line">252</span><br><span class="line">253</span><br><span class="line">254</span><br><span class="line">255</span><br><span class="line">256</span><br><span class="line">257</span><br><span class="line">258</span><br><span class="line">259</span><br><span class="line">260</span><br><span class="line">261</span><br><span class="line">262</span><br><span class="line">263</span><br><span class="line">264</span><br><span class="line">265</span><br><span class="line">266</span><br><span class="line">267</span><br><span class="line">268</span><br><span class="line">269</span><br><span class="line">270</span><br><span class="line">271</span><br><span class="line">272</span><br><span class="line">273</span><br><span class="line">274</span><br><span class="line">275</span><br><span class="line">276</span><br><span class="line">277</span><br><span class="line">278</span><br><span class="line">279</span><br><span class="line">280</span><br><span class="line">281</span><br><span class="line">282</span><br><span class="line">283</span><br><span class="line">284</span><br><span class="line">285</span><br><span class="line">286</span><br><span class="line">287</span><br><span class="line">288</span><br><span class="line">289</span><br><span class="line">290</span><br><span class="line">291</span><br><span class="line">292</span><br><span class="line">293</span><br><span class="line">294</span><br><span class="line">295</span><br><span class="line">296</span><br><span class="line">297</span><br><span class="line">298</span><br><span class="line">299</span><br><span class="line">300</span><br><span class="line">301</span><br><span class="line">302</span><br><span class="line">303</span><br><span class="line">304</span><br><span class="line">305</span><br><span class="line">306</span><br><span class="line">307</span><br><span class="line">308</span><br><span class="line">309</span><br><span class="line">310</span><br><span class="line">311</span><br><span class="line">312</span><br><span class="line">313</span><br><span class="line">314</span><br><span class="line">315</span><br><span class="line">316</span><br><span class="line">317</span><br><span class="line">318</span><br><span class="line">319</span><br><span class="line">320</span><br><span class="line">321</span><br><span class="line">322</span><br><span class="line">323</span><br><span class="line">324</span><br><span class="line">325</span><br><span class="line">326</span><br><span class="line">327</span><br><span class="line">328</span><br><span class="line">329</span><br><span class="line">330</span><br><span class="line">331</span><br><span class="line">332</span><br><span class="line">333</span><br><span class="line">334</span><br><span class="line">335</span><br><span class="line">336</span><br><span class="line">337</span><br><span class="line">338</span><br><span class="line">339</span><br><span class="line">340</span><br><span class="line">341</span><br><span class="line">342</span><br><span class="line">343</span><br><span class="line">344</span><br><span class="line">345</span><br><span class="line">346</span><br><span class="line">347</span><br><span class="line">348</span><br><span class="line">349</span><br><span class="line">350</span><br><span class="line">351</span><br><span class="line">352</span><br><span class="line">353</span><br><span class="line">354</span><br><span class="line">355</span><br><span class="line">356</span><br><span class="line">357</span><br><span class="line">358</span><br><span class="line">359</span><br><span class="line">360</span><br><span class="line">361</span><br><span class="line">362</span><br><span class="line">363</span><br><span class="line">364</span><br><span class="line">365</span><br><span class="line">366</span><br><span class="line">367</span><br><span class="line">368</span><br><span class="line">369</span><br><span class="line">370</span><br><span class="line">371</span><br><span class="line">372</span><br><span class="line">373</span><br><span class="line">374</span><br><span class="line">375</span><br><span class="line">376</span><br><span class="line">377</span><br><span class="line">378</span><br><span class="line">379</span><br><span class="line">380</span><br><span class="line">381</span><br><span class="line">382</span><br><span class="line">383</span><br><span class="line">384</span><br><span class="line">385</span><br><span class="line">386</span><br><span class="line">387</span><br><span class="line">388</span><br><span class="line">389</span><br><span class="line">390</span><br><span class="line">391</span><br><span class="line">392</span><br><span class="line">393</span><br><span class="line">394</span><br><span class="line">395</span><br><span class="line">396</span><br><span class="line">397</span><br><span class="line">398</span><br><span class="line">399</span><br><span class="line">400</span><br><span class="line">401</span><br><span class="line">402</span><br><span class="line">403</span><br><span class="line">404</span><br><span class="line">405</span><br><span class="line">406</span><br><span class="line">407</span><br><span class="line">408</span><br><span class="line">409</span><br><span class="line">410</span><br><span class="line">411</span><br><span class="line">412</span><br><span class="line">413</span><br><span class="line">414</span><br><span class="line">415</span><br><span class="line">416</span><br><span class="line">417</span><br><span class="line">418</span><br><span class="line">419</span><br><span class="line">420</span><br><span class="line">421</span><br><span class="line">422</span><br><span class="line">423</span><br><span class="line">424</span><br><span class="line">425</span><br><span class="line">426</span><br><span class="line">427</span><br><span class="line">428</span><br><span class="line">429</span><br><span class="line">430</span><br></pre></td><td class="code"><pre><span class="line">//</span><br><span class="line">//  MBProgressHUD.h</span><br><span class="line">//  Version 1.0.0</span><br><span class="line">//  Created by Matej Bukovinski on 2.4.09.</span><br><span class="line">//</span><br><span class="line"></span><br><span class="line">// This code is distributed under the terms and conditions of the MIT license. </span><br><span class="line"></span><br><span class="line">// Copyright © 2009-2016 Matej Bukovinski</span><br><span class="line">//</span><br><span class="line">// Permission is hereby granted, free of charge, to any person obtaining a copy</span><br><span class="line">// of this software and associated documentation files (the "Software"), to deal</span><br><span class="line">// in the Software without restriction, including without limitation the rights</span><br><span class="line">// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell</span><br><span class="line">// copies of the Software, and to permit persons to whom the Software is</span><br><span class="line">// furnished to do so, subject to the following conditions:</span><br><span class="line">//</span><br><span class="line">// The above copyright notice and this permission notice shall be included in</span><br><span class="line">// all copies or substantial portions of the Software.</span><br><span class="line">//</span><br><span class="line">// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR</span><br><span class="line">// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,</span><br><span class="line">// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE</span><br><span class="line">// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER</span><br><span class="line">// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,</span><br><span class="line">// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN</span><br><span class="line">// THE SOFTWARE.</span><br><span class="line"></span><br><span class="line">#import &lt;Foundation/Foundation.h&gt;</span><br><span class="line">#import &lt;UIKit/UIKit.h&gt;</span><br><span class="line">#import &lt;CoreGraphics/CoreGraphics.h&gt;</span><br><span class="line"></span><br><span class="line">@class MBBackgroundView;</span><br><span class="line">@protocol MBProgressHUDDelegate;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">extern CGFloat const MBProgressMaxOffset;</span><br><span class="line"></span><br><span class="line">typedef NS_ENUM(NSInteger, MBProgressHUDMode) {</span><br><span class="line">    /// UIActivityIndicatorView.</span><br><span class="line">    MBProgressHUDModeIndeterminate,</span><br><span class="line">    /// 一个圆形的饼图，像进度视图。</span><br><span class="line">    MBProgressHUDModeDeterminate,</span><br><span class="line">    /// 水平进度条。</span><br><span class="line">    MBProgressHUDModeDeterminateHorizontalBar,</span><br><span class="line">    /// 环形进度视图。</span><br><span class="line">    MBProgressHUDModeAnnularDeterminate,</span><br><span class="line">    /// 显示自定义视图。</span><br><span class="line">    MBProgressHUDModeCustomView,</span><br><span class="line">    /// 仅显示标签。</span><br><span class="line">    MBProgressHUDModeText</span><br><span class="line">};</span><br><span class="line"></span><br><span class="line">typedef NS_ENUM(NSInteger, MBProgressHUDAnimation) {</span><br><span class="line">    /// 不透明动画</span><br><span class="line">    MBProgressHUDAnimationFade,</span><br><span class="line">    /// 不透明+缩放动画（显示时缩小，消失时放大）</span><br><span class="line">    MBProgressHUDAnimationZoom,</span><br><span class="line">    /// Opacity + scale animation (zoom out style)</span><br><span class="line">    MBProgressHUDAnimationZoomOut,</span><br><span class="line">    /// Opacity + scale animation (zoom in style)</span><br><span class="line">    MBProgressHUDAnimationZoomIn</span><br><span class="line">};</span><br><span class="line"></span><br><span class="line">typedef NS_ENUM(NSInteger, MBProgressHUDBackgroundStyle) {</span><br><span class="line">    /// 纯色背景</span><br><span class="line">    MBProgressHUDBackgroundStyleSolidColor,</span><br><span class="line">    /// UIVisualEffectView 或 UIToolbar.layer 背景视图</span><br><span class="line">    MBProgressHUDBackgroundStyleBlur</span><br><span class="line">};</span><br><span class="line"></span><br><span class="line">typedef void (^MBProgressHUDCompletionBlock)();</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">NS_ASSUME_NONNULL_BEGIN</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">/** </span><br><span class="line"> * Displays a simple HUD window containing a progress indicator and two optional labels for short messages.</span><br><span class="line"> *</span><br><span class="line"> * This is a simple drop-in class for displaying a progress HUD view similar to Apple's private UIProgressHUD class.</span><br><span class="line"> * The MBProgressHUD window spans over the entire space given to it by the initWithFrame: constructor and catches all</span><br><span class="line"> * user input on this region, thereby preventing the user operations on components below the view.</span><br><span class="line"> *</span><br><span class="line"> * @note To still allow touches to pass through the HUD, you can set hud.userInteractionEnabled = NO.</span><br><span class="line"> * @attention MBProgressHUD is a UI class and should therefore only be accessed on the main thread.</span><br><span class="line"> */</span><br><span class="line">@interface MBProgressHUD : UIView</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * 创建一个新的HUD,并把它添加并显示到提供的视图上.与之相对应的方法是 hideHUDForView:animated:.</span><br><span class="line"> *</span><br><span class="line"> * @note 这个方法会设置HUD的属性 removeFromSuperViewOnHide 为YES.HUD会在隐藏时自动从父视图上移除.</span><br><span class="line"> *</span><br><span class="line"> * @param view 将HUD添加到此视图上.</span><br><span class="line"> * @param animated YES:显示时使用当前的动画类型显示;NO:直接显示不使用动画效果.</span><br><span class="line"> * @return A reference to the created HUD.</span><br><span class="line"> *</span><br><span class="line"> * @see hideHUDForView:animated:</span><br><span class="line"> * @see animationType</span><br><span class="line"> */</span><br><span class="line">+ (instancetype)showHUDAddedTo:(UIView *)view animated:(BOOL)animated;</span><br><span class="line"></span><br><span class="line">/// @name Showing and hiding</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * 找到并隐藏子视图最顶层的HUD.与之对应的方法是 showHUDAddedTo:animated:.</span><br><span class="line"> </span><br><span class="line"> *</span><br><span class="line"> * @note 这个方法会设置HUD的属性 removeFromSuperViewOnHide 为YES.HUD会在隐藏时自动从父视图上移除.</span><br><span class="line"> *</span><br><span class="line"> * @param view  用来在其子视图中查找HUD的视图.</span><br><span class="line"> * @param animated YES,隐藏时使用当前的动画类型;NO,直接隐藏不使用动画效果.</span><br><span class="line"> * @return  如果某个HUD被找到并被移除;否则返回NO.</span><br><span class="line"> *</span><br><span class="line"> * @see showHUDAddedTo:animated:</span><br><span class="line"> * @see animationType</span><br><span class="line"> */</span><br><span class="line">+ (BOOL)hideHUDForView:(UIView *)view animated:(BOOL)animated;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * 找到最顶层的 HUD 并返回.</span><br><span class="line"> *</span><br><span class="line"> * @param view The view that is going to be searched.</span><br><span class="line"> * @return A reference to the last HUD subview discovered.</span><br><span class="line"> */</span><br><span class="line">+ (nullable MBProgressHUD *)HUDForView:(UIView *)view;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * 使用指定视图的边框尺寸创建HUD的便利初始化方法. Calls the designated constructor with</span><br><span class="line"> * view.bounds as the parameter.</span><br><span class="line"> *</span><br><span class="line"> * @param view The view instance that will provide the bounds for the HUD. Should be the same instance as</span><br><span class="line"> * the HUD's superview (i.e., the view that the HUD will be added to).</span><br><span class="line"> */</span><br><span class="line">- (instancetype)initWithView:(UIView *)view;</span><br><span class="line"></span><br><span class="line">/** </span><br><span class="line"> * 显示 HUD.</span><br><span class="line"> *</span><br><span class="line"> * @note 你需要确保调用此方法时,主线程未被其他任务阻塞,以便于更新视图.当你已经在新的线程中开始(比如,使用NSOperation或者NSURLRequest的异步请求等)执行某个任务后,再执行此方法.</span><br><span class="line"> * (e.g., when using something like NSOperation or making an asynchronous call like NSURLRequest).</span><br><span class="line"> * @param animated If set to YES the HUD will appear using the current animationType. If set to NO the HUD will not use</span><br><span class="line"> * animations while appearing.</span><br><span class="line"> *</span><br><span class="line"> * @see animationType</span><br><span class="line"> */</span><br><span class="line">- (void)showAnimated:(BOOL)animated;</span><br><span class="line"></span><br><span class="line">/** </span><br><span class="line"> * Hides the HUD. This still calls the hudWasHidden: delegate. This is the counterpart of the show: method. Use it to</span><br><span class="line"> * hide the HUD when your task completes.</span><br><span class="line"> *</span><br><span class="line"> * @param animated If set to YES the HUD will disappear using the current animationType. If set to NO the HUD will not use</span><br><span class="line"> * animations while disappearing.</span><br><span class="line"> *</span><br><span class="line"> * @see animationType</span><br><span class="line"> */</span><br><span class="line">- (void)hideAnimated:(BOOL)animated;</span><br><span class="line"></span><br><span class="line">/** </span><br><span class="line"> * 指定延时后隐藏 HUD . This still calls the hudWasHidden: delegate. This is the counterpart of the show: method. Use it to</span><br><span class="line"> * hide the HUD when your task completes.</span><br><span class="line"> *</span><br><span class="line"> * @param animated If set to YES the HUD will disappear using the current animationType. If set to NO the HUD will not use</span><br><span class="line"> * animations while disappearing.</span><br><span class="line"> * @param delay Delay in seconds until the HUD is hidden.</span><br><span class="line"> *</span><br><span class="line"> * @see animationType</span><br><span class="line"> */</span><br><span class="line">- (void)hideAnimated:(BOOL)animated afterDelay:(NSTimeInterval)delay;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * The HUD delegate object. Receives HUD state notifications.</span><br><span class="line"> */</span><br><span class="line">@property (weak, nonatomic) id&lt;MBProgressHUDDelegate&gt; delegate;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * HUD完全隐藏后执行的block.</span><br><span class="line"> */</span><br><span class="line">@property (copy, nullable) MBProgressHUDCompletionBlock completionBlock;</span><br><span class="line"></span><br><span class="line">/*</span><br><span class="line"> * 用于指定某个方法执行一段时间之后再显示HUD,以秒记.如果方法在这段时间之前就执行完成,就不再显示HUD.</span><br><span class="line"> * This may be used to prevent HUD display for very short tasks.</span><br><span class="line"> * Defaults to 0 (no grace time).</span><br><span class="line"> */</span><br><span class="line">@property (assign, nonatomic) NSTimeInterval graceTime;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * HUD显示的最小时间(以秒记.)</span><br><span class="line"> * This avoids the problem of the HUD being shown and than instantly hidden.</span><br><span class="line"> * Defaults to 0 (no minimum show time).</span><br><span class="line"> */</span><br><span class="line">@property (assign, nonatomic) NSTimeInterval minShowTime;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * Removes the HUD from its parent view when hidden.</span><br><span class="line"> * Defaults to NO.</span><br><span class="line"> */</span><br><span class="line">@property (assign, nonatomic) BOOL removeFromSuperViewOnHide;</span><br><span class="line"></span><br><span class="line">/// @name Appearance</span><br><span class="line"></span><br><span class="line">/** </span><br><span class="line"> * MBProgressHUD operation mode. The default is MBProgressHUDModeIndeterminate.</span><br><span class="line"> */</span><br><span class="line">@property (assign, nonatomic) MBProgressHUDMode mode;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * A color that gets forwarded to all labels and supported indicators. Also sets the tintColor</span><br><span class="line"> * for custom views on iOS 7+. Set to nil to manage color individually.</span><br><span class="line"> * Defaults to semi-translucent black on iOS 7 and later and white on earlier iOS versions.</span><br><span class="line"> */</span><br><span class="line">@property (strong, nonatomic, nullable) UIColor *contentColor UI_APPEARANCE_SELECTOR;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * HUD显示和隐藏时使用的动画类型.</span><br><span class="line"> */</span><br><span class="line">@property (assign, nonatomic) MBProgressHUDAnimation animationType UI_APPEARANCE_SELECTOR;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * The bezel offset relative to the center of the view. You can use MBProgressMaxOffset</span><br><span class="line"> * and -MBProgressMaxOffset to move the HUD all the way to the screen edge in each direction.</span><br><span class="line"> * E.g., CGPointMake(0.f, MBProgressMaxOffset) would position the HUD centered on the bottom edge.</span><br><span class="line"> */</span><br><span class="line">@property (assign, nonatomic) CGPoint offset UI_APPEARANCE_SELECTOR;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * The amount of space between the HUD edge and the HUD elements (labels, indicators or custom views).</span><br><span class="line"> * This also represents the minimum bezel distance to the edge of the HUD view.</span><br><span class="line"> * Defaults to 20.f</span><br><span class="line"> */</span><br><span class="line">@property (assign, nonatomic) CGFloat margin UI_APPEARANCE_SELECTOR;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * The minimum size of the HUD bezel. Defaults to CGSizeZero (no minimum size).</span><br><span class="line"> */</span><br><span class="line">@property (assign, nonatomic) CGSize minSize UI_APPEARANCE_SELECTOR;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * Force the HUD dimensions to be equal if possible.</span><br><span class="line"> */</span><br><span class="line">@property (assign, nonatomic, getter = isSquare) BOOL square UI_APPEARANCE_SELECTOR;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * When enabled, the bezel center gets slightly affected by the device accelerometer data.</span><br><span class="line"> * Has no effect on iOS &lt; 7.0. Defaults to YES.</span><br><span class="line"> */</span><br><span class="line">@property (assign, nonatomic, getter=areDefaultMotionEffectsEnabled) BOOL defaultMotionEffectsEnabled UI_APPEARANCE_SELECTOR;</span><br><span class="line"></span><br><span class="line">/// @name Progress</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * The progress of the progress indicator, from 0.0 to 1.0. Defaults to 0.0.</span><br><span class="line"> */</span><br><span class="line">@property (assign, nonatomic) float progress;</span><br><span class="line"></span><br><span class="line">/// @name ProgressObject</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * The NSProgress object feeding the progress information to the progress indicator.</span><br><span class="line"> */</span><br><span class="line">@property (strong, nonatomic, nullable) NSProgress *progressObject;</span><br><span class="line"></span><br><span class="line">/// @name Views</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * The view containing the labels and indicator (or customView).</span><br><span class="line"> */</span><br><span class="line">@property (strong, nonatomic, readonly) MBBackgroundView *bezelView;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * View covering the entire HUD area, placed behind bezelView.</span><br><span class="line"> */</span><br><span class="line">@property (strong, nonatomic, readonly) MBBackgroundView *backgroundView;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * The UIView (e.g., a UIImageView) to be shown when the HUD is in MBProgressHUDModeCustomView.</span><br><span class="line"> * The view should implement intrinsicContentSize for proper sizing. For best results use approximately 37 by 37 pixels.</span><br><span class="line"> */</span><br><span class="line">@property (strong, nonatomic, nullable) UIView *customView;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * A label that holds an optional short message to be displayed below the activity indicator. The HUD is automatically resized to fit</span><br><span class="line"> * the entire text.</span><br><span class="line"> */</span><br><span class="line">@property (strong, nonatomic, readonly) UILabel *label;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * A label that holds an optional details message displayed below the labelText message. The details text can span multiple lines.</span><br><span class="line"> */</span><br><span class="line">@property (strong, nonatomic, readonly) UILabel *detailsLabel;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * A button that is placed below the labels. Visible only if a target / action is added. </span><br><span class="line"> */</span><br><span class="line">@property (strong, nonatomic, readonly) UIButton *button;</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">@protocol MBProgressHUDDelegate &lt;NSObject&gt;</span><br><span class="line"></span><br><span class="line">@optional</span><br><span class="line"></span><br><span class="line">/** </span><br><span class="line"> * Called after the HUD was fully hidden from the screen. </span><br><span class="line"> */</span><br><span class="line">- (void)hudWasHidden:(MBProgressHUD *)hud;</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * A progress view for showing definite progress by filling up a circle (pie chart).</span><br><span class="line"> */</span><br><span class="line">@interface MBRoundProgressView : UIView </span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * Progress (0.0 to 1.0)</span><br><span class="line"> */</span><br><span class="line">@property (nonatomic, assign) float progress;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * Indicator progress color.</span><br><span class="line"> * Defaults to white [UIColor whiteColor].</span><br><span class="line"> */</span><br><span class="line">@property (nonatomic, strong) UIColor *progressTintColor;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * Indicator background (non-progress) color. </span><br><span class="line"> * Only applicable on iOS versions older than iOS 7.</span><br><span class="line"> * Defaults to translucent white (alpha 0.1).</span><br><span class="line"> */</span><br><span class="line">@property (nonatomic, strong) UIColor *backgroundTintColor;</span><br><span class="line"></span><br><span class="line">/*</span><br><span class="line"> * Display mode - NO = round or YES = annular. Defaults to round.</span><br><span class="line"> */</span><br><span class="line">@property (nonatomic, assign, getter = isAnnular) BOOL annular;</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * A flat bar progress view. </span><br><span class="line"> */</span><br><span class="line">@interface MBBarProgressView : UIView</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * Progress (0.0 to 1.0)</span><br><span class="line"> */</span><br><span class="line">@property (nonatomic, assign) float progress;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * Bar border line color.</span><br><span class="line"> * Defaults to white [UIColor whiteColor].</span><br><span class="line"> */</span><br><span class="line">@property (nonatomic, strong) UIColor *lineColor;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * Bar background color.</span><br><span class="line"> * Defaults to clear [UIColor clearColor];</span><br><span class="line"> */</span><br><span class="line">@property (nonatomic, strong) UIColor *progressRemainingColor;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * Bar progress color.</span><br><span class="line"> * Defaults to white [UIColor whiteColor].</span><br><span class="line"> */</span><br><span class="line">@property (nonatomic, strong) UIColor *progressColor;</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">@interface MBBackgroundView : UIView</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * The background style. </span><br><span class="line"> * Defaults to MBProgressHUDBackgroundStyleBlur on iOS 7 or later and MBProgressHUDBackgroundStyleSolidColor otherwise.</span><br><span class="line"> * @note Due to iOS 7 not supporting UIVisualEffectView, the blur effect differs slightly between iOS 7 and later versions.</span><br><span class="line"> */</span><br><span class="line">@property (nonatomic) MBProgressHUDBackgroundStyle style;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * The background color or the blur tint color.</span><br><span class="line"> * @note Due to iOS 7 not supporting UIVisualEffectView, the blur effect differs slightly between iOS 7 and later versions.</span><br><span class="line"> */</span><br><span class="line">@property (nonatomic, strong) UIColor *color;</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">@interface MBProgressHUD (Deprecated)</span><br><span class="line"></span><br><span class="line">+ (NSArray *)allHUDsForView:(UIView *)view __attribute__((deprecated("Store references when using more than one HUD per view.")));</span><br><span class="line">+ (NSUInteger)hideAllHUDsForView:(UIView *)view animated:(BOOL)animated __attribute__((deprecated("Store references when using more than one HUD per view.")));</span><br><span class="line"></span><br><span class="line">- (id)initWithWindow:(UIWindow *)window __attribute__((deprecated("Use initWithView: instead.")));</span><br><span class="line"></span><br><span class="line">- (void)show:(BOOL)animated __attribute__((deprecated("Use showAnimated: instead.")));</span><br><span class="line">- (void)hide:(BOOL)animated __attribute__((deprecated("Use hideAnimated: instead.")));</span><br><span class="line">- (void)hide:(BOOL)animated afterDelay:(NSTimeInterval)delay __attribute__((deprecated("Use hideAnimated:afterDelay: instead.")));</span><br><span class="line"></span><br><span class="line">- (void)showWhileExecuting:(SEL)method onTarget:(id)target withObject:(id)object animated:(BOOL)animated __attribute__((deprecated("Use GCD directly.")));</span><br><span class="line">- (void)showAnimated:(BOOL)animated whileExecutingBlock:(dispatch_block_t)block __attribute__((deprecated("Use GCD directly.")));</span><br><span class="line">- (void)showAnimated:(BOOL)animated whileExecutingBlock:(dispatch_block_t)block completionBlock:(nullable MBProgressHUDCompletionBlock)completion __attribute__((deprecated("Use GCD directly.")));</span><br><span class="line">- (void)showAnimated:(BOOL)animated whileExecutingBlock:(dispatch_block_t)block onQueue:(dispatch_queue_t)queue __attribute__((deprecated("Use GCD directly.")));</span><br><span class="line">- (void)showAnimated:(BOOL)animated whileExecutingBlock:(dispatch_block_t)block onQueue:(dispatch_queue_t)queue</span><br><span class="line">     completionBlock:(nullable MBProgressHUDCompletionBlock)completion __attribute__((deprecated("Use GCD directly.")));</span><br><span class="line">@property (assign) BOOL taskInProgress __attribute__((deprecated("No longer needed.")));</span><br><span class="line"></span><br><span class="line">@property (nonatomic, copy) NSString *labelText __attribute__((deprecated("Use label.text instead.")));</span><br><span class="line">@property (nonatomic, strong) UIFont *labelFont __attribute__((deprecated("Use label.font instead.")));</span><br><span class="line">@property (nonatomic, strong) UIColor *labelColor __attribute__((deprecated("Use label.textColor instead.")));</span><br><span class="line">@property (nonatomic, copy) NSString *detailsLabelText __attribute__((deprecated("Use detailsLabel.text instead.")));</span><br><span class="line">@property (nonatomic, strong) UIFont *detailsLabelFont __attribute__((deprecated("Use detailsLabel.font instead.")));</span><br><span class="line">@property (nonatomic, strong) UIColor *detailsLabelColor __attribute__((deprecated("Use detailsLabel.textColor instead.")));</span><br><span class="line">@property (assign, nonatomic) CGFloat opacity __attribute__((deprecated("Customize bezelView properties instead.")));</span><br><span class="line">@property (strong, nonatomic) UIColor *color __attribute__((deprecated("Customize the bezelView color instead.")));</span><br><span class="line">@property (assign, nonatomic) CGFloat xOffset __attribute__((deprecated("Set offset.x instead.")));</span><br><span class="line">@property (assign, nonatomic) CGFloat yOffset __attribute__((deprecated("Set offset.y instead.")));</span><br><span class="line">@property (assign, nonatomic) CGFloat cornerRadius __attribute__((deprecated("Set bezelView.layer.cornerRadius instead.")));</span><br><span class="line">@property (assign, nonatomic) BOOL dimBackground __attribute__((deprecated("Customize HUD background properties instead.")));</span><br><span class="line">@property (strong, nonatomic) UIColor *activityIndicatorColor __attribute__((deprecated("Use UIAppearance to customize UIActivityIndicatorView. E.g.: [UIActivityIndicatorView appearanceWhenContainedIn:[MBProgressHUD class], nil].color = [UIColor redColor];")));</span><br><span class="line">@property (atomic, assign, readonly) CGSize size __attribute__((deprecated("Get the bezelView.frame.size instead.")));</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">NS_ASSUME_NONNULL_END</span><br></pre></td></tr></tbody></table></figure>
+<h1 id="源码"><a href="#源码" class="headerlink" title="源码"></a>源码</h1><pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">//
+//  MBProgressHUD.h
+//  Version 1.0.0
+//  Created by Matej Bukovinski on 2.4.09.
+//
+
+// This code is distributed under the terms and conditions of the MIT license. 
+
+// Copyright © 2009-2016 Matej Bukovinski
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+
+#import &lt;Foundation/Foundation.h&gt;
+#import &lt;UIKit/UIKit.h&gt;
+#import &lt;CoreGraphics/CoreGraphics.h&gt;
+
+@class MBBackgroundView;
+@protocol MBProgressHUDDelegate;
+
+
+extern CGFloat const MBProgressMaxOffset;
+
+typedef NS_ENUM(NSInteger, MBProgressHUDMode) {
+    /// UIActivityIndicatorView.
+    MBProgressHUDModeIndeterminate,
+    /// 一个圆形的饼图，像进度视图。
+    MBProgressHUDModeDeterminate,
+    /// 水平进度条。
+    MBProgressHUDModeDeterminateHorizontalBar,
+    /// 环形进度视图。
+    MBProgressHUDModeAnnularDeterminate,
+    /// 显示自定义视图。
+    MBProgressHUDModeCustomView,
+    /// 仅显示标签。
+    MBProgressHUDModeText
+};
+
+typedef NS_ENUM(NSInteger, MBProgressHUDAnimation) {
+    /// 不透明动画
+    MBProgressHUDAnimationFade,
+    /// 不透明+缩放动画（显示时缩小，消失时放大）
+    MBProgressHUDAnimationZoom,
+    /// Opacity + scale animation (zoom out style)
+    MBProgressHUDAnimationZoomOut,
+    /// Opacity + scale animation (zoom in style)
+    MBProgressHUDAnimationZoomIn
+};
+
+typedef NS_ENUM(NSInteger, MBProgressHUDBackgroundStyle) {
+    /// 纯色背景
+    MBProgressHUDBackgroundStyleSolidColor,
+    /// UIVisualEffectView 或 UIToolbar.layer 背景视图
+    MBProgressHUDBackgroundStyleBlur
+};
+
+typedef void (^MBProgressHUDCompletionBlock)();
+
+
+NS_ASSUME_NONNULL_BEGIN
+
+
+/** 
+ * Displays a simple HUD window containing a progress indicator and two optional labels for short messages.
+ *
+ * This is a simple drop-in class for displaying a progress HUD view similar to Apple's private UIProgressHUD class.
+ * The MBProgressHUD window spans over the entire space given to it by the initWithFrame: constructor and catches all
+ * user input on this region, thereby preventing the user operations on components below the view.
+ *
+ * @note To still allow touches to pass through the HUD, you can set hud.userInteractionEnabled = NO.
+ * @attention MBProgressHUD is a UI class and should therefore only be accessed on the main thread.
+ */
+@interface MBProgressHUD : UIView
+
+/**
+ * 创建一个新的HUD,并把它添加并显示到提供的视图上.与之相对应的方法是 hideHUDForView:animated:.
+ *
+ * @note 这个方法会设置HUD的属性 removeFromSuperViewOnHide 为YES.HUD会在隐藏时自动从父视图上移除.
+ *
+ * @param view 将HUD添加到此视图上.
+ * @param animated YES:显示时使用当前的动画类型显示;NO:直接显示不使用动画效果.
+ * @return A reference to the created HUD.
+ *
+ * @see hideHUDForView:animated:
+ * @see animationType
+ */
++ (instancetype)showHUDAddedTo:(UIView *)view animated:(BOOL)animated;
+
+/// @name Showing and hiding
+
+/**
+ * 找到并隐藏子视图最顶层的HUD.与之对应的方法是 showHUDAddedTo:animated:.
+
+ *
+ * @note 这个方法会设置HUD的属性 removeFromSuperViewOnHide 为YES.HUD会在隐藏时自动从父视图上移除.
+ *
+ * @param view  用来在其子视图中查找HUD的视图.
+ * @param animated YES,隐藏时使用当前的动画类型;NO,直接隐藏不使用动画效果.
+ * @return  如果某个HUD被找到并被移除;否则返回NO.
+ *
+ * @see showHUDAddedTo:animated:
+ * @see animationType
+ */
++ (BOOL)hideHUDForView:(UIView *)view animated:(BOOL)animated;
+
+/**
+ * 找到最顶层的 HUD 并返回.
+ *
+ * @param view The view that is going to be searched.
+ * @return A reference to the last HUD subview discovered.
+ */
++ (nullable MBProgressHUD *)HUDForView:(UIView *)view;
+
+/**
+ * 使用指定视图的边框尺寸创建HUD的便利初始化方法. Calls the designated constructor with
+ * view.bounds as the parameter.
+ *
+ * @param view The view instance that will provide the bounds for the HUD. Should be the same instance as
+ * the HUD's superview (i.e., the view that the HUD will be added to).
+ */
+- (instancetype)initWithView:(UIView *)view;
+
+/** 
+ * 显示 HUD.
+ *
+ * @note 你需要确保调用此方法时,主线程未被其他任务阻塞,以便于更新视图.当你已经在新的线程中开始(比如,使用NSOperation或者NSURLRequest的异步请求等)执行某个任务后,再执行此方法.
+ * (e.g., when using something like NSOperation or making an asynchronous call like NSURLRequest).
+ * @param animated If set to YES the HUD will appear using the current animationType. If set to NO the HUD will not use
+ * animations while appearing.
+ *
+ * @see animationType
+ */
+- (void)showAnimated:(BOOL)animated;
+
+/** 
+ * Hides the HUD. This still calls the hudWasHidden: delegate. This is the counterpart of the show: method. Use it to
+ * hide the HUD when your task completes.
+ *
+ * @param animated If set to YES the HUD will disappear using the current animationType. If set to NO the HUD will not use
+ * animations while disappearing.
+ *
+ * @see animationType
+ */
+- (void)hideAnimated:(BOOL)animated;
+
+/** 
+ * 指定延时后隐藏 HUD . This still calls the hudWasHidden: delegate. This is the counterpart of the show: method. Use it to
+ * hide the HUD when your task completes.
+ *
+ * @param animated If set to YES the HUD will disappear using the current animationType. If set to NO the HUD will not use
+ * animations while disappearing.
+ * @param delay Delay in seconds until the HUD is hidden.
+ *
+ * @see animationType
+ */
+- (void)hideAnimated:(BOOL)animated afterDelay:(NSTimeInterval)delay;
+
+/**
+ * The HUD delegate object. Receives HUD state notifications.
+ */
+@property (weak, nonatomic) id&lt;MBProgressHUDDelegate&gt; delegate;
+
+/**
+ * HUD完全隐藏后执行的block.
+ */
+@property (copy, nullable) MBProgressHUDCompletionBlock completionBlock;
+
+/*
+ * 用于指定某个方法执行一段时间之后再显示HUD,以秒记.如果方法在这段时间之前就执行完成,就不再显示HUD.
+ * This may be used to prevent HUD display for very short tasks.
+ * Defaults to 0 (no grace time).
+ */
+@property (assign, nonatomic) NSTimeInterval graceTime;
+
+/**
+ * HUD显示的最小时间(以秒记.)
+ * This avoids the problem of the HUD being shown and than instantly hidden.
+ * Defaults to 0 (no minimum show time).
+ */
+@property (assign, nonatomic) NSTimeInterval minShowTime;
+
+/**
+ * Removes the HUD from its parent view when hidden.
+ * Defaults to NO.
+ */
+@property (assign, nonatomic) BOOL removeFromSuperViewOnHide;
+
+/// @name Appearance
+
+/** 
+ * MBProgressHUD operation mode. The default is MBProgressHUDModeIndeterminate.
+ */
+@property (assign, nonatomic) MBProgressHUDMode mode;
+
+/**
+ * A color that gets forwarded to all labels and supported indicators. Also sets the tintColor
+ * for custom views on iOS 7+. Set to nil to manage color individually.
+ * Defaults to semi-translucent black on iOS 7 and later and white on earlier iOS versions.
+ */
+@property (strong, nonatomic, nullable) UIColor *contentColor UI_APPEARANCE_SELECTOR;
+
+/**
+ * HUD显示和隐藏时使用的动画类型.
+ */
+@property (assign, nonatomic) MBProgressHUDAnimation animationType UI_APPEARANCE_SELECTOR;
+
+/**
+ * The bezel offset relative to the center of the view. You can use MBProgressMaxOffset
+ * and -MBProgressMaxOffset to move the HUD all the way to the screen edge in each direction.
+ * E.g., CGPointMake(0.f, MBProgressMaxOffset) would position the HUD centered on the bottom edge.
+ */
+@property (assign, nonatomic) CGPoint offset UI_APPEARANCE_SELECTOR;
+
+/**
+ * The amount of space between the HUD edge and the HUD elements (labels, indicators or custom views).
+ * This also represents the minimum bezel distance to the edge of the HUD view.
+ * Defaults to 20.f
+ */
+@property (assign, nonatomic) CGFloat margin UI_APPEARANCE_SELECTOR;
+
+/**
+ * The minimum size of the HUD bezel. Defaults to CGSizeZero (no minimum size).
+ */
+@property (assign, nonatomic) CGSize minSize UI_APPEARANCE_SELECTOR;
+
+/**
+ * Force the HUD dimensions to be equal if possible.
+ */
+@property (assign, nonatomic, getter = isSquare) BOOL square UI_APPEARANCE_SELECTOR;
+
+/**
+ * When enabled, the bezel center gets slightly affected by the device accelerometer data.
+ * Has no effect on iOS &lt; 7.0. Defaults to YES.
+ */
+@property (assign, nonatomic, getter=areDefaultMotionEffectsEnabled) BOOL defaultMotionEffectsEnabled UI_APPEARANCE_SELECTOR;
+
+/// @name Progress
+
+/**
+ * The progress of the progress indicator, from 0.0 to 1.0. Defaults to 0.0.
+ */
+@property (assign, nonatomic) float progress;
+
+/// @name ProgressObject
+
+/**
+ * The NSProgress object feeding the progress information to the progress indicator.
+ */
+@property (strong, nonatomic, nullable) NSProgress *progressObject;
+
+/// @name Views
+
+/**
+ * The view containing the labels and indicator (or customView).
+ */
+@property (strong, nonatomic, readonly) MBBackgroundView *bezelView;
+
+/**
+ * View covering the entire HUD area, placed behind bezelView.
+ */
+@property (strong, nonatomic, readonly) MBBackgroundView *backgroundView;
+
+/**
+ * The UIView (e.g., a UIImageView) to be shown when the HUD is in MBProgressHUDModeCustomView.
+ * The view should implement intrinsicContentSize for proper sizing. For best results use approximately 37 by 37 pixels.
+ */
+@property (strong, nonatomic, nullable) UIView *customView;
+
+/**
+ * A label that holds an optional short message to be displayed below the activity indicator. The HUD is automatically resized to fit
+ * the entire text.
+ */
+@property (strong, nonatomic, readonly) UILabel *label;
+
+/**
+ * A label that holds an optional details message displayed below the labelText message. The details text can span multiple lines.
+ */
+@property (strong, nonatomic, readonly) UILabel *detailsLabel;
+
+/**
+ * A button that is placed below the labels. Visible only if a target / action is added. 
+ */
+@property (strong, nonatomic, readonly) UIButton *button;
+
+@end
+
+
+@protocol MBProgressHUDDelegate &lt;NSObject&gt;
+
+@optional
+
+/** 
+ * Called after the HUD was fully hidden from the screen. 
+ */
+- (void)hudWasHidden:(MBProgressHUD *)hud;
+
+@end
+
+
+/**
+ * A progress view for showing definite progress by filling up a circle (pie chart).
+ */
+@interface MBRoundProgressView : UIView 
+
+/**
+ * Progress (0.0 to 1.0)
+ */
+@property (nonatomic, assign) float progress;
+
+/**
+ * Indicator progress color.
+ * Defaults to white [UIColor whiteColor].
+ */
+@property (nonatomic, strong) UIColor *progressTintColor;
+
+/**
+ * Indicator background (non-progress) color. 
+ * Only applicable on iOS versions older than iOS 7.
+ * Defaults to translucent white (alpha 0.1).
+ */
+@property (nonatomic, strong) UIColor *backgroundTintColor;
+
+/*
+ * Display mode - NO = round or YES = annular. Defaults to round.
+ */
+@property (nonatomic, assign, getter = isAnnular) BOOL annular;
+
+@end
+
+
+/**
+ * A flat bar progress view. 
+ */
+@interface MBBarProgressView : UIView
+
+/**
+ * Progress (0.0 to 1.0)
+ */
+@property (nonatomic, assign) float progress;
+
+/**
+ * Bar border line color.
+ * Defaults to white [UIColor whiteColor].
+ */
+@property (nonatomic, strong) UIColor *lineColor;
+
+/**
+ * Bar background color.
+ * Defaults to clear [UIColor clearColor];
+ */
+@property (nonatomic, strong) UIColor *progressRemainingColor;
+
+/**
+ * Bar progress color.
+ * Defaults to white [UIColor whiteColor].
+ */
+@property (nonatomic, strong) UIColor *progressColor;
+
+@end
+
+
+@interface MBBackgroundView : UIView
+
+/**
+ * The background style. 
+ * Defaults to MBProgressHUDBackgroundStyleBlur on iOS 7 or later and MBProgressHUDBackgroundStyleSolidColor otherwise.
+ * @note Due to iOS 7 not supporting UIVisualEffectView, the blur effect differs slightly between iOS 7 and later versions.
+ */
+@property (nonatomic) MBProgressHUDBackgroundStyle style;
+
+/**
+ * The background color or the blur tint color.
+ * @note Due to iOS 7 not supporting UIVisualEffectView, the blur effect differs slightly between iOS 7 and later versions.
+ */
+@property (nonatomic, strong) UIColor *color;
+
+@end
+
+@interface MBProgressHUD (Deprecated)
+
++ (NSArray *)allHUDsForView:(UIView *)view __attribute__((deprecated("Store references when using more than one HUD per view.")));
++ (NSUInteger)hideAllHUDsForView:(UIView *)view animated:(BOOL)animated __attribute__((deprecated("Store references when using more than one HUD per view.")));
+
+- (id)initWithWindow:(UIWindow *)window __attribute__((deprecated("Use initWithView: instead.")));
+
+- (void)show:(BOOL)animated __attribute__((deprecated("Use showAnimated: instead.")));
+- (void)hide:(BOOL)animated __attribute__((deprecated("Use hideAnimated: instead.")));
+- (void)hide:(BOOL)animated afterDelay:(NSTimeInterval)delay __attribute__((deprecated("Use hideAnimated:afterDelay: instead.")));
+
+- (void)showWhileExecuting:(SEL)method onTarget:(id)target withObject:(id)object animated:(BOOL)animated __attribute__((deprecated("Use GCD directly.")));
+- (void)showAnimated:(BOOL)animated whileExecutingBlock:(dispatch_block_t)block __attribute__((deprecated("Use GCD directly.")));
+- (void)showAnimated:(BOOL)animated whileExecutingBlock:(dispatch_block_t)block completionBlock:(nullable MBProgressHUDCompletionBlock)completion __attribute__((deprecated("Use GCD directly.")));
+- (void)showAnimated:(BOOL)animated whileExecutingBlock:(dispatch_block_t)block onQueue:(dispatch_queue_t)queue __attribute__((deprecated("Use GCD directly.")));
+- (void)showAnimated:(BOOL)animated whileExecutingBlock:(dispatch_block_t)block onQueue:(dispatch_queue_t)queue
+     completionBlock:(nullable MBProgressHUDCompletionBlock)completion __attribute__((deprecated("Use GCD directly.")));
+@property (assign) BOOL taskInProgress __attribute__((deprecated("No longer needed.")));
+
+@property (nonatomic, copy) NSString *labelText __attribute__((deprecated("Use label.text instead.")));
+@property (nonatomic, strong) UIFont *labelFont __attribute__((deprecated("Use label.font instead.")));
+@property (nonatomic, strong) UIColor *labelColor __attribute__((deprecated("Use label.textColor instead.")));
+@property (nonatomic, copy) NSString *detailsLabelText __attribute__((deprecated("Use detailsLabel.text instead.")));
+@property (nonatomic, strong) UIFont *detailsLabelFont __attribute__((deprecated("Use detailsLabel.font instead.")));
+@property (nonatomic, strong) UIColor *detailsLabelColor __attribute__((deprecated("Use detailsLabel.textColor instead.")));
+@property (assign, nonatomic) CGFloat opacity __attribute__((deprecated("Customize bezelView properties instead.")));
+@property (strong, nonatomic) UIColor *color __attribute__((deprecated("Customize the bezelView color instead.")));
+@property (assign, nonatomic) CGFloat xOffset __attribute__((deprecated("Set offset.x instead.")));
+@property (assign, nonatomic) CGFloat yOffset __attribute__((deprecated("Set offset.y instead.")));
+@property (assign, nonatomic) CGFloat cornerRadius __attribute__((deprecated("Set bezelView.layer.cornerRadius instead.")));
+@property (assign, nonatomic) BOOL dimBackground __attribute__((deprecated("Customize HUD background properties instead.")));
+@property (strong, nonatomic) UIColor *activityIndicatorColor __attribute__((deprecated("Use UIAppearance to customize UIActivityIndicatorView. E.g.: [UIActivityIndicatorView appearanceWhenContainedIn:[MBProgressHUD class], nil].color = [UIColor redColor];")));
+@property (atomic, assign, readonly) CGSize size __attribute__((deprecated("Get the bezelView.frame.size instead.")));
+
+@end
+
+NS_ASSUME_NONNULL_END<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 
 
 
 
 <h1 id="Demo"><a href="#Demo" class="headerlink" title="Demo"></a>Demo</h1><h3 id="1-1-不确定模式"><a href="#1-1-不确定模式" class="headerlink" title="1.1 不确定模式"></a>1.1 不确定模式</h3><p><img data-src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071041.gif"></p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">- (void)indeterminateExample {</span><br><span class="line">    // 在根视图上显示HUD（self.view 是一个可滚动的列表视图，因此不适合将 HUD 随着用户划动与内容一起移动）。</span><br><span class="line">    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.navigationController.view animated:YES];</span><br><span class="line"></span><br><span class="line">    // 激发异步任务，使 UIKit 有机会重新绘制HUD添加到视图层次结构。</span><br><span class="line">    dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{</span><br><span class="line"></span><br><span class="line">        // Do something useful in the background</span><br><span class="line">        [self doSomeWork];</span><br><span class="line"></span><br><span class="line">        // 重要 - 分配回主线程。 始终在主线程上访问UI类（包括MBProgressHUD）。</span><br><span class="line">        dispatch_async(dispatch_get_main_queue(), ^{</span><br><span class="line">            [hud hideAnimated:YES];</span><br><span class="line">        });</span><br><span class="line">    });</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">- (void)indeterminateExample {
+    // 在根视图上显示HUD（self.view 是一个可滚动的列表视图，因此不适合将 HUD 随着用户划动与内容一起移动）。
+    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.navigationController.view animated:YES];
+
+    // 激发异步任务，使 UIKit 有机会重新绘制HUD添加到视图层次结构。
+    dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
+
+        // Do something useful in the background
+        [self doSomeWork];
+
+        // 重要 - 分配回主线程。 始终在主线程上访问UI类（包括MBProgressHUD）。
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [hud hideAnimated:YES];
+        });
+    });
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 
 
 <h3 id="1-2-带标签"><a href="#1-2-带标签" class="headerlink" title="1.2 带标签"></a>1.2 带标签</h3><p><img data-src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071042.gif"></p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">- (void)labelExample {</span><br><span class="line">    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.navigationController.view animated:YES];</span><br><span class="line"></span><br><span class="line">    // 设置标签文本.</span><br><span class="line">    hud.label.text = NSLocalizedString(@"Loading...", @"HUD loading title");</span><br><span class="line">    // You can also adjust other label properties if needed.</span><br><span class="line">    // hud.label.font = [UIFont italicSystemFontOfSize:16.f];</span><br><span class="line"></span><br><span class="line">    dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{</span><br><span class="line">        [self doSomeWork];</span><br><span class="line">        dispatch_async(dispatch_get_main_queue(), ^{</span><br><span class="line">            [hud hideAnimated:YES];</span><br><span class="line">        });</span><br><span class="line">    });</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">- (void)labelExample {
+    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.navigationController.view animated:YES];
+
+    // 设置标签文本.
+    hud.label.text = NSLocalizedString(@"Loading...", @"HUD loading title");
+    // You can also adjust other label properties if needed.
+    // hud.label.font = [UIFont italicSystemFontOfSize:16.f];
+
+    dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
+        [self doSomeWork];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [hud hideAnimated:YES];
+        });
+    });
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 
 
 
 
 <h3 id="1-3-带详细标签"><a href="#1-3-带详细标签" class="headerlink" title="1.3 带详细标签"></a>1.3 带详细标签</h3><p><img data-src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071043.gif"></p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">- (void)detailsLabelExample {</span><br><span class="line">    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.navigationController.view animated:YES];</span><br><span class="line"></span><br><span class="line">    // Set the label text.</span><br><span class="line">    hud.label.text = NSLocalizedString(@"Loading...", @"HUD loading title");</span><br><span class="line">    // Set the details label text. Let's make it multiline this time.</span><br><span class="line">    hud.detailsLabel.text = NSLocalizedString(@"Parsing data\n(1/1)", @"HUD title");</span><br><span class="line"></span><br><span class="line">    dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{</span><br><span class="line">        [self doSomeWork];</span><br><span class="line">        dispatch_async(dispatch_get_main_queue(), ^{</span><br><span class="line">            [hud hideAnimated:YES];</span><br><span class="line">        });</span><br><span class="line">    });</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">- (void)detailsLabelExample {
+    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.navigationController.view animated:YES];
+
+    // Set the label text.
+    hud.label.text = NSLocalizedString(@"Loading...", @"HUD loading title");
+    // Set the details label text. Let's make it multiline this time.
+    hud.detailsLabel.text = NSLocalizedString(@"Parsing data\n(1/1)", @"HUD title");
+
+    dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
+        [self doSomeWork];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [hud hideAnimated:YES];
+        });
+    });
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 
 
 <h3 id="2-1-确定模式"><a href="#2-1-确定模式" class="headerlink" title="2.1 确定模式"></a>2.1 确定模式</h3><p><img data-src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071044.gif"></p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">- (void)determinateExample {</span><br><span class="line">    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.navigationController.view animated:YES];</span><br><span class="line"></span><br><span class="line">    // Set the determinate mode to show task progress.</span><br><span class="line">    // 一个圆形的饼图</span><br><span class="line">    hud.mode = MBProgressHUDModeDeterminate;</span><br><span class="line">    hud.label.text = NSLocalizedString(@"Loading...", @"HUD loading title");</span><br><span class="line"></span><br><span class="line">    dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{</span><br><span class="line">        // Do something useful in the background and update the HUD periodically.</span><br><span class="line">        [self doSomeWorkWithProgress];</span><br><span class="line">        dispatch_async(dispatch_get_main_queue(), ^{</span><br><span class="line">            [hud hideAnimated:YES];</span><br><span class="line">        });</span><br><span class="line">    });</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">- (void)doSomeWorkWithProgress {</span><br><span class="line">    self.canceled = NO;</span><br><span class="line">    // This just increases the progress indicator in a loop.</span><br><span class="line">    float progress = 0.0f;</span><br><span class="line">    while (progress &lt; 1.0f) {</span><br><span class="line">        if (self.canceled) break;</span><br><span class="line">        progress += 0.01f;</span><br><span class="line">        dispatch_async(dispatch_get_main_queue(), ^{</span><br><span class="line">            // Instead we could have also passed a reference to the HUD</span><br><span class="line">            // to the HUD to myProgressTask as a method parameter.</span><br><span class="line">            [MBProgressHUD HUDForView:self.navigationController.view].progress = progress;</span><br><span class="line">        });</span><br><span class="line">        usleep(50000);</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">- (void)determinateExample {
+    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.navigationController.view animated:YES];
+
+    // Set the determinate mode to show task progress.
+    // 一个圆形的饼图
+    hud.mode = MBProgressHUDModeDeterminate;
+    hud.label.text = NSLocalizedString(@"Loading...", @"HUD loading title");
+
+    dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
+        // Do something useful in the background and update the HUD periodically.
+        [self doSomeWorkWithProgress];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [hud hideAnimated:YES];
+        });
+    });
+}
+
+- (void)doSomeWorkWithProgress {
+    self.canceled = NO;
+    // This just increases the progress indicator in a loop.
+    float progress = 0.0f;
+    while (progress &lt; 1.0f) {
+        if (self.canceled) break;
+        progress += 0.01f;
+        dispatch_async(dispatch_get_main_queue(), ^{
+            // Instead we could have also passed a reference to the HUD
+            // to the HUD to myProgressTask as a method parameter.
+            [MBProgressHUD HUDForView:self.navigationController.view].progress = progress;
+        });
+        usleep(50000);
+    }
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 
 
 <h3 id="2-2-环形确定模式"><a href="#2-2-环形确定模式" class="headerlink" title="2.2 环形确定模式"></a>2.2 环形确定模式</h3><p><img data-src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071045.gif"></p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">- (void)annularDeterminateExample {</span><br><span class="line">    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.navigationController.view animated:YES];</span><br><span class="line"></span><br><span class="line">    // Set the annular determinate mode to show task progress.</span><br><span class="line">    hud.mode = MBProgressHUDModeAnnularDeterminate;</span><br><span class="line">    hud.label.text = NSLocalizedString(@"Loading...", @"HUD loading title");</span><br><span class="line"></span><br><span class="line">    dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{</span><br><span class="line">        // Do something useful in the background and update the HUD periodically.</span><br><span class="line">        [self doSomeWorkWithProgress];</span><br><span class="line">        dispatch_async(dispatch_get_main_queue(), ^{</span><br><span class="line">            [hud hideAnimated:YES];</span><br><span class="line">        });</span><br><span class="line">    });</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">- (void)annularDeterminateExample {
+    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.navigationController.view animated:YES];
+
+    // Set the annular determinate mode to show task progress.
+    hud.mode = MBProgressHUDModeAnnularDeterminate;
+    hud.label.text = NSLocalizedString(@"Loading...", @"HUD loading title");
+
+    dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
+        // Do something useful in the background and update the HUD periodically.
+        [self doSomeWorkWithProgress];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [hud hideAnimated:YES];
+        });
+    });
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 
 
 <h3 id="2-3-条形确定模式"><a href="#2-3-条形确定模式" class="headerlink" title="2.3 条形确定模式"></a>2.3 条形确定模式</h3><p><img data-src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071046.gif"></p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">- (void)barDeterminateExample {</span><br><span class="line">    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.navigationController.view animated:YES];</span><br><span class="line"></span><br><span class="line">    // Set the bar determinate mode to show task progress.</span><br><span class="line">    hud.mode = MBProgressHUDModeDeterminateHorizontalBar;</span><br><span class="line">    hud.label.text = NSLocalizedString(@"Loading...", @"HUD loading title");</span><br><span class="line"></span><br><span class="line">    dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{</span><br><span class="line">        // Do something useful in the background and update the HUD periodically.</span><br><span class="line">        [self doSomeWorkWithProgress];</span><br><span class="line">        dispatch_async(dispatch_get_main_queue(), ^{</span><br><span class="line">            [hud hideAnimated:YES];</span><br><span class="line">        });</span><br><span class="line">    });</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">- (void)barDeterminateExample {
+    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.navigationController.view animated:YES];
+
+    // Set the bar determinate mode to show task progress.
+    hud.mode = MBProgressHUDModeDeterminateHorizontalBar;
+    hud.label.text = NSLocalizedString(@"Loading...", @"HUD loading title");
+
+    dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
+        // Do something useful in the background and update the HUD periodically.
+        [self doSomeWorkWithProgress];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [hud hideAnimated:YES];
+        });
+    });
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 
 
 <h3 id="3-1仅显示文本"><a href="#3-1仅显示文本" class="headerlink" title="3.1仅显示文本"></a>3.1 仅显示文本</h3><p><img data-src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071047.gif"></p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">- (void)textExample {</span><br><span class="line">    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.navigationController.view animated:YES];</span><br><span class="line"></span><br><span class="line">    // Set the text mode to show only text.</span><br><span class="line">    hud.mode = MBProgressHUDModeText;</span><br><span class="line">    hud.label.text = NSLocalizedString(@"Message here!", @"HUD message title");</span><br><span class="line">    // 移动到底部中心</span><br><span class="line">    hud.offset = CGPointMake(0.f, MBProgressMaxOffset);</span><br><span class="line">    // 3秒后自动消失</span><br><span class="line">    [hud hideAnimated:YES afterDelay:3.f];</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">- (void)textExample {
+    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.navigationController.view animated:YES];
+
+    // Set the text mode to show only text.
+    hud.mode = MBProgressHUDModeText;
+    hud.label.text = NSLocalizedString(@"Message here!", @"HUD message title");
+    // 移动到底部中心
+    hud.offset = CGPointMake(0.f, MBProgressMaxOffset);
+    // 3秒后自动消失
+    [hud hideAnimated:YES afterDelay:3.f];
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <h4 id="Tips"><a href="#Tips" class="headerlink" title="Tips"></a>Tips</h4><p>属性 <code>bezelView</code> 可以修改 HUD 窗口颜色，该视图属性仅包含标签和指示器（或 customView）。<br>而 <code>backgroundView</code> 属性：</p>
 <blockquote>
 <p>View covering the entire HUD area, placed behind bezelView</p>
 </blockquote>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">// 设置文字为白色</span><br><span class="line">hud.label.textColor = [UIColor whiteColor];   </span><br><span class="line">// 设置 HUD窗口为黑色</span><br><span class="line">hud.bezelView.color = [UIColor blackColor];</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-none"><code class="language-none">// 设置文字为白色
+hud.label.textColor = [UIColor whiteColor];   
+// 设置 HUD窗口为黑色
+hud.bezelView.color = [UIColor blackColor];<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
 
 
 <h3 id="3-2-自定义视图"><a href="#3-2-自定义视图" class="headerlink" title="3.2 自定义视图"></a>3.2 自定义视图</h3><p><img data-src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071048.gif"></p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">- (void)customViewExample {</span><br><span class="line">    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.navigationController.view animated:YES];</span><br><span class="line"></span><br><span class="line">    // Set the custom view mode to show any view.</span><br><span class="line">    hud.mode = MBProgressHUDModeCustomView;</span><br><span class="line">    // Set an image view with a checkmark.</span><br><span class="line">    UIImage *image = [[UIImage imageNamed:@"Checkmark"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];</span><br><span class="line">    hud.customView = [[UIImageView alloc] initWithImage:image];</span><br><span class="line">    // Looks a bit nicer if we make it square.</span><br><span class="line">    hud.square = YES;</span><br><span class="line">    // Optional label text.</span><br><span class="line">    hud.label.text = NSLocalizedString(@"Done", @"HUD done title");</span><br><span class="line"></span><br><span class="line">    [hud hideAnimated:YES afterDelay:3.f];</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">- (void)customViewExample {
+    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.navigationController.view animated:YES];
+
+    // Set the custom view mode to show any view.
+    hud.mode = MBProgressHUDModeCustomView;
+    // Set an image view with a checkmark.
+    UIImage *image = [[UIImage imageNamed:@"Checkmark"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+    hud.customView = [[UIImageView alloc] initWithImage:image];
+    // Looks a bit nicer if we make it square.
+    hud.square = YES;
+    // Optional label text.
+    hud.label.text = NSLocalizedString(@"Done", @"HUD done title");
+
+    [hud hideAnimated:YES afterDelay:3.f];
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 
 
 <h3 id="3-3-带按钮"><a href="#3-3-带按钮" class="headerlink" title="3.3 带按钮"></a>3.3 带按钮</h3><p><img data-src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071049.gif"></p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line">- (void)cancelationExample {</span><br><span class="line">    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.navigationController.view</span><br><span class="line">                                              animated:YES];</span><br><span class="line"></span><br><span class="line">    // Set the determinate mode to show task progress.</span><br><span class="line">    hud.mode = MBProgressHUDModeDeterminate;</span><br><span class="line">    hud.label.text = NSLocalizedString(@"Loading...", @"HUD loading title");</span><br><span class="line"></span><br><span class="line">    // Configure the button.</span><br><span class="line">    [hud.button setTitle:NSLocalizedString(@"Cancel", @"HUD cancel button title")</span><br><span class="line">                forState:UIControlStateNormal];</span><br><span class="line">    [hud.button addTarget:self</span><br><span class="line">                   action:@selector(cancelWork:)</span><br><span class="line">         forControlEvents:UIControlEventTouchUpInside];</span><br><span class="line"></span><br><span class="line">    dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{</span><br><span class="line">        // Do something useful in the background and update the HUD periodically.</span><br><span class="line">        [self doSomeWorkWithProgress];</span><br><span class="line">        dispatch_async(dispatch_get_main_queue(), ^{</span><br><span class="line">            [hud hideAnimated:YES];</span><br><span class="line">        });</span><br><span class="line">    });</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">- (void)cancelWork:(id)sender {</span><br><span class="line">    self.canceled = YES;</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">- (void)doSomeWorkWithProgress {</span><br><span class="line">    self.canceled = NO;</span><br><span class="line">    // This just increases the progress indicator in a loop.</span><br><span class="line">    float progress = 0.0f;</span><br><span class="line">    while (progress &lt; 1.0f) {</span><br><span class="line">        if (self.canceled) break;</span><br><span class="line">        progress += 0.01f;</span><br><span class="line">        dispatch_async(dispatch_get_main_queue(), ^{</span><br><span class="line">            // Instead we could have also passed a reference to the HUD</span><br><span class="line">            // to the HUD to myProgressTask as a method parameter.</span><br><span class="line">            [MBProgressHUD HUDForView:self.navigationController.view].progress = progress;</span><br><span class="line">        });</span><br><span class="line">        usleep(50000);</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">- (void)cancelationExample {
+    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.navigationController.view
+                                              animated:YES];
+
+    // Set the determinate mode to show task progress.
+    hud.mode = MBProgressHUDModeDeterminate;
+    hud.label.text = NSLocalizedString(@"Loading...", @"HUD loading title");
+
+    // Configure the button.
+    [hud.button setTitle:NSLocalizedString(@"Cancel", @"HUD cancel button title")
+                forState:UIControlStateNormal];
+    [hud.button addTarget:self
+                   action:@selector(cancelWork:)
+         forControlEvents:UIControlEventTouchUpInside];
+
+    dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
+        // Do something useful in the background and update the HUD periodically.
+        [self doSomeWorkWithProgress];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [hud hideAnimated:YES];
+        });
+    });
+}
+
+- (void)cancelWork:(id)sender {
+    self.canceled = YES;
+}
+
+- (void)doSomeWorkWithProgress {
+    self.canceled = NO;
+    // This just increases the progress indicator in a loop.
+    float progress = 0.0f;
+    while (progress &lt; 1.0f) {
+        if (self.canceled) break;
+        progress += 0.01f;
+        dispatch_async(dispatch_get_main_queue(), ^{
+            // Instead we could have also passed a reference to the HUD
+            // to the HUD to myProgressTask as a method parameter.
+            [MBProgressHUD HUDForView:self.navigationController.view].progress = progress;
+        });
+        usleep(50000);
+    }
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 
 
 <h3 id="3-4-切换模式"><a href="#3-4-切换模式" class="headerlink" title="3.4 切换模式"></a>3.4 切换模式</h3><p><img data-src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071050-1.gif"></p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line">- (void)modeSwitchingExample {</span><br><span class="line">    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.navigationController.view</span><br><span class="line">                                              animated:YES];</span><br><span class="line"></span><br><span class="line">    // Set some text to show the initial status.</span><br><span class="line">    hud.label.text = NSLocalizedString(@"Preparing...", @"HUD preparing title");</span><br><span class="line">    // Will look best, if we set a minimum size.</span><br><span class="line">    hud.minSize = CGSizeMake(150.f, 100.f);</span><br><span class="line"></span><br><span class="line">    dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{</span><br><span class="line">        // Do something useful in the background and update the HUD periodically.</span><br><span class="line">        [self doSomeWorkWithMixedProgress];</span><br><span class="line">        dispatch_async(dispatch_get_main_queue(), ^{</span><br><span class="line">            [hud hideAnimated:YES];</span><br><span class="line">        });</span><br><span class="line">    });</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">- (void)doSomeWorkWithMixedProgress {</span><br><span class="line">    // HUDForView: 找到顶层视图上的 HUD</span><br><span class="line">    MBProgressHUD *hud = [MBProgressHUD HUDForView:self.navigationController.view];</span><br><span class="line">    // 不确定模式</span><br><span class="line">    sleep(2);</span><br><span class="line">    // 异步主线程，切换到确定模式</span><br><span class="line">    dispatch_async(dispatch_get_main_queue(), ^{</span><br><span class="line">        hud.mode = MBProgressHUDModeDeterminate;</span><br><span class="line">        hud.label.text = NSLocalizedString(@"Loading...", @"HUD loading title");</span><br><span class="line">    });</span><br><span class="line">    float progress = 0.0f;</span><br><span class="line">    while (progress &lt; 1.0f) {</span><br><span class="line">        progress += 0.01f;</span><br><span class="line">        dispatch_async(dispatch_get_main_queue(), ^{</span><br><span class="line">            hud.progress = progress;</span><br><span class="line">        });</span><br><span class="line">        usleep(50000);</span><br><span class="line">    }</span><br><span class="line">    // 异步主线程，回到不确定模式</span><br><span class="line">    dispatch_async(dispatch_get_main_queue(), ^{</span><br><span class="line">        hud.mode = MBProgressHUDModeIndeterminate;</span><br><span class="line">        hud.label.text = NSLocalizedString(@"Cleaning up...", @"HUD cleanining up title");</span><br><span class="line">    });</span><br><span class="line">    sleep(2);</span><br><span class="line">    // 同步主线程，自定义视图</span><br><span class="line">    dispatch_sync(dispatch_get_main_queue(), ^{</span><br><span class="line">        UIImage *image = [[UIImage imageNamed:@"Checkmark"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];</span><br><span class="line">        UIImageView *imageView = [[UIImageView alloc] initWithImage:image];</span><br><span class="line">        hud.customView = imageView;</span><br><span class="line">        hud.mode = MBProgressHUDModeCustomView;</span><br><span class="line">        hud.label.text = NSLocalizedString(@"Completed", @"HUD completed title");</span><br><span class="line">    });</span><br><span class="line">    sleep(2);</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">- (void)modeSwitchingExample {
+    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.navigationController.view
+                                              animated:YES];
+
+    // Set some text to show the initial status.
+    hud.label.text = NSLocalizedString(@"Preparing...", @"HUD preparing title");
+    // Will look best, if we set a minimum size.
+    hud.minSize = CGSizeMake(150.f, 100.f);
+
+    dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
+        // Do something useful in the background and update the HUD periodically.
+        [self doSomeWorkWithMixedProgress];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [hud hideAnimated:YES];
+        });
+    });
+}
+
+- (void)doSomeWorkWithMixedProgress {
+    // HUDForView: 找到顶层视图上的 HUD
+    MBProgressHUD *hud = [MBProgressHUD HUDForView:self.navigationController.view];
+    // 不确定模式
+    sleep(2);
+    // 异步主线程，切换到确定模式
+    dispatch_async(dispatch_get_main_queue(), ^{
+        hud.mode = MBProgressHUDModeDeterminate;
+        hud.label.text = NSLocalizedString(@"Loading...", @"HUD loading title");
+    });
+    float progress = 0.0f;
+    while (progress &lt; 1.0f) {
+        progress += 0.01f;
+        dispatch_async(dispatch_get_main_queue(), ^{
+            hud.progress = progress;
+        });
+        usleep(50000);
+    }
+    // 异步主线程，回到不确定模式
+    dispatch_async(dispatch_get_main_queue(), ^{
+        hud.mode = MBProgressHUDModeIndeterminate;
+        hud.label.text = NSLocalizedString(@"Cleaning up...", @"HUD cleanining up title");
+    });
+    sleep(2);
+    // 同步主线程，自定义视图
+    dispatch_sync(dispatch_get_main_queue(), ^{
+        UIImage *image = [[UIImage imageNamed:@"Checkmark"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+        UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
+        hud.customView = imageView;
+        hud.mode = MBProgressHUDModeCustomView;
+        hud.label.text = NSLocalizedString(@"Completed", @"HUD completed title");
+    });
+    sleep(2);
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 
 
-<h3 id="4-1-显示在窗口"><a href="#4-1-显示在窗口" class="headerlink" title="4.1 显示在窗口"></a>4.1 显示在窗口</h3><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">- (void)windowExample {</span><br><span class="line">    // 覆盖整个屏幕。 类似于使用根视图控制器视图。</span><br><span class="line">    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view.window animated:YES];</span><br><span class="line">    dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{</span><br><span class="line">        [self doSomeWork];</span><br><span class="line">        dispatch_async(dispatch_get_main_queue(), ^{</span><br><span class="line">            [hud hideAnimated:YES];</span><br><span class="line">        });</span><br><span class="line">    });</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<h3 id="4-1-显示在窗口"><a href="#4-1-显示在窗口" class="headerlink" title="4.1 显示在窗口"></a>4.1 显示在窗口</h3><pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">- (void)windowExample {
+    // 覆盖整个屏幕。 类似于使用根视图控制器视图。
+    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view.window animated:YES];
+    dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
+        [self doSomeWork];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [hud hideAnimated:YES];
+        });
+    });
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 
 
 <h3 id="4-2-NSURLSession"><a href="#4-2-NSURLSession" class="headerlink" title="4.2 NSURLSession"></a>4.2 NSURLSession</h3><p><img data-src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071052.gif"></p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line">- (void)networkingExample {</span><br><span class="line">    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.navigationController.view animated:YES];</span><br><span class="line"></span><br><span class="line">    // Set some text to show the initial status.</span><br><span class="line">    hud.label.text = NSLocalizedString(@"Preparing...", @"HUD preparing title");</span><br><span class="line">    // Will look best, if we set a minimum size.</span><br><span class="line">    hud.minSize = CGSizeMake(150.f, 100.f);</span><br><span class="line"></span><br><span class="line">    [self doSomeNetworkWorkWithProgress];</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">- (void)doSomeNetworkWorkWithProgress {</span><br><span class="line">    NSURLSessionConfiguration *sessionConfig = [NSURLSessionConfiguration defaultSessionConfiguration];</span><br><span class="line">    NSURLSession *session = [NSURLSession sessionWithConfiguration:sessionConfig delegate:self delegateQueue:nil];</span><br><span class="line">    NSURL *URL = [NSURL URLWithString:@"https://support.apple.com/library/APPLE/APPLECARE_ALLGEOS/HT1425/sample_iPod.m4v.zip"];</span><br><span class="line">    NSURLSessionDownloadTask *task = [session downloadTaskWithURL:URL];</span><br><span class="line">    [task resume];</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">#pragma mark - NSURLSessionDelegate</span><br><span class="line"></span><br><span class="line">- (void)URLSession:(NSURLSession *)session downloadTask:(NSURLSessionDownloadTask *)downloadTask didFinishDownloadingToURL:(NSURL *)location {</span><br><span class="line">    // Do something with the data at location...</span><br><span class="line"></span><br><span class="line">    // Update the UI on the main thread</span><br><span class="line">    dispatch_async(dispatch_get_main_queue(), ^{</span><br><span class="line">        MBProgressHUD *hud = [MBProgressHUD HUDForView:self.navigationController.view];</span><br><span class="line">        UIImage *image = [[UIImage imageNamed:@"Checkmark"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];</span><br><span class="line">        UIImageView *imageView = [[UIImageView alloc] initWithImage:image];</span><br><span class="line">        hud.customView = imageView;</span><br><span class="line">        hud.mode = MBProgressHUDModeCustomView;</span><br><span class="line">        hud.label.text = NSLocalizedString(@"Completed", @"HUD completed title");</span><br><span class="line">        [hud hideAnimated:YES afterDelay:3.f];</span><br><span class="line">    });</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">- (void)URLSession:(NSURLSession *)session downloadTask:(NSURLSessionDownloadTask *)downloadTask didWriteData:(int64_t)bytesWritten totalBytesWritten:(int64_t)totalBytesWritten totalBytesExpectedToWrite:(int64_t)totalBytesExpectedToWrite {</span><br><span class="line">    float progress = (float)totalBytesWritten / (float)totalBytesExpectedToWrite;</span><br><span class="line"></span><br><span class="line">    // 在主线程更新 UI 进度条</span><br><span class="line">    dispatch_async(dispatch_get_main_queue(), ^{</span><br><span class="line">        MBProgressHUD *hud = [MBProgressHUD HUDForView:self.navigationController.view];</span><br><span class="line">        hud.mode = MBProgressHUDModeDeterminate;</span><br><span class="line">        hud.progress = progress;</span><br><span class="line">    });</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">- (void)networkingExample {
+    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.navigationController.view animated:YES];
+
+    // Set some text to show the initial status.
+    hud.label.text = NSLocalizedString(@"Preparing...", @"HUD preparing title");
+    // Will look best, if we set a minimum size.
+    hud.minSize = CGSizeMake(150.f, 100.f);
+
+    [self doSomeNetworkWorkWithProgress];
+}
+
+- (void)doSomeNetworkWorkWithProgress {
+    NSURLSessionConfiguration *sessionConfig = [NSURLSessionConfiguration defaultSessionConfiguration];
+    NSURLSession *session = [NSURLSession sessionWithConfiguration:sessionConfig delegate:self delegateQueue:nil];
+    NSURL *URL = [NSURL URLWithString:@"https://support.apple.com/library/APPLE/APPLECARE_ALLGEOS/HT1425/sample_iPod.m4v.zip"];
+    NSURLSessionDownloadTask *task = [session downloadTaskWithURL:URL];
+    [task resume];
+}
+
+#pragma mark - NSURLSessionDelegate
+
+- (void)URLSession:(NSURLSession *)session downloadTask:(NSURLSessionDownloadTask *)downloadTask didFinishDownloadingToURL:(NSURL *)location {
+    // Do something with the data at location...
+
+    // Update the UI on the main thread
+    dispatch_async(dispatch_get_main_queue(), ^{
+        MBProgressHUD *hud = [MBProgressHUD HUDForView:self.navigationController.view];
+        UIImage *image = [[UIImage imageNamed:@"Checkmark"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+        UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
+        hud.customView = imageView;
+        hud.mode = MBProgressHUDModeCustomView;
+        hud.label.text = NSLocalizedString(@"Completed", @"HUD completed title");
+        [hud hideAnimated:YES afterDelay:3.f];
+    });
+}
+
+- (void)URLSession:(NSURLSession *)session downloadTask:(NSURLSessionDownloadTask *)downloadTask didWriteData:(int64_t)bytesWritten totalBytesWritten:(int64_t)totalBytesWritten totalBytesExpectedToWrite:(int64_t)totalBytesExpectedToWrite {
+    float progress = (float)totalBytesWritten / (float)totalBytesExpectedToWrite;
+
+    // 在主线程更新 UI 进度条
+    dispatch_async(dispatch_get_main_queue(), ^{
+        MBProgressHUD *hud = [MBProgressHUD HUDForView:self.navigationController.view];
+        hud.mode = MBProgressHUDModeDeterminate;
+        hud.progress = progress;
+    });
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 
 
 <h3 id="4-3-带进度条的确定模式"><a href="#4-3-带进度条的确定模式" class="headerlink" title="4.3 带进度条的确定模式"></a>4.3 带进度条的确定模式</h3><p><img data-src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071053.gif"></p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">- (void)determinateNSProgressExample {</span><br><span class="line">    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.navigationController.view animated:YES];</span><br><span class="line">    </span><br><span class="line">    // Set the determinate mode to show task progress.</span><br><span class="line">    hud.mode = MBProgressHUDModeDeterminate;</span><br><span class="line">    hud.label.text = NSLocalizedString(@"Loading...", @"HUD loading title");</span><br><span class="line">    </span><br><span class="line">    // Set up NSProgress</span><br><span class="line">    NSProgress *progressObject = [NSProgress progressWithTotalUnitCount:100];</span><br><span class="line">    hud.progressObject = progressObject;</span><br><span class="line">    </span><br><span class="line">    // Configure a cancel button.</span><br><span class="line">    [hud.button setTitle:NSLocalizedString(@"Cancel", @"HUD cancel button title") forState:UIControlStateNormal];</span><br><span class="line">    [hud.button addTarget:progressObject action:@selector(cancel) forControlEvents:UIControlEventTouchUpInside];</span><br><span class="line">    </span><br><span class="line">    dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{</span><br><span class="line">        // Do something useful in the background and update the HUD periodically.</span><br><span class="line">        [self doSomeWorkWithProgressObject:progressObject];</span><br><span class="line">        dispatch_async(dispatch_get_main_queue(), ^{</span><br><span class="line">            [hud hideAnimated:YES];</span><br><span class="line">        });</span><br><span class="line">    });</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">- (void)determinateNSProgressExample {
+    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.navigationController.view animated:YES];
+
+    // Set the determinate mode to show task progress.
+    hud.mode = MBProgressHUDModeDeterminate;
+    hud.label.text = NSLocalizedString(@"Loading...", @"HUD loading title");
+
+    // Set up NSProgress
+    NSProgress *progressObject = [NSProgress progressWithTotalUnitCount:100];
+    hud.progressObject = progressObject;
+
+    // Configure a cancel button.
+    [hud.button setTitle:NSLocalizedString(@"Cancel", @"HUD cancel button title") forState:UIControlStateNormal];
+    [hud.button addTarget:progressObject action:@selector(cancel) forControlEvents:UIControlEventTouchUpInside];
+
+    dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
+        // Do something useful in the background and update the HUD periodically.
+        [self doSomeWorkWithProgressObject:progressObject];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [hud hideAnimated:YES];
+        });
+    });
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 
 
 <h3 id="4-4-Dim-background"><a href="#4-4-Dim-background" class="headerlink" title="4.4 Dim background"></a>4.4 Dim background</h3><p><img data-src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071054.gif"></p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">- (void)dimBackgroundExample {</span><br><span class="line">    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.navigationController.view animated:YES];</span><br><span class="line">    </span><br><span class="line">    // Change the background view style and color.</span><br><span class="line">    hud.backgroundView.style = MBProgressHUDBackgroundStyleSolidColor;</span><br><span class="line">    hud.backgroundView.color = [UIColor colorWithWhite:0.f alpha:0.1f];</span><br><span class="line">    </span><br><span class="line">    dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{</span><br><span class="line">        [self doSomeWork];</span><br><span class="line">        dispatch_async(dispatch_get_main_queue(), ^{</span><br><span class="line">            [hud hideAnimated:YES];</span><br><span class="line">        });</span><br><span class="line">    });</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">- (void)dimBackgroundExample {
+    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.navigationController.view animated:YES];
+
+    // Change the background view style and color.
+    hud.backgroundView.style = MBProgressHUDBackgroundStyleSolidColor;
+    hud.backgroundView.color = [UIColor colorWithWhite:0.f alpha:0.1f];
+
+    dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
+        [self doSomeWork];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [hud hideAnimated:YES];
+        });
+    });
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 
 
-<h4 id="MBProgressHUDBackgroundStyle"><a href="#MBProgressHUDBackgroundStyle" class="headerlink" title="MBProgressHUDBackgroundStyle"></a>MBProgressHUDBackgroundStyle</h4><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">typedef NS_ENUM(NSInteger, MBProgressHUDBackgroundStyle) {</span><br><span class="line">    /// 纯色背景</span><br><span class="line">    MBProgressHUDBackgroundStyleSolidColor,</span><br><span class="line">    /// UIVisualEffectView 或 UIToolbar.layer 背景视图</span><br><span class="line">    MBProgressHUDBackgroundStyleBlur</span><br><span class="line">};</span><br></pre></td></tr></tbody></table></figure>
+<h4 id="MBProgressHUDBackgroundStyle"><a href="#MBProgressHUDBackgroundStyle" class="headerlink" title="MBProgressHUDBackgroundStyle"></a>MBProgressHUDBackgroundStyle</h4><pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">typedef NS_ENUM(NSInteger, MBProgressHUDBackgroundStyle) {
+    /// 纯色背景
+    MBProgressHUDBackgroundStyleSolidColor,
+    /// UIVisualEffectView 或 UIToolbar.layer 背景视图
+    MBProgressHUDBackgroundStyleBlur
+};<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>背景视图样式有 2 种：</p>
 <p><strong>MBProgressHUDBackgroundStyleSolidColor</strong>:</p>
@@ -539,7 +1309,21 @@
 <p><strong>MBProgressHUDBackgroundStyleBlur</strong></p>
 <p><img data-src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071056-1.jpg"></p>
 <h3 id="4-5-Colored"><a href="#4-5-Colored" class="headerlink" title="4.5 Colored"></a>4.5 Colored</h3><p><img data-src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071057.gif"></p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">- (void)colorExample {</span><br><span class="line">    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.navigationController.view</span><br><span class="line">                                              animated:YES];</span><br><span class="line">    hud.contentColor = [UIColor colorWithRed:0.f green:0.6f blue:0.7f alpha:1.f];</span><br><span class="line"></span><br><span class="line">    // Set the label text.</span><br><span class="line">    hud.label.text = NSLocalizedString(@"Loading...", @"HUD loading title");</span><br><span class="line"></span><br><span class="line">    dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{</span><br><span class="line">        [self doSomeWork];</span><br><span class="line">        dispatch_async(dispatch_get_main_queue(), ^{</span><br><span class="line">            [hud hideAnimated:YES];</span><br><span class="line">        });</span><br><span class="line">    });</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">- (void)colorExample {
+    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.navigationController.view
+                                              animated:YES];
+    hud.contentColor = [UIColor colorWithRed:0.f green:0.6f blue:0.7f alpha:1.f];
+
+    // Set the label text.
+    hud.label.text = NSLocalizedString(@"Loading...", @"HUD loading title");
+
+    dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
+        [self doSomeWork];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [hud hideAnimated:YES];
+        });
+    });
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 
 
@@ -674,12 +1458,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">2.1m</span>
+    <span title="站点总字数">2.3m</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">31:21</span>
+    <span title="站点阅读时长">34:09</span>
 </div>
   <div class="powered-by">由 <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZw==">NexT.Gemini</span> 强力驱动
   </div>

@@ -384,14 +384,14 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>8.6k</span>
+              <span>8.2k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>8 分钟</span>
+              <span>7 分钟</span>
             </span>
 
         </div>
@@ -416,23 +416,111 @@
 <li><code>drawRect:</code> 方法中只画了背景视图和输入框；</li>
 <li>重构了重置小圆点的实现方式；</li>
 </ul>
-<h4 id="1️⃣-标题改用-label-标签的形式显示"><a href="#1️⃣-标题改用-label-标签的形式显示" class="headerlink" title="1️⃣ 标题改用 label 标签的形式显示"></a>1️⃣ 标题改用 label 标签的形式显示</h4><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">#pragma mark - Lifecycle</span><br><span class="line"></span><br><span class="line">- (instancetype)initWithFrame:(CGRect)frame {</span><br><span class="line">    self = [super initWithFrame:frame];</span><br><span class="line">    if (self) {</span><br><span class="line">        [self setupSubViews];</span><br><span class="line">    }</span><br><span class="line">    return self;</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">/** 添加子控件 */</span><br><span class="line">- (void)setupSubViews {</span><br><span class="line">    [self addSubview:self.titleLabel];</span><br><span class="line">    [self addSubview:self.closeButton];</span><br><span class="line">    [self addSubview:self.forgetPwdButton];</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">- (void)layoutSubviews {</span><br><span class="line">    [super layoutSubviews];</span><br><span class="line">    </span><br><span class="line">    // 设置【标题】的坐标</span><br><span class="line">    self.titleLabel.centerX = HQLScreenWidth * 0.5;</span><br><span class="line">    self.titleLabel.centerY = HQLPasswordViewTitleHeight * 0.5;</span><br><span class="line">    </span><br><span class="line">    // 设置【关闭按钮】的坐标</span><br><span class="line">    self.closeButton.width  = HQLPasswordViewCloseButtonWH;</span><br><span class="line">    self.closeButton.height = HQLPasswordViewCloseButtonWH;</span><br><span class="line">    self.closeButton.x = HQLPasswordViewCloseButtonMarginLeft;</span><br><span class="line">    self.closeButton.centerY = HQLPasswordViewTitleHeight * 0.5;</span><br><span class="line">    </span><br><span class="line">    // 设置【忘记密码】按钮的坐标</span><br><span class="line">    self.forgetPwdButton.x = HQLScreenWidth - (HQLScreenWidth - HQLPasswordViewTextFieldWidth) * 0.5 - self.forgetPwdButton.width;</span><br><span class="line">    self.forgetPwdButton.y = HQLPasswordViewTitleHeight + HQLPasswordViewTextFieldMarginTop + HQLPasswordViewTextFieldHeight + HQLPasswordViewForgetPWDButtonMarginTop;</span><br><span class="line">}</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+<h4 id="1️⃣-标题改用-label-标签的形式显示"><a href="#1️⃣-标题改用-label-标签的形式显示" class="headerlink" title="1️⃣ 标题改用 label 标签的形式显示"></a>1️⃣ 标题改用 label 标签的形式显示</h4><pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">#pragma mark - Lifecycle
+
+- (instancetype)initWithFrame:(CGRect)frame {
+    self = [super initWithFrame:frame];
+    if (self) {
+        [self setupSubViews];
+    }
+    return self;
+}
+
+/** 添加子控件 */
+- (void)setupSubViews {
+    [self addSubview:self.titleLabel];
+    [self addSubview:self.closeButton];
+    [self addSubview:self.forgetPwdButton];
+}
+
+- (void)layoutSubviews {
+    [super layoutSubviews];
+
+    // 设置【标题】的坐标
+    self.titleLabel.centerX = HQLScreenWidth * 0.5;
+    self.titleLabel.centerY = HQLPasswordViewTitleHeight * 0.5;
+
+    // 设置【关闭按钮】的坐标
+    self.closeButton.width  = HQLPasswordViewCloseButtonWH;
+    self.closeButton.height = HQLPasswordViewCloseButtonWH;
+    self.closeButton.x = HQLPasswordViewCloseButtonMarginLeft;
+    self.closeButton.centerY = HQLPasswordViewTitleHeight * 0.5;
+
+    // 设置【忘记密码】按钮的坐标
+    self.forgetPwdButton.x = HQLScreenWidth - (HQLScreenWidth - HQLPasswordViewTextFieldWidth) * 0.5 - self.forgetPwdButton.width;
+    self.forgetPwdButton.y = HQLPasswordViewTitleHeight + HQLPasswordViewTextFieldMarginTop + HQLPasswordViewTextFieldHeight + HQLPasswordViewForgetPWDButtonMarginTop;
+}
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 
 
-<h4 id="2️⃣-drawRect-方法中只画了背景视图和输入框；"><a href="#2️⃣-drawRect-方法中只画了背景视图和输入框；" class="headerlink" title="2️⃣ drawRect: 方法中只画了背景视图和输入框；"></a>2️⃣ <code>drawRect:</code> 方法中只画了背景视图和输入框；</h4><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">- (void)drawRect:(CGRect)rect {</span><br><span class="line">    // 画背景视图</span><br><span class="line">    UIImage *backgroundImage =</span><br><span class="line">        [UIImage imageNamed:HQLPasswordViewSrcName(@"password_background")];</span><br><span class="line">    [backgroundImage drawInRect:rect];</span><br><span class="line">    </span><br><span class="line">    // 画输入框</span><br><span class="line">    UIImage *imgTextField =</span><br><span class="line">        [UIImage imageNamed:HQLPasswordViewSrcName(@"password_textfield")];</span><br><span class="line">    [imgTextField drawInRect:[self textFieldRect]];</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<h4 id="2️⃣-drawRect-方法中只画了背景视图和输入框；"><a href="#2️⃣-drawRect-方法中只画了背景视图和输入框；" class="headerlink" title="2️⃣ drawRect: 方法中只画了背景视图和输入框；"></a>2️⃣ <code>drawRect:</code> 方法中只画了背景视图和输入框；</h4><pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">- (void)drawRect:(CGRect)rect {
+    // 画背景视图
+    UIImage *backgroundImage =
+        [UIImage imageNamed:HQLPasswordViewSrcName(@"password_background")];
+    [backgroundImage drawInRect:rect];
+
+    // 画输入框
+    UIImage *imgTextField =
+        [UIImage imageNamed:HQLPasswordViewSrcName(@"password_textfield")];
+    [imgTextField drawInRect:[self textFieldRect]];
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 
 
 <h4 id="3️⃣-重构了重置小圆点的实现方式；"><a href="#3️⃣-重构了重置小圆点的实现方式；" class="headerlink" title="3️⃣ 重构了重置小圆点的实现方式；"></a>3️⃣ 重构了重置小圆点的实现方式；</h4><ol>
 <li>首先数组中存放的是 6 个 <code>dotsImageView</code> 对象，对应 6 个不同位置的 ●</li>
 </ol>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">- (NSMutableArray *)dotsImgArray {</span><br><span class="line">    if (!_dotsImgArray) {</span><br><span class="line">        _dotsImgArray = [NSMutableArray arrayWithCapacity:KPasswordNumber];</span><br><span class="line">        for (int i = 0; i &lt; KPasswordNumber; i++) {</span><br><span class="line">            </span><br><span class="line">            // textField 的 Rect</span><br><span class="line">            CGFloat textFieldW = HQLPasswordViewTextFieldWidth;</span><br><span class="line">            CGFloat textFieldH = HQLPasswordViewTextFieldHeight;</span><br><span class="line">            CGFloat textFieldX = (HQLScreenWidth - textFieldW) * 0.5;</span><br><span class="line">            CGFloat textFieldY = HQLPasswordViewTitleHeight + HQLPasswordViewTextFieldMarginTop;</span><br><span class="line">           </span><br><span class="line">            // 圆点 的 Rect</span><br><span class="line">            CGFloat pointW = HQLPasswordViewPointnWH;</span><br><span class="line">            CGFloat pointH = HQLPasswordViewPointnWH;</span><br><span class="line">            CGFloat pointY = textFieldY + (textFieldH - pointH) * 0.5;</span><br><span class="line">            // 一个格子的宽度</span><br><span class="line">            CGFloat cellW = textFieldW / KPasswordNumber;</span><br><span class="line">            CGFloat padding = (cellW - pointW) * 0.5;</span><br><span class="line">            // 圆点的 X</span><br><span class="line">            CGFloat pointX = textFieldX + (2 * i + 1) * padding + i * pointW;</span><br><span class="line">            // 添加圆形图片</span><br><span class="line">            UIImage *dotsImage =</span><br><span class="line">                [UIImage imageNamed:HQLPasswordViewSrcName(@"password_point")];</span><br><span class="line">            UIImageView *dotsImageView =</span><br><span class="line">                [[UIImageView alloc] initWithImage:dotsImage];</span><br><span class="line">            dotsImageView.contentMode = UIViewContentModeScaleAspectFit;</span><br><span class="line">            dotsImageView.frame = CGRectMake(pointX, pointY, pointW, pointH);</span><br><span class="line">            // 先全部隐藏</span><br><span class="line">            dotsImageView.hidden = YES;</span><br><span class="line">            </span><br><span class="line">            [self addSubview:dotsImageView];</span><br><span class="line">            [_dotsImgArray addObject:dotsImageView];</span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line">    return _dotsImgArray;</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">- (NSMutableArray *)dotsImgArray {
+    if (!_dotsImgArray) {
+        _dotsImgArray = [NSMutableArray arrayWithCapacity:KPasswordNumber];
+        for (int i = 0; i &lt; KPasswordNumber; i++) {
+
+            // textField 的 Rect
+            CGFloat textFieldW = HQLPasswordViewTextFieldWidth;
+            CGFloat textFieldH = HQLPasswordViewTextFieldHeight;
+            CGFloat textFieldX = (HQLScreenWidth - textFieldW) * 0.5;
+            CGFloat textFieldY = HQLPasswordViewTitleHeight + HQLPasswordViewTextFieldMarginTop;
+
+            // 圆点 的 Rect
+            CGFloat pointW = HQLPasswordViewPointnWH;
+            CGFloat pointH = HQLPasswordViewPointnWH;
+            CGFloat pointY = textFieldY + (textFieldH - pointH) * 0.5;
+            // 一个格子的宽度
+            CGFloat cellW = textFieldW / KPasswordNumber;
+            CGFloat padding = (cellW - pointW) * 0.5;
+            // 圆点的 X
+            CGFloat pointX = textFieldX + (2 * i + 1) * padding + i * pointW;
+            // 添加圆形图片
+            UIImage *dotsImage =
+                [UIImage imageNamed:HQLPasswordViewSrcName(@"password_point")];
+            UIImageView *dotsImageView =
+                [[UIImageView alloc] initWithImage:dotsImage];
+            dotsImageView.contentMode = UIViewContentModeScaleAspectFit;
+            dotsImageView.frame = CGRectMake(pointX, pointY, pointW, pointH);
+            // 先全部隐藏
+            dotsImageView.hidden = YES;
+
+            [self addSubview:dotsImageView];
+            [_dotsImgArray addObject:dotsImageView];
+        }
+    }
+    return _dotsImgArray;
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <ol start="2">
 <li>通过传入当前密码的长度 <code>length</code>  重置小圆点，比 <code>length</code> 值大的 <code>dotsImgArray</code> 视图设置为显示，比 <code>length</code> 值小的 <code>dotsImgArray</code> 视图设置为隐藏。</li>
 </ol>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">// 重置圆点</span><br><span class="line">- (void)resetDotsWithLength:(NSUInteger)length {</span><br><span class="line">    for (int i = 0; i &lt; self.dotsImgArray.count; i++) {</span><br><span class="line">        if (length == 0 || i &gt;= length) {</span><br><span class="line">            ((UIImageView *)[self.dotsImgArray objectAtIndex:i]).hidden = YES;</span><br><span class="line">        }else {</span><br><span class="line">            ((UIImageView *)[self.dotsImgArray objectAtIndex:i]).hidden = NO;</span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">// 重置圆点
+- (void)resetDotsWithLength:(NSUInteger)length {
+    for (int i = 0; i &lt; self.dotsImgArray.count; i++) {
+        if (length == 0 || i &gt;= length) {
+            ((UIImageView *)[self.dotsImgArray objectAtIndex:i]).hidden = YES;
+        }else {
+            ((UIImageView *)[self.dotsImgArray objectAtIndex:i]).hidden = NO;
+        }
+    }
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 
 
@@ -447,11 +535,43 @@
 <li>因为修改了小圆点的实现方式，所以 <code>UITextFieldDelegate</code> 委托协议实现方式也有改动。</li>
 </ul>
 <h4 id="1️⃣-密码输入框-pwdTextField-可以响应用户触摸并弹出键盘"><a href="#1️⃣-密码输入框-pwdTextField-可以响应用户触摸并弹出键盘" class="headerlink" title="1️⃣ 密码输入框 pwdTextField 可以响应用户触摸并弹出键盘"></a>1️⃣ 密码输入框 <code>pwdTextField</code> 可以响应用户触摸并弹出键盘</h4><p>只要把它所有的颜色设置为透明就可以了。</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">- (UITextField *)pwdTextField {</span><br><span class="line">    if (!_pwdTextField) {</span><br><span class="line">        _pwdTextField = [[UITextField alloc] init];</span><br><span class="line">        _pwdTextField.frame = [self.backgroundView textFieldRect];</span><br><span class="line">        _pwdTextField.backgroundColor = [UIColor clearColor];</span><br><span class="line">        _pwdTextField.textColor = [UIColor clearColor];</span><br><span class="line">        _pwdTextField.tintColor = [UIColor clearColor];</span><br><span class="line">        _pwdTextField.keyboardType = UIKeyboardTypeNumberPad;</span><br><span class="line">        _pwdTextField.delegate = self;</span><br><span class="line">    }</span><br><span class="line">    return _pwdTextField;</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">- (UITextField *)pwdTextField {
+    if (!_pwdTextField) {
+        _pwdTextField = [[UITextField alloc] init];
+        _pwdTextField.frame = [self.backgroundView textFieldRect];
+        _pwdTextField.backgroundColor = [UIColor clearColor];
+        _pwdTextField.textColor = [UIColor clearColor];
+        _pwdTextField.tintColor = [UIColor clearColor];
+        _pwdTextField.keyboardType = UIKeyboardTypeNumberPad;
+        _pwdTextField.delegate = self;
+    }
+    return _pwdTextField;
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 
 
-<h4 id="2️⃣-用户如果触摸上方灰色的蒙版视图可以关闭密码输入框。"><a href="#2️⃣-用户如果触摸上方灰色的蒙版视图可以关闭密码输入框。" class="headerlink" title="2️⃣ 用户如果触摸上方灰色的蒙版视图可以关闭密码输入框。"></a>2️⃣ 用户如果触摸上方灰色的蒙版视图可以关闭密码输入框。</h4><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">/** </span><br><span class="line"> 用户点击事件,触摸灰色蒙版区域，实现关闭操作</span><br><span class="line"> */</span><br><span class="line">- (void)tap:(UITapGestureRecognizer *)recognizer {</span><br><span class="line">    // 获取点击的坐标位置</span><br><span class="line">    CGPoint point = [recognizer locationInView:self];</span><br><span class="line">    // 输入框上方的蒙版区域</span><br><span class="line">    CGRect frame = CGRectMake(0,</span><br><span class="line">                              0,</span><br><span class="line">                              HQLScreenWidth,</span><br><span class="line">                              HQLScreenHeight - HQLPasswordInputViewHeight);</span><br><span class="line">    // 判断点击区域是否包含在蒙版矩形中</span><br><span class="line">    if (CGRectContainsPoint(frame, point)) {</span><br><span class="line">        [self removePasswordView];</span><br><span class="line">    }</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">/** 移除密码输入视图 */</span><br><span class="line">- (void)removePasswordView {</span><br><span class="line">    [self.pwdTextField resignFirstResponder];</span><br><span class="line">    [self removeFromSuperview];</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<h4 id="2️⃣-用户如果触摸上方灰色的蒙版视图可以关闭密码输入框。"><a href="#2️⃣-用户如果触摸上方灰色的蒙版视图可以关闭密码输入框。" class="headerlink" title="2️⃣ 用户如果触摸上方灰色的蒙版视图可以关闭密码输入框。"></a>2️⃣ 用户如果触摸上方灰色的蒙版视图可以关闭密码输入框。</h4><pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">/** 
+ 用户点击事件,触摸灰色蒙版区域，实现关闭操作
+ */
+- (void)tap:(UITapGestureRecognizer *)recognizer {
+    // 获取点击的坐标位置
+    CGPoint point = [recognizer locationInView:self];
+    // 输入框上方的蒙版区域
+    CGRect frame = CGRectMake(0,
+                              0,
+                              HQLScreenWidth,
+                              HQLScreenHeight - HQLPasswordInputViewHeight);
+    // 判断点击区域是否包含在蒙版矩形中
+    if (CGRectContainsPoint(frame, point)) {
+        [self removePasswordView];
+    }
+}
+
+/** 移除密码输入视图 */
+- (void)removePasswordView {
+    [self.pwdTextField resignFirstResponder];
+    [self removeFromSuperview];
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 
 
@@ -460,16 +580,115 @@
 <p>每次弹出键盘就重置密码框</p>
 <p>1. 第一次跟随密码输入视图弹出会调用；</p>
 <p>2. 提示密码输入错误，再次输入密码会调用；</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line">#pragma mark - UITextFieldDelegate</span><br><span class="line"></span><br><span class="line">- (void)textFieldDidBeginEditing:(UITextField *)textField {</span><br><span class="line">    NSLog(@"%@",NSStringFromSelector(_cmd));</span><br><span class="line">    </span><br><span class="line">    // 每次 TextField 开始编辑，都要重置密码框</span><br><span class="line">    [self clearUpPassword];</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">// 清除密码</span><br><span class="line">- (void)clearUpPassword {</span><br><span class="line">    // 1.清空输入文本框密码</span><br><span class="line">    self.pwdTextField.text = @"";</span><br><span class="line">    // 2.清空黑色圆点</span><br><span class="line">    [self.backgroundView resetDotsWithLength:0];</span><br><span class="line">    // 3.隐藏加载图片和文字</span><br><span class="line">    self.rotationImageView.hidden = YES;</span><br><span class="line">    self.loadingTextLabel.hidden  = YES;</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">// 每当用户操作导致其文本更改时，文本字段将调用此方法。 使用此方法来验证用户键入的文本。 例如，您可以使用此方法来防止用户输入任何数字，但不能输入数值。</span><br><span class="line">// 每当一个字符被键入时，都会首先调用此方法，询问是否应该将输入的字符添加进 TextField 中。</span><br><span class="line">// 因此调用该方法时，正被输入的字符实际上还没有被添加进 TextField 中</span><br><span class="line">- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {    </span><br><span class="line">    // 输入进 TextField 的数字个数</span><br><span class="line">    NSUInteger numberLength = textField.text.length + string.length;</span><br><span class="line">    </span><br><span class="line">    if([string isEqualToString:@""]) {</span><br><span class="line">        // 1.判断是不是删除键？</span><br><span class="line">        [self.backgroundView resetDotsWithLength:numberLength - 1];</span><br><span class="line">        return YES;</span><br><span class="line">    } else if(numberLength &gt;= KPasswordNumber) {</span><br><span class="line">        // 2.判断此次输入数字的是不是第6个数字？</span><br><span class="line">        [self.backgroundView resetDotsWithLength:numberLength];</span><br><span class="line">        // 2.1 收起键盘</span><br><span class="line">        [self.pwdTextField resignFirstResponder];</span><br><span class="line">        // 2.2 发起请求 Block</span><br><span class="line">        if (self.finishBlock) {</span><br><span class="line">            [self startLoading];</span><br><span class="line">            NSString *password = [textField.text stringByAppendingString:string];</span><br><span class="line">            self.finishBlock(password);</span><br><span class="line">        }</span><br><span class="line">        return NO;</span><br><span class="line">    } else {</span><br><span class="line">        // 3.每次键入一个值，都要重设黑点</span><br><span class="line">        [self.backgroundView resetDotsWithLength:numberLength];</span><br><span class="line">        return YES;</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">#pragma mark - UITextFieldDelegate
+
+- (void)textFieldDidBeginEditing:(UITextField *)textField {
+    NSLog(@"%@",NSStringFromSelector(_cmd));
+
+    // 每次 TextField 开始编辑，都要重置密码框
+    [self clearUpPassword];
+}
+
+// 清除密码
+- (void)clearUpPassword {
+    // 1.清空输入文本框密码
+    self.pwdTextField.text = @"";
+    // 2.清空黑色圆点
+    [self.backgroundView resetDotsWithLength:0];
+    // 3.隐藏加载图片和文字
+    self.rotationImageView.hidden = YES;
+    self.loadingTextLabel.hidden  = YES;
+}
+
+// 每当用户操作导致其文本更改时，文本字段将调用此方法。 使用此方法来验证用户键入的文本。 例如，您可以使用此方法来防止用户输入任何数字，但不能输入数值。
+// 每当一个字符被键入时，都会首先调用此方法，询问是否应该将输入的字符添加进 TextField 中。
+// 因此调用该方法时，正被输入的字符实际上还没有被添加进 TextField 中
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {    
+    // 输入进 TextField 的数字个数
+    NSUInteger numberLength = textField.text.length + string.length;
+
+    if([string isEqualToString:@""]) {
+        // 1.判断是不是删除键？
+        [self.backgroundView resetDotsWithLength:numberLength - 1];
+        return YES;
+    } else if(numberLength &gt;= KPasswordNumber) {
+        // 2.判断此次输入数字的是不是第6个数字？
+        [self.backgroundView resetDotsWithLength:numberLength];
+        // 2.1 收起键盘
+        [self.pwdTextField resignFirstResponder];
+        // 2.2 发起请求 Block
+        if (self.finishBlock) {
+            [self startLoading];
+            NSString *password = [textField.text stringByAppendingString:string];
+            self.finishBlock(password);
+        }
+        return NO;
+    } else {
+        // 3.每次键入一个值，都要重设黑点
+        [self.backgroundView resetDotsWithLength:numberLength];
+        return YES;
+    }
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 
 
 <p>4️⃣ 其它的没什么变化，少了几个移除视图的一些重置方法</p>
-<h4 id="UIView-动画"><a href="#UIView-动画" class="headerlink" title="UIView 动画"></a>UIView 动画</h4><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">+ (void)animateWithDuration:(NSTimeInterval)duration </span><br><span class="line">                      delay:(NSTimeInterval)delay </span><br><span class="line">                    options:(UIViewAnimationOptions)options </span><br><span class="line">                  animations:(void (^)(void))animations </span><br><span class="line">                  completion:(void (^ __nullable)(BOOL finished))completion ;</span><br><span class="line"></span><br><span class="line">[UIView animateWithDuration:(NSTimeInterval)          // 动画的持续时间</span><br><span class="line">                      delay:(NSTimeInterval)          // 动画执行的延迟时间</span><br><span class="line">                    options:(UIViewAnimationOptions)  // 执行的动画选项，</span><br><span class="line">                 animations:^{</span><br><span class="line"></span><br><span class="line">        // 要执行的动画代码</span><br><span class="line"> } completion:^(BOOL finished) {</span><br><span class="line">        // 动画执行完毕后的调用</span><br><span class="line">}];</span><br></pre></td></tr></tbody></table></figure>
+<h4 id="UIView-动画"><a href="#UIView-动画" class="headerlink" title="UIView 动画"></a>UIView 动画</h4><pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">+ (void)animateWithDuration:(NSTimeInterval)duration 
+                      delay:(NSTimeInterval)delay 
+                    options:(UIViewAnimationOptions)options 
+                  animations:(void (^)(void))animations 
+                  completion:(void (^ __nullable)(BOOL finished))completion ;
+
+[UIView animateWithDuration:(NSTimeInterval)          // 动画的持续时间
+                      delay:(NSTimeInterval)          // 动画执行的延迟时间
+                    options:(UIViewAnimationOptions)  // 执行的动画选项，
+                 animations:^{
+
+        // 要执行的动画代码
+ } completion:^(BOOL finished) {
+        // 动画执行完毕后的调用
+}];<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>通过指定动画持续时间、动画延迟、执行动画选项和动画完成后回调的 Block 对象 更改一个或多个视图的动画。</p>
 <p>使用示例：</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">- (IBAction)paymentButtonDidClicked:(id)sender {</span><br><span class="line"></span><br><span class="line">    self.passwordView = [[HQLPasswordView alloc] init];</span><br><span class="line">    [self.passwordView showInView:self.view.window];</span><br><span class="line">    self.passwordView.title = @"我是标题";</span><br><span class="line">    self.passwordView.loadingText = @"正在支付中...";</span><br><span class="line">    self.passwordView.closeBlock = ^{</span><br><span class="line">        NSLog(@"取消支付回调...");</span><br><span class="line">    };</span><br><span class="line">    self.passwordView.forgetPasswordBlock = ^{</span><br><span class="line">        NSLog(@"忘记密码回调...");</span><br><span class="line">    };</span><br><span class="line">    WS(weakself);</span><br><span class="line">    self.passwordView.finishBlock = ^(NSString *password) {</span><br><span class="line">        NSLog(@"完成支付回调...");</span><br><span class="line">        </span><br><span class="line">        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(kRequestTime * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{</span><br><span class="line">            flag = !flag;</span><br><span class="line">            if (flag) {</span><br><span class="line">                // 购买成功，跳转到成功页</span><br><span class="line">                [weakself.passwordView requestComplete:YES message:@"购买成功"];</span><br><span class="line">                </span><br><span class="line">                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)( KDelay* NSEC_PER_SEC)), dispatch_get_main_queue(), ^{</span><br><span class="line">                    // 从父视图移除密码输入视图</span><br><span class="line">                    [weakself.passwordView removePasswordView];</span><br><span class="line">                });</span><br><span class="line">            } else {</span><br><span class="line">                // 购买失败，跳转到失败页</span><br><span class="line">                [weakself.passwordView requestComplete:NO];</span><br><span class="line">                </span><br><span class="line">                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(KDelay * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{</span><br><span class="line">                    // 购买失败的处理，也可以继续支付</span><br><span class="line">                    </span><br><span class="line">                });</span><br><span class="line">            }</span><br><span class="line">        });</span><br><span class="line">    };</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<pre class="line-numbers language-objective-c" data-language="objective-c"><code class="language-objective-c">- (IBAction)paymentButtonDidClicked:(id)sender {
+
+    self.passwordView = [[HQLPasswordView alloc] init];
+    [self.passwordView showInView:self.view.window];
+    self.passwordView.title = @"我是标题";
+    self.passwordView.loadingText = @"正在支付中...";
+    self.passwordView.closeBlock = ^{
+        NSLog(@"取消支付回调...");
+    };
+    self.passwordView.forgetPasswordBlock = ^{
+        NSLog(@"忘记密码回调...");
+    };
+    WS(weakself);
+    self.passwordView.finishBlock = ^(NSString *password) {
+        NSLog(@"完成支付回调...");
+
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(kRequestTime * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            flag = !flag;
+            if (flag) {
+                // 购买成功，跳转到成功页
+                [weakself.passwordView requestComplete:YES message:@"购买成功"];
+
+                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)( KDelay* NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                    // 从父视图移除密码输入视图
+                    [weakself.passwordView removePasswordView];
+                });
+            } else {
+                // 购买失败，跳转到失败页
+                [weakself.passwordView requestComplete:NO];
+
+                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(KDelay * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                    // 购买失败的处理，也可以继续支付
+
+                });
+            }
+        });
+    };
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 
 
@@ -598,12 +817,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">2.1m</span>
+    <span title="站点总字数">2.3m</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">31:21</span>
+    <span title="站点阅读时长">34:09</span>
 </div>
   <div class="powered-by">由 <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZw==">NexT.Gemini</span> 强力驱动
   </div>
