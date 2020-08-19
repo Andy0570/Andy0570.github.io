@@ -1,23 +1,756 @@
-{% extends '_layout.swig' %}
-{% import '_macro/post.swig' as post_template %}
-{% import '_macro/sidebar.swig' as sidebar_template %}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.0.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+  <meta name="google-site-verification" content="wioXOS3Gv2wXUpJ3sLtfZ4ft6YJYKNLLWSw6QoZTFYM">
+  <meta name="msvalidate.01" content="C96491A81239C517A50597C54EE53CD1">
+  <meta name="baidu-site-verification" content="h8asiToN1b">
 
-{% block title %}{{ page.title }} | {{ title }}{% endblock %}
+<link rel="stylesheet" href="/css/main.css">
 
-{% block page_class %}page-post-detail{% endblock %}
 
-{% block content %}
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  
+  <link rel="stylesheet" href="/lib/animate-css/animate.min.css">
 
-  <div id="posts" class="posts-expand">
-    {{ post_template.render(page) }}
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"andy0570.com","root":"/","scheme":"Gemini","version":"8.0.0-rc.5","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":"mac","bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false};
+  </script>
+
+  <meta name="description" content="GitHub 地址：PageMenu **star:**3800+   🎉 🎉 🎉  Surprise ！ I’m back！ 本期给大家带来的第三方框架是一个非常常用的导航框架——分页菜单 PageMenu。该框架同时支持 Swift 和 Objective-C，使用起来也是极其方便，下面一起来跟我看看吧!">
+<meta property="og:type" content="article">
+<meta property="og:title" content="PageMenu——灵活可定制的分页菜单控制器">
+<meta property="og:url" content="https://andy0570.com/2017/04/25/PageMenu%E2%80%94%E2%80%94%E7%81%B5%E6%B4%BB%E5%8F%AF%E5%AE%9A%E5%88%B6%E7%9A%84%E5%88%86%E9%A1%B5%E8%8F%9C%E5%8D%95%E6%8E%A7%E5%88%B6%E5%99%A8/index.html">
+<meta property="og:site_name" content="独木舟的木">
+<meta property="og:description" content="GitHub 地址：PageMenu **star:**3800+   🎉 🎉 🎉  Surprise ！ I’m back！ 本期给大家带来的第三方框架是一个非常常用的导航框架——分页菜单 PageMenu。该框架同时支持 Swift 和 Objective-C，使用起来也是极其方便，下面一起来跟我看看吧!">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/073033.png">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/073035.gif">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/073038.png">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/073108.gif">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/073122.png">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/073134.gif">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/073137.png">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/073149.gif">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/073151.jpg">
+<meta property="article:published_time" content="2017-04-25T03:25:00.000Z">
+<meta property="article:modified_time" content="2019-05-01T14:11:48.000Z">
+<meta property="article:author" content="独木舟的木">
+<meta property="article:tag" content="iOS">
+<meta property="article:tag" content="GitHub">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/073033.png">
+
+<link rel="canonical" href="https://andy0570.com/2017/04/25/PageMenu%E2%80%94%E2%80%94%E7%81%B5%E6%B4%BB%E5%8F%AF%E5%AE%9A%E5%88%B6%E7%9A%84%E5%88%86%E9%A1%B5%E8%8F%9C%E5%8D%95%E6%8E%A7%E5%88%B6%E5%99%A8/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>PageMenu——灵活可定制的分页菜单控制器 | 独木舟的木</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="独木舟的木" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <main class="main">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+        <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
   </div>
 
-{% endblock %}
+  <div class="site-meta">
 
-{% block sidebar %}
-  {{ sidebar_template.render(true) }}
-{% endblock %}
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">独木舟的木</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">iOS Developer</p>
+  </div>
 
-{% block script_extra %}
-  {% include '_scripts/pages/post-details.swig' %}
-{% endblock %}
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">14</span></a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">36</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">310</span></a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <section class="post-toc-wrap sidebar-panel">
+          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8F%8F%E8%BF%B0"><span class="nav-number">1.</span> <span class="nav-text">描述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85"><span class="nav-number">2.</span> <span class="nav-text">安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8-PageMenu"><span class="nav-number">3.</span> <span class="nav-text">如何使用 PageMenu</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%87%AA%E5%AE%9A%E4%B9%89"><span class="nav-number">4.</span> <span class="nav-text">自定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Apps-using-PageMenu"><span class="nav-number">5.</span> <span class="nav-text">Apps using PageMenu</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Future-Work"><span class="nav-number">6.</span> <span class="nav-text">Future Work</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Demo"><span class="nav-number">7.</span> <span class="nav-text">Demo</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A4%BA%E4%BE%8B%E4%B8%80%EF%BC%9A"><span class="nav-number">7.1.</span> <span class="nav-text">示例一：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A4%BA%E4%BE%8B%E4%BA%8C%EF%BC%9A"><span class="nav-number">7.2.</span> <span class="nav-text">示例二：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B6%E4%BB%96%E6%A1%86%E6%9E%B6"><span class="nav-number">7.3.</span> <span class="nav-text">其他框架</span></a></li></ol></li></ol></div>
+      </section>
+      <!--/noindex-->
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="独木舟的木"
+      src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+  <p class="site-author-name" itemprop="name">独木舟的木</p>
+  <div class="site-description" itemprop="description">生若直木，不语斧凿。</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">310</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">36</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL0FuZHkwNTcw" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Andy0570"><i class="fab fa-github fa-fw"></i>GitHub</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9zdGFja292ZXJmbG93LmNvbS91c2Vycy83MjY1NDAwL2FuZHkwNTcw" title="StackOverflow → https:&#x2F;&#x2F;stackoverflow.com&#x2F;users&#x2F;7265400&#x2F;andy0570"><i class="fab fa-stack-overflow fa-fw"></i>StackOverflow</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuamlhbnNodS5jb20vdS84NGM1ZmFkYzdjMTg=" title="简书 → https:&#x2F;&#x2F;www.jianshu.com&#x2F;u&#x2F;84c5fadc7c18"><i class="heartbeat fa-fw"></i>简书</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="bWFpbHRvOmFuZHl3aG1AMTYzLmNvbQ==" title="E-Mail → mailto:andywhm@163.com"><i class="fa fa-envelope fa-fw"></i>E-Mail</span>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <span class="exturl cc-opacity" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpo"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></span>
+  </div>
+
+
+
+      </section>
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </header>
+
+      
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div id="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+      <div class="main-inner">
+        
+
+        <div class="content post posts-expand">
+          
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://andy0570.com/2017/04/25/PageMenu%E2%80%94%E2%80%94%E7%81%B5%E6%B4%BB%E5%8F%AF%E5%AE%9A%E5%88%B6%E7%9A%84%E5%88%86%E9%A1%B5%E8%8F%9C%E5%8D%95%E6%8E%A7%E5%88%B6%E5%99%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+      <meta itemprop="name" content="独木舟的木">
+      <meta itemprop="description" content="生若直木，不语斧凿。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="独木舟的木">
+    </span>
+
+    
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          PageMenu——灵活可定制的分页菜单控制器
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2017-04-25 11:25:00" itemprop="dateCreated datePublished" datetime="2017-04-25T11:25:00+08:00">2017-04-25</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-05-01 22:11:48" itemprop="dateModified" datetime="2019-05-01T22:11:48+08:00">2019-05-01</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS-%E5%BC%80%E6%BA%90%E6%A1%86%E6%9E%B6/" itemprop="url" rel="index"><span itemprop="name">iOS 开源框架</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>11k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>10 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <ul>
+<li><strong>GitHub 地址：</strong><span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL3VhY2Fwcy9QYWdlTWVudQ==">PageMenu<i class="fa fa-external-link-alt"></i></span></li>
+<li>**star:**3800+</li>
+</ul>
+<blockquote>
+<p>🎉 🎉 🎉  Surprise ！ I’m back！ 本期给大家带来的第三方框架是一个非常常用的导航框架——分页菜单 <strong>PageMenu</strong>。该框架同时支持 Swift 和 Objective-C，使用起来也是极其方便，下面一起来跟我看看吧!</p>
+</blockquote>
+<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/073033.png" alt="PageMenuHeader"></p>
+<a id="more"></a>
+
+
+<h2 id="描述"><a href="#描述" class="headerlink" title="描述"></a>描述</h2><p>一个完全可定制、非常灵活的分页菜单控制器，由位于滚动视图内的其他视图控制器构建，允许用户在任何类型的视图控制器之间切换，使用类似于Spotify，Windows Phone 和 Instagram 的简单轻击或滑动手势</p>
+<p><strong>Similar to Spotify</strong></p>
+<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/073035.gif"></p>
+<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/073038.png" alt="PageMenuScreen2"></p>
+<p><strong>Similar to Windows Phone</strong></p>
+<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/073108.gif" alt="PageMenuDemo2"><br><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/073122.png" alt="PageMenuScreen2"></p>
+<p><strong>Similar to Instagram segmented control</strong></p>
+<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/073134.gif"><br><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/073137.png" alt="PageMenuDemoScreen6"></p>
+<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p><strong>CocoaPods</strong></p>
+<p>PageMenu is available through <span class="exturl" data-url="aHR0cDovL2NvY29hcG9kcy5vcmcv">CocoaPods<i class="fa fa-external-link-alt"></i></span>. !! ⚠️<strong>Swift only</strong> ⚠️!!</p>
+<p>To install add the following line to your Podfile:</p>
+<pre><code>pod &#39;PageMenu&#39;</code></pre>
+<p><strong>Carthage</strong></p>
+<p>PageMenu is also available through <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2NhcnRoYWdlL2NhcnRoYWdl">Carthage<i class="fa fa-external-link-alt"></i></span>.  Append this line to Cartfile and follow <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2NhcnRoYWdlL2NhcnRoYWdlI2FkZGluZy1mcmFtZXdvcmtzLXRvLWFuLWFwcGxpY2F0aW9u">this instruction<i class="fa fa-external-link-alt"></i></span>.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">github &quot;uacaps&#x2F;PageMenu&quot;</span><br></pre></td></tr></table></figure>
+
+<p><strong>Manual Installation</strong></p>
+<p>The class file required for PageMenu is located in the Classes folder in the root of this repository as listed below:</p>
+<ul>
+<li>CAPSPageMenu.swift</li>
+</ul>
+<h2 id="如何使用-PageMenu"><a href="#如何使用-PageMenu" class="headerlink" title="如何使用 PageMenu"></a>如何使用 PageMenu</h2><p>首先，你必须创建一个视图控制器，该控件要作为页面菜单的基础。 这可以是一个有独立xib文件、并将其xib文件放在故事板中的视图控制器。 在此之后，您将通过下面列出的几个简单的步骤，以便让所有的东西正常运行。</p>
+<p><strong>1)  将安装部分中列出的文件添加到项目中</strong></p>
+<p><strong>2)  在基本视图控制器中添加 CAPSPageMenu 属性</strong></p>
+<p>Swift</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> pageMenu : <span class="type">CAPSPageMenu?</span></span><br></pre></td></tr></table></figure>
+
+<p>Objective-C</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">@property (nonatomic) CAPSPageMenu *pagemenu;</span><br></pre></td></tr></table></figure>
+
+<p><strong>3) 在视图控制器的 <code>viewDidLoad</code> 方法中添加以下代码</strong></p>
+<p>Swift</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Array to keep track of controllers in page menu</span></span><br><span class="line"><span class="keyword">var</span> controllerArray : [<span class="type">UIViewController</span>] = []</span><br><span class="line"></span><br><span class="line"><span class="comment">// Create variables for all view controllers you want to put in the </span></span><br><span class="line"><span class="comment">// page menu, initialize them, and add each to the controller array. </span></span><br><span class="line"><span class="comment">// (Can be any UIViewController subclass)</span></span><br><span class="line"><span class="comment">// Make sure the title property of all view controllers is set</span></span><br><span class="line"><span class="comment">// Example:</span></span><br><span class="line"><span class="keyword">var</span> controller : <span class="type">UIViewController</span> = <span class="type">UIViewController</span>(nibName: <span class="string">&quot;controllerNibName&quot;</span>, bundle: <span class="literal">nil</span>)</span><br><span class="line">controller.title = <span class="string">&quot;SAMPLE TITLE&quot;</span></span><br><span class="line">controllerArray.append(controller)</span><br><span class="line"></span><br><span class="line"><span class="comment">// Customize page menu to your liking (optional) or use default settings by sending nil for &#x27;options&#x27; in the init</span></span><br><span class="line"><span class="comment">// Example:</span></span><br><span class="line"><span class="keyword">var</span> parameters: [<span class="type">CAPSPageMenuOption</span>] = [</span><br><span class="line">    .<span class="type">MenuItemSeparatorWidth</span>(<span class="number">4.3</span>), </span><br><span class="line">    .<span class="type">UseMenuLikeSegmentedControl</span>(<span class="literal">true</span>), </span><br><span class="line">    .<span class="type">MenuItemSeparatorPercentageHeight</span>(<span class="number">0.1</span>)</span><br><span class="line">]</span><br><span class="line"></span><br><span class="line"><span class="comment">// Initialize page menu with controller array, frame, and optional parameters</span></span><br><span class="line">pageMenu = <span class="type">CAPSPageMenu</span>(viewControllers: controllerArray, frame: <span class="type">CGRectMake</span>(<span class="number">0.0</span>, <span class="number">0.0</span>, <span class="keyword">self</span>.view.frame.width, <span class="keyword">self</span>.view.frame.height), pageMenuOptions: parameters)</span><br><span class="line"></span><br><span class="line"><span class="comment">// Lastly add page menu as subview of base view controller view</span></span><br><span class="line"><span class="comment">// or use pageMenu controller in you view hierachy as desired</span></span><br><span class="line"><span class="keyword">self</span>.view.addSubview(pageMenu!.view)</span><br></pre></td></tr></table></figure>
+
+<p>Objective-C</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 在页面菜单中跟踪控制器的数组</span><br><span class="line">NSMutableArray *controllerArray &#x3D; [NSMutableArray array];</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 创建并初始化你想要放进页面菜单中的所有视图控制器实例对象，并将其添加到控制器数组中。</span><br><span class="line">&#x2F;&#x2F;（可以是任何UIViewController的子类）</span><br><span class="line">&#x2F;&#x2F; 确保设置所有视图控制器的标题属性</span><br><span class="line">&#x2F;&#x2F; Example:</span><br><span class="line">UIViewController *controller &#x3D; [UIViewController alloc] initWithNibname:@&quot;controllerNibnName&quot; bundle:nil];</span><br><span class="line">controller.title &#x3D; @&quot;SAMPLE TITLE&quot;;</span><br><span class="line">[controllerArray addObject:controller];</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 根据你的喜好（可选）自定义页面菜单，或在初始化时通过发送 nil 给&#39;options&#39;选项使用默认设置</span><br><span class="line">&#x2F;&#x2F; Example:</span><br><span class="line">NSDictionary *parameters &#x3D; @&#123;CAPSPageMenuOptionMenuItemSeparatorWidth: @(4.3),</span><br><span class="line">                             CAPSPageMenuOptionUseMenuLikeSegmentedControl: @(YES),</span><br><span class="line">                             CAPSPageMenuOptionMenuItemSeparatorPercentageHeight: @(0.1)</span><br><span class="line">                             &#125;;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 使用控制器数组，边框和可选参数初始化页面菜单</span><br><span class="line">_pageMenu &#x3D; [[CAPSPageMenu alloc] initWithViewControllers:controllerArray frame:CGRectMake(0.0, 0.0, self.view.frame.size.width, self.view.frame.size.height) options:parameters];</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 最后添加页面菜单作为基本视图控制器视图的子视图</span><br><span class="line">&#x2F;&#x2F; 或根据需要将 pageMenu 控制器添加到视图的层次结构中，</span><br><span class="line">[self.view addSubview:_pageMenu.view];</span><br></pre></td></tr></table></figure>
+
+<p><strong>4)  可选 - 协议方法</strong></p>
+<p>为了使用委托方法，首先将页面菜单的委托设置为父视图控制器</p>
+<p>Swift</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Optional delegate </span></span><br><span class="line">pageMenu!.delegate = <span class="keyword">self</span></span><br></pre></td></tr></table></figure>
+
+<p>Objective-C</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 可选委托协议 </span><br><span class="line">_pageMenu.delegate &#x3D; self;</span><br></pre></td></tr></table></figure>
+
+
+<p>之后，你将能够在父视图控制器中设置以下委托方法</p>
+<p>Swift</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">willMoveToPage</span><span class="params">(controller: UIViewController, index: Int)</span></span>&#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">didMoveToPage</span><span class="params">(controller: UIViewController, index: Int)</span></span>&#123;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Objective-C</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 可选委托协议 </span></span><br><span class="line">- (<span class="keyword">void</span>)willMoveToPage:(<span class="built_in">UIViewController</span> *)controller index:(<span class="built_in">NSInteger</span>)index &#123;&#125;</span><br><span class="line"></span><br><span class="line">- (<span class="keyword">void</span>)didMoveToPage:(<span class="built_in">UIViewController</span> *)controller index:(<span class="built_in">NSInteger</span>)index &#123;&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>5)  你现在应该已经会使用 PageMenu!! 🎉</strong></p>
+<h2 id="自定义"><a href="#自定义" class="headerlink" title="自定义"></a>自定义</h2><p>你有各式各样的方法来根据需求自定义页面菜单。并且在不久的将来更多的定制方法将来临以确保页面菜单适应你的APP设计。这些都将是 <strong>CAPSPageMenu</strong> 中在你的基本视图控制器里可更改的属性。 （以下是每个类别提供的属性）</p>
+<p><strong>1)  颜色</strong></p>
+<ul>
+<li><p>页面菜单滚动视图后面的背景颜色以混合视图控制器背景。（Scroller View 的背景色）</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">viewBackgroundColor (UIColor)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>滚动菜单背景颜色。默认<code>[UIColor blackColor]</code></p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">scrollMenuBackgroundColor (UIColor)</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<ul>
+<li><p>选择指示器颜色。默认 <code>[UIColor whiteColor]</code></p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">selectionIndicatorColor (UIColor)</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<ul>
+<li><p>所选菜单项标签颜色。默认 <code>[UIColor whiteColor]</code></p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">selectedMenuItemLabelColor (UIColor)</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<ul>
+<li><p>未选择的菜单项标签颜色。默认 <code>[UIColor lightGrayColor]</code></p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">unselectedMenuItemLabelColor (UIColor)</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<ul>
+<li><p>菜单项分隔符颜色（用于分段控件样式）。默认 <code>[UIColor lightGrayColor]</code>  🚫 测了半天也没看见分隔符在哪😂</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">menuItemSeparatorColor (UIColor)</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<ul>
+<li><p>菜单底部分割线颜色（页面菜单与视图之间的水平分割线）。默认 <code>[UIColor whiteColor]</code></p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bottomMenuHairlineColor (UIColor)</span><br></pre></td></tr></table></figure>
+
+
+
+</li>
+</ul>
+<p><strong>2)  ** **Dimensions（尺寸）</strong></p>
+<ul>
+<li><p>滚动菜单高度，默认值：34.0</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">menuHeight (CGFloat)</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<ul>
+<li><p>滚动菜单边距（第一个菜单项之前的距离，以及最后一个菜单项之后的距离以及菜单项之间的距离）默认值：15.0</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">menuMargin (CGFloat)</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<ul>
+<li><p>滚动菜单项宽度，默认值：111.0</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">menuItemWidth (CGFloat)</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<ul>
+<li><p>选择指示器高度，默认值：3.0</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">selectionIndicatorHeight (CGFloat)</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<p><strong>3)  Segmented Control（分段控制器）</strong> </p>
+<ul>
+<li><p>将 <strong>PageMenu</strong> 作为分段控件使用。默认NO</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">useMenuLikeSegmentedControl (Bool)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>菜单项分隔符宽度（以像素为单位）</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">menuItemSeparatorWidth (CGFloat)</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<ul>
+<li><p>菜单项分隔符高度，以菜单高度的百分比表示。默认 0.5</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">menuItemSeparatorPercentageHeight (CGFloat)</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<ul>
+<li><p>菜单项分隔符具有圆形边。默认NO</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">menuItemSeparatorRoundEdges (Bool)</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<p><strong>4)  其他</strong></p>
+<ul>
+<li><p>菜单项标题文本字体：默认：<code>[UIFont systemFontOfSize:15.0]</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">menuItemFont (UIFont)</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<ul>
+<li><p>添加菜单底部分割线。默认YES</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">addBottomMenuHairline (Bool)</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<ul>
+<li><p>菜单项宽度基于标题文字宽度（标题有多宽，菜单项就有多宽）。默认NO</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">menuItemWidthBasedOnTitleTextWidth (Bool)</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<ul>
+<li><p>禁用/启用滚动视图控制器的水平反弹。默认YES</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">enableHorizontalBounce (Bool)</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<ul>
+<li><p>隐藏/取消隐藏顶部页面菜单栏。默认NO</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hideTopMenuBar (Bool)</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<ul>
+<li><p>如果菜单中的菜单项不跨越整个宽度就居中（目前不支持菜单项宽度基于标题）。默认NO</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">centerMenuItems (Bool)</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<ul>
+<li><p>在菜单项目中滚动动画持续时间，以毫秒为单位，默认值：500（即0.5秒）</p>
+<p> scrollAnimationDurationOnMenuItemTap (Int)</p>
+</li>
+</ul>
+<h2 id="Apps-using-PageMenu"><a href="#Apps-using-PageMenu" class="headerlink" title="Apps using PageMenu"></a>Apps using PageMenu</h2><p>Please let me know if your app in the AppStore uses this library so I can add your app to the list of apps featuring PageMenu.</p>
+<h2 id="Future-Work"><a href="#Future-Work" class="headerlink" title="Future Work"></a>Future Work</h2><ul>
+<li><input checked="" disabled="" type="checkbox"> Screen rotation support</li>
+<li><input checked="" disabled="" type="checkbox"> Objective-C version</li>
+<li><input disabled="" type="checkbox"> Infinite scroll option / Wrap items</li>
+<li><input disabled="" type="checkbox"> Carthage support</li>
+<li><input disabled="" type="checkbox"> More customization options</li>
+</ul>
+<h2 id="Demo"><a href="#Demo" class="headerlink" title="Demo"></a>Demo</h2><h3 id="示例一："><a href="#示例一：" class="headerlink" title="示例一："></a>示例一：</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br></pre></td><td class="code"><pre><span class="line">- (void)viewDidLoad &#123;</span><br><span class="line">    [super viewDidLoad];</span><br><span class="line">    </span><br><span class="line">    UIViewController *viewController1 &#x3D; [[UIViewController alloc] init];</span><br><span class="line">    viewController1.title &#x3D; @&quot;蔬菜&quot;;</span><br><span class="line">    viewController1.view.backgroundColor &#x3D; [UIColor robinEggColor];</span><br><span class="line">    </span><br><span class="line">    UIViewController *viewController2 &#x3D; [[UIViewController alloc] init];</span><br><span class="line">    viewController2.title &#x3D; @&quot;水果&quot;;</span><br><span class="line">    viewController2.view.backgroundColor &#x3D; [UIColor easterPinkColor];</span><br><span class="line">    </span><br><span class="line">    NSArray *controllerArray &#x3D; @[viewController1, viewController2];</span><br><span class="line">    </span><br><span class="line">    NSDictionary *parameters &#x3D; @&#123;</span><br><span class="line">                                </span><br><span class="line">             &#x2F;&#x2F; 【1.0】颜色</span><br><span class="line">             &#x2F;&#x2F; 【1.1】Scroller View 的背景色</span><br><span class="line">&#x2F;&#x2F;             CAPSPageMenuOptionViewBackgroundColor:[UIColor whiteColor],</span><br><span class="line">             &#x2F;&#x2F; 【1.2】设置滚动菜单背景颜色</span><br><span class="line">             CAPSPageMenuOptionScrollMenuBackgroundColor:[UIColor beigeColor],</span><br><span class="line">             &#x2F;&#x2F; 【1.3】选择指示器颜色（底部菜单线颜色）</span><br><span class="line">             CAPSPageMenuOptionSelectionIndicatorColor:[UIColor turquoiseColor],</span><br><span class="line">             &#x2F;&#x2F; 【1.4】所选菜单项标签文本颜色</span><br><span class="line">             CAPSPageMenuOptionSelectedMenuItemLabelColor:[UIColor turquoiseColor],</span><br><span class="line">             &#x2F;&#x2F; 【1.5】未选择的菜单项标签文本颜色</span><br><span class="line">             CAPSPageMenuOptionUnselectedMenuItemLabelColor:[UIColor lightGrayColor],</span><br><span class="line">             &#x2F;&#x2F; 【1.6】菜单项分隔符颜色（用于分段控件样式）</span><br><span class="line">             CAPSPageMenuOptionMenuItemSeparatorColor:[UIColor grapefruitColor],</span><br><span class="line">             &#x2F;&#x2F; 【1.7】底部菜单线颜色</span><br><span class="line">&#x2F;&#x2F;             CAPSPageMenuOptionBottomMenuHairlineColor:[UIColor coralColor],</span><br><span class="line">             </span><br><span class="line">             &#x2F;&#x2F; 【2.0】尺寸</span><br><span class="line">             &#x2F;&#x2F; 【2.1】滚动菜单高度，默认值：34.0</span><br><span class="line">&#x2F;&#x2F;             CAPSPageMenuOptionMenuHeight: @(40.0),</span><br><span class="line">             &#x2F;&#x2F; 【2.2】滚动菜单边距,默认值：15.0</span><br><span class="line">&#x2F;&#x2F;             CAPSPageMenuOptionMenuMargin:@(10),</span><br><span class="line">             &#x2F;&#x2F; 【2.3】滚动菜单项宽度，默认值：111.0</span><br><span class="line">&#x2F;&#x2F;             CAPSPageMenuOptionMenuItemWidth:@(150),</span><br><span class="line">             &#x2F;&#x2F; 【2.4】选择指示器高度，默认值：3.0</span><br><span class="line">&#x2F;&#x2F;             CAPSPageMenuOptionSelectionIndicatorHeight:@(5),</span><br><span class="line">             </span><br><span class="line">             &#x2F;&#x2F; 【3.0】Segmented Control</span><br><span class="line">             &#x2F;&#x2F; 【3.1】将 PageMenu 作为分段控件使用</span><br><span class="line">             CAPSPageMenuOptionUseMenuLikeSegmentedControl:@(YES),</span><br><span class="line">             &#x2F;&#x2F; 【3.2】菜单项分隔符宽度（以像素为单位）</span><br><span class="line">&#x2F;&#x2F;             CAPSPageMenuOptionMenuItemSeparatorWidth:@(5.0),</span><br><span class="line">             &#x2F;&#x2F; 【3.3】菜单项分隔符高度，以菜单高度的百分比表示</span><br><span class="line">&#x2F;&#x2F;             CAPSPageMenuOptionMenuItemSeparatorPercentageHeight:@(0.5),</span><br><span class="line">             &#x2F;&#x2F; 【3.4】菜单项分隔符具有圆形边</span><br><span class="line">&#x2F;&#x2F;             CAPSPageMenuOptionMenuItemSeparatorRoundEdges:@(YES),</span><br><span class="line">&#x2F;&#x2F;</span><br><span class="line">             </span><br><span class="line">             &#x2F;&#x2F; 【4.0】其他</span><br><span class="line">             &#x2F;&#x2F; 【4.1】菜单项标题文本字体</span><br><span class="line">&#x2F;&#x2F;             CAPSPageMenuOptionMenuItemFont:[UIFont systemFontOfSize:17.0f],</span><br><span class="line">             &#x2F;&#x2F; 【4.2】添加菜单底部分割线</span><br><span class="line">             CAPSPageMenuOptionAddBottomMenuHairline:@(NO),</span><br><span class="line">&#x2F;&#x2F;             &#x2F;&#x2F; 【4.3】菜单项宽度基于标题文字宽度</span><br><span class="line">&#x2F;&#x2F;             CAPSPageMenuOptionMenuItemWidthBasedOnTitleTextWidth:@(YES)</span><br><span class="line">             &#x2F;&#x2F; 【4.4】禁用&#x2F;启用滚动视图控制器的水平反弹</span><br><span class="line">             CAPSPageMenuOptionEnableHorizontalBounce:@(NO),</span><br><span class="line">&#x2F;&#x2F;             &#x2F;&#x2F; 【4.5】隐藏&#x2F;取消隐藏顶部菜单栏</span><br><span class="line">&#x2F;&#x2F;             CAPSPageMenuOptionHideTopMenuBar:@(YES)</span><br><span class="line">             &#x2F;&#x2F; 【4.6】菜单中的菜单项如果不跨越整个宽度就居中</span><br><span class="line">&#x2F;&#x2F;             CAPSPageMenuOptionCenterMenuItems:@(YES)</span><br><span class="line">             </span><br><span class="line">                                 &#125;;</span><br><span class="line">    </span><br><span class="line">    CGRect pageMenuRect &#x3D; CGRectMake(0.0,</span><br><span class="line">                                     0.0,</span><br><span class="line">                                     self.view.frame.size.width,</span><br><span class="line">                                     self.view.frame.size.height);</span><br><span class="line">    _pageMenu &#x3D; [[CAPSPageMenu alloc] initWithViewControllers:controllerArray</span><br><span class="line">                                                        frame:pageMenuRect</span><br><span class="line">                                                      options:parameters];</span><br><span class="line">    </span><br><span class="line">    [self.view addSubview:_pageMenu.view];</span><br><span class="line">    </span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>运行效果：</p>
+<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/073149.gif"></p>
+<h3 id="示例二："><a href="#示例二：" class="headerlink" title="示例二："></a>示例二：</h3><p>项目使用：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br></pre></td><td class="code"><pre><span class="line">- (void)viewDidLoad &#123;</span><br><span class="line">    [super viewDidLoad];</span><br><span class="line">    [self.PageContainerView addSubview:self.pageMenu.view];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">#pragma mark - Custom Accessors </span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 缴费明细列表</span><br><span class="line">- (HQLInsurancePaymentListViewController *)leftListViewController &#123;</span><br><span class="line">    if (!_leftListViewController) &#123;</span><br><span class="line">        _leftListViewController &#x3D; [[HQLInsurancePaymentListViewController alloc] initWithNibName:NSStringFromClass([HQLInsurancePaymentListViewController class]) bundle:nil];</span><br><span class="line">        _leftListViewController.title &#x3D; @&quot;缴费明细&quot;;</span><br><span class="line">        _leftListViewController.delegate &#x3D; self;</span><br><span class="line">    &#125;</span><br><span class="line">    return _leftListViewController;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 支出明细列表</span><br><span class="line">- (HQLInsurancePaymentListViewController *)rightListViewController &#123;</span><br><span class="line">    if (!_rightListViewController) &#123;</span><br><span class="line">        _rightListViewController &#x3D; [[HQLInsurancePaymentListViewController alloc] initWithNibName:NSStringFromClass([HQLInsurancePaymentListViewController class]) bundle:nil];</span><br><span class="line">        _rightListViewController.title &#x3D; @&quot;支出明细&quot;;</span><br><span class="line">    &#125;</span><br><span class="line">    return _rightListViewController;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 分页菜单控制器</span><br><span class="line">- (CAPSPageMenu *)pageMenu &#123;</span><br><span class="line">    if (!_pageMenu) &#123;</span><br><span class="line">        NSArray *controllerArray &#x3D; @[ self.leftListViewController,</span><br><span class="line">                                      self.rightListViewController ];</span><br><span class="line">        </span><br><span class="line">        NSDictionary *parameters &#x3D; @&#123;</span><br><span class="line">                                     </span><br><span class="line">             &#x2F;&#x2F; 【1.2】设置滚动菜单背景颜色</span><br><span class="line">             CAPSPageMenuOptionScrollMenuBackgroundColor:[UIColor whiteColor],</span><br><span class="line">             &#x2F;&#x2F; 【1.3】选择指示器颜色（底部菜单线颜色）</span><br><span class="line">             CAPSPageMenuOptionSelectionIndicatorColor:HQLThemeColor,</span><br><span class="line">             &#x2F;&#x2F; 【1.4】所选菜单项标签文本颜色</span><br><span class="line">             CAPSPageMenuOptionSelectedMenuItemLabelColor:HQLThemeColor,</span><br><span class="line">    </span><br><span class="line">             &#x2F;&#x2F; 【2.0】尺寸</span><br><span class="line">             &#x2F;&#x2F; 【2.1】滚动菜单高度，默认值：34.0</span><br><span class="line">             CAPSPageMenuOptionMenuHeight: @(40.0),</span><br><span class="line">             &#x2F;&#x2F; 【2.2】滚动菜单边距,默认值：15.0</span><br><span class="line">&#x2F;&#x2F;             CAPSPageMenuOptionMenuMargin:@(10),</span><br><span class="line">             &#x2F;&#x2F; 【2.3】滚动菜单项宽度，默认值：111.0</span><br><span class="line">&#x2F;&#x2F;             CAPSPageMenuOptionMenuItemWidth:@(150),</span><br><span class="line">             &#x2F;&#x2F; 【2.4】选择指示器高度，默认值：3.0</span><br><span class="line">&#x2F;&#x2F;             CAPSPageMenuOptionSelectionIndicatorHeight:@(5),</span><br><span class="line">             </span><br><span class="line">             &#x2F;&#x2F; 【3.0】Segmented Control</span><br><span class="line">             &#x2F;&#x2F; 【3.1】将 PageMenu 作为分段控件使用</span><br><span class="line">             CAPSPageMenuOptionUseMenuLikeSegmentedControl:@(YES),</span><br><span class="line"></span><br><span class="line">             </span><br><span class="line">             &#x2F;&#x2F; 【4.0】其他</span><br><span class="line">             &#x2F;&#x2F; 【4.1】菜单项标题文本字体</span><br><span class="line">&#x2F;&#x2F;             CAPSPageMenuOptionMenuItemFont:[UIFont systemFontOfSize:17.0f],</span><br><span class="line">             &#x2F;&#x2F; 【4.2】添加菜单底部分割线</span><br><span class="line">             CAPSPageMenuOptionAddBottomMenuHairline:@(NO),</span><br><span class="line">             &#x2F;&#x2F;             &#x2F;&#x2F; 【4.3】菜单项宽度基于标题文字宽度</span><br><span class="line">&#x2F;&#x2F;             CAPSPageMenuOptionMenuItemWidthBasedOnTitleTextWidth:@(YES)</span><br><span class="line">             &#x2F;&#x2F; 【4.4】禁用&#x2F;启用滚动视图控制器的水平反弹</span><br><span class="line">             CAPSPageMenuOptionEnableHorizontalBounce:@(NO),</span><br><span class="line">                                     &#125;;</span><br><span class="line">        </span><br><span class="line">        CGRect pageMenuRect &#x3D; self.PageContainerView.bounds;</span><br><span class="line">        _pageMenu &#x3D; [[CAPSPageMenu alloc] initWithViewControllers:controllerArray</span><br><span class="line">                                                            frame:pageMenuRect</span><br><span class="line">                                                          options:parameters];</span><br><span class="line">    &#125;</span><br><span class="line">    return _pageMenu;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>参照运行效果：</p>
+<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/073151.jpg"></p>
+<h3 id="其他框架"><a href="#其他框架" class="headerlink" title="其他框架"></a>其他框架</h3><ul>
+<li><span class="exturl" data-url="aHR0cDovL3d3dy5qaWFuc2h1LmNvbS9wL2UwY2ZjMmEwOWIxYg==">分页切换控制器<i class="fa fa-external-link-alt"></i></span>:<span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2NoYW5namlhbmZlaXNodWkvWEJTY3JvbGxQYWdlQ29udHJvbGxlcg==">XBScrollPageController<i class="fa fa-external-link-alt"></i></span> star:100+</li>
+<li><span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL3dhbmdtY2huL1dNUGFnZUNvbnRyb2xsZXIvYmxvYi9tYXN0ZXIvUkVBRE1FX3poLUNOLm1k">WMPageController<i class="fa fa-external-link-alt"></i></span> star：1300+</li>
+<li><span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL21heGVwL01YU2VnbWVudGVkUGFnZXI=">MXSegmentedPager<i class="fa fa-external-link-alt"></i></span> star:700+</li>
+<li><span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL3hoemVuZ0FJQi9YSFR3aXR0ZXJQYWdnaW5nVmlld2Vy">XHTwitterPaggingViewer<i class="fa fa-external-link-alt"></i></span> star:200+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>独木舟的木
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://andy0570.com/2017/04/25/PageMenu%E2%80%94%E2%80%94%E7%81%B5%E6%B4%BB%E5%8F%AF%E5%AE%9A%E5%88%B6%E7%9A%84%E5%88%86%E9%A1%B5%E8%8F%9C%E5%8D%95%E6%8E%A7%E5%88%B6%E5%99%A8/" title="PageMenu——灵活可定制的分页菜单控制器">https://andy0570.com/2017/04/25/PageMenu——灵活可定制的分页菜单控制器/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <span class="exturl" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpo"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</span> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/iOS/" rel="tag"># iOS</a>
+              <a href="/tags/GitHub/" rel="tag"># GitHub</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2017/04/24/iOS%20%E7%BC%96%E7%A8%8B%EF%BC%9A%5BDemo%5DPageController/" rel="prev" title="iOS 编程：[Demo]PageController">
+      <i class="fa fa-chevron-left"></i> iOS 编程：[Demo]PageController
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2017/04/27/UINavigationController-%E8%A7%86%E5%9B%BE%E6%8E%A7%E5%88%B6%E5%99%A8/" rel="next" title="UINavigationController 视图控制器">
+      UINavigationController 视图控制器 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+        </div>
+        
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">独木舟的木</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">2.1m</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">31:21</span>
+</div>
+  <div class="powered-by">由 <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZw==">NexT.Gemini</span> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

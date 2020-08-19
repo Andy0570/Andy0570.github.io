@@ -1,23 +1,560 @@
-{% extends '_layout.swig' %}
-{% import '_macro/post.swig' as post_template %}
-{% import '_macro/sidebar.swig' as sidebar_template %}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.0.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+  <meta name="google-site-verification" content="wioXOS3Gv2wXUpJ3sLtfZ4ft6YJYKNLLWSw6QoZTFYM">
+  <meta name="msvalidate.01" content="C96491A81239C517A50597C54EE53CD1">
+  <meta name="baidu-site-verification" content="h8asiToN1b">
 
-{% block title %}{{ page.title }} | {{ title }}{% endblock %}
+<link rel="stylesheet" href="/css/main.css">
 
-{% block page_class %}page-post-detail{% endblock %}
 
-{% block content %}
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  
+  <link rel="stylesheet" href="/lib/animate-css/animate.min.css">
 
-  <div id="posts" class="posts-expand">
-    {{ post_template.render(page) }}
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"andy0570.com","root":"/","scheme":"Gemini","version":"8.0.0-rc.5","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":"mac","bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false};
+  </script>
+
+  <meta name="description" content="第三方框架 GitHub: UITableView-FDTemplateLayoutCell ⭐️8000+  ✨方法一：使用 Auto Layout 并缓存高度该方法参考：UITableView自动计算cell高度并缓存，再也不用管高度啦大致分4步实现： 第一步自定义 UITableViewCell 子类对象，xib 文件中的控件使用 Auto Layout【自上而下】加好约束：">
+<meta property="og:type" content="article">
+<meta property="og:title" content="UITableViewCell 高度自适应">
+<meta property="og:url" content="https://andy0570.com/2017/03/17/UITableViewCell%E9%AB%98%E5%BA%A6%E8%87%AA%E9%80%82%E5%BA%94/index.html">
+<meta property="og:site_name" content="独木舟的木">
+<meta property="og:description" content="第三方框架 GitHub: UITableView-FDTemplateLayoutCell ⭐️8000+  ✨方法一：使用 Auto Layout 并缓存高度该方法参考：UITableView自动计算cell高度并缓存，再也不用管高度啦大致分4步实现： 第一步自定义 UITableViewCell 子类对象，xib 文件中的控件使用 Auto Layout【自上而下】加好约束：">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/073804.jpg">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/073806.jpg">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/073807.jpg">
+<meta property="article:published_time" content="2017-03-17T06:17:00.000Z">
+<meta property="article:modified_time" content="2019-05-01T14:35:18.000Z">
+<meta property="article:author" content="独木舟的木">
+<meta property="article:tag" content="iOS">
+<meta property="article:tag" content="UIKit">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/073804.jpg">
+
+<link rel="canonical" href="https://andy0570.com/2017/03/17/UITableViewCell%E9%AB%98%E5%BA%A6%E8%87%AA%E9%80%82%E5%BA%94/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>UITableViewCell 高度自适应 | 独木舟的木</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="独木舟的木" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <main class="main">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+        <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
   </div>
 
-{% endblock %}
+  <div class="site-meta">
 
-{% block sidebar %}
-  {{ sidebar_template.render(true) }}
-{% endblock %}
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">独木舟的木</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">iOS Developer</p>
+  </div>
 
-{% block script_extra %}
-  {% include '_scripts/pages/post-details.swig' %}
-{% endblock %}
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">14</span></a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">36</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">310</span></a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <section class="post-toc-wrap sidebar-panel">
+          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E4%B8%89%E6%96%B9%E6%A1%86%E6%9E%B6"><span class="nav-number">1.</span> <span class="nav-text">第三方框架</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E2%9C%A8%E6%96%B9%E6%B3%95%E4%B8%80%EF%BC%9A%E4%BD%BF%E7%94%A8-Auto-Layout-%E5%B9%B6%E7%BC%93%E5%AD%98%E9%AB%98%E5%BA%A6"><span class="nav-number">2.</span> <span class="nav-text">✨方法一：使用 Auto Layout 并缓存高度</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AC%AC%E4%B8%80%E6%AD%A5"><span class="nav-number">2.1.</span> <span class="nav-text">第一步</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AC%AC%E4%BA%8C%E6%AD%A5"><span class="nav-number">2.2.</span> <span class="nav-text">第二步</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AC%AC%E4%B8%89%E6%AD%A5"><span class="nav-number">2.3.</span> <span class="nav-text">第三步</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AC%AC%E5%9B%9B%E6%AD%A5"><span class="nav-number">2.4.</span> <span class="nav-text">第四步</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E2%9C%A8%E6%96%B9%E6%B3%95%E4%BA%8C%EF%BC%9A%E4%BD%BF%E7%94%A8%E9%BB%98%E8%AE%A4-UITableViewCellStyleValue1-%E5%AE%9E%E7%8E%B0%E8%87%AA%E9%80%82%E5%BA%94%E9%AB%98%E5%BA%A6"><span class="nav-number">3.</span> <span class="nav-text">✨方法二：使用默认 UITableViewCellStyleValue1 实现自适应高度</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">4.</span> <span class="nav-text">参考</span></a></li></ol></div>
+      </section>
+      <!--/noindex-->
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="独木舟的木"
+      src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+  <p class="site-author-name" itemprop="name">独木舟的木</p>
+  <div class="site-description" itemprop="description">生若直木，不语斧凿。</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">310</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">36</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL0FuZHkwNTcw" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Andy0570"><i class="fab fa-github fa-fw"></i>GitHub</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9zdGFja292ZXJmbG93LmNvbS91c2Vycy83MjY1NDAwL2FuZHkwNTcw" title="StackOverflow → https:&#x2F;&#x2F;stackoverflow.com&#x2F;users&#x2F;7265400&#x2F;andy0570"><i class="fab fa-stack-overflow fa-fw"></i>StackOverflow</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuamlhbnNodS5jb20vdS84NGM1ZmFkYzdjMTg=" title="简书 → https:&#x2F;&#x2F;www.jianshu.com&#x2F;u&#x2F;84c5fadc7c18"><i class="heartbeat fa-fw"></i>简书</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="bWFpbHRvOmFuZHl3aG1AMTYzLmNvbQ==" title="E-Mail → mailto:andywhm@163.com"><i class="fa fa-envelope fa-fw"></i>E-Mail</span>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <span class="exturl cc-opacity" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpo"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></span>
+  </div>
+
+
+
+      </section>
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </header>
+
+      
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div id="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+      <div class="main-inner">
+        
+
+        <div class="content post posts-expand">
+          
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://andy0570.com/2017/03/17/UITableViewCell%E9%AB%98%E5%BA%A6%E8%87%AA%E9%80%82%E5%BA%94/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+      <meta itemprop="name" content="独木舟的木">
+      <meta itemprop="description" content="生若直木，不语斧凿。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="独木舟的木">
+    </span>
+
+    
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          UITableViewCell 高度自适应
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2017-03-17 14:17:00" itemprop="dateCreated datePublished" datetime="2017-03-17T14:17:00+08:00">2017-03-17</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-05-01 22:35:18" itemprop="dateModified" datetime="2019-05-01T22:35:18+08:00">2019-05-01</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS/" itemprop="url" rel="index"><span itemprop="name">iOS</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>5.5k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>5 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h3 id="第三方框架"><a href="#第三方框架" class="headerlink" title="第三方框架"></a>第三方框架</h3><ul>
+<li><span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2Zvcmtpbmdkb2cvVUlUYWJsZVZpZXctRkRUZW1wbGF0ZUxheW91dENlbGw=">GitHub: UITableView-FDTemplateLayoutCell<i class="fa fa-external-link-alt"></i></span> ⭐️8000+</li>
+</ul>
+<h3 id="✨方法一：使用-Auto-Layout-并缓存高度"><a href="#✨方法一：使用-Auto-Layout-并缓存高度" class="headerlink" title="✨方法一：使用 Auto Layout 并缓存高度"></a>✨方法一：使用 Auto Layout 并缓存高度</h3><p>该方法参考：<span class="exturl" data-url="aHR0cDovL3d3dy5qaWFuc2h1LmNvbS9wLzY0ZjBlMTU1NzU2Mg==">UITableView自动计算cell高度并缓存，再也不用管高度啦<i class="fa fa-external-link-alt"></i></span><br>大致分4步实现：</p>
+<h4 id="第一步"><a href="#第一步" class="headerlink" title="第一步"></a>第一步</h4><p>自定义 <strong>UITableViewCell</strong> 子类对象，<strong>xib</strong> 文件中的控件使用 <strong>Auto Layout</strong>【自上而下】加好约束：</p>
+<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/073804.jpg"></p>
+<a id="more"></a>
+
+<h4 id="第二步"><a href="#第二步" class="headerlink" title="第二步"></a>第二步</h4><p>Controller 对象中添加一个 <strong>NSMutableDictionary</strong> 属性，用于保存缓存下来的cell高度值，这样可以解决点击状态栏不会自动滚动到顶部的问题。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">@property (nonatomic, strong) NSMutableDictionary *heightAtIndexPath;</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="第三步"><a href="#第三步" class="headerlink" title="第三步"></a>第三步</h4><p>实现代理方法：<code>-(void)tableView: willDisplayCell: forRowAtIndexPath:</code></p>
+<p>用第2️⃣步添加的 <strong>NSMutableDictionary</strong> 属性作为容器，在cell将要显示的时候在字典中保存这行cell的高度。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath &#123;</span><br><span class="line">  </span><br><span class="line">    NSNumber *height &#x3D; @(cell.frame.size.height);</span><br><span class="line">    [self.heightAtIndexPath setObject:height forKey:indexPath];</span><br><span class="line">  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="第四步"><a href="#第四步" class="headerlink" title="第四步"></a>第四步</h4><p>实现代理方法：<code>-(CGFloat)tableView:estimatedHeightForRowAtIndexPath:</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">-(CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath &#123;</span><br><span class="line">    &#x2F;&#x2F; 先去字典查看有没有缓存高度，有就返回，没有就返回一个大概高度</span><br><span class="line">    NSNumber *height &#x3D; [self.heightAtIndexPath objectForKey:indexPath];</span><br><span class="line">    return (height ? height.floatValue : 100);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>结果：<br>cell 的行高会自适应内容文本的高度：<br><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/073806.jpg"></p>
+<h3 id="✨方法二：使用默认-UITableViewCellStyleValue1-实现自适应高度"><a href="#✨方法二：使用默认-UITableViewCellStyleValue1-实现自适应高度" class="headerlink" title="✨方法二：使用默认 UITableViewCellStyleValue1 实现自适应高度"></a>✨方法二：使用默认 UITableViewCellStyleValue1 实现自适应高度</h3><p>上面的方法是通过自定义 <strong>UITableViewCell</strong> 子类对象实现高度自适应的。<br>某天发现了一篇博文号称能使用系统默认Cell 多行显示 detailTableView<br>参考：<span class="exturl" data-url="aHR0cDovL3RoZS1sb3N0LWJlYXV0eS5ibG9nc3BvdC5qcC8yMDA5LzExL211bHRpLWxpbmUtdWl0YWJsZXZpZXdjZWxsLXVzaW5nLmh0bWw=">Multi-line UITableViewCell using UILabel<i class="fa fa-external-link-alt"></i></span></p>
+<p>1️⃣设置 <code>detailTextLabel.numberOfLines = 0</code> 实现多行显示</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath &#123;</span><br><span class="line">    </span><br><span class="line">    static NSString *cellReusreIdentifier &#x3D; @&quot;UITableViewCellStyleValue1&quot;;</span><br><span class="line">    UITableViewCell *cell &#x3D;</span><br><span class="line">        [tableView dequeueReusableCellWithIdentifier:cellReusreIdentifier];</span><br><span class="line">    if (!cell) &#123;</span><br><span class="line">        cell &#x3D; [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1</span><br><span class="line">                                      reuseIdentifier:cellReusreIdentifier];</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    NSArray *allkey &#x3D; [self.dataSourceDictionary allKeys];</span><br><span class="line">    NSString *oneKey &#x3D; allkey[indexPath.row];</span><br><span class="line"></span><br><span class="line">    cell.textLabel.text &#x3D; oneKey;</span><br><span class="line">    cell.detailTextLabel.text &#x3D; self.dataSourceDictionary[oneKey];</span><br><span class="line">    cell.detailTextLabel.numberOfLines &#x3D; 0;</span><br><span class="line">    cell.detailTextLabel.lineBreakMode &#x3D; NSLineBreakByWordWrapping;</span><br><span class="line">    return cell;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>2️⃣计算 <code>detailTextLabel</code> 中的字符串大小，并返回高度。</p>
+<blockquote>
+<p>You will also need to return a suitable height for the multi-line cell. A height of (44.0 + (numberOfLines - 1) * 19.0) should work fine.</p>
+</blockquote>
+<p>文章作者称，还需要为多行 cell 返回一个合适的高度，高度的计算方式=<br>(44.0 + （detailTextLabel 的行数 - 1）*  19.0）</p>
+<p>而网上大多数获取高度的方法是，通过计算（包含给定字符串的）矩形大小来获得高度和宽度：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath &#123;</span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F; 参数一：最大宽高 44+19*4</span><br><span class="line">    CGSize maxSize &#x3D; CGSizeMake(355, MAXFLOAT);</span><br><span class="line">    &#x2F;&#x2F; 参数二：Font:</span><br><span class="line">    UIFont *defaultFont &#x3D; [UIFont systemFontOfSize:17.0f];</span><br><span class="line">    &#x2F;&#x2F; 参数三：String:</span><br><span class="line">    NSArray *allKeys &#x3D; [self.dataSourceDictionary allKeys];</span><br><span class="line">    NSString *oneKey &#x3D; allKeys[indexPath.row];</span><br><span class="line">    NSString *string &#x3D; self.dataSourceDictionary[oneKey];</span><br><span class="line">    </span><br><span class="line">    CGSize resultSize &#x3D; [self sizeOfText:string font:defaultFont maxSize:maxSize];</span><br><span class="line">    NSLog(@&quot;result Size:(%f,%f) \n&quot;,resultSize.width,resultSize.height);</span><br><span class="line">    </span><br><span class="line">&#x2F;&#x2F;    return resultSize.height + 23; &#x2F;&#x2F; 23即消息上下的空间，可自由调整</span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F; 总高度 &#x2F; 1行文本的高度 &#x3D; 行数</span><br><span class="line">    CGFloat labelNum &#x3D; resultSize.height &#x2F; 20.5;</span><br><span class="line">    CGFloat height &#x3D; 44.0 + (labelNum - 1) * 19.0;</span><br><span class="line">    return height;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 封装计算多行文本数据size方法</span><br><span class="line">- (CGSize)sizeOfText:(NSString *)text font:(UIFont *)font maxSize:(CGSize)maxSize &#123;</span><br><span class="line">    NSDictionary *attrs &#x3D; @&#123;NSFontAttributeName:font&#125;;</span><br><span class="line">    CGSize size &#x3D; [text boundingRectWithSize:maxSize</span><br><span class="line">                                     options:NSStringDrawingUsesLineFragmentOrigin</span><br><span class="line">                                  attributes:attrs</span><br><span class="line">                                     context:nil].size;</span><br><span class="line">    return size;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里会用到 <strong>UIKit</strong> 框架中 <strong>NSString</strong> 类的一个方法以计算包含字符串的矩形区域大小:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;**</span><br><span class="line"> 计算并返回(在当前图形上下文中)(使用给定选项和显示特征)的指定矩形内绘制的接收器的边界。</span><br><span class="line"> </span><br><span class="line"> @param size 要绘制的矩形的大小。</span><br><span class="line"> @param options 字符串绘图选项。</span><br><span class="line"> @param attributes 要应用于字符串的文本属性字典。 这些属性可以应用于NSAttributedString对象，但在NSString对象的情况下，这些属性适用于整个字符串，而不是字符串中的范围。</span><br><span class="line"> @param context 用于接收器的字符串绘制上下文，指定最小比例因子和跟踪调整。</span><br><span class="line"> @return 使用给定选项和显示特征绘制的接收器的边界。 从该方法返回的直线起点是第一个字形起点。</span><br><span class="line"> *&#x2F;</span><br><span class="line">- (CGRect)boundingRectWithSize:(CGSize)size</span><br><span class="line">                       options:(NSStringDrawingOptions)options</span><br><span class="line">                    attributes:(nullable NSDictionary&lt;NSString *, id&gt; *)attributes   </span><br><span class="line">                       context:(nullable NSStringDrawingContext *)context NS_AVAILABLE(10_11, 7_0);</span><br></pre></td></tr></table></figure>
+<p>参数二是一个枚举类型：<br>类型为 <code>NSStringDrawingOptions</code>，用来指明绘制字符串时的渲染选项。各个选项如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">typedef NS_OPTIONS(NSInteger, NSStringDrawingOptions) &#123;</span><br><span class="line">  &#x2F;&#x2F; The specified origin is the line fragment origin, not the base line origin</span><br><span class="line">  &#x2F;&#x2F; 整个文本将以每行组成的矩形为单位计算整个文本的尺寸</span><br><span class="line">  NSStringDrawingUsesLineFragmentOrigin &#x3D; 1 &lt;&lt; 0, </span><br><span class="line"></span><br><span class="line">  &#x2F;&#x2F; Uses the font leading for calculating line heights</span><br><span class="line">  &#x2F;&#x2F; 使用字体的行间距来计算文本占用的范围，即每一行的底部到下一行的底部的距离计算</span><br><span class="line">  NSStringDrawingUsesFontLeading &#x3D; 1 &lt;&lt; 1, </span><br><span class="line"></span><br><span class="line">  &#x2F;&#x2F; Uses image glyph bounds instead of typographic bounds</span><br><span class="line">  &#x2F;&#x2F; 将文字以图像符号计算文本占用范围，而不是排版的边界</span><br><span class="line">  NSStringDrawingUsesDeviceMetrics &#x3D; 1 &lt;&lt; 3,</span><br><span class="line"></span><br><span class="line">  &#x2F;&#x2F; Truncates and adds the ellipsis character to the last visible line if the text doesn&#39;t fit into the bounds specified.</span><br><span class="line">  &#x2F;&#x2F; Ignored if NSStringDrawingUsesLineFragmentOrigin is not also set.</span><br><span class="line">  &#x2F;&#x2F; 如果文本内容超出指定的矩形限制，文本将被截去并在最后一个字符后加上省略号。</span><br><span class="line">  &#x2F;&#x2F; 如果 NSStringDrawingUsesLineFragmentOrigin 没有设置，则该选项不生效</span><br><span class="line">  NSStringDrawingTruncatesLastVisibleLine NS_ENUM_AVAILABLE(10_5, 6_0) &#x3D; 1 &lt;&lt; 5, </span><br><span class="line">&#125; NS_ENUM_AVAILABLE(10_0, 6_0);</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/073807.jpg"></p>
+<p>测试结果并不是很好，你会发现返回多行 Label  行高的时候会少计算了一行，猜测原因就在于 <code>boundingRectWithSize:options:attributes: context:</code>传进去的第一个参数，该参数代表指定矩形区域的大小，但是 <code>detailLabel</code> 的宽度不是固定的，而是根据 <code>textLabel</code>的宽度动态变化的。因此要继续往下做的话就要先计算出 <code>textLabel</code> 的宽度，再用 屏幕宽度-textLabel 宽度-左右边距-<code>textLabel</code> 与 <code>detailLabel</code>之间的距离 算出 <code>detailLabel</code>的实际宽度传进去。。。😂😂😂，越想越复杂，因此该方法目前来看还是更加适用于固定多行的时候吧。</p>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><ul>
+<li><span class="exturl" data-url="aHR0cDovL2Jsb2cuc3Vubnl4eC5jb20vMjAxNS8wNS8xNy9jZWxsLWhlaWdodC1jYWxjdWxhdGlvbi8=">优化UITableViewCell高度计算的那些事 @ForkingDog<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cDovL3d3dy5qaWFuc2h1LmNvbS9wLzY0ZjBlMTU1NzU2Mg==">UITableView自动计算cell高度并缓存，再也不用管高度啦<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cDovL3d3dy5pdGRhZGFvLmNvbS9hcnRpY2xlcy9jMTVhMTk3MDM3cDAuaHRtbA==">理解NSStringDrawingOptions每个选项的用法与意义<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZ2F1c3NfbGkvYXJ0aWNsZS9kZXRhaWxzLzUxMDEzMjg0">iOS－－UILabel字体默认宽度和高度<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cDovL3d3dy5qaWFuc2h1LmNvbS9wLzdiZDg3MDU0ZDZhYw==">UI高级控件入门2——UITableView<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cHM6Ly9tcC53ZWl4aW4ucXEuY29tL3M/X19iaXo9TXpJNU1qRXpOekExTUE9PSZtaWQ9MjY1MDI2NDIxNSZpZHg9MSZzbj1iY2U1M2NjNWI5OGVlZjNmODM5NzYwYTRiOWI1MDAyYyZjaGtzbT1mNDA2ODNhMmMzNzEwYWI0YWY1OGZhNWUzOWEwNTNjNTk5N2M0NzgwZGEzZGYwZjVhY2NhMTg5YjZmOGZjMTVhNWM3Y2MyNjA3NmYxJnNjZW5lPTAjcmQ=">UILabel中一个很多人都会踩的坑<i class="fa fa-external-link-alt"></i></span></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>独木舟的木
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://andy0570.com/2017/03/17/UITableViewCell%E9%AB%98%E5%BA%A6%E8%87%AA%E9%80%82%E5%BA%94/" title="UITableViewCell 高度自适应">https://andy0570.com/2017/03/17/UITableViewCell高度自适应/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <span class="exturl" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpo"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</span> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/iOS/" rel="tag"># iOS</a>
+              <a href="/tags/UIKit/" rel="tag"># UIKit</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2017/03/15/%E4%BD%BF%E7%94%A8GitHub%20Desktop%E5%AE%A2%E6%88%B7%E7%AB%AF%E4%B8%8A%E4%BC%A0Xcode%E4%BB%A3%E7%A0%81/" rel="prev" title="使用GitHub Desktop客户端上传Xcode代码">
+      <i class="fa fa-chevron-left"></i> 使用GitHub Desktop客户端上传Xcode代码
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2017/03/20/%E3%80%8AObjective-C%20%E7%BC%96%E7%A8%8B%E3%80%8B1.%E5%9F%BA%E7%A1%80/" rel="next" title="《Objective-C 编程》1.基础">
+      《Objective-C 编程》1.基础 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+        </div>
+        
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">独木舟的木</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">2.1m</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">31:21</span>
+</div>
+  <div class="powered-by">由 <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZw==">NexT.Gemini</span> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

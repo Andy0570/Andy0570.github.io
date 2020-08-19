@@ -1,23 +1,620 @@
-{% extends '_layout.swig' %}
-{% import '_macro/post.swig' as post_template %}
-{% import '_macro/sidebar.swig' as sidebar_template %}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.0.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+  <meta name="google-site-verification" content="wioXOS3Gv2wXUpJ3sLtfZ4ft6YJYKNLLWSw6QoZTFYM">
+  <meta name="msvalidate.01" content="C96491A81239C517A50597C54EE53CD1">
+  <meta name="baidu-site-verification" content="h8asiToN1b">
 
-{% block title %}{{ page.title }} | {{ title }}{% endblock %}
+<link rel="stylesheet" href="/css/main.css">
 
-{% block page_class %}page-post-detail{% endblock %}
 
-{% block content %}
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  
+  <link rel="stylesheet" href="/lib/animate-css/animate.min.css">
 
-  <div id="posts" class="posts-expand">
-    {{ post_template.render(page) }}
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"andy0570.com","root":"/","scheme":"Gemini","version":"8.0.0-rc.5","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":"mac","bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false};
+  </script>
+
+  <meta property="og:type" content="article">
+<meta property="og:title" content="《Effective Objective-C 2.0》4.协议与分类">
+<meta property="og:url" content="https://andy0570.com/2017/08/15/%E3%80%8AEffective%20Objective-C%202.0%E3%80%8B4.%E5%8D%8F%E8%AE%AE%E4%B8%8E%E5%88%86%E7%B1%BB/index.html">
+<meta property="og:site_name" content="独木舟的木">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072534.jpg">
+<meta property="article:published_time" content="2017-08-15T08:54:00.000Z">
+<meta property="article:modified_time" content="2019-04-28T07:45:00.000Z">
+<meta property="article:author" content="独木舟的木">
+<meta property="article:tag" content="iOS">
+<meta property="article:tag" content="Objective-C">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072534.jpg">
+
+<link rel="canonical" href="https://andy0570.com/2017/08/15/%E3%80%8AEffective%20Objective-C%202.0%E3%80%8B4.%E5%8D%8F%E8%AE%AE%E4%B8%8E%E5%88%86%E7%B1%BB/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>《Effective Objective-C 2.0》4.协议与分类 | 独木舟的木</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="独木舟的木" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <main class="main">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+        <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
   </div>
 
-{% endblock %}
+  <div class="site-meta">
 
-{% block sidebar %}
-  {{ sidebar_template.render(true) }}
-{% endblock %}
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">独木舟的木</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">iOS Developer</p>
+  </div>
 
-{% block script_extra %}
-  {% include '_scripts/pages/post-details.swig' %}
-{% endblock %}
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">14</span></a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">36</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">310</span></a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <section class="post-toc-wrap sidebar-panel">
+          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AC%AC4%E7%AB%A0-%E5%8D%8F%E8%AE%AE%E4%B8%8E%E5%88%86%E7%B1%BB"><span class="nav-number">1.</span> <span class="nav-text">第4章 协议与分类</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC23%E6%9D%A1%EF%BC%9A%E9%80%9A%E8%BF%87%E5%A7%94%E6%89%98%E4%B8%8E%E6%95%B0%E6%8D%AE%E6%BA%90%E5%8D%8F%E8%AE%AE%E8%BF%9B%E8%A1%8C%E5%AF%B9%E8%B1%A1%E9%97%B4%E9%80%9A%E4%BF%A1"><span class="nav-number">1.1.</span> <span class="nav-text">第23条：通过委托与数据源协议进行对象间通信</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%A7%94%E6%89%98%E6%A8%A1%E5%BC%8F%EF%BC%88Delegate-pattern%EF%BC%89"><span class="nav-number">1.1.1.</span> <span class="nav-text">委托模式（Delegate pattern）</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#EOCNetworkFetcherDelegate-h"><span class="nav-number">1.1.1.1.</span> <span class="nav-text">EOCNetworkFetcherDelegate.h</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#EOCNetworkFetcher-%E7%B1%BB"><span class="nav-number">1.1.1.2.</span> <span class="nav-text">EOCNetworkFetcher 类</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#EOCDataModel"><span class="nav-number">1.1.1.3.</span> <span class="nav-text">EOCDataModel</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A6%81%E7%82%B9"><span class="nav-number">1.1.2.</span> <span class="nav-text">要点</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC24%E6%9D%A1%EF%BC%9A%E5%B0%86%E7%B1%BB%E7%9A%84%E5%AE%9E%E7%8E%B0%E4%BB%A3%E7%A0%81%E5%88%86%E6%95%A3%E5%88%B0%E4%BE%BF%E4%BA%8E%E7%AE%A1%E7%90%86%E7%9A%84%E6%95%B0%E4%B8%AA%E5%88%86%E7%B1%BB%E4%B9%8B%E4%B8%AD"><span class="nav-number">1.2.</span> <span class="nav-text">第24条：将类的实现代码分散到便于管理的数个分类之中</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E4%B8%8D%E4%BD%BF%E7%94%A8-Category-%E5%88%86%E7%B1%BB%EF%BC%9A"><span class="nav-number">1.2.0.1.</span> <span class="nav-text">不使用 Category 分类：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8-Category-%E5%88%86%E7%B1%BB%EF%BC%9A"><span class="nav-number">1.2.0.2.</span> <span class="nav-text">使用 Category 分类：</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A6%81%E7%82%B9-1"><span class="nav-number">1.2.1.</span> <span class="nav-text">要点</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC25%E6%9D%A1%EF%BC%9A%E6%80%BB%E6%98%AF%E4%B8%BA%E7%AC%AC%E4%B8%89%E6%96%B9%E7%B1%BB%E7%9A%84%E5%88%86%E7%B1%BB%E5%90%8D%E7%A7%B0%E5%8A%A0%E5%89%8D%E7%BC%80"><span class="nav-number">1.3.</span> <span class="nav-text">第25条：总是为第三方类的分类名称加前缀</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E5%88%86%E7%B1%BB%E7%9A%84%E9%97%AE%E9%A2%98%EF%BC%9A"><span class="nav-number">1.3.1.</span> <span class="nav-text">使用分类的问题：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95%EF%BC%9A"><span class="nav-number">1.3.2.</span> <span class="nav-text">解决方法：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A6%81%E7%82%B9-2"><span class="nav-number">1.3.3.</span> <span class="nav-text">要点</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC26%E6%9D%A1%EF%BC%9A%E5%8B%BF%E5%9C%A8%E5%88%86%E7%B1%BB%E4%B8%AD%E5%A3%B0%E6%98%8E%E5%B1%9E%E6%80%A7"><span class="nav-number">1.4.</span> <span class="nav-text">第26条：勿在分类中声明属性</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A6%81%E7%82%B9-3"><span class="nav-number">1.4.1.</span> <span class="nav-text">要点</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC27%E6%9D%A1%EF%BC%9A%E4%BD%BF%E7%94%A8-%E2%80%9Cclass-continuation%E5%88%86%E7%B1%BB%E2%80%9D-%E9%9A%90%E8%97%8F%E5%AE%9E%E7%8E%B0%E7%BB%86%E8%8A%82"><span class="nav-number">1.5.</span> <span class="nav-text">第27条：使用  “class-continuation分类”  隐藏实现细节</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Objectice-C-Class-Extension"><span class="nav-number">1.5.1.</span> <span class="nav-text">Objectice-C Class Extension</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A6%81%E7%82%B9-4"><span class="nav-number">1.5.2.</span> <span class="nav-text">要点</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC28%E6%9D%A1%EF%BC%9A%E9%80%9A%E8%BF%87%E5%8D%8F%E8%AE%AE%E6%8F%90%E4%BE%9B%E5%8C%BF%E5%90%8D%E5%AF%B9%E8%B1%A1"><span class="nav-number">1.6.</span> <span class="nav-text">第28条：通过协议提供匿名对象</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%A4%BA%E4%BE%8B%E4%BB%A3%E7%A0%81"><span class="nav-number">1.6.1.</span> <span class="nav-text">示例代码</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%A9-Cells-%E5%8F%AF%E5%A4%8D%E7%94%A8"><span class="nav-number">1.7.</span> <span class="nav-text">让 Cells 可复用</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A6%81%E7%82%B9-5"><span class="nav-number">1.7.1.</span> <span class="nav-text">要点</span></a></li></ol></li></ol></li></ol></div>
+      </section>
+      <!--/noindex-->
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="独木舟的木"
+      src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+  <p class="site-author-name" itemprop="name">独木舟的木</p>
+  <div class="site-description" itemprop="description">生若直木，不语斧凿。</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">310</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">36</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL0FuZHkwNTcw" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Andy0570"><i class="fab fa-github fa-fw"></i>GitHub</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9zdGFja292ZXJmbG93LmNvbS91c2Vycy83MjY1NDAwL2FuZHkwNTcw" title="StackOverflow → https:&#x2F;&#x2F;stackoverflow.com&#x2F;users&#x2F;7265400&#x2F;andy0570"><i class="fab fa-stack-overflow fa-fw"></i>StackOverflow</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuamlhbnNodS5jb20vdS84NGM1ZmFkYzdjMTg=" title="简书 → https:&#x2F;&#x2F;www.jianshu.com&#x2F;u&#x2F;84c5fadc7c18"><i class="heartbeat fa-fw"></i>简书</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="bWFpbHRvOmFuZHl3aG1AMTYzLmNvbQ==" title="E-Mail → mailto:andywhm@163.com"><i class="fa fa-envelope fa-fw"></i>E-Mail</span>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <span class="exturl cc-opacity" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpo"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></span>
+  </div>
+
+
+
+      </section>
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </header>
+
+      
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div id="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+      <div class="main-inner">
+        
+
+        <div class="content post posts-expand">
+          
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://andy0570.com/2017/08/15/%E3%80%8AEffective%20Objective-C%202.0%E3%80%8B4.%E5%8D%8F%E8%AE%AE%E4%B8%8E%E5%88%86%E7%B1%BB/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+      <meta itemprop="name" content="独木舟的木">
+      <meta itemprop="description" content="生若直木，不语斧凿。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="独木舟的木">
+    </span>
+
+    
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          《Effective Objective-C 2.0》4.协议与分类
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2017-08-15 16:54:00" itemprop="dateCreated datePublished" datetime="2017-08-15T16:54:00+08:00">2017-08-15</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-04-28 15:45:00" itemprop="dateModified" datetime="2019-04-28T15:45:00+08:00">2019-04-28</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E3%80%8AEffective-Objective-C-2-0%E3%80%8B/" itemprop="url" rel="index"><span itemprop="name">《Effective Objective-C 2.0》</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>10k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>9 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072534.jpg"></p>
+<a id="more"></a>
+
+<h2 id="第4章-协议与分类"><a href="#第4章-协议与分类" class="headerlink" title="第4章 协议与分类"></a>第4章 协议与分类</h2><h3 id="第23条：通过委托与数据源协议进行对象间通信"><a href="#第23条：通过委托与数据源协议进行对象间通信" class="headerlink" title="第23条：通过委托与数据源协议进行对象间通信"></a>第23条：通过委托与数据源协议进行对象间通信</h3><h4 id="委托模式（Delegate-pattern）"><a href="#委托模式（Delegate-pattern）" class="headerlink" title="委托模式（Delegate pattern）"></a>委托模式（Delegate pattern）</h4><p>主旨：定义一套接口，某个对象若想接受另一个对象的委托，则需要遵从此接口，以便成为其“委托对象”（delegate）。而这“另一个对象”则可以给其委托对象回传一些信息，也可以在发生相关事件时通知委托对象。</p>
+<h5 id="EOCNetworkFetcherDelegate-h"><a href="#EOCNetworkFetcherDelegate-h" class="headerlink" title="EOCNetworkFetcherDelegate.h"></a>EOCNetworkFetcherDelegate.h</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">#import &lt;Foundation&#x2F;Foundation.h&gt;</span><br><span class="line">@class EOCNetworkFetcher;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 委托协议名通常是在相关类名后面加上 Delegate。</span><br><span class="line">&#x2F;&#x2F; 委托模式:对象把应对某个行为的责任委托给另一个类。</span><br><span class="line">@protocol EOCNetworkFetcherDelegate &lt;NSObject&gt;</span><br><span class="line">@optional</span><br><span class="line">- (void)networkFetcher:(EOCNetworkFetcher *)fetcher</span><br><span class="line">        didReceiveData:(NSData *)data;</span><br><span class="line">- (void)networkFetcher:(EOCNetworkFetcher *)fetcher</span><br><span class="line">      didFailWithError:(NSError *)error;</span><br><span class="line">- (void)networkFetcher:(EOCNetworkFetcher *)fetcher</span><br><span class="line">        didUpdateProgressTo:(float)progress;</span><br><span class="line">- (BOOL)networkFetcher:(EOCNetworkFetcher *)fetcher</span><br><span class="line">        shouldFollowRedirectToURL:(NSURL *)url;</span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+
+<h5 id="EOCNetworkFetcher-类"><a href="#EOCNetworkFetcher-类" class="headerlink" title="EOCNetworkFetcher 类"></a>EOCNetworkFetcher 类</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;  EOCNetworkFetcher.h</span><br><span class="line">#import &lt;Foundation&#x2F;Foundation.h&gt;</span><br><span class="line">#import &quot;EOCNetworkFetcherDelegate.h&quot;</span><br><span class="line"></span><br><span class="line">@interface EOCNetworkFetcher : NSObject</span><br><span class="line">&#x2F;&#x2F; 使用属性定义其委托对象</span><br><span class="line">&#x2F;&#x2F; 使用 weak 关键字，避免引用循环</span><br><span class="line">@property (nonatomic, weak) id&lt;EOCNetworkFetcherDelegate&gt; delegate;</span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">#import &quot;EOCNetworkFetcher.h&quot;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;  EOCNetworkFetcher.m</span><br><span class="line">@interface EOCNetworkFetcher () &#123;</span><br><span class="line">    &#x2F;&#x2F; ❇️ 使用 bitfield 数据类型</span><br><span class="line">    &#x2F;&#x2F; 缓存委托对象是否能响应协议中的相关方法</span><br><span class="line">    struct &#123;</span><br><span class="line">        unsigned int didReceiveData            : 1;</span><br><span class="line">        unsigned int didFailWithError          : 1;</span><br><span class="line">        unsigned int didUpdateProgressTo       : 1;</span><br><span class="line">        unsigned int shouldFollowRedirectToURL : 1;</span><br><span class="line">    &#125; _delegateFlags;</span><br><span class="line">&#125;</span><br><span class="line">@end</span><br><span class="line">@implementation EOCNetworkFetcher</span><br><span class="line"></span><br><span class="line">- (void)setDelegate:(id&lt;EOCNetworkFetcherDelegate&gt;)delegate &#123;</span><br><span class="line">    _delegate &#x3D; delegate;</span><br><span class="line">    &#x2F;&#x2F; ① ❇️实现缓存功能</span><br><span class="line">    _delegateFlags.didReceiveData &#x3D; [delegate respondsToSelector:@selector(networkFetcher:didReceiveData:)];</span><br><span class="line">    _delegateFlags.didFailWithError &#x3D; [delegate respondsToSelector:@selector(networkFetcher:didFailWithError:)];</span><br><span class="line">    _delegateFlags.didUpdateProgressTo &#x3D; [delegate respondsToSelector:@selector(networkFetcher:didUpdateProgressTo:)];</span><br><span class="line">    _delegateFlags.shouldFollowRedirectToURL &#x3D; [delegate respondsToSelector:@selector(networkFetcher:shouldFollowRedirectToURL:)];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)testMethod &#123;</span><br><span class="line">    &#x2F;&#x2F; data obtained from network</span><br><span class="line">    NSData *data;</span><br><span class="line">    &#x2F;&#x2F; ❇️在委托对象上调动可选方法，必须提前使用类型信息查询方法判断这个委托对象能否响应相关选择子</span><br><span class="line">    if ([_delegate respondsToSelector:</span><br><span class="line">            @selector(networkFetcher:didReceiveData:)]) &#123;</span><br><span class="line">        [_delegate networkFetcher:self didReceiveData:data];</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    float currentProgress &#x3D; 0.0;</span><br><span class="line">    &#x2F;&#x2F; ② ❇️查询结构体标志</span><br><span class="line">    &#x2F;&#x2F; 不必每次使用类型信息查询方法，对需要调用很多次的方法时，值得进行这种优化</span><br><span class="line">    if (_delegateFlags.didUpdateProgressTo) &#123;</span><br><span class="line">        [_delegate networkFetcher:self didUpdateProgressTo:currentProgress];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+
+<h5 id="EOCDataModel"><a href="#EOCDataModel" class="headerlink" title="EOCDataModel"></a>EOCDataModel</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;  EOCDataModel.h</span><br><span class="line">#import &lt;Foundation&#x2F;Foundation.h&gt;</span><br><span class="line"></span><br><span class="line">&#x2F;**</span><br><span class="line"> EOCDataModel 对象是 EOCNetworkFetcher 的委托对象</span><br><span class="line"> *&#x2F;</span><br><span class="line">@interface EOCDataModel : NSObject</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;  EOCDataModel.m</span><br><span class="line">#import &quot;EOCDataModel.h&quot;</span><br><span class="line">#import &quot;EOCNetworkFetcherDelegate.h&quot;</span><br><span class="line">#import &quot;EOCNetworkFetcher.h&quot;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 1.声明此类遵从委托协议</span><br><span class="line">@interface EOCDataModel () &lt;EOCNetworkFetcherDelegate&gt;</span><br><span class="line">@property (nonatomic, strong) EOCNetworkFetcher *myFetcherA;</span><br><span class="line">@property (nonatomic, strong) EOCNetworkFetcher *myFetcherB;</span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">@implementation EOCDataModel</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 2.实现委托协议中的方法</span><br><span class="line">- (void)networkFetcher:(EOCNetworkFetcher *)fetcher</span><br><span class="line">        didReceiveData:(NSData *)data &#123;</span><br><span class="line">    &#x2F;&#x2F; ❇️调用 delegate 中的方法时，总是应该把发起委托的实例也一并传入方法中,</span><br><span class="line">    &#x2F;&#x2F; 这样，delegate 对象在实现相关方法时，就能根据传入的实例分别执行不同的代码了。</span><br><span class="line">    if (fetcher &#x3D;&#x3D; _myFetcherA) &#123;</span><br><span class="line">        &#x2F;&#x2F; handle data</span><br><span class="line">    &#125;else if (fetcher &#x3D;&#x3D; _myFetcherB) &#123;</span><br><span class="line">        &#x2F;&#x2F; handle data</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)networkFetcher:(EOCNetworkFetcher *)fetcher</span><br><span class="line">      didFailWithError:(NSError *)error &#123;</span><br><span class="line">    &#x2F;&#x2F; handle error</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+
+<h4 id="要点"><a href="#要点" class="headerlink" title="要点"></a>要点</h4><ul>
+<li>委托模式为对象提供了一套接口，使其可由此将相关事件告知其他对象。</li>
+<li>将委托对象应该支持的接口定义成协议，在协议中把可能需要处理的事件定义成方法。</li>
+<li>当某对象需要从另外一个对象中获取数据时，可使用委托模式。在这种情况下，该模式亦称<strong>数据源协议</strong>（data source protocal）。</li>
+<li>若有必要，可实现含有位段的结构体，将委托对象是否能响应相关协议方法这一信息缓存至其中。</li>
+</ul>
+<h3 id="第24条：将类的实现代码分散到便于管理的数个分类之中"><a href="#第24条：将类的实现代码分散到便于管理的数个分类之中" class="headerlink" title="第24条：将类的实现代码分散到便于管理的数个分类之中"></a>第24条：将类的实现代码分散到便于管理的数个分类之中</h3><ul>
+<li>通过 <strong>Objectice-C</strong> 的”分类”（<strong>Category</strong>）机制，把类代码按逻辑划入几个分区中，这对开发与调试都有好处。</li>
+</ul>
+<h5 id="不使用-Category-分类："><a href="#不使用-Category-分类：" class="headerlink" title="不使用 Category 分类："></a>不使用 Category 分类：</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">#import &lt;Foundation&#x2F;Foundation.h&gt;</span><br><span class="line"></span><br><span class="line">@interface EOCPerson : NSObject</span><br><span class="line">@property (nonatomic, copy, readonly) NSString *firstName;</span><br><span class="line">@property (nonatomic, copy, readonly) NSString *lastName;</span><br><span class="line">@property (nonatomic, strong, readonly) NSSet *friends;</span><br><span class="line"></span><br><span class="line">- (instancetype)initWithFirstName:(NSString *)firstName</span><br><span class="line">                      andLastName:(NSString *)lastName;</span><br><span class="line"></span><br><span class="line">&#x2F;** Friendship methods *&#x2F;</span><br><span class="line">- (void)addFirend:(EOCPerson *)person;</span><br><span class="line">- (void)removeFriend:(EOCPerson *)person;</span><br><span class="line">- (BOOL)isFriendsWith:(EOCPerson *)person;</span><br><span class="line"></span><br><span class="line">&#x2F;* Word methods *&#x2F;</span><br><span class="line">- (void)performDaysWork;</span><br><span class="line">- (void)takeVacationFromWork;</span><br><span class="line"></span><br><span class="line">&#x2F;** Play methods *&#x2F;</span><br><span class="line">- (void)goToTheCinema;</span><br><span class="line">- (void)goToSportsGame;</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+
+<h5 id="使用-Category-分类："><a href="#使用-Category-分类：" class="headerlink" title="使用 Category 分类："></a>使用 Category 分类：</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;  EOCPerson.h</span><br><span class="line">#import &lt;Foundation&#x2F;Foundation.h&gt;</span><br><span class="line"></span><br><span class="line">@interface EOCPerson : NSObject</span><br><span class="line">@property (nonatomic, copy, readonly) NSString *firstName;</span><br><span class="line">@property (nonatomic, copy, readonly) NSString *lastName;</span><br><span class="line">@property (nonatomic, strong, readonly) NSSet *friends;</span><br><span class="line"></span><br><span class="line">- (instancetype)initWithFirstName:(NSString *)firstName</span><br><span class="line">                      andLastName:(NSString *)lastName;</span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">@interface EOCPerson (Friendship)</span><br><span class="line">- (void)addFirend:(EOCPerson *)person;</span><br><span class="line">- (void)removeFriend:(EOCPerson *)person;</span><br><span class="line">- (BOOL)isFriendsWith:(EOCPerson *)person;</span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">@interface EOCPerson (Work)</span><br><span class="line">- (void)performDaysWork;</span><br><span class="line">- (void)takeVacationFromWork;</span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">@interface EOCPerson (Play)</span><br><span class="line">- (void)goToTheCinema;</span><br><span class="line">- (void)goToSportsGame;</span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+
+<p>使用 <strong>Category</strong> 分类机制：</p>
+<ul>
+<li>你可以把整个类都定义在一个接口文件中，并将其代码写在一个实现文件里。</li>
+</ul>
+<ul>
+<li>随着分类数量的增加，可以把每个分类提取到各自的文件中去。<ul>
+<li>EOCPerson+Friendship(.h/.m)</li>
+<li>EOCPerson+Work(.h/.m)</li>
+<li>EOCPerson+Play(.h/.m)</li>
+</ul>
+</li>
+<li>优点：可以把类代码分成很多个<strong>易于管理</strong>的小块，以便单独检视。</li>
+<li>优点：<strong>便于调试</strong>：对于某个分类中的所有方法，分类名称都会出现在其符号中。可以根据调试器回溯信息中的分类名称，精确定位到类中的方法所属的功能区。</li>
+</ul>
+<h4 id="要点-1"><a href="#要点-1" class="headerlink" title="要点"></a>要点</h4><ul>
+<li>使用分类机制把类的实现代码划分成易于管理的小块。</li>
+<li>将应该视为私有的方法归入名叫 <strong>Private</strong> 的分类中，以隐藏实现细节。以编写“自我描述式代码”（self-documenting code）。</li>
+</ul>
+<h3 id="第25条：总是为第三方类的分类名称加前缀"><a href="#第25条：总是为第三方类的分类名称加前缀" class="headerlink" title="第25条：总是为第三方类的分类名称加前缀"></a>第25条：总是为第三方类的分类名称加前缀</h3><h4 id="使用分类的问题："><a href="#使用分类的问题：" class="headerlink" title="使用分类的问题："></a>使用分类的问题：</h4><ol>
+<li>【将分类方法加入类中】这一操作是在【运行期系统加载分类时】完成的。运行期系统会把分类中所实现的每个方法都加入类的方法列表中。</li>
+<li>如果类中本来就有此方法，而分类又实现了一次，那么分类中的方法会覆盖原来那一份实现代码。</li>
+</ol>
+<h4 id="解决方法："><a href="#解决方法：" class="headerlink" title="解决方法："></a>解决方法：</h4><ol>
+<li>以命名空间来区别各个<strong>分类的名称</strong>与其中所定义的<strong>方法</strong>。</li>
+<li>给相关名称都加上某个共用的前缀。</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;  NSString+ABC_HTTP.h</span><br><span class="line">#import &lt;Foundation&#x2F;Foundation.h&gt;</span><br><span class="line"></span><br><span class="line">@interface NSString (ABC_HTTP)</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; Encode a string with URL encoding</span><br><span class="line">- (NSString *)abc_urlEncodedString;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; Decode a URL encoded string</span><br><span class="line">- (NSString *)abc_urlDecodedString;</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+
+<h4 id="要点-2"><a href="#要点-2" class="headerlink" title="要点"></a>要点</h4><ul>
+<li>向第三方类中添加分类时，总应给其<strong>名称</strong>加上你专用的前缀。</li>
+<li>向第三方类中添加分类时，总应给其中的<strong>方法名</strong>加上你专用的前缀。</li>
+</ul>
+<h3 id="第26条：勿在分类中声明属性"><a href="#第26条：勿在分类中声明属性" class="headerlink" title="第26条：勿在分类中声明属性"></a>第26条：勿在分类中声明属性</h3><ul>
+<li><p><strong>Category</strong> 分类无法把实现属性所需的实例变量合成出来，即无法自动实现存取方法。</p>
+</li>
+<li><p>关联对象（参加第10条）能够解决在分类中不能合成实例变量的问题，但是不推荐。</p>
+</li>
+<li><p>所有属性都应该定义在主接口中。</p>
+</li>
+<li><p><strong>Category</strong> 分类的作用是扩展类的功能，而非封装数据。</p>
+</li>
+<li><p>可以在 <strong>Category</strong> 分类中使用只读（readonly）属性：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;  NSCalendar+EOC_Additions.h</span><br><span class="line">#import &lt;Foundation&#x2F;Foundation.h&gt;</span><br><span class="line"></span><br><span class="line">@interface NSCalendar (EOC_Additions)</span><br><span class="line">@property (nonatomic, strong, readonly) NSArray *eoc_allMonths;</span><br><span class="line"></span><br><span class="line">- ()</span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;  NSCalendar+EOC_Additions.m</span><br><span class="line">#import &quot;NSCalendar+EOC_Additions.h&quot;</span><br><span class="line"></span><br><span class="line">@implementation NSCalendar (EOC_Additions)</span><br><span class="line">&#x2F;&#x2F; ❇️ readonly，不需要设置 set 方法。</span><br><span class="line">&#x2F;&#x2F; ❇️ get方法不会访问类数据，属性也不需要由实例变量来实现</span><br><span class="line">- (NSArray *)eoc_allMonths &#123;</span><br><span class="line">    if ([self.calendarIdentifier</span><br><span class="line">            isEqualToString:NSCalendarIdentifierGregorian]) &#123;</span><br><span class="line">        return @[@&quot;January&quot;,@&quot;Feburary&quot;,</span><br><span class="line">                 @&quot;March&quot;,@&quot;April&quot;,</span><br><span class="line">                 @&quot;May&quot;,@&quot;June&quot;,</span><br><span class="line">                 @&quot;July&quot;,@&quot;August&quot;,</span><br><span class="line">                 @&quot;September&quot;,@&quot;October&quot;,</span><br><span class="line">                 @&quot;November&quot;,@&quot;December&quot;,];</span><br><span class="line">    &#125;else if (&#x2F;** other calendar identifier *&#x2F;) &#123;</span><br><span class="line">        &#x2F;** return months for other calendars *&#x2F;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>上例中，直接声明一个方法或许更好：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">#import &lt;Foundation&#x2F;Foundation.h&gt;</span><br><span class="line"></span><br><span class="line">@interface NSCalendar (EOC_Additions)</span><br><span class="line">- (NSArray *)eoc_allMonths;</span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h4 id="要点-3"><a href="#要点-3" class="headerlink" title="要点"></a>要点</h4><ul>
+<li>把封装数据所用的全部属性都定义在主接口里。</li>
+<li>在 “class-continuation” 分类之外的其他分类中，可以定义存取方法，但尽量不要定义属性。</li>
+</ul>
+<h3 id="第27条：使用-“class-continuation分类”-隐藏实现细节"><a href="#第27条：使用-“class-continuation分类”-隐藏实现细节" class="headerlink" title="第27条：使用  “class-continuation分类”  隐藏实现细节"></a>第27条：使用  “class-continuation分类”  隐藏实现细节</h3><h4 id="Objectice-C-Class-Extension"><a href="#Objectice-C-Class-Extension" class="headerlink" title="Objectice-C Class Extension"></a>Objectice-C Class Extension</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">@interface &lt;#class name#&gt; ()</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>可以将<u>私有实例变量</u>和<u>私有方法</u>声明在 “class-continuation分类” 中，实现对外隐藏。</li>
+<li>将实例变量添加到  “class-continuation分类” 中与添加到 <strong>@implementation</strong> 实现块中是等效的。</li>
+<li>编写 Objectice-C++ 代码时使用 “class-continuation分类” 也尤为有用。</li>
+<li>“class-continuation分类” 还可以将 public 接口中声明为 <code>readonly</code> 的属性扩展为 <code>readwrite</code>。【参见：第18条：尽量使用不可变对象】</li>
+<li>若对象所遵从的协议（delegate）只应视为私有，则可以在 “class-continuation分类” 中声明。</li>
+</ul>
+<h4 id="要点-4"><a href="#要点-4" class="headerlink" title="要点"></a>要点</h4><ul>
+<li>通过 “class-continuation分类” 向类中新增实例变量。</li>
+<li>如果某属性在主接口中声明为”只读”，而类的内部又要用设置方法修改此属性，那么就在 “class-continuation分类” 中将其扩展为”可读写”。</li>
+<li>把私有方法的原型声明在 “class-continuation分类” 里面。</li>
+<li>若想使类所遵循的协议不为人所知，则可于 “class-continuation分类” 中声明。</li>
+</ul>
+<h3 id="第28条：通过协议提供匿名对象"><a href="#第28条：通过协议提供匿名对象" class="headerlink" title="第28条：通过协议提供匿名对象"></a>第28条：通过协议提供匿名对象</h3><ul>
+<li><p>将返回的对象设计为遵从协议的纯 <code>id</code> 类型。</p>
+</li>
+<li><p>“匿名对象”（anonymous object）：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">@property (nonatomic, weak) id&lt;EOCNetworkFetcherDelegate&gt; delegate;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>有时候对象类型并不重要，重要的是对象有没有实现某些方法。</p>
+</li>
+</ul>
+<h4 id="示例代码"><a href="#示例代码" class="headerlink" title="示例代码"></a>示例代码</h4><p>以下示例是参考自 <span class="exturl" data-url="aHR0cHM6Ly93d3cub2JqY2NuLmlvL2lzc3VlLTEtMi8=">objc中国期刊：整洁的 Table View 代码<i class="fa fa-external-link-alt"></i></span></p>
+<blockquote>
+<h3 id="让-Cells-可复用"><a href="#让-Cells-可复用" class="headerlink" title="让 Cells 可复用"></a>让 Cells 可复用</h3><p>有时多种 model 对象需要用同一类型的 cell 来表示，这种情况下，我们可以进一步让 cell 可以复用。首先，我们给 cell 定义一个 protocol，需要用这个 cell 显示的对象必须遵循这个 protocol。然后简单修改 category 中的设置方法，让它可以接受遵循这个 protocol 的任何对象。这些简单的步骤让 cell 和任何特殊的 model 对象之间得以解耦，让它可适应不同的数据类型。</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; ****************************************************</span><br><span class="line">&#x2F;&#x2F;  UITableViewCell+ConfigureModel.h</span><br><span class="line">#import &lt;UIKit&#x2F;UIKit.h&gt;</span><br><span class="line"></span><br><span class="line">@protocol HQLTableViewCellConfigureDelegate &lt;NSObject&gt;</span><br><span class="line">@required</span><br><span class="line">- (NSString *)imageName;</span><br><span class="line">- (NSString *)titleLabelText;</span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">@protocol HQLTableViewCellKeyValueConfigureDelegate &lt;NSObject&gt;</span><br><span class="line">@required</span><br><span class="line">- (NSString *)titleLabelText;</span><br><span class="line">- (NSString *)detailLabelText;</span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">@interface UITableViewCell (ConfigureModel)</span><br><span class="line"></span><br><span class="line">&#x2F;**</span><br><span class="line"> 配置查询功能 Cell</span><br><span class="line"></span><br><span class="line"> @param model 模型：图片 + 标题 + 指示箭头&gt;</span><br><span class="line"> *&#x2F;</span><br><span class="line">- (void)hql_configureForModel:(id&lt;HQLTableViewCellConfigureDelegate&gt;)model;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&#x2F;**</span><br><span class="line"> 配置数据显示 Cell</span><br><span class="line"></span><br><span class="line"> @param model 模型：titleLabel + detailLabel</span><br><span class="line"> *&#x2F;</span><br><span class="line">- (void)hql_configureForKeyValueModel:(id&lt;HQLTableViewCellKeyValueConfigureDelegate&gt;)model;</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line">  </span><br><span class="line">&#x2F;&#x2F; ****************************************************</span><br><span class="line">&#x2F;&#x2F;  UITableViewCell+ConfigureModel.m</span><br><span class="line">#import &quot;UITableViewCell+ConfigureModel.h&quot;</span><br><span class="line"></span><br><span class="line">@implementation UITableViewCell (ConfigureModel)</span><br><span class="line"></span><br><span class="line">- (void)hql_configureForModel:(id&lt;HQLTableViewCellConfigureDelegate&gt;)model &#123;</span><br><span class="line">    self.imageView.image &#x3D; [UIImage imageNamed:model.imageName];</span><br><span class="line">    self.textLabel.text  &#x3D; model.titleLabelText;</span><br><span class="line">    self.accessoryType   &#x3D; UITableViewCellAccessoryDisclosureIndicator;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)hql_configureForKeyValueModel:(id&lt;HQLTableViewCellKeyValueConfigureDelegate&gt;)model &#123;</span><br><span class="line">    self.textLabel.text       &#x3D; model.titleLabelText;</span><br><span class="line">    self.detailTextLabel.text &#x3D; model.detailLabelText;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+
+<h4 id="要点-5"><a href="#要点-5" class="headerlink" title="要点"></a>要点</h4><ul>
+<li>协议可在某种程度上提供匿名类型。具体的对象类型可以淡化成遵从某协议的 id 类型，协议里规定了对象所应实现的方法。</li>
+<li>使用匿名对象来隐藏类型名称(或类名)。</li>
+<li>如果具体类型不重要，重要的是对象能够响应（定义在协议里的）特定方法，那么可使用匿名对象来表示。</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>独木舟的木
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://andy0570.com/2017/08/15/%E3%80%8AEffective%20Objective-C%202.0%E3%80%8B4.%E5%8D%8F%E8%AE%AE%E4%B8%8E%E5%88%86%E7%B1%BB/" title="《Effective Objective-C 2.0》4.协议与分类">https://andy0570.com/2017/08/15/《Effective Objective-C 2.0》4.协议与分类/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <span class="exturl" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpo"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</span> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/iOS/" rel="tag"># iOS</a>
+              <a href="/tags/Objective-C/" rel="tag"># Objective-C</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2017/08/14/%E9%82%A3%E4%BA%9B%E4%BD%A0%E4%B8%8D%E7%9F%A5%E9%81%93%E7%9A%84%20Mac%20%E5%B0%8F%E6%8A%80%E5%B7%A7/" rel="prev" title="那些你不知道的 Mac 小技巧">
+      <i class="fa fa-chevron-left"></i> 那些你不知道的 Mac 小技巧
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2017/08/17/%E3%80%8AEffective%20Objective-C%202.0%E3%80%8B5.%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/" rel="next" title="《Effective Objective-C 2.0》5.内存管理">
+      《Effective Objective-C 2.0》5.内存管理 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+        </div>
+        
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">独木舟的木</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">2.1m</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">31:21</span>
+</div>
+  <div class="powered-by">由 <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZw==">NexT.Gemini</span> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

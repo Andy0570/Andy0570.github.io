@@ -1,23 +1,649 @@
-{% extends '_layout.swig' %}
-{% import '_macro/post.swig' as post_template %}
-{% import '_macro/sidebar.swig' as sidebar_template %}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.0.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+  <meta name="google-site-verification" content="wioXOS3Gv2wXUpJ3sLtfZ4ft6YJYKNLLWSw6QoZTFYM">
+  <meta name="msvalidate.01" content="C96491A81239C517A50597C54EE53CD1">
+  <meta name="baidu-site-verification" content="h8asiToN1b">
 
-{% block title %}{{ page.title }} | {{ title }}{% endblock %}
+<link rel="stylesheet" href="/css/main.css">
 
-{% block page_class %}page-post-detail{% endblock %}
 
-{% block content %}
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  
+  <link rel="stylesheet" href="/lib/animate-css/animate.min.css">
 
-  <div id="posts" class="posts-expand">
-    {{ post_template.render(page) }}
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"andy0570.com","root":"/","scheme":"Gemini","version":"8.0.0-rc.5","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":"mac","bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false};
+  </script>
+
+  <meta name="description" content="支付类应用通常都需要输入6位支付密码，有的是用 AlertView 的方式实现的，例如在 iPhone的 App Store 中下载应用，有时会弹窗让你输入密码,界面大概是这样的：   还有一种类似这样的，把输入框放在单独的页面上：">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS 编程：密码输入框 CYPasswordView_Block 源码解析">
+<meta property="og:url" content="https://andy0570.com/2017/06/20/iOS%20%E7%BC%96%E7%A8%8B%EF%BC%9A%E5%AF%86%E7%A0%81%E8%BE%93%E5%85%A5%E6%A1%86%20CYPasswordView_Block%20%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/index.html">
+<meta property="og:site_name" content="独木舟的木">
+<meta property="og:description" content="支付类应用通常都需要输入6位支付密码，有的是用 AlertView 的方式实现的，例如在 iPhone的 App Store 中下载应用，有时会弹窗让你输入密码,界面大概是这样的：   还有一种类似这样的，把输入框放在单独的页面上：">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071511.jpg">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071512.png">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071513.jpg">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071517.gif">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071518.jpg">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071518.jpg">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071520.jpg">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071520-1.jpg">
+<meta property="article:published_time" content="2017-06-20T10:21:00.000Z">
+<meta property="article:modified_time" content="2019-05-01T13:38:18.000Z">
+<meta property="article:author" content="独木舟的木">
+<meta property="article:tag" content="iOS">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071511.jpg">
+
+<link rel="canonical" href="https://andy0570.com/2017/06/20/iOS%20%E7%BC%96%E7%A8%8B%EF%BC%9A%E5%AF%86%E7%A0%81%E8%BE%93%E5%85%A5%E6%A1%86%20CYPasswordView_Block%20%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>iOS 编程：密码输入框 CYPasswordView_Block 源码解析 | 独木舟的木</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="独木舟的木" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <main class="main">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+        <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
   </div>
 
-{% endblock %}
+  <div class="site-meta">
 
-{% block sidebar %}
-  {{ sidebar_template.render(true) }}
-{% endblock %}
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">独木舟的木</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">iOS Developer</p>
+  </div>
 
-{% block script_extra %}
-  {% include '_scripts/pages/post-details.swig' %}
-{% endblock %}
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">14</span></a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">36</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">310</span></a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <section class="post-toc-wrap sidebar-panel">
+          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#CYPasswordView-Block-%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90"><span class="nav-number">1.</span> <span class="nav-text">CYPasswordView_Block 源码解析</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E6%A6%82%E8%BF%B0"><span class="nav-number">1.1.</span> <span class="nav-text">一、概述</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95"><span class="nav-number">1.1.1.</span> <span class="nav-text">二、使用方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%89%E3%80%81%E5%AE%9E%E7%8E%B0%E6%96%B9%E5%BC%8F"><span class="nav-number">1.1.2.</span> <span class="nav-text">三、实现方式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%9C%80%E8%A6%81%E5%93%AA%E4%BA%9B%E6%8E%A7%E4%BB%B6%E5%85%83%E7%B4%A0%EF%BC%9F"><span class="nav-number">1.1.2.1.</span> <span class="nav-text">需要哪些控件元素？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E6%98%BE%E7%A4%BA%E5%AF%86%E7%A0%81%EF%BC%9F"><span class="nav-number">1.1.2.2.</span> <span class="nav-text">如何显示密码？</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CYPasswordView-Block-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90"><span class="nav-number">1.2.</span> <span class="nav-text">CYPasswordView_Block 源码分析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#CYPasswordView%E4%BB%A3%E7%A0%81%E7%BB%93%E6%9E%84"><span class="nav-number">1.2.1.</span> <span class="nav-text">CYPasswordView代码结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CYPasswordInputView"><span class="nav-number">1.2.2.</span> <span class="nav-text">CYPasswordInputView</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CYPasswordView"><span class="nav-number">1.2.3.</span> <span class="nav-text">CYPasswordView</span></a></li></ol></li></ol></li></ol></div>
+      </section>
+      <!--/noindex-->
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="独木舟的木"
+      src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+  <p class="site-author-name" itemprop="name">独木舟的木</p>
+  <div class="site-description" itemprop="description">生若直木，不语斧凿。</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">310</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">36</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL0FuZHkwNTcw" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Andy0570"><i class="fab fa-github fa-fw"></i>GitHub</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9zdGFja292ZXJmbG93LmNvbS91c2Vycy83MjY1NDAwL2FuZHkwNTcw" title="StackOverflow → https:&#x2F;&#x2F;stackoverflow.com&#x2F;users&#x2F;7265400&#x2F;andy0570"><i class="fab fa-stack-overflow fa-fw"></i>StackOverflow</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuamlhbnNodS5jb20vdS84NGM1ZmFkYzdjMTg=" title="简书 → https:&#x2F;&#x2F;www.jianshu.com&#x2F;u&#x2F;84c5fadc7c18"><i class="heartbeat fa-fw"></i>简书</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="bWFpbHRvOmFuZHl3aG1AMTYzLmNvbQ==" title="E-Mail → mailto:andywhm@163.com"><i class="fa fa-envelope fa-fw"></i>E-Mail</span>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <span class="exturl cc-opacity" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpo"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></span>
+  </div>
+
+
+
+      </section>
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </header>
+
+      
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div id="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+      <div class="main-inner">
+        
+
+        <div class="content post posts-expand">
+          
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://andy0570.com/2017/06/20/iOS%20%E7%BC%96%E7%A8%8B%EF%BC%9A%E5%AF%86%E7%A0%81%E8%BE%93%E5%85%A5%E6%A1%86%20CYPasswordView_Block%20%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+      <meta itemprop="name" content="独木舟的木">
+      <meta itemprop="description" content="生若直木，不语斧凿。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="独木舟的木">
+    </span>
+
+    
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          iOS 编程：密码输入框 CYPasswordView_Block 源码解析
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2017-06-20 18:21:00" itemprop="dateCreated datePublished" datetime="2017-06-20T18:21:00+08:00">2017-06-20</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-05-01 21:38:18" itemprop="dateModified" datetime="2019-05-01T21:38:18+08:00">2019-05-01</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS/" itemprop="url" rel="index"><span itemprop="name">iOS</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>17k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>15 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>支付类应用通常都需要输入6位支付密码，有的是用 AlertView 的方式实现的，例如在 iPhone的 App Store 中下载应用，有时会弹窗让你输入密码,界面大概是这样的：</p>
+<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071511.jpg"> </p>
+<p>还有一种类似这样的，把输入框放在单独的页面上：</p>
+<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071512.png"></p>
+<a id="more"></a>
+
+<p>支付宝微信做的是类似半模态视图的界面（下面的是淘票票的输入密码界面）：</p>
+<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071513.jpg"></p>
+<p>网上搜寻了许久，找了个最接近第三种方式的 Demo ：</p>
+<ul>
+<li><span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2NoZXJueW9nL0NZUGFzc3dvcmRWaWV3">GitHub:chernyog/CYPasswordView<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2NoZXJueW9nL0NZUGFzc3dvcmRWaWV3X0Jsb2Nr">GitHub:chernyog/CYPasswordView_Block<i class="fa fa-external-link-alt"></i></span></li>
+</ul>
+<h1 id="CYPasswordView-Block-源码解析"><a href="#CYPasswordView-Block-源码解析" class="headerlink" title="CYPasswordView_Block 源码解析"></a>CYPasswordView_Block 源码解析</h1><h2 id="一、概述"><a href="#一、概述" class="headerlink" title="一、概述"></a>一、概述</h2><hr>
+<p><span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2NoZXJueW9nL0NZUGFzc3dvcmRWaWV3X0Jsb2Nr">CYPasswordView_Block<i class="fa fa-external-link-alt"></i></span> 是一个模仿支付宝输入支付密码的密码框(这是一个用block传递事件的版本，避免了因多级页面切换并且都弹出密码框而造成通知监听混乱的bug)</p>
+<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071517.gif"><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071518.jpg"></p>
+<h3 id="二、使用方法"><a href="#二、使用方法" class="headerlink" title="二、使用方法"></a>二、使用方法</h3><hr>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line">- (IBAction)showPasswordView:(id)sender &#123;</span><br><span class="line"></span><br><span class="line">    WS(weakSelf);</span><br><span class="line">    &#x2F;&#x2F; 实例化 CYPasswordView 对象</span><br><span class="line">    self.passwordView &#x3D; [[CYPasswordView alloc] init];</span><br><span class="line">    &#x2F;&#x2F; 弹出密码框</span><br><span class="line">    [self.passwordView showInView:self.view.window];</span><br><span class="line">    self.passwordView.loadingText &#x3D; @&quot;提交中...&quot;;</span><br><span class="line">    &#x2F;&#x2F; 关闭密码框</span><br><span class="line">    self.passwordView.cancelBlock &#x3D; ^&#123;</span><br><span class="line">        [weakSelf cancel];</span><br><span class="line">    &#125;;</span><br><span class="line">    &#x2F;&#x2F; 忘记密码</span><br><span class="line">    self.passwordView.forgetPasswordBlock &#x3D; ^&#123;</span><br><span class="line">        [weakSelf forgetPWD];</span><br><span class="line">    &#125;;</span><br><span class="line">    &#x2F;&#x2F; 密码输入完成的回调</span><br><span class="line">    self.passwordView.finish &#x3D; ^(NSString *password) &#123;</span><br><span class="line">        [weakSelf.passwordView hidenKeyboard];</span><br><span class="line">        [weakSelf.passwordView startLoading];</span><br><span class="line">        CYLog(@&quot;cy &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D; 发送网络请求  pwd&#x3D;%@&quot;, password);</span><br><span class="line">        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(kRequestTime * NSEC_PER_SEC)), dispatch_get_main_queue(), ^&#123;</span><br><span class="line">            flag &#x3D; !flag;</span><br><span class="line">            if (flag) &#123;</span><br><span class="line">                &#x2F;&#x2F; 购买成功，跳转到成功页</span><br><span class="line">                [weakSelf.passwordView requestComplete:YES message:@&quot;购买成功……&quot;];</span><br><span class="line">                [weakSelf.passwordView stopLoading];</span><br><span class="line">                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(kDelay * NSEC_PER_SEC)), dispatch_get_main_queue(), ^&#123;</span><br><span class="line">                    [weakSelf.passwordView hide];</span><br><span class="line">                &#125;);</span><br><span class="line">            &#125; else &#123;</span><br><span class="line">                &#x2F;&#x2F; 购买失败，跳转到失败页</span><br><span class="line">                [weakSelf.passwordView requestComplete:NO];</span><br><span class="line">                [weakSelf.passwordView stopLoading];</span><br><span class="line">                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(kDelay * NSEC_PER_SEC)), dispatch_get_main_queue(), ^&#123;</span><br><span class="line">                    [weakSelf.passwordView hide];</span><br><span class="line">                &#125;);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="三、实现方式"><a href="#三、实现方式" class="headerlink" title="三、实现方式"></a>三、实现方式</h3><hr>
+<h4 id="需要哪些控件元素？"><a href="#需要哪些控件元素？" class="headerlink" title="需要哪些控件元素？"></a>需要哪些控件元素？</h4><p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071518.jpg"></p>
+<p>照着图片看需要哪些控件元素，自上而下，从左往右看：</p>
+<ol>
+<li>灰色的背景图层 coverView,用于覆盖上一个视图；</li>
+<li>占据半个屏幕的输入框视图，该视图上有：<ul>
+<li>标题文本；</li>
+<li>关闭按钮、忘记密码按钮；</li>
+<li>带6个格子的密码输入框；</li>
+<li>加载图片、加载文本</li>
+</ul>
+</li>
+</ol>
+<h4 id="如何显示密码？"><a href="#如何显示密码？" class="headerlink" title="如何显示密码？"></a>如何显示密码？</h4><ol>
+<li>键盘上输入数字时，并不会实时显示123456…，而是显示 ●●●●●●， 这是为了密码输入安全起见的一贯做法。为 <strong>UITextField</strong> 设置 <code>secureTextEntry</code> 属性为 <strong>YES</strong>。可以禁用用户在视图中复制文本的功能。 还会用* 代替输入的字符。</li>
+<li>但是原生的控件无法实现在一个格子里输入一个字符，而且还要在这个格子中心显示●，所以密码输入的6个方框和●都是假象，是用代码画上去的。</li>
+<li>每次在 <strong>UITextField</strong> 中输入、删除数字，都要进行判断，根据 <strong>UITextField</strong> 中文本的个数同步添加或删除●</li>
+<li>边界情况，当输入的数字个数大于等于6个，禁止输入。</li>
+<li>为了提高用户体验，当输入完第6个数字时，自动关闭键盘，发起网络请求以验证密码。</li>
+</ol>
+<h2 id="CYPasswordView-Block-源码分析"><a href="#CYPasswordView-Block-源码分析" class="headerlink" title="CYPasswordView_Block 源码分析"></a>CYPasswordView_Block 源码分析</h2><h3 id="CYPasswordView代码结构"><a href="#CYPasswordView代码结构" class="headerlink" title="CYPasswordView代码结构"></a>CYPasswordView代码结构</h3><p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071520.jpg"></p>
+<ul>
+<li><p>CYPasswordView.bundle</p>
+<p>图片库，包含所有图片素材</p>
+</li>
+<li><p>CYConst</p>
+<p>通用宏定义、密码框各控件的尺寸常量</p>
+</li>
+<li><p>UIView+Extension</p>
+<p>简化设置视图尺寸的范畴方法</p>
+</li>
+<li><p>CYPasswordInputView</p>
+<p>密码框的输入背景视图(把 <code>password_background@2x.png</code>、<code>password_textfield@2x.png</code>两个背景图片绘制上去)，主要包含标题、关闭按钮、忘记密码按钮、以及绘制6个●的操作。</p>
+</li>
+<li><p>CYPasswordView</p>
+<p>包含蒙版图层、CYPasswordInputView、UITextField 控件、再添加加载图片、加载文字标签、处理判断输入逻辑、加载显示旋转动画等</p>
+</li>
+</ul>
+<p>前三个不多说了，主要看后两个</p>
+<h3 id="CYPasswordInputView"><a href="#CYPasswordInputView" class="headerlink" title="CYPasswordInputView"></a>CYPasswordInputView</h3><p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071520-1.jpg"></p>
+<p>在指定初始化方法 <code>initWithFrame:</code>中添加 <strong>关闭按钮</strong> 和 <strong>忘记密码按钮</strong>,然后在 <code>layoutSubviews</code> 方法中对这两个控件重新布局，按钮的 Target-Action 点击事件通过 Blocks 传递。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line">#pragma mark  - 生命周期方法</span><br><span class="line">- (instancetype)initWithFrame:(CGRect)frame &#123;</span><br><span class="line">    if (self &#x3D; [super initWithFrame:frame]) &#123;</span><br><span class="line">        self.backgroundColor &#x3D; [UIColor clearColor];</span><br><span class="line">        &#x2F;** 添加子控件 *&#x2F;</span><br><span class="line">        [self setupSubViews];</span><br><span class="line">    &#125;</span><br><span class="line">    return self;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;** 添加子控件 *&#x2F;</span><br><span class="line">- (void)setupSubViews &#123;</span><br><span class="line">    &#x2F;** 关闭按钮 *&#x2F;</span><br><span class="line">    UIButton *btnCancel &#x3D; [UIButton buttonWithType:UIButtonTypeCustom];</span><br><span class="line">    [self addSubview:btnCancel];</span><br><span class="line">    [btnCancel setBackgroundImage:[UIImage imageNamed:CYPasswordViewSrcName(@&quot;password_close&quot;)] forState:UIControlStateNormal];</span><br><span class="line">    [btnCancel setTitleColor:[UIColor darkGrayColor] forState:UIControlStateNormal];</span><br><span class="line">    self.btnClose &#x3D; btnCancel;</span><br><span class="line">    [self.btnClose addTarget:self action:@selector(btnClose_Click:) forControlEvents:UIControlEventTouchUpInside];</span><br><span class="line">    </span><br><span class="line">    &#x2F;** 忘记密码按钮 *&#x2F;</span><br><span class="line">    UIButton *btnForgetPWD &#x3D; [UIButton buttonWithType:UIButtonTypeCustom];</span><br><span class="line">    [self addSubview:btnForgetPWD];</span><br><span class="line">    [btnForgetPWD setTitle:@&quot;忘记密码？&quot; forState:UIControlStateNormal];</span><br><span class="line">    [btnForgetPWD setTitleColor:CYColor(0, 125, 227) forState:UIControlStateNormal];</span><br><span class="line">    btnForgetPWD.titleLabel.font &#x3D; CYFont(13);</span><br><span class="line">    [btnForgetPWD sizeToFit];</span><br><span class="line">    self.btnForgetPWD &#x3D; btnForgetPWD;</span><br><span class="line">    [self.btnForgetPWD addTarget:self action:@selector(btnForgetPWD_Click:) forControlEvents:UIControlEventTouchUpInside];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)layoutSubviews &#123;</span><br><span class="line">    [super layoutSubviews];</span><br><span class="line">    &#x2F;&#x2F; 设置关闭按钮的坐标</span><br><span class="line">    self.btnClose.width &#x3D; CYPasswordViewCloseButtonWH;</span><br><span class="line">    self.btnClose.height &#x3D; CYPasswordViewCloseButtonWH;</span><br><span class="line">    self.btnClose.x &#x3D; CYPasswordViewCloseButtonMarginLeft;</span><br><span class="line">    self.btnClose.centerY &#x3D; CYPasswordViewTitleHeight * 0.5;</span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F; 设置忘记密码按钮的坐标</span><br><span class="line">    self.btnForgetPWD.x &#x3D; CYScreenWidth - (CYScreenWidth - CYPasswordViewTextFieldWidth) * 0.5 - self.btnForgetPWD.width;</span><br><span class="line">    self.btnForgetPWD.y &#x3D; CYPasswordViewTitleHeight + CYPasswordViewTextFieldMarginTop + CYPasswordViewTextFieldHeight + CYPasswordViewForgetPWDButtonMarginTop;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 按钮点击</span><br><span class="line">- (void)btnClose_Click:(UIButton *)sender &#123;</span><br><span class="line">    if (self.cancelBlock) &#123;</span><br><span class="line">        self.cancelBlock();</span><br><span class="line">    &#125;</span><br><span class="line">    [self.inputNumArray removeAllObjects];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)btnForgetPWD_Click:(UIButton *)sender &#123;</span><br><span class="line">    if (self.forgetPasswordBlock) &#123;</span><br><span class="line">        self.forgetPasswordBlock();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>在 <code>drawRect:</code> 方法中把图片画在图层上，标题也并不是 Label 控件，而是画上去的字符串，6个●也同时被画上去了，它是遍历数组中元素的个数画上去的。</p>
+<p>所以说，每次在输入框中删除、添加数字，都会通过调用 <code>[self setNeedsDisplay]</code> 将 <code>drawRect: </code>方法中的所有视图重新绘制一遍，目的是需要遍历数组，重画●</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line">- (void)drawRect:(CGRect)rect &#123;</span><br><span class="line">    &#x2F;&#x2F; 画背景视图</span><br><span class="line">    UIImage *imgBackground &#x3D;</span><br><span class="line">        [UIImage imageNamed:CYPasswordViewSrcName(@&quot;password_background&quot;)];</span><br><span class="line">    [imgBackground drawInRect:rect];</span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F; 画输入框</span><br><span class="line">    CGFloat textfieldY &#x3D; CYPasswordViewTitleHeight + CYPasswordViewTextFieldMarginTop;</span><br><span class="line">    CGFloat textfieldW &#x3D; CYPasswordViewTextFieldWidth;</span><br><span class="line">    CGFloat textfieldX &#x3D; (CYScreenWidth - textfieldW) * 0.5;</span><br><span class="line">    CGFloat textfieldH &#x3D; CYPasswordViewTextFieldHeight;</span><br><span class="line">    UIImage *imgTextfield &#x3D;</span><br><span class="line">        [UIImage imageNamed:CYPasswordViewSrcName(@&quot;password_textfield&quot;)];</span><br><span class="line">    [imgTextfield drawInRect:CGRectMake(textfieldX, textfieldY, textfieldW, textfieldH)];</span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F; 画标题</span><br><span class="line">    NSString *title &#x3D; (self.title ? self.title : @&quot;输入交易密码&quot;);</span><br><span class="line">    NSDictionary *arrts &#x3D; @&#123;NSFontAttributeName:CYFontB(18)&#125;;</span><br><span class="line">    CGSize size &#x3D; [title boundingRectWithSize:CGSizeMake(MAXFLOAT, MAXFLOAT)</span><br><span class="line">                                      options:NSStringDrawingUsesLineFragmentOrigin</span><br><span class="line">                                   attributes:arrts</span><br><span class="line">                                      context:nil].size;</span><br><span class="line">    CGFloat titleW &#x3D; size.width;</span><br><span class="line">    CGFloat titleH &#x3D; size.height;</span><br><span class="line">    CGFloat titleX &#x3D; (self.width - titleW) * 0.5;</span><br><span class="line">    CGFloat titleY &#x3D; (CYPasswordViewTitleHeight - titleH) * 0.5;</span><br><span class="line">    CGRect titleRect &#x3D; CGRectMake(titleX, titleY, titleW, titleH);</span><br><span class="line">    </span><br><span class="line">    NSMutableDictionary *attr &#x3D; [NSMutableDictionary dictionary];</span><br><span class="line">    attr[NSFontAttributeName] &#x3D; CYFontB(18);</span><br><span class="line">    attr[NSForegroundColorAttributeName] &#x3D; CYColor(102, 102, 102);</span><br><span class="line">    [title drawInRect:titleRect withAttributes:attr];</span><br><span class="line">    </span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F; 画点</span><br><span class="line">    UIImage *pointImage &#x3D;</span><br><span class="line">        [UIImage imageNamed:CYPasswordViewSrcName(@&quot;password_point&quot;)];</span><br><span class="line">    CGFloat pointW &#x3D; CYPasswordViewPointnWH;</span><br><span class="line">    CGFloat pointH &#x3D; CYPasswordViewPointnWH;</span><br><span class="line">    CGFloat pointY &#x3D; textfieldY + (textfieldH - pointH) * 0.5;</span><br><span class="line">    __block CGFloat pointX;</span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F; 一个格子的宽度</span><br><span class="line">    CGFloat cellW &#x3D; textfieldW &#x2F; kNumCount;</span><br><span class="line">    CGFloat padding &#x3D; (cellW - pointW) * 0.5;</span><br><span class="line">    &#x2F;&#x2F; 根据数组中元素的个数画黑点</span><br><span class="line">    [self.inputNumArray enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) &#123;</span><br><span class="line">        pointX &#x3D; textfieldX + (2 * idx + 1) * padding + idx * pointW;</span><br><span class="line">        [pointImage drawInRect:CGRectMake(pointX, pointY, pointW, pointH)];</span><br><span class="line">    &#125;];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>首先来看在类扩展中声明的可变数组：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;** 保存用户输入的数字集合 *&#x2F;</span><br><span class="line">@property (nonatomic, strong) NSMutableArray *inputNumArray;</span><br></pre></td></tr></table></figure>
+<p>响应输入的两个方法</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">#pragma mark  - 私有方法</span><br><span class="line">&#x2F;&#x2F; 响应用户按下删除键事件</span><br><span class="line">- (void)deleteNumber &#123;</span><br><span class="line">    [self.inputNumArray removeLastObject]; &#x2F;&#x2F; 如果是删除键，就移除数组中的最后一个数字</span><br><span class="line">    [self setNeedsDisplay]; &#x2F;&#x2F; 根据数组的个数重绘整个视图</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 响应用户按下数字键事件</span><br><span class="line">- (void)number:(NSDictionary *)userInfo &#123;</span><br><span class="line">    NSString *numObj &#x3D; userInfo[CYPasswordViewKeyboardNumberKey];</span><br><span class="line">    if (numObj.length &gt;&#x3D; kNumCount) return; &#x2F;&#x2F; ⚠️ 这行代码应该是永远不会执行的吧。等会再说为啥</span><br><span class="line">    [self.inputNumArray addObject:numObj]; &#x2F;&#x2F; 这里每次输入一个数字，就会把该数字存进数组中</span><br><span class="line">    [self setNeedsDisplay]; &#x2F;&#x2F; 根据数组的个数重绘整个视图</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>其实可以不用重绘整个视图，因为只是重置小圆点，可以重绘指定区域视图：<code>setNeedsDisplayInRect:</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 响应用户按下删除键事件</span><br><span class="line">- (void)deleteNumber &#123;</span><br><span class="line">    [self.inputNumArray removeLastObject];</span><br><span class="line">    [self setNeedsDisplayInRect:[self textFieldRect]];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 响应用户按下数字键事件</span><br><span class="line">- (void)number:(NSDictionary *)userInfo &#123;</span><br><span class="line">    NSString *numObj &#x3D; userInfo[CYPasswordViewKeyboardNumberKey];</span><br><span class="line">    if (numObj.length &gt;&#x3D; kNumCount) return;    </span><br><span class="line">    [self.inputNumArray addObject:numObj];</span><br><span class="line">    [self setNeedsDisplayInRect:[self textFieldRect]];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (CGRect)textFieldRect &#123;</span><br><span class="line">    CGFloat textfieldY &#x3D; CYPasswordViewTitleHeight + CYPasswordViewTextFieldMarginTop;</span><br><span class="line">    CGFloat textfieldW &#x3D; CYPasswordViewTextFieldWidth;</span><br><span class="line">    CGFloat textfieldX &#x3D; (CYScreenWidth - textfieldW) * 0.5;</span><br><span class="line">    CGFloat textfieldH &#x3D; CYPasswordViewTextFieldHeight;</span><br><span class="line">    return CGRectMake(textfieldX, textfieldY, textfieldW, textfieldH);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="CYPasswordView"><a href="#CYPasswordView" class="headerlink" title="CYPasswordView"></a>CYPasswordView</h3><p>再看 <strong>CYPasswordView</strong> 这个类，指定初始化方法中添加了几个子视图、蒙版、输入框、响应者 UITextField、加载图片和加载文字、单击手势。布局子视图方法 <code>layoutSubviews</code>中重新布局了加载图片和加载文字标签的位置。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">- (instancetype)initWithFrame:(CGRect)frame &#123;</span><br><span class="line">    self &#x3D; [super initWithFrame:CYScreen.bounds]; &#x2F;&#x2F; frame 是固定的</span><br><span class="line">    if (self) &#123;</span><br><span class="line">        [self setupUI];</span><br><span class="line">    &#125;</span><br><span class="line">    return self;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)setupUI &#123;</span><br><span class="line">    self.backgroundColor &#x3D; [UIColor clearColor];</span><br><span class="line">    &#x2F;&#x2F; 蒙版</span><br><span class="line">    [self addSubview:self.coverView];</span><br><span class="line">    &#x2F;&#x2F; 输入框</span><br><span class="line">    [self addSubview:self.passwordInputView];</span><br><span class="line">    &#x2F;&#x2F; 响应者</span><br><span class="line">    [self addSubview:self.txfResponsder];</span><br><span class="line">    [self.passwordInputView addSubview:self.imgRotation];</span><br><span class="line">    [self.passwordInputView addSubview:self.lblMessage];</span><br><span class="line">    &#x2F;&#x2F; 手势</span><br><span class="line">    [self addGestureRecognizer:[[UITapGestureRecognizer alloc]</span><br><span class="line">                                initWithTarget:self</span><br><span class="line">                                action:@selector(tap:)]];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)layoutSubviews &#123;</span><br><span class="line">    [super layoutSubviews];</span><br><span class="line">      &#x2F;&#x2F; 调整旋转图片布局</span><br><span class="line">    self.imgRotation.centerX &#x3D; self.passwordInputView.centerX;</span><br><span class="line">    self.imgRotation.centerY &#x3D; self.passwordInputView.height * 0.5;</span><br><span class="line">    &#x2F;&#x2F; 调整提示文本布局</span><br><span class="line">    self.lblMessage.x &#x3D; 0;</span><br><span class="line">    self.lblMessage.y &#x3D; CGRectGetMaxY(self.imgRotation.frame) + 20;</span><br><span class="line">    self.lblMessage.width &#x3D; CYScreenWidth;</span><br><span class="line">    self.lblMessage.height &#x3D; 30;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>① 添加单击手势的作用：点击输入框，弹出键盘</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">- (void)tap:(UITapGestureRecognizer *)recognizer &#123;</span><br><span class="line">    &#x2F;&#x2F; 获取点击的坐标位置</span><br><span class="line">    CGPoint p &#x3D; [recognizer locationInView:self.passwordInputView];</span><br><span class="line">    &#x2F;&#x2F; 6块矩形输入框区域</span><br><span class="line">    CGRect f &#x3D; CGRectMake(39, 80, 297, 50);</span><br><span class="line">    &#x2F;&#x2F; 判断点击区域是否包含在输入框区域中</span><br><span class="line">    if (CGRectContainsPoint(f, p)) &#123;</span><br><span class="line">        [self.txfResponsder becomeFirstResponder];</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        NSLog(@&quot;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>因为要响应点击事件，所以蒙版是一个 <strong>UIControl</strong> </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">- (UIControl *)coverView &#123;</span><br><span class="line">    if (_coverView &#x3D;&#x3D; nil) &#123;</span><br><span class="line">        _coverView &#x3D; [[UIControl alloc] init];</span><br><span class="line">        [_coverView setBackgroundColor:[UIColor blackColor]];</span><br><span class="line">        _coverView.alpha &#x3D; 0.4;</span><br><span class="line">        _coverView.frame &#x3D; self.bounds;</span><br><span class="line">    &#125;</span><br><span class="line">    return _coverView;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>② 为何要手动通过点击事件弹出键盘，而不是点击 UITextField 自动弹出键盘 ？</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 这里的 UITextField 实例对象就像名字一样，只是作为一个响应者，</span><br><span class="line">&#x2F;&#x2F; 它的 frame 是 CGRectMake(0, 0, 1, 1)</span><br><span class="line">&#x2F;&#x2F; 优化点：其实还是可以把它设置得跟图片一样大的，只要把它设置为透明就行了，背景色、text、tintColor、通通设置为透明色，1.可以充分利用控件本身的特性。2.不用手动添加点击事件。</span><br><span class="line">- (UITextField *)txfResponsder &#123;</span><br><span class="line">    if (_txfResponsder &#x3D;&#x3D; nil) &#123;</span><br><span class="line">        _txfResponsder &#x3D; [[UITextField alloc] init];</span><br><span class="line">        _txfResponsder.delegate &#x3D; self;</span><br><span class="line">        _txfResponsder.keyboardType &#x3D; UIKeyboardTypeNumberPad;</span><br><span class="line">        _txfResponsder.frame &#x3D; CGRectMake(0, 0, 1, 1);</span><br><span class="line">        _txfResponsder.secureTextEntry &#x3D; YES;</span><br><span class="line">    &#125;</span><br><span class="line">    return _txfResponsder;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>这个类中实现取消按钮和忘记密码按钮依旧是通过 Block 的方式传递，只是增加了重置密码框操作</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line">- (CYPasswordInputView *)passwordInputView &#123;</span><br><span class="line">    WS(weakself);</span><br><span class="line">    if (_passwordInputView &#x3D;&#x3D; nil) &#123;</span><br><span class="line">        _passwordInputView &#x3D; [[CYPasswordInputView alloc] init];</span><br><span class="line">      </span><br><span class="line">        _passwordInputView.cancelBlock &#x3D; ^&#123;</span><br><span class="line">            [weakself cancel];</span><br><span class="line">        &#125;;</span><br><span class="line">      </span><br><span class="line">        _passwordInputView.forgetPasswordBlock &#x3D; ^&#123;</span><br><span class="line">            [weakself forgetPassword];</span><br><span class="line">        &#125;;</span><br><span class="line">    &#125;</span><br><span class="line">    return _passwordInputView;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;** 输入框的取消按钮点击 *&#x2F;</span><br><span class="line">- (void)cancel &#123;</span><br><span class="line">    [self resetPasswordView];</span><br><span class="line">    if (self.cancelBlock) &#123;</span><br><span class="line">        self.cancelBlock();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">&#x2F;** 输入框的忘记密码按钮点击 *&#x2F;</span><br><span class="line">- (void)forgetPassword &#123;</span><br><span class="line">    [self resetPasswordView];</span><br><span class="line">    if (self.forgetPasswordBlock) &#123;</span><br><span class="line">        self.forgetPasswordBlock();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;** 重置密码框 *&#x2F;</span><br><span class="line">- (void)resetPasswordView &#123;</span><br><span class="line">    [self hidenKeyboard:^(BOOL finished) &#123;</span><br><span class="line">        self.passwordInputView.hidden &#x3D; YES;</span><br><span class="line">        tempStr &#x3D; nil;</span><br><span class="line">        [self removeFromSuperview];</span><br><span class="line">        [self hidenKeyboard:nil];</span><br><span class="line">        [self.passwordInputView setNeedsDisplay];</span><br><span class="line">    &#125;];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>处理键盘输入的  <code>UITextFieldDelegate</code> 协议方法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line">#pragma mark  - 常量区</span><br><span class="line">&#x2F;&#x2F; 前面的角落里声明了一个变量用户保存密码字符串</span><br><span class="line">static NSString *tempStr;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;...</span><br><span class="line"></span><br><span class="line">#pragma mark  - &lt;UITextFieldDelegate&gt;</span><br><span class="line">#pragma mark  处理字符串 和 删除键</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 每当一个字符被键入时，都会首先调用此方法，询问是否应该将输入的字符添加进 TextField 中。</span><br><span class="line">&#x2F;&#x2F; 因此调用该方法时，正被输入的字符实际上还没有被添加进 TextField 中</span><br><span class="line">- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string &#123;</span><br><span class="line">    if (!tempStr) &#123;</span><br><span class="line">        tempStr &#x3D; string;</span><br><span class="line">    &#125;else&#123;</span><br><span class="line">        &#x2F;&#x2F; 把正在输入的数字和之前所有输入的数字拼接起来</span><br><span class="line">        &#x2F;&#x2F; 因此 tempStr 字符串中存放的是所有的数字</span><br><span class="line">        tempStr &#x3D; [NSString stringWithFormat:@&quot;%@%@&quot;,tempStr,string];</span><br><span class="line">    &#125;</span><br><span class="line">    &#x2F;&#x2F; 判断是否是删除按钮？</span><br><span class="line">    if ([string isEqualToString:@&quot;&quot;]) &#123;</span><br><span class="line">        &#x2F;&#x2F; 响应用户按下删除键事件，删除小黑点</span><br><span class="line">        [self.passwordInputView deleteNumber];</span><br><span class="line">        &#x2F;&#x2F; 如果是删除按钮，再判断容器字符串的长度？</span><br><span class="line">        if (tempStr.length &gt; 0) &#123;   &#x2F;&#x2F;  删除最后一个字符串</span><br><span class="line">            NSString *lastStr &#x3D; [tempStr substringToIndex:[tempStr length] - 1];</span><br><span class="line">            tempStr &#x3D; lastStr;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; else&#123;</span><br><span class="line">        &#x2F;&#x2F; 如果不是删除按钮，先判断容器字符串的长度是否&#x3D;6？</span><br><span class="line">        if (tempStr.length &#x3D;&#x3D; 6) &#123;</span><br><span class="line">            if (self.finish) &#123;</span><br><span class="line">                self.finish(tempStr);</span><br><span class="line">                self.finish &#x3D; nil;</span><br><span class="line">            &#125;</span><br><span class="line">            tempStr &#x3D; nil;</span><br><span class="line">        &#125;</span><br><span class="line">        &#x2F;&#x2F; 更新 CYPasswordInputView 中的黑点</span><br><span class="line">        &#x2F;&#x2F; ❇️把当前输入的数字通过字典的方式传递,key为常量，value 是当前输入的数字</span><br><span class="line">        NSMutableDictionary *userInfoDict &#x3D; [NSMutableDictionary dictionary];</span><br><span class="line">        userInfoDict[CYPasswordViewKeyboardNumberKey] &#x3D; string;</span><br><span class="line">        [self.passwordInputView number:userInfoDict];</span><br><span class="line">    &#125;</span><br><span class="line">    return YES;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>❇️因为当前输入的数字是通过键值对的方式发送给 <code>passwordInputView</code> 对象的，所以它响应用户按下数字的方法中：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 响应用户按下数字键事件</span><br><span class="line">- (void)number:(NSDictionary *)userInfo &#123;</span><br><span class="line">    NSString *numObj &#x3D; userInfo[CYPasswordViewKeyboardNumberKey];</span><br><span class="line">    if (numObj.length &gt;&#x3D; kNumCount) return; &#x2F;&#x2F; ⚠️ </span><br><span class="line">    [self.inputNumArray addObject:numObj]; &#x2F;&#x2F; 这里每次输入一个数字，就会把该数字存进数组中</span><br><span class="line">    [self setNeedsDisplay]; &#x2F;&#x2F; 根据数组的个数重绘整个视图</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>方法中的 <code>numObj </code> 就是当前输入的数字，<code>numObj.length</code> 永远等于1，所以我说这行代码是永远不会执行的。</p>
+<p>弹出密码框的方法:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 弹出密码框</span><br><span class="line">[self.passwordView showInView:self.view.window];</span><br></pre></td></tr></table></figure>
+
+<p>源码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">- (void)showInView:(UIView *)view &#123;</span><br><span class="line">    [view addSubview:self];</span><br><span class="line">    &#x2F;** 输入框起始frame *&#x2F;</span><br><span class="line">    self.passwordInputView.height &#x3D; CYPasswordInputViewHeight;</span><br><span class="line">    self.passwordInputView.y &#x3D; self.height;</span><br><span class="line">    self.passwordInputView.width &#x3D; CYScreenWidth;</span><br><span class="line">    self.passwordInputView.x &#x3D; 0;</span><br><span class="line">    &#x2F;** 弹出键盘 *&#x2F;</span><br><span class="line">    [self showKeyboard];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;** 键盘弹出 *&#x2F;</span><br><span class="line">- (void)showKeyboard &#123;</span><br><span class="line">    [self.txfResponsder becomeFirstResponder];</span><br><span class="line">    [UIView animateWithDuration:CYPasswordViewAnimationDuration</span><br><span class="line">                          delay:0</span><br><span class="line">                        options:UIViewAnimationOptionTransitionNone</span><br><span class="line">                     animations:^&#123;</span><br><span class="line">         self.passwordInputView.y &#x3D; (self.height - self.passwordInputView.height);</span><br><span class="line">                     &#125;</span><br><span class="line">                     completion:^(BOOL finished) &#123;</span><br><span class="line">         NSLog(@&quot; &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D; %@&quot;, NSStringFromCGRect(self.passwordInputView.frame));</span><br><span class="line">                     &#125;];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这段代码添加了一个动画让 <code>passwordInputView</code> 的 Y 点从:</p>
+<p> <code>self.height</code> → <code>(self.height - self.passwordInputView.height)</code></p>
+<p>就是从底部向上推出的动画，它是先弹出键盘，再弹出<code>passwordInputView</code>。</p>
+<p>最后，旋转动画都是对加载图片和加载文字作了一些更改：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;**</span><br><span class="line"> *  开始旋转</span><br><span class="line"> *&#x2F;</span><br><span class="line">- (void)startRotation:(UIView *)view &#123;</span><br><span class="line">    _imgRotation.hidden &#x3D; NO;</span><br><span class="line">    _imgRotation.image &#x3D; </span><br><span class="line">      [UIImage imageNamed:CYPasswordViewSrcName(@&quot;password_loading_b&quot;)];</span><br><span class="line">    _lblMessage.hidden &#x3D; NO;</span><br><span class="line">    self.lblMessage.text &#x3D; _loadingText;</span><br><span class="line">  </span><br><span class="line">    CABasicAnimation* rotationAnimation;</span><br><span class="line">    rotationAnimation &#x3D; [CABasicAnimation animationWithKeyPath:@&quot;transform.rotation.z&quot;];</span><br><span class="line">    rotationAnimation.toValue &#x3D; [NSNumber numberWithFloat: M_PI * 2.0 ];</span><br><span class="line">    rotationAnimation.duration &#x3D; 2.0;</span><br><span class="line">    rotationAnimation.cumulative &#x3D; YES;</span><br><span class="line">    rotationAnimation.repeatCount &#x3D; MAXFLOAT;</span><br><span class="line">    [view.layer addAnimation:rotationAnimation forKey:@&quot;rotationAnimation&quot;];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;**</span><br><span class="line"> *  结束旋转</span><br><span class="line"> *&#x2F;</span><br><span class="line">- (void)stopRotation:(UIView *)view &#123;</span><br><span class="line">    [view.layer removeAllAnimations];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)startLoading &#123;</span><br><span class="line">    [self startRotation:self.imgRotation];</span><br><span class="line">    [self.passwordInputView disEnalbeCloseButton:NO];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)stopLoading &#123;</span><br><span class="line">    [self stopRotation:self.imgRotation];</span><br><span class="line">    [self.passwordInputView disEnalbeCloseButton:YES];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)requestComplete:(BOOL)state &#123;</span><br><span class="line">    if (state) &#123;</span><br><span class="line">        [self requestComplete:state message:@&quot;支付成功&quot;];</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        [self requestComplete:state message:@&quot;支付失败&quot;];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">- (void)requestComplete:(BOOL)state message:(NSString *)message &#123;</span><br><span class="line">    if (state) &#123;</span><br><span class="line">        &#x2F;&#x2F; 请求成功</span><br><span class="line">        self.lblMessage.text &#x3D; message;</span><br><span class="line">        self.imgRotation.image &#x3D; </span><br><span class="line">          [UIImage imageNamed:CYPasswordViewSrcName(@&quot;password_success&quot;)];</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        &#x2F;&#x2F; 请求失败</span><br><span class="line">        self.lblMessage.text &#x3D; message;</span><br><span class="line">        self.imgRotation.image &#x3D; </span><br><span class="line">          [UIImage imageNamed:CYPasswordViewSrcName(@&quot;password_error&quot;)];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<p>分析完以上源码后，我又对该项目重构并进行了些许修改：</p>
+<ul>
+<li><span class="exturl" data-url="aHR0cDovL3d3dy5qaWFuc2h1LmNvbS9wLzdhYTljOWQyYjM2Ng==">密码输入框：HQLPasswordViewDemo<i class="fa fa-external-link-alt"></i></span></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>独木舟的木
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://andy0570.com/2017/06/20/iOS%20%E7%BC%96%E7%A8%8B%EF%BC%9A%E5%AF%86%E7%A0%81%E8%BE%93%E5%85%A5%E6%A1%86%20CYPasswordView_Block%20%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/" title="iOS 编程：密码输入框 CYPasswordView_Block 源码解析">https://andy0570.com/2017/06/20/iOS 编程：密码输入框 CYPasswordView_Block 源码解析/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <span class="exturl" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpo"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</span> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/iOS/" rel="tag"># iOS</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2017/06/11/iOS%20%E7%BC%96%E7%A8%8B%EF%BC%9A%E8%BD%BB%E9%87%8F%E5%8C%96%E8%A7%86%E5%9B%BE%E6%8E%A7%E5%88%B6%E5%99%A8/" rel="prev" title="iOS 编程：轻量化视图控制器">
+      <i class="fa fa-chevron-left"></i> iOS 编程：轻量化视图控制器
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2017/06/21/iOS%20%E7%BC%96%E7%A8%8B%EF%BC%9A%E5%AF%86%E7%A0%81%E8%BE%93%E5%85%A5%E6%A1%86%20HQLPasswordViewDemo/" rel="next" title="iOS 编程：密码输入框 HQLPasswordViewDemo">
+      iOS 编程：密码输入框 HQLPasswordViewDemo <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+        </div>
+        
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">独木舟的木</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">2.1m</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">31:21</span>
+</div>
+  <div class="powered-by">由 <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZw==">NexT.Gemini</span> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

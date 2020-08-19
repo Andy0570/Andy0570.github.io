@@ -1,23 +1,802 @@
-{% extends '_layout.swig' %}
-{% import '_macro/post.swig' as post_template %}
-{% import '_macro/sidebar.swig' as sidebar_template %}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.0.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+  <meta name="google-site-verification" content="wioXOS3Gv2wXUpJ3sLtfZ4ft6YJYKNLLWSw6QoZTFYM">
+  <meta name="msvalidate.01" content="C96491A81239C517A50597C54EE53CD1">
+  <meta name="baidu-site-verification" content="h8asiToN1b">
 
-{% block title %}{{ page.title }} | {{ title }}{% endblock %}
+<link rel="stylesheet" href="/css/main.css">
 
-{% block page_class %}page-post-detail{% endblock %}
 
-{% block content %}
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  
+  <link rel="stylesheet" href="/lib/animate-css/animate.min.css">
 
-  <div id="posts" class="posts-expand">
-    {{ post_template.render(page) }}
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"andy0570.com","root":"/","scheme":"Gemini","version":"8.0.0-rc.5","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":"mac","bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false};
+  </script>
+
+  <meta name="description" content="由于我是参考书籍《iOS编程（第四版）[美]Christian Keur》学习iOS开发的,这本📚是2015年版本的，截至写此文之时iOS 10都出来了，Xcode 开发软件也更新到8了，而该📚中的Demo都是使用Xcode 5.0.2开发的，iOS用的7.0版本。版本更新后造成的InterFace Builder差异、method deprecated等对于萌新来说简直各种不适应，连comm">
+<meta property="og:type" content="article">
+<meta property="og:title" content="《iOS编程（第四版）》Demo8：Homeowner">
+<meta property="og:url" content="https://andy0570.com/2016/09/29/%E3%80%8AiOS%E7%BC%96%E7%A8%8B%EF%BC%88%E7%AC%AC%E5%9B%9B%E7%89%88%EF%BC%89%E3%80%8BDemo8%EF%BC%9AHomeowner/index.html">
+<meta property="og:site_name" content="独木舟的木">
+<meta property="og:description" content="由于我是参考书籍《iOS编程（第四版）[美]Christian Keur》学习iOS开发的,这本📚是2015年版本的，截至写此文之时iOS 10都出来了，Xcode 开发软件也更新到8了，而该📚中的Demo都是使用Xcode 5.0.2开发的，iOS用的7.0版本。版本更新后造成的InterFace Builder差异、method deprecated等对于萌新来说简直各种不适应，连comm">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071336.jpg">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071337.jpg">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071338.jpg">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071340.jpg">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071341.jpg">
+<meta property="article:published_time" content="2016-09-29T10:11:00.000Z">
+<meta property="article:modified_time" content="2019-05-01T14:44:58.000Z">
+<meta property="article:author" content="独木舟的木">
+<meta property="article:tag" content="iOS">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071336.jpg">
+
+<link rel="canonical" href="https://andy0570.com/2016/09/29/%E3%80%8AiOS%E7%BC%96%E7%A8%8B%EF%BC%88%E7%AC%AC%E5%9B%9B%E7%89%88%EF%BC%89%E3%80%8BDemo8%EF%BC%9AHomeowner/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>《iOS编程（第四版）》Demo8：Homeowner | 独木舟的木</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="独木舟的木" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <main class="main">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+        <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
   </div>
 
-{% endblock %}
+  <div class="site-meta">
 
-{% block sidebar %}
-  {{ sidebar_template.render(true) }}
-{% endblock %}
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">独木舟的木</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">iOS Developer</p>
+  </div>
 
-{% block script_extra %}
-  {% include '_scripts/pages/post-details.swig' %}
-{% endblock %}
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">14</span></a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">36</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">310</span></a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <section class="post-toc-wrap sidebar-panel">
+          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%EF%BC%88%E4%B8%80%EF%BC%89Homepwner%E5%BA%94%E7%94%A8"><span class="nav-number">1.</span> <span class="nav-text">（一）Homepwner应用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%88%9B%E5%BB%BA-UITableViewController-%E5%AD%90%E7%B1%BB%EF%BC%9AHQLItemsViewController"><span class="nav-number">1.1.</span> <span class="nav-text">1.创建 UITableViewController 子类：HQLItemsViewController</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E8%A6%86%E7%9B%96%E7%88%B6%E7%B1%BB%E7%9A%84%E6%8C%87%E5%AE%9A%E5%88%9D%E5%A7%8B%E5%8C%96%E6%96%B9%E6%B3%95%EF%BC%9AinitWithStyle-%EF%BC%8C%E5%B0%86%E6%8C%87%E5%AE%9A%E5%88%9D%E5%A7%8B%E5%8C%96%E6%96%B9%E6%B3%95%E6%94%B9%E4%B8%BAinit%EF%BC%9A"><span class="nav-number">1.2.</span> <span class="nav-text">2.覆盖父类的指定初始化方法：initWithStyle:，将指定初始化方法改为init：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E5%88%9B%E5%BB%BAHQLItemsViewController%E5%AF%B9%E8%B1%A1"><span class="nav-number">1.3.</span> <span class="nav-text">3.创建HQLItemsViewController对象</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E4%B8%BAUITableView%E5%AF%B9%E8%B1%A1%E8%AE%BE%E7%BD%AE%E5%86%85%E5%AE%B9"><span class="nav-number">1.4.</span> <span class="nav-text">4.为UITableView对象设置内容</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#UITableView%E6%95%B0%E6%8D%AE%E6%BA%90"><span class="nav-number">1.5.</span> <span class="nav-text">UITableView数据源</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-%E5%88%9B%E5%BB%BAHQLItemStore"><span class="nav-number">1.6.</span> <span class="nav-text">5.创建HQLItemStore</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-%E5%AE%9E%E7%8E%B0%E6%95%B0%E6%8D%AE%E6%BA%90%E6%96%B9%E6%B3%95"><span class="nav-number">1.7.</span> <span class="nav-text">6.实现数据源方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-%E9%87%8D%E7%94%A8UITableViewCell%E5%AF%B9%E8%B1%A1"><span class="nav-number">1.8.</span> <span class="nav-text">7.重用UITableViewCell对象</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8-%E7%BC%96%E8%BE%91%E6%A8%A1%E5%BC%8F"><span class="nav-number">1.9.</span> <span class="nav-text">8.编辑模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#9-%E5%A2%9E%E5%8A%A0%E8%A1%8C"><span class="nav-number">1.10.</span> <span class="nav-text">9.增加行</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#10-%E5%88%A0%E9%99%A4%E8%A1%8C"><span class="nav-number">1.11.</span> <span class="nav-text">10.删除行</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#11-%E6%9B%B4%E6%94%B9%E5%88%A0%E9%99%A4%E6%8C%89%E9%92%AE%E7%9A%84%E6%A0%87%E9%A2%98%E6%96%87%E6%9C%AC"><span class="nav-number">1.12.</span> <span class="nav-text">11.更改删除按钮的标题文本</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#12-%E7%A7%BB%E5%8A%A8%E8%A1%8C"><span class="nav-number">1.13.</span> <span class="nav-text">12.移动行</span></a></li></ol></li></ol></div>
+      </section>
+      <!--/noindex-->
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="独木舟的木"
+      src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+  <p class="site-author-name" itemprop="name">独木舟的木</p>
+  <div class="site-description" itemprop="description">生若直木，不语斧凿。</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">310</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">36</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL0FuZHkwNTcw" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Andy0570"><i class="fab fa-github fa-fw"></i>GitHub</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9zdGFja292ZXJmbG93LmNvbS91c2Vycy83MjY1NDAwL2FuZHkwNTcw" title="StackOverflow → https:&#x2F;&#x2F;stackoverflow.com&#x2F;users&#x2F;7265400&#x2F;andy0570"><i class="fab fa-stack-overflow fa-fw"></i>StackOverflow</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuamlhbnNodS5jb20vdS84NGM1ZmFkYzdjMTg=" title="简书 → https:&#x2F;&#x2F;www.jianshu.com&#x2F;u&#x2F;84c5fadc7c18"><i class="heartbeat fa-fw"></i>简书</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="bWFpbHRvOmFuZHl3aG1AMTYzLmNvbQ==" title="E-Mail → mailto:andywhm@163.com"><i class="fa fa-envelope fa-fw"></i>E-Mail</span>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <span class="exturl cc-opacity" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpo"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></span>
+  </div>
+
+
+
+      </section>
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </header>
+
+      
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div id="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+      <div class="main-inner">
+        
+
+        <div class="content post posts-expand">
+          
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://andy0570.com/2016/09/29/%E3%80%8AiOS%E7%BC%96%E7%A8%8B%EF%BC%88%E7%AC%AC%E5%9B%9B%E7%89%88%EF%BC%89%E3%80%8BDemo8%EF%BC%9AHomeowner/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+      <meta itemprop="name" content="独木舟的木">
+      <meta itemprop="description" content="生若直木，不语斧凿。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="独木舟的木">
+    </span>
+
+    
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          《iOS编程（第四版）》Demo8：Homeowner
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2016-09-29 18:11:00" itemprop="dateCreated datePublished" datetime="2016-09-29T18:11:00+08:00">2016-09-29</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-05-01 22:44:58" itemprop="dateModified" datetime="2019-05-01T22:44:58+08:00">2019-05-01</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS/" itemprop="url" rel="index"><span itemprop="name">iOS</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>15k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>13 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>由于我是参考书籍<span class="exturl" data-url="aHR0cHM6Ly93d3cuYW1hem9uLmNuL2dwL3Byb2R1Y3QvQjAxM1VHMlVMVy9yZWY9b2hfYXVpX2RfZGV0YWlscGFnZV9vMDNfP2llPVVURjgmcHNjPTE=">《iOS编程（第四版）[美]Christian Keur》<i class="fa fa-external-link-alt"></i></span>学习iOS开发的,这本📚是2015年版本的，截至写此文之时iOS 10都出来了，Xcode 开发软件也更新到8了，而该📚中的Demo都是使用Xcode 5.0.2开发的，iOS用的7.0版本。版本更新后造成的InterFace Builder差异、method deprecated等对于萌新来说简直各种不适应，连command+N创建个Empty application都找不到啊😭😂😂…好吧，不絮絮叨叨了，总之看科技类书籍，诸如读者定位、作者背景、译者背景、出版社出版年份等很多因素还是要考虑进去。</p>
+<h2 id="（一）Homepwner应用"><a href="#（一）Homepwner应用" class="headerlink" title="（一）Homepwner应用"></a>（一）Homepwner应用</h2><p>参考📚中第八章、第九章使用 <strong>UITableView</strong> 控件做了一个名为 <strong>Homepwner</strong> 的应用，用来管理财产清单，通过一个 <strong>UITableView</strong> 对象显示一组 <strong>Item</strong> 对象。</p>
+<p>Demo：</p>
+<p> <img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071336.jpg" alt="Homepwner"></p>
+<ul>
+<li><strong>视图控制对象</strong>：该应用采用 <strong>MVC</strong> 的设计模式，<strong>UITableView</strong> 是视图，因此要通过视图控制对象来创建和释放 <strong>UITableView</strong> 对象，并负责显示或隐藏视图。</li>
+<li><strong>数据源</strong>：<strong>UITableView</strong> 对象要有数据源才能正常工作。<strong>UITableView</strong> 对象会向数据源查询要显示的行数、显示表格行所需要的数据和其他所需的数据。没有数据的 <strong>UITableView</strong> 对象只是空壳。凡是遵守<strong>UITableViewDataSource</strong> 协议的Object-C对象，都可以成为 <strong>UITableView</strong> 对象的数据源（即dataSource属性所指向的对象）。<ul>
+<li><strong>委托对象</strong>：还要为 <strong>UITableView</strong> 对象设置委托对象，以便能在该对象发生特定事件时做出相应的处理。凡是遵守<strong>UITableViewDelegate</strong> 协议的对象，都可以成为 <strong>UITableView</strong> 对象的委托对象。</li>
+<li><strong>UITableViewController</strong> 对象可以扮演以上全部角色，包括 <strong>视图控制对象</strong>、<strong>数据源</strong>和<strong>委托对象</strong>。</li>
+</ul>
+</li>
+</ul>
+<a id="more"></a>
+
+<p>Homepwner对象图：</p>
+<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071337.jpg" alt="Homepwner对象图"></p>
+<h3 id="1-创建-UITableViewController-子类：HQLItemsViewController"><a href="#1-创建-UITableViewController-子类：HQLItemsViewController" class="headerlink" title="1.创建 UITableViewController 子类：HQLItemsViewController"></a>1.创建 UITableViewController 子类：HQLItemsViewController</h3><pre><code>#import &lt;UIKit/UIKit.h&gt;
+
+@interface HQLItemsViewController : UITableViewController
+
+@end</code></pre>
+<p>​    </p>
+<h3 id="2-覆盖父类的指定初始化方法：initWithStyle-，将指定初始化方法改为init："><a href="#2-覆盖父类的指定初始化方法：initWithStyle-，将指定初始化方法改为init：" class="headerlink" title="2.覆盖父类的指定初始化方法：initWithStyle:，将指定初始化方法改为init："></a>2.覆盖父类的指定初始化方法：initWithStyle:，将指定初始化方法改为init：</h3><p>在HQLItemsViewController.m文件下实现以下两个初始化方法，可以确保无论向新创建的HQLItemsViewController对象发送哪一个初始化方法，初始化后的对象都会使用 <strong>UITableViewStylePlain</strong> 风格</p>
+<pre><code>-(instancetype) init &#123;
+
+//调用父类的指定初始化方法
+self = [super initWithStyle:UITableViewStylePlain];
+
+return self;
+
+&#125;
+
+- (instancetype) initWithStyle:(UITableViewStyle)style &#123;
+
+return [self init];
+
+&#125;</code></pre>
+<p>​    </p>
+<h3 id="3-创建HQLItemsViewController对象"><a href="#3-创建HQLItemsViewController对象" class="headerlink" title="3.创建HQLItemsViewController对象"></a>3.创建HQLItemsViewController对象</h3><p>在 <strong>AppDelegate.m</strong> 文件中导入 <strong>HQLItemsViewController.h</strong> 头文件并初始化创建HQLItemsViewController对象.<a href="%E8%AF%A5%E9%A1%B9%E7%9B%AE%E5%90%8E%E6%9C%9F%E5%8F%88%E8%BF%9B%E8%A1%8C%E4%BA%86%E4%BC%98%E5%8C%96%EF%BC%8C%E4%B8%BATableViewController%E8%AE%BE%E7%BD%AE%E4%BA%86NavigationController%E4%B8%BArootViewController.">^1</a></p>
+<pre><code>- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions &#123;
+self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+self.window.backgroundColor = [UIColor whiteColor];
+[self.window makeKeyAndVisible];
+
+#pragma mark--初始化代码
+
+//创建TableView视图控制器
+HQLItemsViewController *itemsViewController = [[HQLItemsViewController alloc] init];
+self.window.rootViewController = itemsViewController;
+
+return YES;
+&#125;</code></pre>
+<h3 id="4-为UITableView对象设置内容"><a href="#4-为UITableView对象设置内容" class="headerlink" title="4.为UITableView对象设置内容"></a>4.为UITableView对象设置内容</h3><p>这里从外部导入了一个写好的Item类的头文件和实现文件（Item.h 和 Item.m），该类用于生成一组随机数据。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;**</span><br><span class="line"> *  Item.h</span><br><span class="line"> *  该对象表示某人在真实世界拥有的一件物品</span><br><span class="line"> *</span><br><span class="line"> *&#x2F;</span><br><span class="line">#import &lt;Foundation&#x2F;Foundation.h&gt;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;头文件声明顺序：实例变量、类方法、初始化方法、其他方法</span><br><span class="line">@interface Item : NSObject &#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@property NSString *itemName;   &#x2F;&#x2F;名称</span><br><span class="line">@property NSString *serialNumber;   &#x2F;&#x2F;序列号</span><br><span class="line">@property int valueInDollars;    &#x2F;&#x2F;价值</span><br><span class="line">@property NSDate *dateCreated;   &#x2F;&#x2F;创建日期</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;类方法</span><br><span class="line">+ (instancetype)randomItem;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; Item类的指定初始化方法</span><br><span class="line">&#x2F;&#x2F;instancetype,该关键字表示的返回值类型和调用方法的类型相同，init方法的返回值类型都声明为instancetype</span><br><span class="line">- (instancetype)initWithItemName:(NSString *)name</span><br><span class="line">                  valueInDollars:(int)value</span><br><span class="line">                    serialNumber:(NSString *)sNumber;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;其他初始化方法</span><br><span class="line">- (instancetype)initWithName:(NSString *)name serialNumber:(NSString *)sNumber;</span><br><span class="line">- (instancetype)initWithItemName:(NSString *)name;</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&#x2F;**</span><br><span class="line"> *  Item.m</span><br><span class="line"> *</span><br><span class="line"> *&#x2F;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;#import 可以确保不会重复导入同一个文件</span><br><span class="line">#import &quot;Item.h&quot;</span><br><span class="line"></span><br><span class="line">@implementation Item</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 类方法</span><br><span class="line">+ (instancetype)randomItem&#123;</span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F;创建不可变数组对象，包含三个形容词</span><br><span class="line">    NSArray *randomAdjectiveList &#x3D; @[@&quot;Fluffy&quot;,@&quot;Rusty&quot;,@&quot;Shiny&quot;];</span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F;创建三个不可变数组对象，包含三个名词</span><br><span class="line">    NSArray *randomNounList &#x3D; @[@&quot;Bear&quot;,@&quot;Spark&quot;,@&quot;Mac&quot;];</span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F;根据数组对象所含对象的个数，得到随机索引</span><br><span class="line">    &#x2F;&#x2F;注意：运算符%是模运算符，运算后得到的是余数</span><br><span class="line">    &#x2F;&#x2F;因此 adjectiveIndex 是一个0到2（包括2）的随机数</span><br><span class="line">    NSInteger adjectiveIndex &#x3D; arc4random() % [randomAdjectiveList count];</span><br><span class="line">    NSInteger nounIndex &#x3D; arc4random() % [randomNounList count];</span><br><span class="line">    </span><br><span class="line">    NSString *randomName &#x3D; [NSString stringWithFormat:@&quot;%@%@&quot;,</span><br><span class="line">                            randomAdjectiveList [adjectiveIndex],</span><br><span class="line">                            randomNounList [nounIndex]];</span><br><span class="line">    </span><br><span class="line">    </span><br><span class="line">    int randomValue &#x3D; arc4random() % 100;</span><br><span class="line">    </span><br><span class="line">    NSString *randomSerialNumber &#x3D; [NSString stringWithFormat:@&quot;%C%C%C%C%C&quot;,</span><br><span class="line">                                    (unichar)(&#39;0&#39;+arc4random() % 10),</span><br><span class="line">                                    (unichar)(&#39;A&#39;+arc4random() % 26),</span><br><span class="line">                                    (unichar)(&#39;0&#39;+arc4random() % 10),</span><br><span class="line">                                    (unichar)(&#39;A&#39;+arc4random() % 26),</span><br><span class="line">                                    (unichar)(&#39;0&#39;+arc4random() % 10)];</span><br><span class="line">    </span><br><span class="line">    Item *newItem &#x3D; [[self alloc] initWithItemName:randomName</span><br><span class="line">                                    valueInDollars:randomValue</span><br><span class="line">                                      serialNumber:randomSerialNumber];</span><br><span class="line">    </span><br><span class="line">    return newItem;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 串联（chain）使用初始化方法</span><br><span class="line">- (instancetype)initWithItemName:(NSString *)name</span><br><span class="line">                  valueInDollars:(int)value</span><br><span class="line">                    serialNumber:(NSString *)sNumber &#123;</span><br><span class="line">    </span><br><span class="line">    self &#x3D; [super init];</span><br><span class="line">    &#x2F;&#x2F;if(self):父类的指定初始化方法是否成功创建了父类对象？</span><br><span class="line">    if(self)&#123;</span><br><span class="line">        _itemName       &#x3D; name;</span><br><span class="line">        _serialNumber   &#x3D; sNumber;</span><br><span class="line">        _valueInDollars &#x3D; value;</span><br><span class="line">        _dateCreated    &#x3D; [[NSDate alloc] init];</span><br><span class="line">    &#125;</span><br><span class="line">    return self;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (instancetype)initWithName:(NSString *)name</span><br><span class="line">                serialNumber:(NSString *)sNumber &#123;</span><br><span class="line">    </span><br><span class="line">     &#x2F;&#x2F;调用指定初始化方法</span><br><span class="line">    return [self initWithItemName:name</span><br><span class="line">                   valueInDollars:0</span><br><span class="line">                     serialNumber:sNumber];</span><br><span class="line">    </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (instancetype)initWithItemName:(NSString *)name &#123;</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F;调用指定初始化方法</span><br><span class="line">    return [self initWithItemName:name</span><br><span class="line">                   valueInDollars:0</span><br><span class="line">                     serialNumber:@&quot;&quot;];</span><br><span class="line">    </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (instancetype)init &#123;</span><br><span class="line">    </span><br><span class="line">    return [self initWithItemName:@&quot;Item&quot;];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;复写 description 方法</span><br><span class="line">&#x2F;&#x2F;%@,对应的实参类型是指向任何一种对象的指针，首先返回的是该实参的description消息 </span><br><span class="line">- (NSString *)description &#123;</span><br><span class="line">    </span><br><span class="line">   NSString *descriptionString &#x3D; [[NSString alloc] initWithFormat:@&quot;%@(%@): ,Worth $%d ,recorded on %@&quot;,</span><br><span class="line">                                   self.itemName,</span><br><span class="line">                                   self.serialNumber,</span><br><span class="line">                                   self.valueInDollars,</span><br><span class="line">                                   self.dateCreated ];</span><br><span class="line">    return descriptionString;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+<h3 id="UITableView数据源"><a href="#UITableView数据源" class="headerlink" title="UITableView数据源"></a>UITableView数据源</h3><ul>
+<li>在 <strong>Cocoa Touch</strong> 中，<strong>UITableView</strong> 对象会自己查询另一个对象以获得需要显示的内容，这个对象就是 <strong>UITableView</strong> 对象的数据源，也就是 dataSource 属性所指向的对象。   </li>
+<li>该应用中，<strong>UITableView</strong> 对象的数据源就是 <strong>HQLItemsViewController</strong> 对象自己。所以要为 <strong>HQLItemsViewController</strong> 对象添加相应的属性和方法，使其能够保存多个 <strong>Item</strong> 对象。</li>
+<li>使用 <strong>HQLItemStore</strong> （类型为NSMutableArray）对象来负责保存和加载 <strong>Item</strong> (类型为NSArray) 对象,当某个对象需要访问所有的 <strong>Item</strong>时，可以通过 <strong>HQLItemStore</strong> 的 <code>allItems</code> 方法获取包含所有 <strong>Item</strong> 的NSMutableArray。此外，<strong>HQLItemStore</strong> 还会负责将 <strong>Item</strong> 存入文件，或者从文件重新载入。</li>
+</ul>
+<h3 id="5-创建HQLItemStore"><a href="#5-创建HQLItemStore" class="headerlink" title="5.创建HQLItemStore"></a>5.创建HQLItemStore</h3><ul>
+<li><strong>HQLItemStore</strong>对象是一个<strong>单例</strong>。也就是说，每个应用只会有一个这种类型的对象。如果应用尝试创建另一个对象，<strong>HQLItemStore</strong>类就会返回已经存在的那个对象。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">#import &lt;Foundation&#x2F;Foundation.h&gt;</span><br><span class="line"></span><br><span class="line">@interface HQLItemStore : NSObject</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;将此类设置为单例对象</span><br><span class="line">+ (instancetype)sharedStore;</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>在 <strong>HQLItemStore.m</strong> 中实现sharedStore，同时编写一个抛出异常的<code>init</code>方法和私有指定初始化方法<code>initPrivate</code>.</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">@implementation HQLItemStore</span><br><span class="line"></span><br><span class="line">+ (instancetype)sharedStore &#123;</span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F;将sharedStore声明为了静态变量，当某个定义了静态变量的方法返回时，程序不会释放相应的变量</span><br><span class="line">    static HQLItemStore *sharedStore &#x3D; nil;</span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F;判断是否需要创建一个sharedStore对象</span><br><span class="line">    &#x2F;&#x2F; （! sharedStore） 为真 ，即（sharedStore）为假，不存在</span><br><span class="line">    if (! sharedStore) &#123;</span><br><span class="line">        sharedStore &#x3D; [[self alloc] initPrivate];</span><br><span class="line">    &#125;</span><br><span class="line">    return sharedStore;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">   &#x2F;&#x2F;如果调用[[HQLItemstore alloc]init],就提示应该使用[HQLItemstore sharedStore].</span><br><span class="line">- (instancetype)init &#123;</span><br><span class="line">    @throw [NSException exceptionWithName:@&quot;Singleton&quot;</span><br><span class="line">                                   reason:@&quot;Use + [HQLItemStore sharedStore]&quot;</span><br><span class="line">                                 userInfo:nil];</span><br><span class="line">    return  nil;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;这是真正的（私有的）初始化方法</span><br><span class="line">- (instancetype)initPrivate &#123;</span><br><span class="line">    self &#x3D; [super init];  </span><br><span class="line">    return self; </span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>在 <strong>HQLItemStore.h</strong> 中声明一个方法和一个属性，分别用于创建和保存 <strong>Item</strong> 对象。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">#import &lt;Foundation&#x2F;Foundation.h&gt;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;@class 只需要使用类的声明，无需知道具体的实现细节</span><br><span class="line">@class Item;</span><br><span class="line"></span><br><span class="line">@interface HQLItemStore : NSObject</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;保存Item</span><br><span class="line">&#x2F;&#x2F;allItems属性被声明为NSArray（不可变数组），且设置为readonly，这样其他类既无法将一个新的数组赋给allItems，也无法修改allItems</span><br><span class="line">&#x2F;&#x2F;allItems属性对外部公开使用</span><br><span class="line">@property (nonatomic, readonly) NSArray *allItems;</span><br><span class="line"></span><br><span class="line">+ (instancetype)sharedStore;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;创建Item</span><br><span class="line">- (Item *)createItem;</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+
+
+<ul>
+<li>在 <strong>HQLItemStore.m</strong> 顶部导入 <strong>Item.h</strong> 文件，以便之后向 <strong>Item</strong> 对象发送消息。 </li>
+<li>接下来在 <strong>HQLItemStore.m</strong> 的类扩展中声明一个可变数组。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">#import &quot;HQLItemStore.h&quot;</span><br><span class="line">#import &quot;Item.h&quot;</span><br><span class="line"></span><br><span class="line">@interface HQLItemStore ()</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 类扩展中为NSMutableArray（可变数组）</span><br><span class="line">&#x2F;&#x2F;privateItems属性只在内部使用</span><br><span class="line">@property (nonatomic) NSMutableArray *privateItems;</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">@implementation HQLItemStore</span><br><span class="line">...</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<ul>
+<li>在<strong>HQLItemStore.m</strong>，实现<strong>initPrivate</strong>方法，初始化<strong>privateItem</strong>属性。同时还需要覆盖<strong>allItem</strong>的取方法，返回<strong>privateItems</strong>，同时实现<strong>createItem</strong>方法。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">- (instancetype)initPrivate &#123;</span><br><span class="line">    self &#x3D; [super init];</span><br><span class="line">    &#x2F;&#x2F;父类的init方法是否成功创建了对象</span><br><span class="line">    if (self) &#123;</span><br><span class="line">        _privateItems &#x3D; [[NSMutableArray alloc] init];</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">   return self; </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (Item *)createItem &#123;</span><br><span class="line">    </span><br><span class="line">    Item *item &#x3D; [Item randomItem];</span><br><span class="line">    </span><br><span class="line">    [self.privateItems addObject:item];</span><br><span class="line">    </span><br><span class="line">    return item;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;allItems取方法，返回值为NSArray类型</span><br><span class="line">- (NSArray *)allItems &#123;</span><br><span class="line">    </span><br><span class="line">   &#x2F;&#x2F;方法体中返回值为NSMutableArray类型</span><br><span class="line">   return self.privateItems;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="6-实现数据源方法"><a href="#6-实现数据源方法" class="headerlink" title="6.实现数据源方法"></a>6.实现数据源方法</h3><p>在<strong>HQLItemsViewController.m</strong>顶部导入 <strong>HQLItemStore.h</strong> 和 <strong>Item.h</strong>,然后更新指定初始化方法，创建5个随机的 Item对象并加入HQLItemStore对象。</p>
+<pre><code>-(instancetype) init &#123;
+
+//调用父类的指定初始化方法
+self = [super initWithStyle:UITableViewStyleGrouped];
+
+//初始化生成随机对象
+if (self) &#123;
+
+    for (int i = 0; i &lt; 5; i ++) &#123;
+        [[HQLItemStore sharedStore] createItem];
+    &#125;
+&#125;
+return self;
+
+&#125;</code></pre>
+<p>在 HQLItemViewController.m中实现数据源协议 <code>tableView: numberOfRowsInSection:</code>方法</p>
+<pre><code>//返回应该显示的行数
+- (NSInteger)tableView:(UITableView *)tableView
+ numberOfRowsInSection:(NSInteger)section &#123;
+
+return [[[HQLItemStore sharedStore] allItems] count];
+&#125;</code></pre>
+<p>另一个必须要实现的数据源协议是<code>tableView: cellForRowAtIndexPath:</code>   </p>
+<p><em>注：实现该方法还涉及到另一个类：</em> <strong><em>UITableViewCell</em></strong> ,<em>此类的详解及创建自定义子类日后分析</em>    </p>
+<pre><code>//获取用于显示第section个表格段、第row行数据的UITableViewCell对象
+//返回各行所需视图,每个表格段对应一组独立的行
+- (UITableViewCell *)tableView:(UITableView *)tableView
+     cellForRowAtIndexPath:(NSIndexPath *)indexPath &#123;
+
+//    UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@&quot;UITableViewCell&quot;];
+
+//由协议获取已经分配的单元格，而不是分配一个新的,
+//创建或重用UITableViewCell对象
+//按照约定，应该将UITableViewCell或者UITableViewCell子类的类名用作reuseIdentifier。
+UITableViewCell *cell = [tableView
+    dequeueReusableCellWithIdentifier:@&quot;UITableViewCell&quot;
+                         forIndexPath:indexPath];
+
+//获取allItem的第n个HQLItem对象，这里的n是该UITableViewCell对象所对应的表格行索引
+//然后将该Item对象的描述信息赋给UITableViewCell对象的textlabel
+NSArray *items = [[HQLItemStore sharedStore] allItems];
+Item *item = items[indexPath.row];
+cell.textLabel.text = [item description];
+return cell;</code></pre>
+<p>}</p>
+<h3 id="7-重用UITableViewCell对象"><a href="#7-重用UITableViewCell对象" class="headerlink" title="7.重用UITableViewCell对象"></a>7.重用UITableViewCell对象</h3><p><strong>UITableView</strong>对象会将移出窗口的<strong>UITableViewCell</strong>对象放入<strong>UITableViewCell</strong>对象池，等待重用。当<strong>UITableView</strong>对象要求数据源返回某个<strong>UITableViewCell</strong>对象时，数据源可以先查看对象池。如果有未使用的<strong>UITableViewCell</strong>对象，就可以用新的数据配置这个<strong>UITableViewCell</strong>对象，然后将其返回给<strong>UITableView</strong>对象，从而避免创建新对象，以上代码已优化重用方式，同时，为了重用<strong>UITableViewCell</strong>对象，需要将创建<strong>UITableViewCell</strong>对象的过程交由系统管理，如果对象池中没有<strong>UITableViewCell</strong>对象，则由系统初始化创建所需类型的<strong>UITableViewCell</strong>对象。</p>
+<pre><code>- (void)viewDidLoad &#123;
+[super viewDidLoad];
+
+//重用UITableViewCell，向表视图注册应该使用的UITableViewCell类型
+[self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@&quot;UITableViewCell&quot;];</code></pre>
+<h3 id="8-编辑模式"><a href="#8-编辑模式" class="headerlink" title="8.编辑模式"></a>8.编辑模式</h3><p>在编辑模式下，用户可以管理<strong>UITableView</strong>中的表格行，例如添加、删除和移动等操作。<br>为应用添加编辑模式的界面有两种方式：<br>1️⃣在视图控制器顶层添加<strong>NavigationController</strong>；<br>2️⃣为<strong>UITableView</strong>对象添加表头视图。<br>这里先用2️⃣方式实现此功能，1️⃣方法在gitHub上也已给出。</p>
+<p>①创建一个针对表格的表头视图<br>创建一个新的XIB文件。cmd+N -&gt; 在 User Interface 窗口中选择 <strong>Empty</strong>，将文件名设置为 HeaderView.xib 并保存。打开Interface Buider后，先拖拽一个UIView对象至画布，在添加2个<strong>UIButton</strong>对象。  </p>
+<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071338.jpg"></p>
+<blockquote>
+<p>⚠️ 注意一定要选择 <strong>Empty</strong> 类别的XIB文件，有一次我错选了 <strong>View</strong>，真机测试就是加载不出来，老纠结了😂。</p>
+</blockquote>
+<p>选中<strong>File’s Owner</strong>,修改<strong>Class</strong>文本框为<strong>HQLItemsViewController</strong>。</p>
+<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071340.jpg"></p>
+<p>接着选中<strong>UIView</strong>对象，将<strong>Size</strong>属性设置为<strong>Freeform</strong>以调整视图对象大小 。<br><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071341.jpg"></p>
+<p>将UIView对象的背景颜色改为全透明颜色，即ClearColor.</p>
+<p>②在<strong>HQLItemViewController.m</strong>的类扩展中声明插座变量<code>headerView</code>，并添加两个动作方法。</p>
+<pre><code>@interface HQLItemsViewController ()
+
+//载入XIB文件后，headerView会指向XIB文件中的顶层对象，并且是强引用。
+//指向顶层对象的插座变量必须声明为强引用；相反，当插座变量指向顶层对象所拥有的对象（例如顶层对象的子视图时），应该使用弱引用。
+@property (nonatomic,strong) IBOutlet UIView *headerView;
+
+@end
+
+@implementation HQLItemsViewController
+
+...
+
+#pragma mark - 表头视图按钮
+
+//添加新项目
+- (IBAction)addNewItem:(id)sender &#123;
+
+&#125;
+
+//切换编辑模式
+- (IBAction)toggleEditingMode:(id)sender &#123;
+
+&#125;
+@end</code></pre>
+<p>在<strong>HQLItemsViewController.m</strong>中实现<code>hearerView</code>方法，载入应用程序包中的XIB文件。<br> 载入headerView.xib文件</p>
+<pre><code>- (UIView *)headerView &#123;
+
+//如果还没有载入headerView
+if (!_headerView) &#123;
+
+    //载入指定的XIB文件
+    //**将self作为owner实参（拥有者）传给NSBundle对象，目的是当HQLItemsViewController将XIB文件加载为NIB文件时，使用HQLItemsViewController对象自身替换占位符对象File&#39;s Owner
+    [[NSBundle mainBundle] loadNibNamed:@&quot;HeaderView&quot;
+                                  owner:self
+                                options:nil];
+&#125;
+return _headerView;
+
+&#125;</code></pre>
+<p>将<strong>headerView</strong>设置为<code>UITableView</code>对象的表头视图。在<strong>HQLItemsViewController.m</strong>的<code>ViewDidLoad</code>方法中添加以下代码：</p>
+<pre><code>加载headerView，并将其设置为UITableView对象的表头视图
+UIView *header = self.headerView;
+[self.tableView setTableHeaderView:header];</code></pre>
+<p>在HQLItemViewController.m中实现<code>toggleEditingMode</code>方法</p>
+<pre><code>//切换编辑模式
+- (IBAction)toggleEditingMode:(id)sender &#123;
+
+//如果当前的视图控制对象已经处在编辑模式
+if (self.isEditing) &#123;
+
+    //修改按钮文字，提示用户当前的表格状态
+    [sender setTitle:@&quot;Edit&quot; forState:UIControlStateNormal];
+    //关闭编辑模式
+    [self setEditing:NO animated:YES];
+
+&#125;else &#123;
+
+    //修改按钮文字，提示用户当前的表格状态
+    [sender setTitle:@&quot;Done&quot; forState:UIControlStateNormal];
+    //开启编辑模式
+    [self setEditing:YES animated:YES];
+&#125;
+
+&#125;</code></pre>
+<h3 id="9-增加行"><a href="#9-增加行" class="headerlink" title="9.增加行"></a>9.增加行</h3><p>该应用实现的增加行方式是，在表视图上放置添加按钮，点击添加按钮之后系统调用<code>createItem</code>方法创建随机对象.<br>在HQLItemViewController.m中实现<code>addNewItem</code>方法</p>
+<pre><code>- (IBAction)addNewItem:(id)sender &#123;
+
+//创建NSIndexPath对象，代表的位置是：第一个表格段，最后一个表格行
+
+//创建新的Item对象并将其加入HQLItemStore对象
+Item *newItem = [[HQLItemStore sharedStore] createItem];
+
+//获取新创建的对象在allitem数组中的索引
+NSInteger lastRow = [[[HQLItemStore sharedStore] allItems] indexOfObject:newItem];
+
+NSIndexPath *indexPath = [NSIndexPath indexPathForRow:lastRow
+                                            inSection:0];
+
+//将新行插入UITableview对象
+[self.tableView insertRowsAtIndexPaths:@[indexPath]
+                      withRowAnimation:UITableViewRowAnimationTop];
+
+&#125;</code></pre>
+<h3 id="10-删除行"><a href="#10-删除行" class="headerlink" title="10.删除行"></a>10.删除行</h3><p>如果UITableView对象请求确认的是删除操作，删除Homepwner中的某个表格行（<strong>UITableViewCell</strong>对象）步骤：<br>1️⃣从<strong>UITableView</strong>对象删除指定的<strong>UITableViewCell</strong>对象；<br>2️⃣找到和需要删除的<strong>UITableViewCell</strong>对象对应的Item对象，也将其从<strong>HQLItemStore</strong>中删除。   </p>
+<p>完成第2️⃣步需要在 <strong>HQLItemStore.h</strong> 中声明删除方法<code>removeItem</code>，用于移除指定的Item对象,接着在<strong>HQLItemStore.m</strong>文件中实现该方法。</p>
+<p><strong>删除</strong>：<br><code>removeItem</code>方法调用了<strong>NSMutableArray</strong>中的<code>removeObjectIdenticalTo：</code>比较指向对象的指针，该方法只会移除数组所保存的那些和传入对象指针完全相同的指针.<br><code>removeObject：</code>该方法会枚举数组，向每一个对象发送<code>isEqual：</code>消息，判断当前对象和传入对象所包含的数据是否相等</p>
+<pre><code>- (void)removeItem:(Item *)item &#123;
+
+[self.privateItems removeObjectIdenticalTo:item];
+&#125;</code></pre>
+<p>接下来为<strong>HQLItemViewController</strong>实现方法    <code>tableView：commitEditingStyle:forRowAtIndexPath：</code></p>
+<pre><code>- (void)tableView:(UITableView *)tableView  //发送该消息的UITableView对象
+commitEditingStyle:(UITableViewCellEditingStyle)editingStyle    //编辑风格
+forRowAtIndexPath:(NSIndexPath *)indexPath &#123;    //相应表格行所在的表格段索引和行索引
+
+//如果UITableView对象请求确认的是删除操作
+if (editingStyle ==UITableViewCellEditingStyleDelete) &#123;
+
+    //先删除Item对象
+    NSArray *items = [[HQLItemStore sharedStore] allItems];
+    Item *deleteItem = items [indexPath.row];
+    [[HQLItemStore sharedStore] removeItem:deleteItem];
+
+    //还要删除表格视图中的相应表格行（带动画效果）
+    [tableView deleteRowsAtIndexPaths:@[indexPath]
+                     withRowAnimation:UITableViewRowAnimationFade];
+&#125;
+&#125;</code></pre>
+<h3 id="11-更改删除按钮的标题文本"><a href="#11-更改删除按钮的标题文本" class="headerlink" title="11.更改删除按钮的标题文本"></a>11.更改删除按钮的标题文本</h3><p>删除UITableView对象中的某个表格行时，相应的UITableViewCell对象会在其右侧显示一个标题为“Delete”的按钮，先将该按钮标题改为中文“删除”。</p>
+<pre><code>- (NSString *)tableView:(UITableView *)tableView
+titleForDeleteConfirmationButtonForRowAtIndexPath:(NSIndexPath *)indexPath &#123;
+
+return  @&quot;删除&quot;;
+&#125;</code></pre>
+<h3 id="12-移动行"><a href="#12-移动行" class="headerlink" title="12.移动行"></a>12.移动行</h3><p>要改变<strong>UITableView</strong>对象所显示的行的排列位置，需要为数据源实现另一个<strong>UITableViewDataSource</strong>协议的方法，<br>首先要为数据源实现移动方法:<code>moveItemAtIndex:toIndex:</code>,为<strong>HQLItemStore</strong>增加该新方法，同样需要先在.h文件中声明，然后在.m文件中实现。</p>
+<pre><code>- (void)moveItemAtIndex:(NSUInteger)fromIndex toIndex:(NSUInteger)toIndex &#123;
+
+if (fromIndex == toIndex) &#123;
+    return;
+&#125;
+
+//得到要移动的对象的指针，以便稍后能将其插入新的位置
+Item *item = self.privateItems [fromIndex];
+
+//将item从allItem数组所在位置中移除
+[self.privateItems removeObjectAtIndex:fromIndex];
+
+//根据新的索引的位置，将item重新插回allItem数组新的位置
+[self.privateItems insertObject:item atIndex:toIndex];
+
+&#125;</code></pre>
+<p>接下来在<strong>HQLItemViewController.m</strong>中实现<code>tableView:moveRowAtIndexPath:toIndexPath:</code>,更新HQLItemStore对象。</p>
+<pre><code>- (void)tableView:(UITableView *)tableView
+moveRowAtIndexPath:(NSIndexPath *)sourceIndexPath
+  toIndexPath:(NSIndexPath *)destinationIndexPath &#123;
+
+[[HQLItemStore sharedStore]moveItemAtIndex:sourceIndexPath.row toIndex:destinationIndexPath.row];
+&#125;</code></pre>
+<p>附上完整项目地址：<br><span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL0FuZHkwNTcwL0hvbWVwd25lcg==">gitHub地址<i class="fa fa-external-link-alt"></i></span></p>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>独木舟的木
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://andy0570.com/2016/09/29/%E3%80%8AiOS%E7%BC%96%E7%A8%8B%EF%BC%88%E7%AC%AC%E5%9B%9B%E7%89%88%EF%BC%89%E3%80%8BDemo8%EF%BC%9AHomeowner/" title="《iOS编程（第四版）》Demo8：Homeowner">https://andy0570.com/2016/09/29/《iOS编程（第四版）》Demo8：Homeowner/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <span class="exturl" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpo"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</span> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/iOS/" rel="tag"># iOS</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2016/09/28/iOS%20%E6%94%B6%E8%97%8F%E6%95%B4%E7%90%86%E6%96%87%E7%AB%A0&%E5%8D%9A%E5%AE%A2/" rel="prev" title="iOS 收藏整理文章&博客">
+      <i class="fa fa-chevron-left"></i> iOS 收藏整理文章&博客
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2016/09/30/%E3%80%8AiOS%E7%BC%96%E7%A8%8B%EF%BC%88%E7%AC%AC%E5%9B%9B%E7%89%88%EF%BC%89%E3%80%8BDemo%EF%BC%9ANeedfeed/" rel="next" title="《iOS编程（第四版）》Demo：Needfeed">
+      《iOS编程（第四版）》Demo：Needfeed <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+        </div>
+        
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">独木舟的木</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">2.1m</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">31:21</span>
+</div>
+  <div class="powered-by">由 <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZw==">NexT.Gemini</span> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

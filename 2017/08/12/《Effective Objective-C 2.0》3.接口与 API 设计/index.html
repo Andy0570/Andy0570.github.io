@@ -1,23 +1,705 @@
-{% extends '_layout.swig' %}
-{% import '_macro/post.swig' as post_template %}
-{% import '_macro/sidebar.swig' as sidebar_template %}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.0.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+  <meta name="google-site-verification" content="wioXOS3Gv2wXUpJ3sLtfZ4ft6YJYKNLLWSw6QoZTFYM">
+  <meta name="msvalidate.01" content="C96491A81239C517A50597C54EE53CD1">
+  <meta name="baidu-site-verification" content="h8asiToN1b">
 
-{% block title %}{{ page.title }} | {{ title }}{% endblock %}
+<link rel="stylesheet" href="/css/main.css">
 
-{% block page_class %}page-post-detail{% endblock %}
 
-{% block content %}
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  
+  <link rel="stylesheet" href="/lib/animate-css/animate.min.css">
 
-  <div id="posts" class="posts-expand">
-    {{ post_template.render(page) }}
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"andy0570.com","root":"/","scheme":"Gemini","version":"8.0.0-rc.5","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":"mac","bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false};
+  </script>
+
+  <meta property="og:type" content="article">
+<meta property="og:title" content="《Effective Objective-C 2.0》3.接口与 API 设计">
+<meta property="og:url" content="https://andy0570.com/2017/08/12/%E3%80%8AEffective%20Objective-C%202.0%E3%80%8B3.%E6%8E%A5%E5%8F%A3%E4%B8%8E%20API%20%E8%AE%BE%E8%AE%A1/index.html">
+<meta property="og:site_name" content="独木舟的木">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/073025.jpg">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/073027.jpg">
+<meta property="article:published_time" content="2017-08-12T08:20:00.000Z">
+<meta property="article:modified_time" content="2019-04-28T07:45:00.000Z">
+<meta property="article:author" content="独木舟的木">
+<meta property="article:tag" content="iOS">
+<meta property="article:tag" content="Objective-C">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/073025.jpg">
+
+<link rel="canonical" href="https://andy0570.com/2017/08/12/%E3%80%8AEffective%20Objective-C%202.0%E3%80%8B3.%E6%8E%A5%E5%8F%A3%E4%B8%8E%20API%20%E8%AE%BE%E8%AE%A1/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>《Effective Objective-C 2.0》3.接口与 API 设计 | 独木舟的木</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="独木舟的木" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <main class="main">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+        <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
   </div>
 
-{% endblock %}
+  <div class="site-meta">
 
-{% block sidebar %}
-  {{ sidebar_template.render(true) }}
-{% endblock %}
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">独木舟的木</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">iOS Developer</p>
+  </div>
 
-{% block script_extra %}
-  {% include '_scripts/pages/post-details.swig' %}
-{% endblock %}
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">14</span></a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">36</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">310</span></a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <section class="post-toc-wrap sidebar-panel">
+          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AC%AC3%E7%AB%A0-%E6%8E%A5%E5%8F%A3%E4%B8%8E-API-%E8%AE%BE%E8%AE%A1"><span class="nav-number">1.</span> <span class="nav-text">第3章 接口与 API 设计</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC15%E6%9D%A1%EF%BC%9A%E7%94%A8%E5%89%8D%E7%BC%80%E9%81%BF%E5%85%8D%E5%91%BD%E5%90%8D%E7%A9%BA%E9%97%B4%E5%86%B2%E7%AA%81"><span class="nav-number">1.1.</span> <span class="nav-text">第15条：用前缀避免命名空间冲突</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A6%81%E7%82%B9"><span class="nav-number">1.1.1.</span> <span class="nav-text">要点</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC16%E6%9D%A1%EF%BC%9A%E6%8F%90%E4%BE%9B-%E2%80%9C%E5%85%A8%E8%83%BD%E5%88%9D%E5%A7%8B%E5%8C%96%E6%96%B9%E6%B3%95%E2%80%9D"><span class="nav-number">1.2.</span> <span class="nav-text">第16条：提供 “全能初始化方法”</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BC%96%E5%86%99%E5%A4%9A%E4%B8%AA%E6%8C%87%E5%AE%9A%E5%88%9D%E5%A7%8B%E5%8C%96%E6%96%B9%E6%B3%95%E7%9A%84%E6%83%85%E5%86%B5%EF%BC%9A"><span class="nav-number">1.2.1.</span> <span class="nav-text">编写多个指定初始化方法的情况：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A6%81%E7%82%B9-1"><span class="nav-number">1.2.2.</span> <span class="nav-text">要点</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC17%E6%9D%A1%EF%BC%9A%E5%AE%9E%E7%8E%B0-description-%E6%96%B9%E6%B3%95"><span class="nav-number">1.3.</span> <span class="nav-text">第17条：实现 description 方法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A6%86%E5%86%99-description-%E6%96%B9%E6%B3%95%E4%B8%80%EF%BC%9A"><span class="nav-number">1.3.1.</span> <span class="nav-text">覆写 description 方法一：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%96%B9%E6%B3%95%E4%BA%8C%EF%BC%9A%E5%80%9F%E5%8A%A9-NSDictionary-%E7%B1%BB"><span class="nav-number">1.3.2.</span> <span class="nav-text">方法二：借助 NSDictionary 类</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%96%B9%E6%B3%95%E4%B8%89%EF%BC%9A%E5%80%9F%E5%8A%A9-YYModel-%E6%A1%86%E6%9E%B6-yy-modelDescription-%E6%96%B9%E6%B3%95"><span class="nav-number">1.3.3.</span> <span class="nav-text">方法三：借助 YYModel 框架 yy_modelDescription 方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#debugDescription-%E6%96%B9%E6%B3%95"><span class="nav-number">1.3.4.</span> <span class="nav-text">debugDescription 方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A6%81%E7%82%B9-2"><span class="nav-number">1.3.5.</span> <span class="nav-text">要点</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC18%E6%9D%A1%EF%BC%9A%E5%B0%BD%E9%87%8F%E4%BD%BF%E7%94%A8%E4%B8%8D%E5%8F%AF%E5%8F%98%E5%AF%B9%E8%B1%A1"><span class="nav-number">1.4.</span> <span class="nav-text">第18条：尽量使用不可变对象</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A6%81%E7%82%B9-3"><span class="nav-number">1.4.1.</span> <span class="nav-text">要点</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC19%E6%9D%A1%EF%BC%9A%E4%BD%BF%E7%94%A8%E6%B8%85%E6%99%B0%E8%80%8C%E5%8D%8F%E8%B0%83%E7%9A%84%E5%91%BD%E5%90%8D%E6%96%B9%E5%BC%8F"><span class="nav-number">1.5.</span> <span class="nav-text">第19条：使用清晰而协调的命名方式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%96%B9%E6%B3%95%E5%91%BD%E5%90%8D%E8%A7%84%E5%88%99"><span class="nav-number">1.5.1.</span> <span class="nav-text">方法命名规则</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%B1%BB%E4%B8%8E%E5%8D%8F%E8%AE%AE%E7%9A%84%E5%91%BD%E5%90%8D"><span class="nav-number">1.5.2.</span> <span class="nav-text">类与协议的命名</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A6%81%E7%82%B9-4"><span class="nav-number">1.5.3.</span> <span class="nav-text">要点</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC20%E6%9D%A1%EF%BC%9A%E4%B8%BA%E7%A7%81%E6%9C%89%E6%96%B9%E6%B3%95%E5%90%8D%E5%8A%A0%E5%89%8D%E7%BC%80"><span class="nav-number">1.6.</span> <span class="nav-text">第20条：为私有方法名加前缀</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A6%81%E7%82%B9-5"><span class="nav-number">1.6.1.</span> <span class="nav-text">要点</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC21%E6%9D%A1%EF%BC%9A%E7%90%86%E8%A7%A3-Objectice-C-%E9%94%99%E8%AF%AF%E6%A8%A1%E5%9E%8B"><span class="nav-number">1.7.</span> <span class="nav-text">第21条：理解 Objectice-C 错误模型</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#NSError"><span class="nav-number">1.7.1.</span> <span class="nav-text">NSError</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A6%81%E7%82%B9-6"><span class="nav-number">1.7.2.</span> <span class="nav-text">要点</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC22%E6%9D%A1%EF%BC%9A%E7%90%86%E8%A7%A3-NSCopying-%E5%8D%8F%E8%AE%AE"><span class="nav-number">1.8.</span> <span class="nav-text">第22条：理解 NSCopying 协议</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#YYModel"><span class="nav-number">1.8.1.</span> <span class="nav-text">YYModel</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A6%81%E7%82%B9-7"><span class="nav-number">1.8.2.</span> <span class="nav-text">要点</span></a></li></ol></li></ol></li></ol></div>
+      </section>
+      <!--/noindex-->
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="独木舟的木"
+      src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+  <p class="site-author-name" itemprop="name">独木舟的木</p>
+  <div class="site-description" itemprop="description">生若直木，不语斧凿。</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">310</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">36</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL0FuZHkwNTcw" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Andy0570"><i class="fab fa-github fa-fw"></i>GitHub</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9zdGFja292ZXJmbG93LmNvbS91c2Vycy83MjY1NDAwL2FuZHkwNTcw" title="StackOverflow → https:&#x2F;&#x2F;stackoverflow.com&#x2F;users&#x2F;7265400&#x2F;andy0570"><i class="fab fa-stack-overflow fa-fw"></i>StackOverflow</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuamlhbnNodS5jb20vdS84NGM1ZmFkYzdjMTg=" title="简书 → https:&#x2F;&#x2F;www.jianshu.com&#x2F;u&#x2F;84c5fadc7c18"><i class="heartbeat fa-fw"></i>简书</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="bWFpbHRvOmFuZHl3aG1AMTYzLmNvbQ==" title="E-Mail → mailto:andywhm@163.com"><i class="fa fa-envelope fa-fw"></i>E-Mail</span>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <span class="exturl cc-opacity" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpo"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></span>
+  </div>
+
+
+
+      </section>
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </header>
+
+      
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div id="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+      <div class="main-inner">
+        
+
+        <div class="content post posts-expand">
+          
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://andy0570.com/2017/08/12/%E3%80%8AEffective%20Objective-C%202.0%E3%80%8B3.%E6%8E%A5%E5%8F%A3%E4%B8%8E%20API%20%E8%AE%BE%E8%AE%A1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+      <meta itemprop="name" content="独木舟的木">
+      <meta itemprop="description" content="生若直木，不语斧凿。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="独木舟的木">
+    </span>
+
+    
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          《Effective Objective-C 2.0》3.接口与 API 设计
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2017-08-12 16:20:00" itemprop="dateCreated datePublished" datetime="2017-08-12T16:20:00+08:00">2017-08-12</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-04-28 15:45:00" itemprop="dateModified" datetime="2019-04-28T15:45:00+08:00">2019-04-28</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E3%80%8AEffective-Objective-C-2-0%E3%80%8B/" itemprop="url" rel="index"><span itemprop="name">《Effective Objective-C 2.0》</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>14k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>13 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/073025.jpg"></p>
+<a id="more"></a>
+
+<h2 id="第3章-接口与-API-设计"><a href="#第3章-接口与-API-设计" class="headerlink" title="第3章 接口与 API 设计"></a>第3章 接口与 API 设计</h2><h3 id="第15条：用前缀避免命名空间冲突"><a href="#第15条：用前缀避免命名空间冲突" class="headerlink" title="第15条：用前缀避免命名空间冲突"></a>第15条：用前缀避免命名空间冲突</h3><ul>
+<li>Objectice-C 没有其他语言那种内置的命名空间（namespace）机制，很容易产生重名问题。</li>
+<li>避免命名冲突（naming clash）的唯一办法就是变相实现命名空间：<strong>为所有名称都加上适当的前缀</strong>。</li>
+<li>前缀可以是与公司、应用程序或二者皆有关联之名。</li>
+<li>前缀应该是<strong>三个字母</strong>的。<strong>两字母前缀</strong>是 Apple 保留使用的。</li>
+<li>不仅是类名，应用程序中的所有名称都应该加前缀。</li>
+<li>⚠️ 类实现文件中所用的<strong>纯 C 函数</strong>及<strong>全局变量</strong>在编译好的目标文件中算作<strong>顶级符号</strong>，也应加上前缀。</li>
+</ul>
+<h4 id="要点"><a href="#要点" class="headerlink" title="要点"></a>要点</h4><ul>
+<li>选择与你公司、应用程序或者二者皆有关联之名称作为类名的前缀，并在所有代码中均使用这一前缀。</li>
+<li>若自己所开发的程序库中用到了第三方库，则应为其中的名称加上前缀。</li>
+<li>Apple宣称保留使用所有两字母前缀的权利，所以自己所选用的前缀最好是三字母的。</li>
+</ul>
+<h3 id="第16条：提供-“全能初始化方法”"><a href="#第16条：提供-“全能初始化方法”" class="headerlink" title="第16条：提供 “全能初始化方法”"></a>第16条：提供 “全能初始化方法”</h3><p><strong>全能初始化方法 \ 指定初始化方法</strong>：为对象提供必要信息以便其能完成工作的初始化方法。</p>
+<blockquote>
+<p>我更倾向于把它称之为 <strong>指定初始化方法</strong>。</p>
+</blockquote>
+<p>示例：</p>
+<p><strong>矩形类</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line">#import &lt;Foundation&#x2F;Foundation.h&gt;</span><br><span class="line"></span><br><span class="line">@interface EOCRectangle : NSObject</span><br><span class="line"></span><br><span class="line">@property (nonatomic, assign, readonly) float width;</span><br><span class="line">@property (nonatomic, assign, readonly) float height;</span><br><span class="line"></span><br><span class="line">- (instancetype)initWithWidth:(float)width</span><br><span class="line">                    andHeight:(float)height;</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">#import &quot;EOCRectangle.h&quot;</span><br><span class="line"></span><br><span class="line">@implementation EOCRectangle</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; ✏️ 指定初始化方法</span><br><span class="line">- (instancetype)initWithWidth:(float)width</span><br><span class="line">                    andHeight:(float)height &#123;</span><br><span class="line">    &#x2F;&#x2F; ✏️ 调用超类的指定初始化方法，以维持调用链</span><br><span class="line">    if (self &#x3D; [super init]) &#123;</span><br><span class="line">        _width &#x3D; width;</span><br><span class="line">        _height &#x3D; height;</span><br><span class="line">    &#125;</span><br><span class="line">    return self;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; ✏️ 覆写非指定初始化方法</span><br><span class="line">&#x2F;&#x2F; 1.使用默认值</span><br><span class="line">- (instancetype)init &#123;</span><br><span class="line">    return [self initWithWidth:5.0f andHeight:10.0f];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 2.抛出异常</span><br><span class="line">&#x2F;&#x2F;- (instancetype)init &#123;</span><br><span class="line">&#x2F;&#x2F;    @throw [NSException exceptionWithName:NSInternalInconsistencyException</span><br><span class="line">&#x2F;&#x2F;                                   reason:@&quot;Use designated Initizlizer Method&quot;</span><br><span class="line">&#x2F;&#x2F;                                 userInfo:nil];</span><br><span class="line">&#x2F;&#x2F;    return nil;</span><br><span class="line">&#x2F;&#x2F;&#125;</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+
+<p><strong>正方形类</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">#import &quot;EOCRectangle.h&quot;</span><br><span class="line"></span><br><span class="line">@interface EOCSqure : EOCRectangle</span><br><span class="line"></span><br><span class="line">- (instancetype)initWithDimension:(float)dimension;</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">#import &quot;EOCSqure.h&quot;</span><br><span class="line"></span><br><span class="line">@implementation EOCSqure</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; ✏️ 【指定初始化方法】要调用【超类的指定初始化方法】</span><br><span class="line">- (instancetype)initWithDimension:(float)dimension &#123;</span><br><span class="line">    return [super initWithWidth:dimension andHeight:dimension];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; ✏️ 【子类的指定初始化方法】与【超类的指定初始化方法】不一致时，应该覆写【超类的指定初始化方法】</span><br><span class="line">- (instancetype)initWithWidth:(float)width andHeight:(float)height &#123;</span><br><span class="line">    float dimension &#x3D; MAX(width, height);</span><br><span class="line">    return [self initWithDimension:dimension];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+
+<h4 id="编写多个指定初始化方法的情况："><a href="#编写多个指定初始化方法的情况：" class="headerlink" title="编写多个指定初始化方法的情况："></a>编写多个指定初始化方法的情况：</h4><p><strong>NSCoding</strong> 协议</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;  EOCRectangle.m</span><br><span class="line">- (instancetype)initWithCoder:(NSCoder *)aDecoder &#123;</span><br><span class="line">  &#x2F;&#x2F; ✏️ 先调用超类的相关方法，再执行与本类有关的任务</span><br><span class="line">    if (self &#x3D; [super init]) &#123;</span><br><span class="line">        _width &#x3D; [aDecoder decodeFloatForKey:@&quot;width&quot;];</span><br><span class="line">        _height &#x3D; [aDecoder decodeFloatForKey:@&quot;height&quot;];</span><br><span class="line">    &#125;</span><br><span class="line">    return self;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;  EOCSqure.m</span><br><span class="line">- (instancetype)initWithCoder:(NSCoder *)aDecoder &#123;</span><br><span class="line">  &#x2F;&#x2F; ✏️ 因为超类 EOCRectangle 也实现了 NSCoding 协议，所以这里调用超类的 initWithCoder: 初始化方法</span><br><span class="line">    if (self &#x3D; [super initWithCoder:aDecoder]) &#123;</span><br><span class="line">        &#x2F;&#x2F; EOCSquare&#39;s specific initializer</span><br><span class="line">    &#125;</span><br><span class="line">    return self;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="要点-1"><a href="#要点-1" class="headerlink" title="要点"></a>要点</h4><ul>
+<li>在类中提供一个全能初始化方法，并于文档里指明。其它初始化方法均应调用此方法。</li>
+<li>若全能初始化方法与超类不同，则需覆写超类中对应方法。</li>
+<li>如果超类的初始化方法并不适用于子类，那么应该覆写这个超类方法，并在其中抛出异常。</li>
+</ul>
+<h3 id="第17条：实现-description-方法"><a href="#第17条：实现-description-方法" class="headerlink" title="第17条：实现 description 方法"></a>第17条：实现 description 方法</h3><ul>
+<li><strong>NSObject</strong> 类中默认的实现，输出类名和对象的内存地址。</li>
+</ul>
+<h4 id="覆写-description-方法一："><a href="#覆写-description-方法一：" class="headerlink" title="覆写 description 方法一："></a>覆写 <code>description</code> 方法一：</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">- (NSString *)description &#123;</span><br><span class="line">    return [NSString stringWithFormat:@&quot;&lt;%@: %p,\&quot;%@ %@\&quot;&gt;&quot;,[self class], self, _firstName, _lastName];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>效果：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">EOCPerson *person &#x3D; [[EOCPerson alloc] init];</span><br><span class="line">person.firstName &#x3D; @&quot;Chester&quot;;</span><br><span class="line">person.lastName &#x3D; @&quot;Bennington&quot;;</span><br><span class="line">NSLog(@&quot;person &#x3D; %@&quot;,person);</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; Output:</span><br><span class="line">&#x2F;&#x2F; person &#x3D; &lt;EOCPerson: 0x100303030,&quot;Chester Bennington&quot;&gt;</span><br></pre></td></tr></table></figure>
+
+<h4 id="方法二：借助-NSDictionary-类"><a href="#方法二：借助-NSDictionary-类" class="headerlink" title="方法二：借助 NSDictionary 类"></a>方法二：借助 NSDictionary 类</h4><p>在自定义的 <code>description</code> 方法中，把待打印的信息放到字典里面，然后将字典对象的 <code>description</code> 方法所输出的内容包含在字符串里返回。</p>
+<p>简而言之，就是把对象需要打印的属性封装在 <strong>NSDictionary</strong> 中。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line">#import &lt;Foundation&#x2F;Foundation.h&gt;</span><br><span class="line"></span><br><span class="line">&#x2F;**</span><br><span class="line"> 坐标类</span><br><span class="line"> *&#x2F;</span><br><span class="line">@interface EOCLocation : NSObject</span><br><span class="line">@property (nonatomic, copy, readonly) NSString *title;</span><br><span class="line">@property (nonatomic, assign, readonly) float latitude;</span><br><span class="line">@property (nonatomic, assign, readonly) float longtitude;</span><br><span class="line">- (instancetype)initWithTitle:(NSString *)title</span><br><span class="line">                     latitude:(float)latitude</span><br><span class="line">                   longtitude:(float)longtitude;</span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">#import &quot;EOCLocation.h&quot;</span><br><span class="line"></span><br><span class="line">@implementation EOCLocation</span><br><span class="line">  </span><br><span class="line">- (instancetype)initWithTitle:(NSString *)title</span><br><span class="line">                     latitude:(float)latitude</span><br><span class="line">                   longtitude:(float)longtitude &#123;</span><br><span class="line">    if (self &#x3D; [super init]) &#123;</span><br><span class="line">        _title &#x3D; [title copy];</span><br><span class="line">        _latitude &#x3D; latitude;</span><br><span class="line">        _longtitude &#x3D; longtitude;</span><br><span class="line">    &#125;</span><br><span class="line">    return self;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; ✏️ 把对象需要打印的属性封装在 NSDictionary 中</span><br><span class="line">- (NSString *)description &#123;</span><br><span class="line">    NSDictionary *dictionary &#x3D; @&#123;</span><br><span class="line">                                 @&quot;title&quot;      :_title,</span><br><span class="line">                                 @&quot;latitude&quot;   :@(_latitude),</span><br><span class="line">                                 @&quot;longtitude&quot; :@(_longtitude),</span><br><span class="line">                                 &#125;;</span><br><span class="line">    return [NSString stringWithFormat:@&quot;&lt;%@: %p,%@&gt;&quot;,[self class], self, dictionary];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+
+<p>效果：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">location &#x3D; &lt;EOCLocation: 0x100203ef0,&#123;</span><br><span class="line">    latitude &#x3D; &quot;120.51&quot;;</span><br><span class="line">    longtitude &#x3D; &quot;30.4&quot;;</span><br><span class="line">    title &#x3D; ShangHai;</span><br><span class="line">&#125;&gt;</span><br></pre></td></tr></table></figure>
+
+<h4 id="方法三：借助-YYModel-框架-yy-modelDescription-方法"><a href="#方法三：借助-YYModel-框架-yy-modelDescription-方法" class="headerlink" title="方法三：借助 YYModel 框架 yy_modelDescription 方法"></a>方法三：借助 YYModel 框架 <code>yy_modelDescription</code> 方法</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">-(NSString *)description &#123;</span><br><span class="line">    return [self yy_modelDescription];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>效果：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">location &#x3D; &lt;EOCLocation: 0x100300190&gt; &#123;</span><br><span class="line">    latitude &#x3D; 120.51;</span><br><span class="line">    longtitude &#x3D; 30.4;</span><br><span class="line">    title &#x3D; &quot;ShangHai&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="debugDescription-方法"><a href="#debugDescription-方法" class="headerlink" title="debugDescription 方法"></a><code>debugDescription</code> 方法</h4><ul>
+<li><code>debugDescription</code> 方法是开发者在调试器（debugger）中以控制台命令打印对象时才调用的。</li>
+<li>在 <strong>NSObject</strong> 类的默认实现中，此方法只是直接调用了 <code>description</code> 方法。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 普通描述信息</span><br><span class="line">- (NSString *)description &#123;</span><br><span class="line">    return [NSString stringWithFormat:@&quot;%@ %@&quot;,_firstName, _lastName];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 调试时使用详细的描述信息</span><br><span class="line">- (NSString *)debugDescription &#123;</span><br><span class="line">    return [NSString stringWithFormat:@&quot;&lt;%@: %p,\&quot;%@&gt; %@\&quot;&gt;&quot;,[self class], self, _firstName, _lastName];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="要点-2"><a href="#要点-2" class="headerlink" title="要点"></a>要点</h4><ul>
+<li>实现 <code>description方</code> 法返回一个有意义的字符串，用以描述该实例。</li>
+<li>若想在调试时打印出更详尽的对象描述信息，则应该实现 <code>debugDescription</code> 方法。</li>
+</ul>
+<h3 id="第18条：尽量使用不可变对象"><a href="#第18条：尽量使用不可变对象" class="headerlink" title="第18条：尽量使用不可变对象"></a>第18条：尽量使用不可变对象</h3><ul>
+<li>设计类时，应该充分运用属性（<code>@property</code>）来封装数据（参见第 6 条）。</li>
+<li>不必要对外公开的属性可以放在分类（class-continuation）中。</li>
+<li>应该尽量把对外公布出来的属性设置为只读（<code>readonly</code>），而且只在确有必要时才将属性对外公布。</li>
+<li>如果想修改封装在对象内部的数据，但是却不想另这些数据为外人所改动，我们可以在对象内部分类（class-continuation）中将 <code>readonly</code> 属性重新声明为 <code>readwrite</code>。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;  EOCLocation.h</span><br><span class="line">#import &lt;Foundation&#x2F;Foundation.h&gt;</span><br><span class="line"></span><br><span class="line">&#x2F;**</span><br><span class="line"> 坐标类</span><br><span class="line"> *&#x2F;</span><br><span class="line">@interface EOCLocation : NSObject</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; ✏️ 对外设置为 readonly</span><br><span class="line">@property (nonatomic, copy, readonly) NSString *identifier;</span><br><span class="line">@property (nonatomic, copy, readonly) NSString *title;</span><br><span class="line">@property (nonatomic, assign, readonly) float latitude;</span><br><span class="line">@property (nonatomic, assign, readonly) float longtitude;</span><br><span class="line"></span><br><span class="line">- (instancetype)initWithIdentifier:(NSString *)identifier</span><br><span class="line">                             Title:(NSString *)title</span><br><span class="line">                          latitude:(float)latitude</span><br><span class="line">                        longtitude:(float)longtitude;</span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;  EOCLocation.m</span><br><span class="line">#import &quot;EOCLocation.h&quot;</span><br><span class="line">#import &quot;YYModel.h&quot;</span><br><span class="line"></span><br><span class="line">@interface EOCLocation ()</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; ✏️ 内部重新设置为 readwrite</span><br><span class="line">@property (nonatomic, copy, readwrite) NSString *identifier;</span><br><span class="line">@property (nonatomic, copy, readwrite) NSString *title;</span><br><span class="line">@property (nonatomic, assign, readwrite) float latitude;</span><br><span class="line">@property (nonatomic, assign, readwrite) float longtitude;</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">@implementation EOCLocation</span><br><span class="line"></span><br><span class="line">- (instancetype)initWithIdentifier:(NSString *)identifier</span><br><span class="line">                             Title:(NSString *)title</span><br><span class="line">                          latitude:(float)latitude</span><br><span class="line">                        longtitude:(float)longtitude; &#123;</span><br><span class="line">    if (self &#x3D; [super init]) &#123;</span><br><span class="line">        _identifier &#x3D; [identifier copy];</span><br><span class="line">        _title      &#x3D; [title copy];</span><br><span class="line">        _latitude   &#x3D; latitude;</span><br><span class="line">        _longtitude &#x3D; longtitude;</span><br><span class="line">    &#125;</span><br><span class="line">    return self;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">-(NSString *)description &#123;</span><br><span class="line">    return [self yy_modelDescription];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>对于 collection 类来说，你可以提供一个 <code>readonly</code> 属性供外界使用，然后在内部设置一个 mutable 类型的可变集合，外界需要读取此属性的值时，就拷贝一份不可变数据给它。 </li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; EOCPerson.h</span><br><span class="line">#import &lt;Foundation&#x2F;Foundation.h&gt;</span><br><span class="line"></span><br><span class="line">@interface EOCPerson : NSObject</span><br><span class="line">@property (nonatomic, copy, readonly) NSString *firstName;</span><br><span class="line">@property (nonatomic, copy, readonly) NSString *lastName;</span><br><span class="line">&#x2F;&#x2F; ✏️ 对外使用 NSSet</span><br><span class="line">@property (nonatomic, strong, readonly) NSSet *friends;</span><br><span class="line"></span><br><span class="line">- (instancetype)initWithFirstName:(NSString *)firstName</span><br><span class="line">                      andLastName:(NSString *)lastName;</span><br><span class="line">- (void)addFirend:(EOCPerson *)person;</span><br><span class="line">- (void)removeFriend:(EOCPerson *)person;</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; EOCPerson.m</span><br><span class="line">#import &quot;EOCPerson.h&quot;</span><br><span class="line"></span><br><span class="line">@implementation EOCPerson &#123;</span><br><span class="line">    &#x2F;&#x2F; ✏️ 类的内部使用 NSMutableSet</span><br><span class="line">    NSMutableSet *_internalFriends;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (instancetype)initWithFirstName:(NSString *)firstName</span><br><span class="line">                      andLastName:(NSString *)lastName &#123;</span><br><span class="line">    if (self &#x3D; [super init]) &#123;</span><br><span class="line">        _firstName &#x3D; [firstName copy];</span><br><span class="line">        _lastName &#x3D; [lastName copy];</span><br><span class="line">        _internalFriends &#x3D; [NSMutableSet new];</span><br><span class="line">    &#125;</span><br><span class="line">    return self;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)addFirend:(EOCPerson *)person &#123;</span><br><span class="line">    [_internalFriends addObject:person];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)removeFriend:(EOCPerson *)person &#123;</span><br><span class="line">    [_internalFriends removeObject:person];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; ✏️ 访问 NSSet 时，提供 NSMutableSet 的深拷贝不可变对象</span><br><span class="line">- (NSSet *)friends &#123;</span><br><span class="line">    return [_internalFriends copy];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+
+<h4 id="要点-3"><a href="#要点-3" class="headerlink" title="要点"></a>要点</h4><ul>
+<li>尽量创建不可变的对象。</li>
+<li>若某属性仅可于对象内部修改，则在“class-continuation分类”中将其由 <code>readonly</code>  属性扩展为 <code>readwrite</code> 属性。</li>
+<li>不要把可变的 collection 作为属性公开，而应提供相关方法，一次修改对象中的可变collection。</li>
+</ul>
+<h3 id="第19条：使用清晰而协调的命名方式"><a href="#第19条：使用清晰而协调的命名方式" class="headerlink" title="第19条：使用清晰而协调的命名方式"></a>第19条：使用清晰而协调的命名方式</h3><ul>
+<li>类、方法及变量名称中一般都带有 in、for、with 等介词。</li>
+<li>优点：代码读起来像日常语言里的句子，表述清晰。</li>
+<li>方法与变量名使用了“驼峰式大小写命名法”（camel casing）——以小写字母开头，其后每个单词首字母大写。</li>
+<li>类名也用驼峰命名法，其首字母应大写，而且前面通常还有三个前缀字母。</li>
+<li>方法命名应该能准确传达其所执行的任务，言简意赅。</li>
+</ul>
+<h4 id="方法命名规则"><a href="#方法命名规则" class="headerlink" title="方法命名规则"></a>方法命名规则</h4><ul>
+<li><p>如果方法的返回值是新创建的，那么方法名的首个词应是返回值的类型，除非前面还有修饰语，例如<code>localizedString</code>。 属性的存取方法不遵循这种命名方式，因为一般认为这些方法不会创建新对象，即便有时返回内部对象的一份拷贝，我们也认为那相当于原有的对象。这些存取方法应该按照其所对应的属性来命名。 </p>
+<blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">+ (instancetype)string;</span><br><span class="line">+ (instancetype)stringWithString:(NSString *)string;</span><br><span class="line">+ (instancetype)localizedStringWithFormat:(NSString *)format, ... ;</span><br></pre></td></tr></table></figure>
+</blockquote>
+</li>
+<li><p>应该把表示参数类型的名词放在参数前面。 </p>
+<blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">- (NSUInteger)lengthOfBytesUsingEncoding:(NSStringEncoding)enc;</span><br><span class="line">- (void)getCharacters:(unichar *)buffer range:(NSRange)range; </span><br></pre></td></tr></table></figure>
+</blockquote>
+</li>
+<li><p>如果方法要在当前对象上执行操作。那么就应该包含动词；若执行操作时还需要参数, 则应该在动词后面加上一个或多个名词。 </p>
+<blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">- (NSString *)uppercaseStringWithLocale:(nullable NSLocale *)locale NS_AVAILABLE(10_8, 6_0);</span><br><span class="line">- (NSString *)lowercaseStringWithLocale:(nullable NSLocale *)locale NS_AVAILABLE(10_8, 6_0);</span><br></pre></td></tr></table></figure>
+</blockquote>
+</li>
+<li><p>不要使用 str 这种简称。应该用 string 这样的全称。 </p>
+</li>
+<li><p><strong>Boolean</strong> 属性应加 is 前綴。如果某方法返回非属性的 <strong>Boolean</strong> 值，那么应该根据其功能，选用 has 或 is 当前缀。 </p>
+<blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">- (BOOL)isEqualToString:(NSString *)aString;</span><br><span class="line">- (BOOL)hasPrefix:(NSString *)str;</span><br><span class="line">- (BOOL)hasSuffix:(NSString *)str;</span><br></pre></td></tr></table></figure>
+</blockquote>
+</li>
+<li><p>将 get 这个前缀留给那些借由 “输出参数” 来保存返回值的方法。比如说，把返回值填充到 “c语言式数组”（c-style array) 里的那种方法就可以使用这个词做前缀。</p>
+<blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">- (void)getCharacters:(unichar *)buffer range:(NSRange)range; </span><br><span class="line">- (BOOL)getCString:(char *)buffer maxLength:(NSUInteger)maxBufferCount encoding:(NSStringEncoding)encoding;</span><br><span class="line">- (void)getLineStart:(nullable NSUInteger *)startPtr end:(nullable NSUInteger *)lineEndPtr contentsEnd:(nullable NSUInteger *)contentsEndPtr forRange:(NSRange)range;</span><br></pre></td></tr></table></figure>
+</blockquote>
+</li>
+</ul>
+<h4 id="类与协议的命名"><a href="#类与协议的命名" class="headerlink" title="类与协议的命名"></a>类与协议的命名</h4><ul>
+<li>应该为类与协议的名称加上前缀，以避免命名空间冲突。</li>
+<li><strong>UIKit</strong> 示例：UIView、UIViewController、UITableView、UITableViewController、UITableViewDelegate、</li>
+<li>命名的方式应该协调一致。</li>
+</ul>
+<h4 id="要点-4"><a href="#要点-4" class="headerlink" title="要点"></a>要点</h4><ul>
+<li>起名时应遵从标准的 Objective-C 命名规范，这样创建出来的接口更容易为开发者所理解。</li>
+<li>方法名要言简意赅，从左至右读起来要像个日常用语中的句子才好。</li>
+<li>方法名里不要使用缩略后的类型名称。</li>
+<li>给方法起名时的第一要务就是确保其风格与你自己的代码或所要集成的框架相符。</li>
+</ul>
+<h3 id="第20条：为私有方法名加前缀"><a href="#第20条：为私有方法名加前缀" class="headerlink" title="第20条：为私有方法名加前缀"></a>第20条：为私有方法名加前缀</h3><p>原因：</p>
+<ol>
+<li>为私有方法名加上前缀<strong>有助于调试</strong>，因为据此很容易就能把公共方法和私有方法区别开。</li>
+<li>便于修改方法名或方法签名。公共方法名不应轻易改动，而内部方法可以随意改动。</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;  EOCObject.h</span><br><span class="line">#import &lt;Foundation&#x2F;Foundation.h&gt;</span><br><span class="line"></span><br><span class="line">@interface EOCObject : NSObject</span><br><span class="line">- (void)publicMethod;</span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;  EOCObject.m</span><br><span class="line">#import &quot;EOCObject.h&quot;</span><br><span class="line"></span><br><span class="line">@implementation EOCObject</span><br><span class="line">- (void)publicMethod &#123;</span><br><span class="line">    &#x2F;*^.^&gt;*&#x2F;</span><br><span class="line">&#125;</span><br><span class="line">- (void)p_privateMethod &#123;</span><br><span class="line">    &#x2F;*^.^*&#x2F;</span><br><span class="line">&#125;</span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+
+<p>⚠️ 苹果公司喜欢单用一个下划线作私有方法的前缀。因此，开发者不应该单用一个下划线做前缀，以免无意间覆写了父类的同名方法。</p>
+<h4 id="要点-5"><a href="#要点-5" class="headerlink" title="要点"></a>要点</h4><ul>
+<li>给私有方法的名称加上前缀，这样可以很容易的将其同公共方法区分开。</li>
+<li>不要单用一个下划线做私有方法的前缀，因为这种做法是预留给苹果公司用的。</li>
+</ul>
+<h3 id="第21条：理解-Objectice-C-错误模型"><a href="#第21条：理解-Objectice-C-错误模型" class="headerlink" title="第21条：理解 Objectice-C 错误模型"></a>第21条：理解 Objectice-C 错误模型</h3><ul>
+<li>自动引用计数（Automatic Reference Counting，ARC）在默认情况下不是“异常安全的”（exception safe）。如果抛出异常，那么本应在作用域末尾释放的对象将不会自动释放。</li>
+<li>如果想生成“异常安全”的代码，可以通过编译器设置 <code>-fobjc-arc-exceptions</code> 来实现，不过这将引入一些额外的代码，即使在不抛出异常时，也照样要执行这部分（额外的）代码。</li>
+<li>即使不用 ARC，也很难写出在抛出异常时不会导致内存泄漏的代码。</li>
+<li>Objectice-C 语言现在所采用的办法是：<strong>只在及其罕见的情况下抛出异常，异常抛出后，无须考虑恢复问题，而且应用程序此时也应该退出。</strong></li>
+<li>异常只用于处理严重错误（fatal error，致命错误）。</li>
+<li>出现“不那么严重的错误”（nonfatal error，非致命错误）时，Objectice-C 语言所用的编程范式为：令方法返回 nil/0，或是使用 <strong>NSError</strong>，以表明其中有错误发生。</li>
+</ul>
+<h4 id="NSError"><a href="#NSError" class="headerlink" title="NSError"></a>NSError</h4><p><strong>NSError</strong> 对象里封装了三条信息：</p>
+<ol>
+<li>Error domain（错误范围，其类型为字符串）；</li>
+<li>Error code （错误码，其类型为整数）；</li>
+<li>User info （用户信息，其类型为字典）。</li>
+</ol>
+<p><strong>NSError</strong> 的第一种常见用法是通过<strong>委托协议</strong>来传递错误。</p>
+<p>另一种用法是经由方法的“输出参数”返回给调用者。</p>
+<p><code>- (BOOL)doSomething:(NSError **)error</code>，传递给方法的参数是个指针，而该指针本身又指向另一个指针，那个指针指向 NSError 对象。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">NSError *error &#x3D; nil;</span><br><span class="line">BOOL ret &#x3D; [self doSomething:&amp;error];</span><br><span class="line">if (error) &#123;</span><br><span class="line">    &#x2F;&#x2F; There was an error</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>最好能为你自己的程序库中所发生的错误指定一个专用的“错误范围”字符串。用枚举类型来表示错误码。</p>
+<h4 id="要点-6"><a href="#要点-6" class="headerlink" title="要点"></a>要点</h4><ul>
+<li>只有发生了可使整个应用程序崩溃的严重错误时，才使用异常。</li>
+<li>在错误不那么严重的情况下，可以指派 “委托方法”（delegate method） 来处理错误，也可把错误信息放在<strong>NSError</strong> 对象里，经由 “输出参数” 返回给调用者。</li>
+</ul>
+<h3 id="第22条：理解-NSCopying-协议"><a href="#第22条：理解-NSCopying-协议" class="headerlink" title="第22条：理解 NSCopying 协议"></a>第22条：理解 NSCopying 协议</h3><p>如果想使某个类支持拷贝功能，需要声明该类遵从 <strong>NSCopying</strong> 协议，并实现 <strong>NSCopying</strong> 协议中的方法。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 不可变版本</span><br><span class="line">@protocol NSCopying</span><br><span class="line"></span><br><span class="line">- (id)copyWithZone:(nullable NSZone *)zone;</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 可变版本</span><br><span class="line">@protocol NSMutableCopying</span><br><span class="line"></span><br><span class="line">- (id)mutableCopyWithZone:(nullable NSZone *)zone;</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+
+<p>示例：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;  EOCPerson.h</span><br><span class="line">#import &lt;Foundation&#x2F;Foundation.h&gt;</span><br><span class="line"></span><br><span class="line">@interface EOCPerson : NSObject &lt;NSCopying&gt;</span><br><span class="line">@property (nonatomic, copy, readonly) NSString *firstName;</span><br><span class="line">@property (nonatomic, copy, readonly) NSString *lastName;</span><br><span class="line">@property (nonatomic, strong, readonly) NSSet *friends;</span><br><span class="line"></span><br><span class="line">- (instancetype)initWithFirstName:(NSString *)firstName</span><br><span class="line">                      andLastName:(NSString *)lastName;</span><br><span class="line">- (void)addFirend:(EOCPerson *)person;</span><br><span class="line">- (void)removeFriend:(EOCPerson *)person;</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line">  </span><br><span class="line">&#x2F;&#x2F;  EOCPerson.m</span><br><span class="line"></span><br><span class="line">#import &quot;EOCPerson.h&quot;</span><br><span class="line"></span><br><span class="line">static const NSTimeInterval KAnimationDuration &#x3D; 0.3;</span><br><span class="line"></span><br><span class="line">@implementation EOCPerson &#123;</span><br><span class="line">    NSMutableSet *_internalFriends;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (instancetype)initWithFirstName:(NSString *)firstName</span><br><span class="line">                      andLastName:(NSString *)lastName &#123;</span><br><span class="line">    if (self &#x3D; [super init]) &#123;</span><br><span class="line">        _firstName &#x3D; [firstName copy];</span><br><span class="line">        _lastName &#x3D; [lastName copy];</span><br><span class="line">        _internalFriends &#x3D; [NSMutableSet new];</span><br><span class="line">    &#125;</span><br><span class="line">    return self;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)addFirend:(EOCPerson *)person &#123;</span><br><span class="line">    [_internalFriends addObject:person];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)removeFriend:(EOCPerson *)person &#123;</span><br><span class="line">    [_internalFriends removeObject:person];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (NSSet *)friends &#123;</span><br><span class="line">    return [_internalFriends copy];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">#pragma mark - NSCopying</span><br><span class="line">&#x2F;&#x2F;  ✏️ 实现  NSCopying 协议</span><br><span class="line">- (id)copyWithZone:(nullable NSZone *)zone &#123;</span><br><span class="line">    &#x2F;&#x2F; 使用指定初始化方法初始化待拷贝对象</span><br><span class="line">    EOCPerson *copy &#x3D; [[[self class] allocWithZone:zone] initWithFirstName:_firstName andLastName:_lastName];</span><br><span class="line">    &#x2F;&#x2F; 拷贝内部实例变量:1.浅拷贝</span><br><span class="line">    copy-&gt;_internalFriends &#x3D; [_internalFriends mutableCopy];</span><br><span class="line">    &#x2F;&#x2F; 拷贝内部实例变量:2.深拷贝</span><br><span class="line">     copy-&gt;_internalFriends &#x3D; [[NSMutableSet alloc] initWithSet:_internalFriends</span><br><span class="line">                                                     copyItems:YES];</span><br><span class="line">    return copy;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@end  </span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>在可变对象上调用 <code>copy</code> 方法会返回另外一个不可变类的实例。</p>
+</li>
+<li><p>深拷贝（deep copy） &amp; 浅拷贝（shallow copy）的问题：</p>
+<ul>
+<li><p>深拷贝：在拷贝对象自身时，将其底层数据也一并复制过去。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">- (instancetype)initWithSet:(NSSet&lt;ObjectType&gt; *)set copyItems:(BOOL)flag;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>浅拷贝：只拷贝容器对象本身，而不复制其中数据。（<strong>Foundation 框架中的所有 collection 类在默认情况下都执行浅拷贝</strong>）</p>
+</li>
+</ul>
+<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/073027.jpg"></p>
+</li>
+</ul>
+<h4 id="YYModel"><a href="#YYModel" class="headerlink" title="YYModel"></a>YYModel</h4><p>该框架中有一个实现 <strong>NSCopying</strong> 协议的便捷方法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">- (id)copyWithZone:(NSZone *)zone &#123; </span><br><span class="line">  return [self yy_modelCopy]; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="要点-7"><a href="#要点-7" class="headerlink" title="要点"></a>要点</h4><ul>
+<li>若想令自己所写的对象具有拷贝功能，则需实现 <strong>NSCopying</strong> 协议。</li>
+<li>如果自定义的对象分为可变版本与不可变版本，那么就要同时实现 <strong>NSCopying</strong> 与 <strong>NSMutableCopying</strong> 协议。</li>
+<li>复制对象时需决定采用浅拷贝还是深拷贝，一般情况下应该尽量执行浅拷贝。</li>
+<li>如果你所写的对象需要深拷贝，那么可考虑新增一个专门执行深拷贝的方法。</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>独木舟的木
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://andy0570.com/2017/08/12/%E3%80%8AEffective%20Objective-C%202.0%E3%80%8B3.%E6%8E%A5%E5%8F%A3%E4%B8%8E%20API%20%E8%AE%BE%E8%AE%A1/" title="《Effective Objective-C 2.0》3.接口与 API 设计">https://andy0570.com/2017/08/12/《Effective Objective-C 2.0》3.接口与 API 设计/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <span class="exturl" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpo"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</span> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/iOS/" rel="tag"># iOS</a>
+              <a href="/tags/Objective-C/" rel="tag"># Objective-C</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2017/08/11/iOS%20%E7%BC%96%E7%A8%8B%EF%BC%9A%E7%94%A8%20UIButton%20%E5%AE%9E%E7%8E%B0%20YYLabel%20%E7%9A%84%20TextHighlight%20%E6%95%88%E6%9E%9C/" rel="prev" title="iOS 编程：用 UIButton 实现 YYLabel 的 TextHighlight 效果">
+      <i class="fa fa-chevron-left"></i> iOS 编程：用 UIButton 实现 YYLabel 的 TextHighlight 效果
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2017/08/12/iOS%20%E5%BA%94%E7%94%A8%20Breathe/" rel="next" title="iOS 应用 Breathe">
+      iOS 应用 Breathe <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+        </div>
+        
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">独木舟的木</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">2.1m</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">31:21</span>
+</div>
+  <div class="powered-by">由 <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZw==">NexT.Gemini</span> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

@@ -1,23 +1,557 @@
-{% extends '_layout.swig' %}
-{% import '_macro/post.swig' as post_template %}
-{% import '_macro/sidebar.swig' as sidebar_template %}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.0.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+  <meta name="google-site-verification" content="wioXOS3Gv2wXUpJ3sLtfZ4ft6YJYKNLLWSw6QoZTFYM">
+  <meta name="msvalidate.01" content="C96491A81239C517A50597C54EE53CD1">
+  <meta name="baidu-site-verification" content="h8asiToN1b">
 
-{% block title %}{{ page.title }} | {{ title }}{% endblock %}
+<link rel="stylesheet" href="/css/main.css">
 
-{% block page_class %}page-post-detail{% endblock %}
 
-{% block content %}
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  
+  <link rel="stylesheet" href="/lib/animate-css/animate.min.css">
 
-  <div id="posts" class="posts-expand">
-    {{ post_template.render(page) }}
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"andy0570.com","root":"/","scheme":"Gemini","version":"8.0.0-rc.5","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":"mac","bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false};
+  </script>
+
+  <meta name="description" content="UIPickerViewUIPickerView 是使用旋转轮或类似老虎机来显示一组或多组值的视图。 时钟 应用中设置时间就是通过 UIPickerView 来实现的。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="UIPickerView">
+<meta property="og:url" content="https://andy0570.com/2017/07/28/UIPickerView/index.html">
+<meta property="og:site_name" content="独木舟的木">
+<meta property="og:description" content="UIPickerViewUIPickerView 是使用旋转轮或类似老虎机来显示一组或多组值的视图。 时钟 应用中设置时间就是通过 UIPickerView 来实现的。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/073903.jpg">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/073908.jpg">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/073914.jpg">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/073916.jpg">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/073921.jpg">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/073933.gif">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/073944.jpg">
+<meta property="article:published_time" content="2017-07-28T10:34:00.000Z">
+<meta property="article:modified_time" content="2019-05-01T14:34:20.000Z">
+<meta property="article:author" content="独木舟的木">
+<meta property="article:tag" content="iOS">
+<meta property="article:tag" content="UIKit">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/073903.jpg">
+
+<link rel="canonical" href="https://andy0570.com/2017/07/28/UIPickerView/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>UIPickerView | 独木舟的木</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="独木舟的木" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <main class="main">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+        <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
   </div>
 
-{% endblock %}
+  <div class="site-meta">
 
-{% block sidebar %}
-  {{ sidebar_template.render(true) }}
-{% endblock %}
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">独木舟的木</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">iOS Developer</p>
+  </div>
 
-{% block script_extra %}
-  {% include '_scripts/pages/post-details.swig' %}
-{% endblock %}
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">14</span></a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">36</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">310</span></a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <section class="post-toc-wrap sidebar-panel">
+          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#UIPickerView"><span class="nav-number">1.</span> <span class="nav-text">UIPickerView</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8"><span class="nav-number">1.0.1.</span> <span class="nav-text">使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8D%95%E5%88%97%E9%80%89%E6%8B%A9%E5%99%A8"><span class="nav-number">1.0.2.</span> <span class="nav-text">单列选择器</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%9D%E5%A7%8B%E5%8C%96%E9%80%89%E4%B8%AD%E4%B8%AD%E9%97%B4%E9%A1%B9"><span class="nav-number">1.0.2.1.</span> <span class="nav-text">初始化选中中间项</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%9A%E5%88%97%E9%80%89%E6%8B%A9%E5%99%A8"><span class="nav-number">1.0.3.</span> <span class="nav-text">多列选择器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%9B%B8%E4%BA%92%E4%BE%9D%E8%B5%96%E7%9A%84%E5%A4%9A%E5%88%97%E9%80%89%E6%8B%A9%E5%99%A8"><span class="nav-number">1.0.4.</span> <span class="nav-text">相互依赖的多列选择器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%87%AA%E5%AE%9A%E4%B9%89%E8%A7%86%E5%9B%BE"><span class="nav-number">1.0.5.</span> <span class="nav-text">自定义视图</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%99%84%E5%BD%951%E3%80%81UIPickerView-%E6%BA%90%E7%A0%81"><span class="nav-number">1.1.</span> <span class="nav-text">附录1、UIPickerView 源码</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">1.1.1.</span> <span class="nav-text">参考</span></a></li></ol></li></ol></li></ol></div>
+      </section>
+      <!--/noindex-->
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="独木舟的木"
+      src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+  <p class="site-author-name" itemprop="name">独木舟的木</p>
+  <div class="site-description" itemprop="description">生若直木，不语斧凿。</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">310</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">36</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL0FuZHkwNTcw" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Andy0570"><i class="fab fa-github fa-fw"></i>GitHub</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9zdGFja292ZXJmbG93LmNvbS91c2Vycy83MjY1NDAwL2FuZHkwNTcw" title="StackOverflow → https:&#x2F;&#x2F;stackoverflow.com&#x2F;users&#x2F;7265400&#x2F;andy0570"><i class="fab fa-stack-overflow fa-fw"></i>StackOverflow</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuamlhbnNodS5jb20vdS84NGM1ZmFkYzdjMTg=" title="简书 → https:&#x2F;&#x2F;www.jianshu.com&#x2F;u&#x2F;84c5fadc7c18"><i class="heartbeat fa-fw"></i>简书</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="bWFpbHRvOmFuZHl3aG1AMTYzLmNvbQ==" title="E-Mail → mailto:andywhm@163.com"><i class="fa fa-envelope fa-fw"></i>E-Mail</span>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <span class="exturl cc-opacity" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpo"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></span>
+  </div>
+
+
+
+      </section>
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </header>
+
+      
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div id="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+      <div class="main-inner">
+        
+
+        <div class="content post posts-expand">
+          
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://andy0570.com/2017/07/28/UIPickerView/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+      <meta itemprop="name" content="独木舟的木">
+      <meta itemprop="description" content="生若直木，不语斧凿。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="独木舟的木">
+    </span>
+
+    
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          UIPickerView
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2017-07-28 18:34:00" itemprop="dateCreated datePublished" datetime="2017-07-28T18:34:00+08:00">2017-07-28</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-05-01 22:34:20" itemprop="dateModified" datetime="2019-05-01T22:34:20+08:00">2019-05-01</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS/" itemprop="url" rel="index"><span itemprop="name">iOS</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>13k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>12 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="UIPickerView"><a href="#UIPickerView" class="headerlink" title="UIPickerView"></a>UIPickerView</h1><p><strong>UIPickerView</strong> 是使用旋转轮或类似老虎机来显示一组或多组值的视图。</p>
+<p><strong>时钟</strong> 应用中设置时间就是通过 <strong>UIPickerView</strong> 来实现的。</p>
+<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/073903.jpg" alt="系统时钟"></p>
+<a id="more"></a>
+
+<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/073908.jpg" alt="彩云天气-设置语言"></p>
+<blockquote>
+<p><strong>UIPickerView.h</strong> 的源码见附录。</p>
+</blockquote>
+<h3 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h3><h3 id="单列选择器"><a href="#单列选择器" class="headerlink" title="单列选择器"></a>单列选择器</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line">#import &quot;ViewController.h&quot;</span><br><span class="line"></span><br><span class="line">@interface ViewController () &lt;UIPickerViewDataSource, UIPickerViewDelegate&gt;</span><br><span class="line"></span><br><span class="line">@property (nonatomic, strong) UIPickerView *pickerView; &#x2F;&#x2F; 选择器视图</span><br><span class="line">@property (nonatomic, copy) NSArray *dataSourceArray;   &#x2F;&#x2F; 数据源数组</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">@implementation ViewController</span><br><span class="line"></span><br><span class="line">#pragma mark - Lifecycle</span><br><span class="line"></span><br><span class="line">- (void)viewDidLoad &#123;</span><br><span class="line">    [super viewDidLoad];</span><br><span class="line">    &#x2F;&#x2F; 设置选择器数据源</span><br><span class="line">    self.dataSourceArray &#x3D; @[@&quot;iMac&quot;,@&quot;iPad&quot;,@&quot;iPhone&quot;,@&quot;iWatch&quot;,@&quot;iPod&quot;];</span><br><span class="line">    &#x2F;&#x2F; 添加选择器视图</span><br><span class="line">    [self.view addSubview:self.pickerView];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">#pragma mark - Custom Accessors</span><br><span class="line"></span><br><span class="line">- (UIPickerView *)pickerView &#123;</span><br><span class="line">    if (!_pickerView) &#123;</span><br><span class="line">        CGRect frame &#x3D; CGRectMake(50, 100, 275, 300);</span><br><span class="line">        _pickerView &#x3D; [[UIPickerView alloc] initWithFrame:frame];</span><br><span class="line">        _pickerView.backgroundColor &#x3D; [UIColor flatWhiteColor];</span><br><span class="line">        _pickerView.dataSource &#x3D; self;</span><br><span class="line">        _pickerView.delegate &#x3D; self;</span><br><span class="line">    &#125;</span><br><span class="line">    return _pickerView;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">#pragma mark - UIPickerViewDataSource</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 返回需要展示的列（columns）的数目</span><br><span class="line">- (NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView &#123;</span><br><span class="line">    return 1;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 返回每一列的行（rows）数</span><br><span class="line">- (NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component &#123;</span><br><span class="line">    return self.dataSourceArray.count;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">#pragma mark - UIPickerViewDelegate</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 返回每一行的标题</span><br><span class="line">- (NSString *)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component &#123;</span><br><span class="line">    return self.dataSourceArray[row];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 某一行被选择时调用</span><br><span class="line">- (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component &#123;</span><br><span class="line">    NSString *item &#x3D; self.dataSourceArray[row];</span><br><span class="line">    NSLog(@&quot;第 %lu 项的 %@ 被选择了！&quot;,row,item);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p> 显示效果</p>
+<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/073914.jpg"></p>
+<h4 id="初始化选中中间项"><a href="#初始化选中中间项" class="headerlink" title="初始化选中中间项"></a>初始化选中中间项</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 初始化选中中间一项</span><br><span class="line">[self.pickerView selectRow:2 inComponent:0 animated:NO];</span><br></pre></td></tr></table></figure>
+
+<p>这个方法可以让选择器初始化时选中指定项，这样它就会居中显示</p>
+<p>效果如下：</p>
+<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/073916.jpg"></p>
+<h3 id="多列选择器"><a href="#多列选择器" class="headerlink" title="多列选择器"></a>多列选择器</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br></pre></td><td class="code"><pre><span class="line">#import &quot;ViewController.h&quot;</span><br><span class="line"></span><br><span class="line">@interface ViewController () &lt;UIPickerViewDataSource, UIPickerViewDelegate&gt;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 选择器视图</span><br><span class="line">@property (nonatomic, strong) UIPickerView *pickerView;</span><br><span class="line">@property (nonatomic, copy) NSArray *column1Array;</span><br><span class="line">@property (nonatomic, copy) NSArray *column2Array;</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">@implementation ViewController</span><br><span class="line"></span><br><span class="line">#pragma mark - Lifecycle</span><br><span class="line"></span><br><span class="line">- (void)viewDidLoad &#123;</span><br><span class="line">    [super viewDidLoad];</span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F; 设置选择器数据源</span><br><span class="line">    self.column1Array &#x3D; @[@&quot;iMac&quot;,@&quot;iPad&quot;,@&quot;iPhone&quot;,@&quot;iWatch&quot;,@&quot;iPod&quot;];</span><br><span class="line">    self.column2Array &#x3D; @[@&quot;MacBook&quot;,@&quot;MacBook Air&quot;,@&quot;MacBook Pro&quot;,@&quot;iMac&quot;,@&quot;iMac Pro&quot;,@&quot;Mac Pro&quot;,@&quot;Mac mini&quot;];</span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F; 添加选择器视图</span><br><span class="line">    [self.view addSubview:self.pickerView];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">#pragma mark - Custom Accessors</span><br><span class="line"></span><br><span class="line">- (UIPickerView *)pickerView &#123;</span><br><span class="line">    if (!_pickerView) &#123;</span><br><span class="line">        CGRect frame &#x3D; CGRectMake(50, 100, 275, 300);</span><br><span class="line">        _pickerView &#x3D; [[UIPickerView alloc] initWithFrame:frame];</span><br><span class="line">        _pickerView.backgroundColor &#x3D; [UIColor flatWhiteColor];</span><br><span class="line">        _pickerView.dataSource &#x3D; self;</span><br><span class="line">        _pickerView.delegate &#x3D; self;</span><br><span class="line">    &#125;</span><br><span class="line">    return _pickerView;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">#pragma mark - UIPickerViewDataSource</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 返回需要展示的列（columns）的数目</span><br><span class="line">- (NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView &#123;</span><br><span class="line">    &#x2F;&#x2F; 设置返回两列</span><br><span class="line">    return 2;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 返回每一列的行（rows）数</span><br><span class="line">- (NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component &#123;</span><br><span class="line">    switch (component) &#123;</span><br><span class="line">        case 0:</span><br><span class="line">            &#x2F;&#x2F; 第一列返回的行数</span><br><span class="line">            return self.column1Array.count;</span><br><span class="line">            break;</span><br><span class="line">        case 1:</span><br><span class="line">            &#x2F;&#x2F; 第二列返回的行数</span><br><span class="line">            return self.column2Array.count;</span><br><span class="line">            break;</span><br><span class="line">        default:</span><br><span class="line">            return 0;</span><br><span class="line">            break;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">#pragma mark - UIPickerViewDelegate</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 设置组件的宽度</span><br><span class="line">- (CGFloat)pickerView:(UIPickerView *)pickerView widthForComponent:(NSInteger)component &#123;</span><br><span class="line">    if (component &#x3D;&#x3D; 0) &#123;</span><br><span class="line">        return 90;</span><br><span class="line">    &#125;else &#123;</span><br><span class="line">        return 210;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 设置每行的高度</span><br><span class="line">&#x2F;&#x2F;- (CGFloat)pickerView:(UIPickerView *)pickerView rowHeightForComponent:(NSInteger)component &#123;</span><br><span class="line">&#x2F;&#x2F;    </span><br><span class="line">&#x2F;&#x2F;&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 返回每一行的标题</span><br><span class="line">- (NSString *)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component &#123;</span><br><span class="line">    switch (component) &#123;</span><br><span class="line">        case 0:</span><br><span class="line">            &#x2F;&#x2F; 第一列的标题</span><br><span class="line">            return self.column1Array[row];</span><br><span class="line">            break;</span><br><span class="line">        case 1:</span><br><span class="line">            &#x2F;&#x2F; 第二列的标题</span><br><span class="line">            return self.column2Array[row];</span><br><span class="line">        default:</span><br><span class="line">            return nil;</span><br><span class="line">            break;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 某一行被选择时调用</span><br><span class="line">- (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component &#123;</span><br><span class="line">    NSString *column1;</span><br><span class="line">    NSString *column2;</span><br><span class="line">    &#x2F;&#x2F; 只会进入一个 case 分支, 不会两个分支同时执行</span><br><span class="line">    switch (component) &#123;</span><br><span class="line">        case 0: &#123;</span><br><span class="line">            column1 &#x3D; self.column1Array[row];</span><br><span class="line">            break;</span><br><span class="line">        &#125;</span><br><span class="line">        case 1: &#123;</span><br><span class="line">            column2 &#x3D; self.column2Array[row];</span><br><span class="line">            break;</span><br><span class="line">        &#125;</span><br><span class="line">        default:</span><br><span class="line">            break;</span><br><span class="line">    &#125;</span><br><span class="line">    NSLog(@&quot;%@ - %@&quot;,column1,column2);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>显示效果</p>
+<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/073921.jpg"></p>
+<h3 id="相互依赖的多列选择器"><a href="#相互依赖的多列选择器" class="headerlink" title="相互依赖的多列选择器"></a>相互依赖的多列选择器</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br></pre></td><td class="code"><pre><span class="line">#import &quot;ViewController.h&quot;</span><br><span class="line"></span><br><span class="line">@interface ViewController () &lt;UIPickerViewDataSource, UIPickerViewDelegate&gt;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 选择器视图</span><br><span class="line">@property (nonatomic, strong) UIPickerView *pickerView;</span><br><span class="line"></span><br><span class="line">@property (nonatomic, copy) NSArray *column0Array; &#x2F;&#x2F; 第一列</span><br><span class="line">@property (nonatomic, copy) NSArray *column01Array; &#x2F;&#x2F;与第一列相关联的第二列</span><br><span class="line"></span><br><span class="line">@property (nonatomic, copy) NSArray *column1Array;</span><br><span class="line">@property (nonatomic, copy) NSArray *column2Array;</span><br><span class="line">@property (nonatomic, copy) NSArray *column3Array;</span><br><span class="line">@property (nonatomic, copy) NSArray *column4Array;</span><br><span class="line">@property (nonatomic, copy) NSArray *column5Array;</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">@implementation ViewController</span><br><span class="line"></span><br><span class="line">#pragma mark - Lifecycle</span><br><span class="line"></span><br><span class="line">- (void)viewDidLoad &#123;</span><br><span class="line">    [super viewDidLoad];</span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F; 设置选择器数据源</span><br><span class="line">    self.column0Array &#x3D; @[@&quot;Mac&quot;,@&quot;iPad&quot;,@&quot;iPhone&quot;,@&quot;Watch&quot;,@&quot;TV&quot;];</span><br><span class="line">    </span><br><span class="line">    self.column1Array &#x3D; @[@&quot;MacBook&quot;,@&quot;MacBook Air&quot;,@&quot;MacBook Pro&quot;,@&quot;iMac&quot;,@&quot;iMac Pro&quot;,@&quot;Mac Pro&quot;,@&quot;Mac mini&quot;];</span><br><span class="line">    self.column2Array &#x3D; @[@&quot;iPad Pro&quot;,@&quot;iPad&quot;,@&quot;iPad mini 4&quot;];</span><br><span class="line">    self.column3Array &#x3D; @[@&quot;iPhone 7&quot;,@&quot;iPhone 6s&quot;,@&quot;iPhone SE&quot;];</span><br><span class="line">    self.column4Array &#x3D; @[@&quot;Apple Watch Serries 2&quot;,@&quot;Apple Watch Nike+&quot;,@&quot;Apple Watch Herms&quot;,@&quot;Apple Watch Edition&quot;,@&quot;Apple Watch Serries 1&quot;];</span><br><span class="line">    self.column5Array &#x3D; @[@&quot;Apple TV&quot;];</span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F; 初始化第二列</span><br><span class="line">    self.column01Array &#x3D; self.column1Array;</span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F; 添加选择器视图</span><br><span class="line">    [self.view addSubview:self.pickerView];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">#pragma mark - Custom Accessors</span><br><span class="line"></span><br><span class="line">- (UIPickerView *)pickerView &#123;</span><br><span class="line">    if (!_pickerView) &#123;</span><br><span class="line">        CGRect frame &#x3D; CGRectMake(50, 100, 300, 300);</span><br><span class="line">        _pickerView &#x3D; [[UIPickerView alloc] initWithFrame:frame];</span><br><span class="line">        _pickerView.backgroundColor &#x3D; [UIColor flatWhiteColor];</span><br><span class="line">        _pickerView.dataSource &#x3D; self;</span><br><span class="line">        _pickerView.delegate &#x3D; self;</span><br><span class="line">    &#125;</span><br><span class="line">    return _pickerView;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">#pragma mark - UIPickerViewDataSource</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 返回需要展示的列（columns）的数目</span><br><span class="line">- (NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView &#123;</span><br><span class="line">    &#x2F;&#x2F; 设置返回两列</span><br><span class="line">    return 2;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 返回每一列的行（rows）数</span><br><span class="line">- (NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component &#123;</span><br><span class="line">    switch (component) &#123;</span><br><span class="line">        case 0:</span><br><span class="line">            &#x2F;&#x2F; 第一列返回的行数</span><br><span class="line">            return self.column0Array.count;</span><br><span class="line">            break;</span><br><span class="line">        case 1:</span><br><span class="line">            &#x2F;&#x2F; 第二列返回的行数</span><br><span class="line">            return self.column01Array.count;</span><br><span class="line">            break;</span><br><span class="line">        default:</span><br><span class="line">            return 0;</span><br><span class="line">            break;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">#pragma mark - UIPickerViewDelegate</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 设置组件的宽度</span><br><span class="line">- (CGFloat)pickerView:(UIPickerView *)pickerView widthForComponent:(NSInteger)component &#123;</span><br><span class="line">    if (component &#x3D;&#x3D; 0) &#123;</span><br><span class="line">        return 90;</span><br><span class="line">    &#125;else &#123;</span><br><span class="line">        return 210;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 返回每一行的标题</span><br><span class="line">- (NSString *)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component &#123;</span><br><span class="line">    switch (component) &#123;</span><br><span class="line">        case 0:</span><br><span class="line">            &#x2F;&#x2F; 第一列的标题</span><br><span class="line">            return self.column0Array[row];</span><br><span class="line">            break;</span><br><span class="line">        case 1:</span><br><span class="line">            &#x2F;&#x2F; 第二列的标题</span><br><span class="line">            return self.column01Array[row];</span><br><span class="line">        default:</span><br><span class="line">            return nil;</span><br><span class="line">            break;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 某一行被选择时调用</span><br><span class="line">- (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component &#123;</span><br><span class="line">    if (component &#x3D;&#x3D; 0) &#123;</span><br><span class="line">        &#x2F;&#x2F; 根据选择的左边列，修改右边列数组</span><br><span class="line">        if (row &#x3D;&#x3D; 0) &#123;</span><br><span class="line">            self.column01Array &#x3D; self.column1Array;</span><br><span class="line">        &#125;else if (row &#x3D;&#x3D; 1) &#123;</span><br><span class="line">            self.column01Array &#x3D; self.column2Array;</span><br><span class="line">        &#125;else if (row &#x3D;&#x3D; 2) &#123;</span><br><span class="line">            self.column01Array &#x3D; self.column3Array;</span><br><span class="line">        &#125;else if (row &#x3D;&#x3D; 3) &#123;</span><br><span class="line">            self.column01Array &#x3D; self.column4Array;</span><br><span class="line">        &#125;else &#123;</span><br><span class="line">            self.column01Array &#x3D; self.column5Array;</span><br><span class="line">        &#125;</span><br><span class="line">        &#x2F;&#x2F; 刷新右边列数据</span><br><span class="line">        [pickerView reloadComponent:1];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>显示效果</p>
+<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/073933.gif"></p>
+<h3 id="自定义视图"><a href="#自定义视图" class="headerlink" title="自定义视图"></a>自定义视图</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 返回自定义视图</span><br><span class="line">- (UIView *)pickerView:(UIPickerView *)pickerView viewForRow:(NSInteger)row forComponent:(NSInteger)component reusingView:(nullable UIView *)view &#123;</span><br><span class="line"></span><br><span class="line">    if (view &#x3D;&#x3D; nil) &#123;</span><br><span class="line">        view &#x3D; [[UIView alloc] init];</span><br><span class="line">    &#125;</span><br><span class="line">    view.backgroundColor &#x3D; [UIColor randomFlatColor];</span><br><span class="line">    return view;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>该方法可以返回任意 <strong>UIView</strong> 或其子类对象，比如 <strong>UILabel</strong>。</p>
+<p>显示效果</p>
+<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/073944.jpg"></p>
+<h2 id="附录1、UIPickerView-源码"><a href="#附录1、UIPickerView-源码" class="headerlink" title="附录1、UIPickerView 源码"></a>附录1、UIPickerView 源码</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;</span><br><span class="line">&#x2F;&#x2F;  UIPickerView.h</span><br><span class="line">&#x2F;&#x2F;  UIKit</span><br><span class="line">&#x2F;&#x2F;</span><br><span class="line">&#x2F;&#x2F;  Copyright (c) 2006-2015 Apple Inc. All rights reserved.</span><br><span class="line">&#x2F;&#x2F;</span><br><span class="line"></span><br><span class="line">#import &lt;Foundation&#x2F;Foundation.h&gt;</span><br><span class="line">#import &lt;CoreGraphics&#x2F;CoreGraphics.h&gt;</span><br><span class="line">#import &lt;UIKit&#x2F;UIView.h&gt;</span><br><span class="line">#import &lt;UIKit&#x2F;UIKitDefines.h&gt;</span><br><span class="line"></span><br><span class="line">NS_ASSUME_NONNULL_BEGIN</span><br><span class="line"></span><br><span class="line">@protocol UIPickerViewDataSource, UIPickerViewDelegate;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; **********************📌 UIPickerView 头文件******************************</span><br><span class="line"></span><br><span class="line">NS_CLASS_AVAILABLE_IOS(2_0) __TVOS_PROHIBITED @interface UIPickerView : UIView &lt;NSCoding&gt;</span><br><span class="line"></span><br><span class="line">@property(nullable,nonatomic,weak) id&lt;UIPickerViewDataSource&gt; dataSource;                &#x2F;&#x2F; 数据源协议，默认为 nil. 弱引用</span><br><span class="line">@property(nullable,nonatomic,weak) id&lt;UIPickerViewDelegate&gt;   delegate;                  &#x2F;&#x2F; 委托协议，默认为 nil. 弱引用</span><br><span class="line"></span><br><span class="line">&#x2F;** </span><br><span class="line"> * 该属性控制是否显示UIPickerView中的选中标记（以高亮背景作为选中标记）</span><br><span class="line"> * </span><br><span class="line"> * 在iOS 7及更高版本上，你无法自定义 UIPickerView 选择指示器。 </span><br><span class="line"> * 选择指示器将始终显示，因此将此属性设置为NO无效。</span><br><span class="line"> **&#x2F;</span><br><span class="line">@property(nonatomic)        BOOL                       showsSelectionIndicator;   &#x2F;&#x2F; 默认为  NO</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 从数据源和委托中获取和缓存的信息</span><br><span class="line">@property(nonatomic,readonly) NSInteger numberOfComponents; &#x2F;&#x2F; 组件数目</span><br><span class="line">- (NSInteger)numberOfRowsInComponent:(NSInteger)component;  &#x2F;&#x2F; 指定组件中的 Item 项数目</span><br><span class="line">- (CGSize)rowSizeForComponent:(NSInteger)component;         &#x2F;&#x2F; 指定组件中 Item 项的尺寸</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 返回通过实现委托协议 pickerView:viewForRow:forComponent:reusingView: 得到的视图</span><br><span class="line">&#x2F;&#x2F; 如果 row&#x2F;组件不可见或者没有实现 pickerView:viewForRow:forComponent:reusingView: 委托协议就返回 nil</span><br><span class="line">- (nullable UIView *)viewForRow:(NSInteger)row forComponent:(NSInteger)component;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 重新加载整个视图或单个组件</span><br><span class="line">- (void)reloadAllComponents;</span><br><span class="line">- (void)reloadComponent:(NSInteger)component;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 选择项。 在这种情况下，意味着在中间显示适当的行</span><br><span class="line">- (void)selectRow:(NSInteger)row inComponent:(NSInteger)component animated:(BOOL)animated;  &#x2F;&#x2F; 将指定的行滚动到中心位置。</span><br><span class="line"></span><br><span class="line">- (NSInteger)selectedRowInComponent:(NSInteger)component;                                   &#x2F;&#x2F; 返回所选行。 如果没有选择就返回-1</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; **********************📌 UIPickerView 数据源协议******************************</span><br><span class="line">__TVOS_PROHIBITED</span><br><span class="line">@protocol UIPickerViewDataSource&lt;NSObject&gt;</span><br><span class="line">@required &#x2F;&#x2F; 必须实现</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 返回显示的“列”数。</span><br><span class="line">- (NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 返回每个组件中的行数</span><br><span class="line">- (NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component;</span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; **********************📌 UIPickerView 委托协议******************************</span><br><span class="line">__TVOS_PROHIBITED</span><br><span class="line">@protocol UIPickerViewDelegate&lt;NSObject&gt;</span><br><span class="line">@optional</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 返回每个组件的列的宽度和行的高度。</span><br><span class="line">- (CGFloat)pickerView:(UIPickerView *)pickerView widthForComponent:(NSInteger)component __TVOS_PROHIBITED;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 关于高度值</span><br><span class="line">- (CGFloat)pickerView:(UIPickerView *)pickerView rowHeightForComponent:(NSInteger)component __TVOS_PROHIBITED;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 这些方法返回一个简单的 NSString 字符串，NSAttributedString 字符串或一个视图（如UILabel）来显示组件的行。 </span><br><span class="line">&#x2F;&#x2F; 对于视图版本，我们缓存任何隐藏的，未被使用的视图，并将它们传回以供重用。</span><br><span class="line">&#x2F;&#x2F; 如果您返回一个不同的对象，旧的将被释放。 视图将以行的 rect 为中心</span><br><span class="line">&#x2F;&#x2F; The methods in this group are marked @optional. However, to use a picker view, you must implement either the pickerView:titleForRow:forComponent: or the pickerView:viewForRow:forComponent:reusingView: method to provide the content of component rows. 下面两个协议两个必须实现其中一个以显示组件内容</span><br><span class="line">- (nullable NSString *)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component __TVOS_PROHIBITED;</span><br><span class="line">- (nullable NSAttributedString *)pickerView:(UIPickerView *)pickerView attributedTitleForRow:(NSInteger)row forComponent:(NSInteger)component NS_AVAILABLE_IOS(6_0) __TVOS_PROHIBITED; &#x2F;&#x2F; 如果两种方法都实现，attributed title 优先被选择</span><br><span class="line">- (UIView *)pickerView:(UIPickerView *)pickerView viewForRow:(NSInteger)row forComponent:(NSInteger)component reusingView:(nullable UIView *)view __TVOS_PROHIBITED;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 当用户选择组件中的某一行时，将会被调用。</span><br><span class="line">- (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component __TVOS_PROHIBITED;</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">NS_ASSUME_NONNULL_END</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><ul>
+<li><span class="exturl" data-url="aHR0cDovL3d3dy5qaWFuc2h1LmNvbS9wLzhiYzc5YTcwNDI2Nw==">UIKit－UIPickerView详解<i class="fa fa-external-link-alt"></i></span></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>独木舟的木
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://andy0570.com/2017/07/28/UIPickerView/" title="UIPickerView">https://andy0570.com/2017/07/28/UIPickerView/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <span class="exturl" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpo"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</span> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/iOS/" rel="tag"># iOS</a>
+              <a href="/tags/UIKit/" rel="tag"># UIKit</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2017/07/24/%E7%AE%80%E4%B9%A6%E9%87%8C%E5%8A%A0%E5%85%A5%E5%9B%BE%E7%89%87%E5%90%8E%EF%BC%8C%E6%80%8E%E4%B9%88%E8%B0%83%E6%95%B4%E5%9B%BE%E7%89%87%E5%A4%A7%E5%B0%8F/" rel="prev" title="简书里加入图片后，怎么调整图片大小">
+      <i class="fa fa-chevron-left"></i> 简书里加入图片后，怎么调整图片大小
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2017/07/29/UIDatePicker/" rel="next" title="UIDatePicker">
+      UIDatePicker <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+        </div>
+        
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">独木舟的木</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">2.1m</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">31:21</span>
+</div>
+  <div class="powered-by">由 <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZw==">NexT.Gemini</span> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

@@ -1,23 +1,544 @@
-{% extends '_layout.swig' %}
-{% import '_macro/post.swig' as post_template %}
-{% import '_macro/sidebar.swig' as sidebar_template %}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.0.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+  <meta name="google-site-verification" content="wioXOS3Gv2wXUpJ3sLtfZ4ft6YJYKNLLWSw6QoZTFYM">
+  <meta name="msvalidate.01" content="C96491A81239C517A50597C54EE53CD1">
+  <meta name="baidu-site-verification" content="h8asiToN1b">
 
-{% block title %}{{ page.title }} | {{ title }}{% endblock %}
+<link rel="stylesheet" href="/css/main.css">
 
-{% block page_class %}page-post-detail{% endblock %}
 
-{% block content %}
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  
+  <link rel="stylesheet" href="/lib/animate-css/animate.min.css">
 
-  <div id="posts" class="posts-expand">
-    {{ post_template.render(page) }}
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"andy0570.com","root":"/","scheme":"Gemini","version":"8.0.0-rc.5","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":"mac","bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false};
+  </script>
+
+  <meta name="description" content="与 NSURLSession API 相关的内容。 参考： GitHub 源码：shinobicontrols&#x2F;iOS7-day-by-day 天天品尝iOS7甜点 :: Day 1 :: NSURLSession">
+<meta property="og:type" content="article">
+<meta property="og:title" content="天天品尝iOS7甜点 Day1：NSURLSession">
+<meta property="og:url" content="https://andy0570.com/2017/09/01/%E5%A4%A9%E5%A4%A9%E5%93%81%E5%B0%9DiOS7%E7%94%9C%E7%82%B9%20Day1%EF%BC%9ANSURLSession/index.html">
+<meta property="og:site_name" content="独木舟的木">
+<meta property="og:description" content="与 NSURLSession API 相关的内容。 参考： GitHub 源码：shinobicontrols&#x2F;iOS7-day-by-day 天天品尝iOS7甜点 :: Day 1 :: NSURLSession">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071444.jpg">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071445.jpg">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/2648731-26ce50a3e3637801.gif?imageMogr2/auto-orient/strip">
+<meta property="article:published_time" content="2017-09-01T07:26:00.000Z">
+<meta property="article:modified_time" content="2019-05-01T13:19:13.000Z">
+<meta property="article:author" content="独木舟的木">
+<meta property="article:tag" content="iOS">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071444.jpg">
+
+<link rel="canonical" href="https://andy0570.com/2017/09/01/%E5%A4%A9%E5%A4%A9%E5%93%81%E5%B0%9DiOS7%E7%94%9C%E7%82%B9%20Day1%EF%BC%9ANSURLSession/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>天天品尝iOS7甜点 Day1：NSURLSession | 独木舟的木</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="独木舟的木" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <main class="main">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+        <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
   </div>
 
-{% endblock %}
+  <div class="site-meta">
 
-{% block sidebar %}
-  {{ sidebar_template.render(true) }}
-{% endblock %}
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">独木舟的木</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">iOS Developer</p>
+  </div>
 
-{% block script_extra %}
-  {% include '_scripts/pages/post-details.swig' %}
-{% endblock %}
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">14</span></a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">36</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">310</span></a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <section class="post-toc-wrap sidebar-panel">
+          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%82%E8%80%83%EF%BC%9A"><span class="nav-number">1.</span> <span class="nav-text">参考：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#NSURLSessionConfiguration"><span class="nav-number">2.</span> <span class="nav-text">NSURLSessionConfiguration</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#NSURLSession"><span class="nav-number">3.</span> <span class="nav-text">NSURLSession</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#NSURLSessionTask"><span class="nav-number">3.1.</span> <span class="nav-text">NSURLSessionTask</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#NSURLSessionDelegate-%E5%A7%94%E6%89%98%E5%8D%8F%E8%AE%AE"><span class="nav-number">3.2.</span> <span class="nav-text">NSURLSessionDelegate 委托协议</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%88%E6%9E%9C"><span class="nav-number">4.</span> <span class="nav-text">效果</span></a></li></ol></div>
+      </section>
+      <!--/noindex-->
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="独木舟的木"
+      src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+  <p class="site-author-name" itemprop="name">独木舟的木</p>
+  <div class="site-description" itemprop="description">生若直木，不语斧凿。</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">310</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">36</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL0FuZHkwNTcw" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Andy0570"><i class="fab fa-github fa-fw"></i>GitHub</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9zdGFja292ZXJmbG93LmNvbS91c2Vycy83MjY1NDAwL2FuZHkwNTcw" title="StackOverflow → https:&#x2F;&#x2F;stackoverflow.com&#x2F;users&#x2F;7265400&#x2F;andy0570"><i class="fab fa-stack-overflow fa-fw"></i>StackOverflow</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuamlhbnNodS5jb20vdS84NGM1ZmFkYzdjMTg=" title="简书 → https:&#x2F;&#x2F;www.jianshu.com&#x2F;u&#x2F;84c5fadc7c18"><i class="heartbeat fa-fw"></i>简书</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="bWFpbHRvOmFuZHl3aG1AMTYzLmNvbQ==" title="E-Mail → mailto:andywhm@163.com"><i class="fa fa-envelope fa-fw"></i>E-Mail</span>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <span class="exturl cc-opacity" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpo"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></span>
+  </div>
+
+
+
+      </section>
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </header>
+
+      
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div id="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+      <div class="main-inner">
+        
+
+        <div class="content post posts-expand">
+          
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://andy0570.com/2017/09/01/%E5%A4%A9%E5%A4%A9%E5%93%81%E5%B0%9DiOS7%E7%94%9C%E7%82%B9%20Day1%EF%BC%9ANSURLSession/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+      <meta itemprop="name" content="独木舟的木">
+      <meta itemprop="description" content="生若直木，不语斧凿。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="独木舟的木">
+    </span>
+
+    
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          天天品尝iOS7甜点 Day1：NSURLSession
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2017-09-01 15:26:00" itemprop="dateCreated datePublished" datetime="2017-09-01T15:26:00+08:00">2017-09-01</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-05-01 21:19:13" itemprop="dateModified" datetime="2019-05-01T21:19:13+08:00">2019-05-01</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS/" itemprop="url" rel="index"><span itemprop="name">iOS</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>11k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>10 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>与 <strong>NSURLSession</strong> API 相关的内容。</p>
+<h3 id="参考："><a href="#参考：" class="headerlink" title="参考："></a>参考：</h3><ul>
+<li><span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL1NoaW5vYmlDb250cm9scy9pT1M3LWRheS1ieS1kYXk=">GitHub 源码：shinobicontrols/iOS7-day-by-day<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cDovL2Jsb2cua2luZ2lvbC5jb20vMjAxNC8wMS8wNi9pb3M3LWRheS1ieS1kYXktZGF5MS1uc3VybHNlc3Npb24v">天天品尝iOS7甜点 :: Day 1 :: NSURLSession<i class="fa fa-external-link-alt"></i></span></li>
+</ul>
+<a id="more"></a>
+
+
+<h3 id="NSURLSessionConfiguration"><a href="#NSURLSessionConfiguration" class="headerlink" title="NSURLSessionConfiguration"></a>NSURLSessionConfiguration</h3><p>创建 <strong>NSURLSessionConfiguration</strong> 对象的三种方式：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 默认会话配置</span><br><span class="line">NSURLSessionConfiguration *defaultConfig &#x3D; [NSURLSessionConfiguration defaultSessionConfiguration];</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 短暂会话配置,无缓存(caches),cookies,证书(credentials)</span><br><span class="line">NSURLSessionConfiguration *ephemeralConfig &#x3D; [NSURLSessionConfiguration ephemeralSessionConfiguration];</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 后台会话配置</span><br><span class="line">NSURLSessionConfiguration *backgroundConfig &#x3D; [NSURLSessionConfiguration backgroundSessionConfigurationWithIdentifier:@&quot;com.Apple.BackgroundDownload.BackgroundSession&quot;];</span><br></pre></td></tr></table></figure>
+
+<h3 id="NSURLSession"><a href="#NSURLSession" class="headerlink" title="NSURLSession"></a>NSURLSession</h3><p>创建 <strong>NSURLSession</strong> 对象的三种方式：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 1. 单例类会话,便捷创建方法</span><br><span class="line">NSURLSession *sharedSession &#x3D; [NSURLSession sharedSession];</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 2. sessionWithConfiguration:</span><br><span class="line">&#x2F;&#x2F; 一般用 Block 处理服务器回调时使用</span><br><span class="line">&#x2F;&#x2F; 默认会话</span><br><span class="line">NSURLSession *defaultSession &#x3D; [NSURLSession sessionWithConfiguration:defaultConfig];</span><br><span class="line">&#x2F;&#x2F; 短暂会话</span><br><span class="line">NSURLSession *ephemeralSesson &#x3D; [NSURLSession sessionWithConfiguration:ephemeralConfig];</span><br><span class="line">&#x2F;&#x2F; 后台会话</span><br><span class="line">NSURLSession *backgroundSession &#x3D; [NSURLSession sessionWithConfiguration:backgroundConfig];</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 3. sessionWithConfiguration:delegate:delegateQueue:</span><br><span class="line">&#x2F;&#x2F; 需要实现委托协议或者指定线程的创建方法</span><br><span class="line">NSOperationQueue *operationQueue &#x3D; [NSOperationQueue mainQueue];</span><br><span class="line">&#x2F;&#x2F; 默认会话</span><br><span class="line">NSURLSession *defalutSession1 &#x3D; [NSURLSession sessionWithConfiguration:defaultConfig delegate:self delegateQueue:operationQueue];</span><br><span class="line">&#x2F;&#x2F; 短暂会话</span><br><span class="line">NSURLSession *ephemeralSesson1 &#x3D; [NSURLSession sessionWithConfiguration:ephemeralConfig delegate:self delegateQueue:operationQueue];</span><br><span class="line">&#x2F;&#x2F; 后台会话</span><br><span class="line">NSURLSession *backgroundSession1 &#x3D; [NSURLSession sessionWithConfiguration:backgroundConfig delegate:self delegateQueue:operationQueue];</span><br></pre></td></tr></table></figure>
+
+<h4 id="NSURLSessionTask"><a href="#NSURLSessionTask" class="headerlink" title="NSURLSessionTask"></a>NSURLSessionTask</h4><p>⚠️ 创建 <strong>NSURLSessionTask</strong> 对象有四种种方式：</p>
+<blockquote>
+<ol>
+<li>数据任务(NSURLSessionDataTask)</li>
+<li>上传任务(NSURLSessionUploadTask)</li>
+<li>下载任务(NSURLSessionDownloadTask)</li>
+<li>流任务（NSURLSessionStreamTask）：WWDC2015新增，提供 TCP/IP 连接接口。</li>
+</ol>
+</blockquote>
+<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071444.jpg"></p>
+<h4 id="NSURLSessionDelegate-委托协议"><a href="#NSURLSessionDelegate-委托协议" class="headerlink" title="NSURLSessionDelegate 委托协议"></a>NSURLSessionDelegate 委托协议</h4><p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071445.jpg"></p>
+<p>示例 Demo</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; *************************************************</span><br><span class="line">&#x2F;&#x2F; SCViewController.h</span><br><span class="line">#import &lt;UIKit&#x2F;UIKit.h&gt;</span><br><span class="line"></span><br><span class="line">@interface SCViewController : UIViewController</span><br><span class="line"></span><br><span class="line">@property (strong, nonatomic) NSURLSessionDownloadTask *resumableTask;   &#x2F;&#x2F; 可恢复任务</span><br><span class="line">@property (strong, nonatomic) NSURLSessionDownloadTask *backgroundTask;  &#x2F;&#x2F; 后台任务</span><br><span class="line"></span><br><span class="line">@property (strong, nonatomic, readonly) NSURLSession *backgroundSession; &#x2F;&#x2F; 后台会话</span><br><span class="line"></span><br><span class="line">@property (weak, nonatomic) IBOutlet UIImageView *imageView;</span><br><span class="line">@property (weak, nonatomic) IBOutlet UIProgressView *progressIndicator;</span><br><span class="line">@property (strong, nonatomic) IBOutletCollection(UIBarButtonItem) NSArray *startButtons;</span><br><span class="line"></span><br><span class="line">- (IBAction)startCancellable:(id)sender;  &#x2F;&#x2F; 开始任务</span><br><span class="line">- (IBAction)cancelCancellable:(id)sender; &#x2F;&#x2F; 取消任务</span><br><span class="line">- (IBAction)startResumable:(id)sender;    &#x2F;&#x2F; 恢复任务</span><br><span class="line">- (IBAction)startBackground:(id)sender;   &#x2F;&#x2F; 后台任务</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; *************************************************</span><br><span class="line">&#x2F;&#x2F; SCViewController.m</span><br><span class="line">#import &quot;SCViewController.h&quot;</span><br><span class="line">#import &quot;SCAppDelegate.h&quot;</span><br><span class="line"></span><br><span class="line">@interface SCViewController () &lt;NSURLSessionDownloadDelegate&gt; &#123;</span><br><span class="line">    NSURLSessionDownloadTask *cancellableTask; &#x2F;&#x2F; 可取消任务</span><br><span class="line">    NSURLSession *inProcessSession; &#x2F;&#x2F; 私有会话</span><br><span class="line">    NSData *partialDownload; &#x2F;&#x2F; 后台下载临时数据</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">@implementation SCViewController</span><br><span class="line"></span><br><span class="line">#pragma mark - Lifecycle</span><br><span class="line">- (void)viewDidLoad</span><br><span class="line">&#123;</span><br><span class="line">    [super viewDidLoad];</span><br><span class="line">    &#x2F;&#x2F; 从 nib 文件加载视图后，进行额外的初始化工作</span><br><span class="line">    self.progressIndicator.hidden &#x3D; YES;</span><br><span class="line">    self.progressIndicator.progress &#x3D; 0;</span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F; Make sure that we&#39;ve attached to the background session</span><br><span class="line">    self.backgroundSession.sessionDescription &#x3D; @&quot;Background session&quot;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">#pragma mark - Custom Accessors</span><br><span class="line">&#x2F;&#x2F; 后台会话，单例类</span><br><span class="line">- (NSURLSession *)backgroundSession</span><br><span class="line">&#123;</span><br><span class="line">    static NSURLSession *backgroundSession &#x3D; nil;</span><br><span class="line">    static dispatch_once_t onceToken;</span><br><span class="line">    dispatch_once(&amp;onceToken, ^&#123;</span><br><span class="line">        NSURLSessionConfiguration *config &#x3D; [NSURLSessionConfiguration backgroundSessionConfigurationWithIdentifier:@&quot;com.shinobicontrols.BackgroundDownload.BackgroundSession&quot;];</span><br><span class="line">        backgroundSession &#x3D; [NSURLSession sessionWithConfiguration:config</span><br><span class="line">                                                          delegate:self</span><br><span class="line">                                                     delegateQueue:nil];</span><br><span class="line">    &#125;);</span><br><span class="line">    return backgroundSession;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">#pragma mark - IBActions</span><br><span class="line">&#x2F;&#x2F; 开始任务</span><br><span class="line">- (IBAction)startCancellable:(id)sender &#123;</span><br><span class="line">    if (!cancellableTask) &#123;</span><br><span class="line">        if(!inProcessSession) &#123;</span><br><span class="line">            &#x2F;&#x2F; 创建默认会话</span><br><span class="line">            NSURLSessionConfiguration *sessionConfig &#x3D; [NSURLSessionConfiguration defaultSessionConfiguration];</span><br><span class="line">            inProcessSession &#x3D; [NSURLSession sessionWithConfiguration:sessionConfig</span><br><span class="line">                                                             delegate:self</span><br><span class="line">                                                        delegateQueue:nil];</span><br><span class="line">            inProcessSession.sessionDescription &#x3D; @&quot;in-process NSURLSession&quot;;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        &#x2F;&#x2F; Image CreativeCommons courtesy of flickr.com&#x2F;charliematters</span><br><span class="line">        NSString *url &#x3D; @&quot;http:&#x2F;&#x2F;farm6.staticflickr.com&#x2F;5505&#x2F;9824098016_0e28a047c2_b_d.jpg&quot;;</span><br><span class="line">        NSURLRequest *request &#x3D; [NSURLRequest requestWithURL:[NSURL URLWithString:url]];</span><br><span class="line">        </span><br><span class="line">        &#x2F;&#x2F; 创建可取消任务</span><br><span class="line">        cancellableTask &#x3D; [inProcessSession downloadTaskWithRequest:request];</span><br><span class="line">        </span><br><span class="line">        [self setDownloadButtonsAsEnabled:NO];</span><br><span class="line">        self.imageView.hidden &#x3D; YES;</span><br><span class="line">        </span><br><span class="line">        &#x2F;&#x2F; 开启下载任务</span><br><span class="line">        [cancellableTask resume];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 取消任务</span><br><span class="line">- (IBAction)cancelCancellable:(id)sender &#123;</span><br><span class="line">    if(cancellableTask) &#123;</span><br><span class="line">        &#x2F;&#x2F; 1. 可取消任务</span><br><span class="line">        [cancellableTask cancel];</span><br><span class="line">        cancellableTask &#x3D; nil;</span><br><span class="line">    &#125; else if(self.resumableTask) &#123;</span><br><span class="line">        &#x2F;&#x2F; 2. 可恢复任务</span><br><span class="line">        [self.resumableTask cancelByProducingResumeData:^(NSData *resumeData) &#123;</span><br><span class="line">            &#x2F;&#x2F; ❇️ 缓存已下载数据</span><br><span class="line">            partialDownload &#x3D; resumeData;</span><br><span class="line">            self.resumableTask &#x3D; nil;</span><br><span class="line">        &#125;];</span><br><span class="line">    &#125; else if(self.backgroundTask) &#123;</span><br><span class="line">        &#x2F;&#x2F; 3. 后台任务</span><br><span class="line">        [self.backgroundTask cancel];</span><br><span class="line">        self.backgroundTask &#x3D; nil;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 恢复任务</span><br><span class="line">- (IBAction)startResumable:(id)sender &#123;</span><br><span class="line">    if(!self.resumableTask) &#123;</span><br><span class="line">        if(!inProcessSession) &#123;</span><br><span class="line">            &#x2F;&#x2F; 创建默认会话</span><br><span class="line">            NSURLSessionConfiguration *sessionConfig &#x3D; [NSURLSessionConfiguration defaultSessionConfiguration];</span><br><span class="line">            inProcessSession &#x3D; [NSURLSession sessionWithConfiguration:sessionConfig delegate:self delegateQueue:nil];</span><br><span class="line">            inProcessSession.sessionDescription &#x3D; @&quot;in-process NSURLSession&quot;;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        if(partialDownload) &#123;</span><br><span class="line">            &#x2F;&#x2F; 1. 如果存在缓存数据，继续下载此任务</span><br><span class="line">            self.resumableTask &#x3D; [inProcessSession downloadTaskWithResumeData:partialDownload];</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            &#x2F;&#x2F; 2. 如果不存在缓存，新建可恢复任务</span><br><span class="line">            &#x2F;&#x2F; Image CreativeCommons courtesy of flickr.com&#x2F;charliematters</span><br><span class="line">            NSString *url &#x3D; @&quot;http:&#x2F;&#x2F;farm3.staticflickr.com&#x2F;2846&#x2F;9823925914_78cd653ac9_b_d.jpg&quot;;</span><br><span class="line">            NSURLRequest *request &#x3D; [NSURLRequest requestWithURL:[NSURL URLWithString:url]];</span><br><span class="line">            &#x2F;&#x2F; 创建可恢复任务</span><br><span class="line">            self.resumableTask &#x3D; [inProcessSession downloadTaskWithRequest:request];</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        [self setDownloadButtonsAsEnabled:NO];</span><br><span class="line">        self.imageView.hidden &#x3D; YES;</span><br><span class="line">        </span><br><span class="line">        &#x2F;&#x2F; 开启下载任务</span><br><span class="line">        [self.resumableTask resume];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 开始后台任务</span><br><span class="line">- (IBAction)startBackground:(id)sender &#123;</span><br><span class="line">    &#x2F;&#x2F; Image CreativeCommons courtesy of flickr.com&#x2F;charliematters</span><br><span class="line">    NSString *url &#x3D; @&quot;http:&#x2F;&#x2F;farm3.staticflickr.com&#x2F;2831&#x2F;9823890176_82b4165653_b_d.jpg&quot;;</span><br><span class="line">    NSURLRequest *request &#x3D; [NSURLRequest requestWithURL:[NSURL URLWithString:url]];</span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F; self.backgroundSession 是单例对象</span><br><span class="line">    self.backgroundTask &#x3D; [self.backgroundSession downloadTaskWithRequest:request];</span><br><span class="line">    </span><br><span class="line">    [self setDownloadButtonsAsEnabled:NO];</span><br><span class="line">    self.imageView.hidden &#x3D; YES;</span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F; 开启下载任务</span><br><span class="line">    [self.backgroundTask resume];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">#pragma mark - Private</span><br><span class="line">- (void)setDownloadButtonsAsEnabled:(BOOL)enabled</span><br><span class="line">&#123;</span><br><span class="line">    &#x2F;&#x2F; 更新按钮 enable 状态</span><br><span class="line">    for(UIBarButtonItem *btn in self.startButtons) &#123;</span><br><span class="line">        btn.enabled &#x3D; enabled;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">#pragma mark - NSURLSessionDownloadDelegate</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 追踪下载任务进度，更新进度条</span><br><span class="line">- (void)URLSession:(NSURLSession *)session downloadTask:(NSURLSessionDownloadTask *)downloadTask didWriteData:(int64_t)bytesWritten totalBytesWritten:(int64_t)totalBytesWritten totalBytesExpectedToWrite:(int64_t)totalBytesExpectedToWrite</span><br><span class="line">&#123;</span><br><span class="line">    double currentProgress &#x3D; totalBytesWritten &#x2F; (double)totalBytesExpectedToWrite;</span><br><span class="line">    dispatch_async(dispatch_get_main_queue(), ^&#123;</span><br><span class="line">        self.progressIndicator.hidden &#x3D; NO;</span><br><span class="line">        self.progressIndicator.progress &#x3D; currentProgress;</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 恢复下载后调用</span><br><span class="line">- (void)URLSession:(NSURLSession *)session downloadTask:(NSURLSessionDownloadTask *)downloadTask didResumeAtOffset:(int64_t)fileOffset expectedTotalBytes:(int64_t)expectedTotalBytes</span><br><span class="line">&#123;</span><br><span class="line">    &#x2F;&#x2F; Leave this for now</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 下载任务成功后调用</span><br><span class="line">- (void)URLSession:(NSURLSession *)session downloadTask:(NSURLSessionDownloadTask *)downloadTask didFinishDownloadingToURL:(NSURL *)location</span><br><span class="line">&#123;</span><br><span class="line">    &#x2F;&#x2F; We&#39;ve successfully finished the download. Let&#39;s save the file</span><br><span class="line">    &#x2F;&#x2F; 保存到文件</span><br><span class="line">    NSFileManager *fileManager &#x3D; [NSFileManager defaultManager];</span><br><span class="line">    </span><br><span class="line">    NSArray *URLs &#x3D; [fileManager URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask];</span><br><span class="line">    NSURL *documentsDirectory &#x3D; URLs[0];</span><br><span class="line">    </span><br><span class="line">    NSURL *destinationPath &#x3D; [documentsDirectory URLByAppendingPathComponent:[location lastPathComponent]];</span><br><span class="line">    NSError *error;</span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F; 先删除文件中已经存在的任何文件</span><br><span class="line">    [fileManager removeItemAtURL:destinationPath error:NULL];</span><br><span class="line">    BOOL success &#x3D; [fileManager copyItemAtURL:location toURL:destinationPath error:&amp;error];</span><br><span class="line">    </span><br><span class="line">    if (success) &#123;</span><br><span class="line">        &#x2F;&#x2F; 保存到文件后，更新主线程 UI</span><br><span class="line">        dispatch_async(dispatch_get_main_queue(), ^&#123;</span><br><span class="line">            UIImage *image &#x3D; [UIImage imageWithContentsOfFile:[destinationPath path]];</span><br><span class="line">            self.imageView.image &#x3D; image;</span><br><span class="line">            self.imageView.contentMode &#x3D; UIViewContentModeScaleAspectFill;</span><br><span class="line">            self.imageView.hidden &#x3D; NO;</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;else &#123;</span><br><span class="line">        NSLog(@&quot;Couldn&#39;t copy the downloaded file&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F; ❇️ 会话置空，解除循环引用</span><br><span class="line">    if(downloadTask &#x3D;&#x3D; cancellableTask) &#123;</span><br><span class="line">        cancellableTask &#x3D; nil;</span><br><span class="line">    &#125; else if (downloadTask &#x3D;&#x3D; self.resumableTask) &#123;</span><br><span class="line">        self.resumableTask &#x3D; nil;</span><br><span class="line">        partialDownload &#x3D; nil;</span><br><span class="line">    &#125; else if (session &#x3D;&#x3D; self.backgroundSession) &#123;</span><br><span class="line">        &#x2F;&#x2F; 后台会话</span><br><span class="line">        self.backgroundTask &#x3D; nil;</span><br><span class="line">        &#x2F;&#x2F; Get hold of the app delegate</span><br><span class="line">        SCAppDelegate *appDelegate &#x3D; (SCAppDelegate *)[[UIApplication sharedApplication] delegate];</span><br><span class="line">        if(appDelegate.backgroundURLSessionCompletionHandler) &#123;</span><br><span class="line">            &#x2F;&#x2F; Need to copy the completion handler</span><br><span class="line">            void (^handler)() &#x3D; appDelegate.backgroundURLSessionCompletionHandler;</span><br><span class="line">            appDelegate.backgroundURLSessionCompletionHandler &#x3D; nil;</span><br><span class="line">            handler();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">#pragma mark - NSURLSessionTaskDelegate</span><br><span class="line">&#x2F;&#x2F; 每一个任务结束的时候执行-NSURLSessionDelegate,不管任务是不是正常结束:</span><br><span class="line">- (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task didCompleteWithError:(NSError *)error &#123;</span><br><span class="line">    &#x2F;&#x2F; 主线程更新 UI</span><br><span class="line">    dispatch_async(dispatch_get_main_queue(), ^&#123;</span><br><span class="line">        self.progressIndicator.hidden &#x3D; YES;</span><br><span class="line">        [self setDownloadButtonsAsEnabled:YES];</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+
+<p>开启后台下载任务时，即使关闭了应用程序，这个下载任务依然在后台运行。</p>
+<p>当这个下载任务完成后，iOS将会重新启动app来让任务知道，对这个我们不必放在心上。为了达到这个目的，我们可以在app的代理中调用下面的代码:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">- (void)application:(UIApplication *)application handleEventsForBackgroundURLSession:(NSString *)identifier completionHandler:(void (^)())completionHandler</span><br><span class="line">&#123;</span><br><span class="line">    self.backgroundURLSessionCompletionHandler &#x3D; completionHandler;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="效果"><a href="#效果" class="headerlink" title="效果"></a>效果</h3><p><img src="http://upload-images.jianshu.io/upload_images/2648731-26ce50a3e3637801.gif?imageMogr2/auto-orient/strip"></p>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>独木舟的木
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://andy0570.com/2017/09/01/%E5%A4%A9%E5%A4%A9%E5%93%81%E5%B0%9DiOS7%E7%94%9C%E7%82%B9%20Day1%EF%BC%9ANSURLSession/" title="天天品尝iOS7甜点 Day1：NSURLSession">https://andy0570.com/2017/09/01/天天品尝iOS7甜点 Day1：NSURLSession/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <span class="exturl" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpo"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</span> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/iOS/" rel="tag"># iOS</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2017/09/01/%E5%A4%A9%E5%A4%A9%E5%93%81%E5%B0%9DiOS7%E7%94%9C%E7%82%B9%20Day0%EF%BC%9AUIKit%20Dynamics/" rel="prev" title="天天品尝iOS7甜点 Day0：UIKit Dynamics">
+      <i class="fa fa-chevron-left"></i> 天天品尝iOS7甜点 Day0：UIKit Dynamics
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2017/09/03/%E5%A4%A9%E5%A4%A9%E5%93%81%E5%B0%9DiOS7%E7%94%9C%E7%82%B9%20Day2%EF%BC%9AAsset%20Catalog/" rel="next" title="天天品尝iOS7甜点 Day2：Asset Catalog">
+      天天品尝iOS7甜点 Day2：Asset Catalog <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+        </div>
+        
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">独木舟的木</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">2.1m</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">31:21</span>
+</div>
+  <div class="powered-by">由 <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZw==">NexT.Gemini</span> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

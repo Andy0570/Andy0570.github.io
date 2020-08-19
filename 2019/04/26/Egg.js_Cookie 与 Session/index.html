@@ -1,23 +1,561 @@
-{% extends '_layout.swig' %}
-{% import '_macro/post.swig' as post_template %}
-{% import '_macro/sidebar.swig' as sidebar_template %}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.0.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+  <meta name="google-site-verification" content="wioXOS3Gv2wXUpJ3sLtfZ4ft6YJYKNLLWSw6QoZTFYM">
+  <meta name="msvalidate.01" content="C96491A81239C517A50597C54EE53CD1">
+  <meta name="baidu-site-verification" content="h8asiToN1b">
 
-{% block title %}{{ page.title }} | {{ title }}{% endblock %}
+<link rel="stylesheet" href="/css/main.css">
 
-{% block page_class %}page-post-detail{% endblock %}
 
-{% block content %}
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  
+  <link rel="stylesheet" href="/lib/animate-css/animate.min.css">
 
-  <div id="posts" class="posts-expand">
-    {{ post_template.render(page) }}
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"andy0570.com","root":"/","scheme":"Gemini","version":"8.0.0-rc.5","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":"mac","bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false};
+  </script>
+
+  <meta name="description" content="参考：Egg.js 文档：Cookie 与 Session  HTTP 请求都是无状态的，但是我们的 Web 应用通常都需要知道发起请求的人是谁。为了解决这个问题，HTTP 协议设计了一个特殊的请求头：Cookie。服务端可以通过响应头（set-cookie）将少量数据响应给客户端，浏览器会遵循协议将数据保存，并在下次请求同一个服务的时候带上（浏览器也会遵循协议，只在访问符合 Cookie 指定规">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Egg.js_Cookie 与 Session">
+<meta property="og:url" content="https://andy0570.com/2019/04/26/Egg.js_Cookie%20%E4%B8%8E%20Session/index.html">
+<meta property="og:site_name" content="独木舟的木">
+<meta property="og:description" content="参考：Egg.js 文档：Cookie 与 Session  HTTP 请求都是无状态的，但是我们的 Web 应用通常都需要知道发起请求的人是谁。为了解决这个问题，HTTP 协议设计了一个特殊的请求头：Cookie。服务端可以通过响应头（set-cookie）将少量数据响应给客户端，浏览器会遵循协议将数据保存，并在下次请求同一个服务的时候带上（浏览器也会遵循协议，只在访问符合 Cookie 指定规">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2019-04-26T09:07:11.000Z">
+<meta property="article:modified_time" content="2019-05-01T15:54:24.000Z">
+<meta property="article:author" content="独木舟的木">
+<meta property="article:tag" content="Node.js">
+<meta property="article:tag" content="Egg.js">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://andy0570.com/2019/04/26/Egg.js_Cookie%20%E4%B8%8E%20Session/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Egg.js_Cookie 与 Session | 独木舟的木</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="独木舟的木" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <main class="main">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+        <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
   </div>
 
-{% endblock %}
+  <div class="site-meta">
 
-{% block sidebar %}
-  {{ sidebar_template.render(true) }}
-{% endblock %}
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">独木舟的木</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">iOS Developer</p>
+  </div>
 
-{% block script_extra %}
-  {% include '_scripts/pages/post-details.swig' %}
-{% endblock %}
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">14</span></a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">36</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">310</span></a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <section class="post-toc-wrap sidebar-panel">
+          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Cookies"><span class="nav-number">1.</span> <span class="nav-text">Cookies</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Cookies-%E7%9A%84%E4%BD%9C%E7%94%A8"><span class="nav-number">1.1.</span> <span class="nav-text">Cookies 的作用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Egg-js-%E4%B8%AD-Cookie-%E7%9A%84%E8%AE%BE%E7%BD%AE%E5%92%8C%E8%8E%B7%E5%8F%96"><span class="nav-number">1.2.</span> <span class="nav-text">Egg.js 中 Cookie 的设置和获取</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A4%BA%E4%BE%8B%E4%BB%A3%E7%A0%81"><span class="nav-number">1.2.1.</span> <span class="nav-text">示例代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B6%E4%BB%96%E9%97%AE%E9%A2%98"><span class="nav-number">1.2.2.</span> <span class="nav-text">其他问题</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Session"><span class="nav-number">2.</span> <span class="nav-text">Session</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Session-%E7%9A%84%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B"><span class="nav-number">2.1.</span> <span class="nav-text">Session 的工作流程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A4%BA%E4%BE%8B%E4%BB%A3%E7%A0%81-1"><span class="nav-number">2.1.1.</span> <span class="nav-text">示例代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AE-Session-%E7%9A%84%E6%9C%89%E6%95%88%E6%9C%9F"><span class="nav-number">2.1.2.</span> <span class="nav-text">设置 Session 的有效期</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%96%B9%E6%B3%95%E4%B8%80%EF%BC%9A"><span class="nav-number">2.1.2.1.</span> <span class="nav-text">方法一：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%96%B9%E6%B3%95%E4%BA%8C%EF%BC%88%E5%85%A8%E5%B1%80%E9%85%8D%E7%BD%AE%EF%BC%89"><span class="nav-number">2.1.2.2.</span> <span class="nav-text">方法二（全局配置）</span></a></li></ol></li></ol></li></ol></li></ol></div>
+      </section>
+      <!--/noindex-->
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="独木舟的木"
+      src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+  <p class="site-author-name" itemprop="name">独木舟的木</p>
+  <div class="site-description" itemprop="description">生若直木，不语斧凿。</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">310</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">36</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL0FuZHkwNTcw" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Andy0570"><i class="fab fa-github fa-fw"></i>GitHub</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9zdGFja292ZXJmbG93LmNvbS91c2Vycy83MjY1NDAwL2FuZHkwNTcw" title="StackOverflow → https:&#x2F;&#x2F;stackoverflow.com&#x2F;users&#x2F;7265400&#x2F;andy0570"><i class="fab fa-stack-overflow fa-fw"></i>StackOverflow</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuamlhbnNodS5jb20vdS84NGM1ZmFkYzdjMTg=" title="简书 → https:&#x2F;&#x2F;www.jianshu.com&#x2F;u&#x2F;84c5fadc7c18"><i class="heartbeat fa-fw"></i>简书</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="bWFpbHRvOmFuZHl3aG1AMTYzLmNvbQ==" title="E-Mail → mailto:andywhm@163.com"><i class="fa fa-envelope fa-fw"></i>E-Mail</span>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <span class="exturl cc-opacity" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpo"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></span>
+  </div>
+
+
+
+      </section>
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </header>
+
+      
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div id="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+      <div class="main-inner">
+        
+
+        <div class="content post posts-expand">
+          
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://andy0570.com/2019/04/26/Egg.js_Cookie%20%E4%B8%8E%20Session/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+      <meta itemprop="name" content="独木舟的木">
+      <meta itemprop="description" content="生若直木，不语斧凿。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="独木舟的木">
+    </span>
+
+    
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Egg.js_Cookie 与 Session
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-04-26 17:07:11" itemprop="dateCreated datePublished" datetime="2019-04-26T17:07:11+08:00">2019-04-26</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-05-01 23:54:24" itemprop="dateModified" datetime="2019-05-01T23:54:24+08:00">2019-05-01</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Node-js/" itemprop="url" rel="index"><span itemprop="name">Node.js</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>3.8k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>3 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>参考：<span class="exturl" data-url="aHR0cHM6Ly9lZ2dqcy5vcmcvemgtY24vY29yZS9jb29raWUtYW5kLXNlc3Npb24uaHRtbA==">Egg.js 文档：Cookie 与 Session<i class="fa fa-external-link-alt"></i></span></p>
+<blockquote>
+<p>HTTP 请求都是无状态的，但是我们的 Web 应用通常都需要知道发起请求的人是谁。为了解决这个问题，HTTP 协议设计了一个特殊的请求头：Cookie。服务端可以通过响应头（set-cookie）将少量数据响应给客户端，浏览器会遵循协议将数据保存，并在下次请求同一个服务的时候带上（浏览器也会遵循协议，只在访问符合 Cookie 指定规则的网站时带上对应的 Cookie 来保证安全性）。</p>
+</blockquote>
+<h1 id="Cookies"><a href="#Cookies" class="headerlink" title="Cookies"></a>Cookies</h1><h2 id="Cookies-的作用"><a href="#Cookies-的作用" class="headerlink" title="Cookies 的作用"></a>Cookies 的作用</h2><ol>
+<li>同一个浏览器访问同一个域的时候，不同页面之间的数据共享。</li>
+<li>数据持久化。（关闭浏览器后重新打开浏览器页面，数据还存在）。</li>
+</ol>
+<a id="more"></a>
+
+<h2 id="Egg-js-中-Cookie-的设置和获取"><a href="#Egg-js-中-Cookie-的设置和获取" class="headerlink" title="Egg.js 中 Cookie 的设置和获取"></a>Egg.js 中 Cookie 的设置和获取</h2><p>Cookie 设置语法：<code>ctx.cookies.set(key, value, options)</code></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">this</span>.ctx.cookies.set(<span class="string">&#x27;name&#x27;</span>,<span class="string">&#x27;Andy&#x27;</span>);</span><br></pre></td></tr></table></figure>
+
+<p>Cookie 获取语法：<code>ctx.cookies.get(key, options)</code></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">this</span>.ctx.cookies.get(<span class="string">&#x27;name&#x27;</span>);</span><br></pre></td></tr></table></figure>
+
+<h3 id="示例代码"><a href="#示例代码" class="headerlink" title="示例代码"></a>示例代码</h3><p>在响应某一个 HTML 页面时，设置 Cookies：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&#x27;use strict&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> Controller = <span class="built_in">require</span>(<span class="string">&#x27;egg&#x27;</span>).Controller;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">HomeController</span> <span class="keyword">extends</span> <span class="title">Controller</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">async</span> index() &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">     *  ⭐️⭐️⭐️</span></span><br><span class="line"><span class="comment">     *  设置 cookies</span></span><br><span class="line"><span class="comment">     *  ctx.cookies.set(key, value, options)</span></span><br><span class="line"><span class="comment">     *  参数：</span></span><br><span class="line"><span class="comment">     *  key : cookies 的名称</span></span><br><span class="line"><span class="comment">     *  value ： cookies 的值</span></span><br><span class="line"><span class="comment">     *  optons ： 配置</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="built_in">this</span>.ctx.cookies.set(<span class="string">&#x27;username&#x27;</span>, <span class="string">&#x27;Andy&#x27;</span>, &#123;</span><br><span class="line">      maxAge: <span class="number">1000</span> * <span class="number">3600</span> * <span class="number">24</span>, <span class="comment">// cookies 有效期：一天</span></span><br><span class="line">      httpOnly: <span class="literal">true</span>,</span><br><span class="line">      signed: <span class="literal">true</span>, <span class="comment">// 对 Cookies 进行签名，防止用户修改</span></span><br><span class="line">      encrypt: <span class="literal">true</span>, <span class="comment">// 对 Cookies 进行加密，同时获取时ye需要解密</span></span><br><span class="line">    &#125;);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 显示表单页面，加载并渲染 HTML 模版文件</span></span><br><span class="line">    <span class="comment">// this.ctx.csrf 用户访问页面时生成的密钥</span></span><br><span class="line">    <span class="keyword">await</span> <span class="built_in">this</span>.ctx.render(<span class="string">&#x27;home&#x27;</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = HomeController;</span><br></pre></td></tr></table></figure>
+
+<p>然后打开其他页面时，可以获取这个页面中设置的 Cookies：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&#x27;use strict&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> Controller = <span class="built_in">require</span>(<span class="string">&#x27;egg&#x27;</span>).Controller;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">NewsController</span> <span class="keyword">extends</span> <span class="title">Controller</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 获取数据显示到新闻页面</span></span><br><span class="line">  <span class="keyword">async</span> index() &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// ⭐️⭐️⭐️ 获取 cookies 值</span></span><br><span class="line">    <span class="keyword">const</span> userinfo = <span class="built_in">this</span>.ctx.cookies.get(<span class="string">&#x27;username&#x27;</span>, &#123;</span><br><span class="line">      encrypt: <span class="literal">true</span>, <span class="comment">// 对被加密的 Cookies 进行解密</span></span><br><span class="line">    &#125;);</span><br><span class="line">    <span class="built_in">console</span>.log(userinfo);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 调用 Service 层方法</span></span><br><span class="line">    <span class="keyword">const</span> listInfo = <span class="keyword">await</span> <span class="built_in">this</span>.service.news.getNewsList();</span><br><span class="line">    <span class="comment">// 渲染模版引擎</span></span><br><span class="line">    <span class="keyword">await</span> <span class="built_in">this</span>.ctx.render(<span class="string">&#x27;news&#x27;</span>, &#123; <span class="attr">list</span>: listInfo &#125;);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = NewsController;</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="其他问题"><a href="#其他问题" class="headerlink" title="其他问题"></a>其他问题</h3><ol>
+<li><strong>如何持久化存储 Cookies？</strong><br>默认情况下，当浏览器关闭后，Cookies 自动销毁。可以设置 Cookies 的 optons 参数（<code>maxAge</code> 或者 <code>expires</code>，两者选其一）设置 Cookies 有效期。</li>
+</ol>
+<ol start="2">
+<li><strong>Cookies 如何设置中文？</strong><br>默认情况下，Egg.js 中的 Cookies 无法设置中文。但是，如果对 Cookies 进行加密操作，则可以设置中文 Cookies 了。还有一种方式，也可以通过将 Buffer 转换为 base64 进行设置中文 Cookies。</li>
+</ol>
+<ol start="3">
+<li><p><strong>Cookies 如何设置对象？</strong><br>对对象进行序列化和反序列化操作即可设置对象：</p>
+<ul>
+<li><code>JSON.stringify()</code></li>
+<li><code>JSON.parse()</code></li>
+</ul>
+</li>
+<li><p><strong>如何清除 Cookies？</strong><br>将 Cookies 设置为空：<code>this.ctx.cookies.set(&#39;name&#39;,null)</code>,或者设置 <code>maxAge</code> 过期时间为 0。</p>
+</li>
+</ol>
+<h1 id="Session"><a href="#Session" class="headerlink" title="Session"></a>Session</h1><p>Session 是另一种记录客户端状态的机制，不同的是 Cookies 保存在客户端浏览器中，而 Session 保存在服务器上。</p>
+<h2 id="Session-的工作流程"><a href="#Session-的工作流程" class="headerlink" title="Session 的工作流程"></a>Session 的工作流程</h2><p>当浏览器访问服务器并发送第一次请求时，服务器端会创建一个 session 对象，生成一个类似于 key，value 的键值对，然后将 key(cookie) 返回到浏览器（客户）端，浏览器下次再访问时，携带 key(cookie)，找到对应的 session（value）。</p>
+<h3 id="示例代码-1"><a href="#示例代码-1" class="headerlink" title="示例代码"></a>示例代码</h3><p>设置 Session ：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&#x27;use strict&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> Controller = <span class="built_in">require</span>(<span class="string">&#x27;egg&#x27;</span>).Controller;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">HomeController</span> <span class="keyword">extends</span> <span class="title">Controller</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">async</span> index() &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// ⭐️⭐️⭐️ 设置 session</span></span><br><span class="line">    <span class="built_in">this</span>.ctx.session.username = <span class="string">&#x27;Andy&#x27;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 显示表单页面，加载并渲染 HTML 模版文件</span></span><br><span class="line">    <span class="comment">// this.ctx.csrf 用户访问页面时生成的密钥</span></span><br><span class="line">    <span class="keyword">await</span> <span class="built_in">this</span>.ctx.render(<span class="string">&#x27;home&#x27;</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = HomeController;</span><br></pre></td></tr></table></figure>
+
+<p>获取 Session：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&#x27;use strict&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> Controller = <span class="built_in">require</span>(<span class="string">&#x27;egg&#x27;</span>).Controller;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">NewsController</span> <span class="keyword">extends</span> <span class="title">Controller</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 获取数据显示到新闻页面</span></span><br><span class="line">  <span class="keyword">async</span> index() &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// ⭐️⭐️⭐️ 获取 session 值</span></span><br><span class="line">    <span class="keyword">const</span> username = <span class="built_in">this</span>.ctx.session.username;</span><br><span class="line">    <span class="built_in">console</span>.log(username);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 调用 Service 层方法</span></span><br><span class="line">    <span class="keyword">const</span> listInfo = <span class="keyword">await</span> <span class="built_in">this</span>.service.news.getNewsList();</span><br><span class="line">    <span class="comment">// 渲染模版引擎</span></span><br><span class="line">    <span class="keyword">await</span> <span class="built_in">this</span>.ctx.render(<span class="string">&#x27;news&#x27;</span>, &#123; <span class="attr">list</span>: listInfo &#125;);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = NewsController;</span><br></pre></td></tr></table></figure>
+
+<h3 id="设置-Session-的有效期"><a href="#设置-Session-的有效期" class="headerlink" title="设置 Session 的有效期"></a>设置 Session 的有效期</h3><h4 id="方法一："><a href="#方法一：" class="headerlink" title="方法一："></a>方法一：</h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&#x27;use strict&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> Controller = <span class="built_in">require</span>(<span class="string">&#x27;egg&#x27;</span>).Controller;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">HomeController</span> <span class="keyword">extends</span> <span class="title">Controller</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">async</span> index() &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 设置 session</span></span><br><span class="line">    <span class="built_in">this</span>.ctx.session.username = <span class="string">&#x27;Andy&#x27;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// ⭐️⭐️⭐️ 设置 Session 的过期时间（基于 Cookies），默认过期时间 24H.</span></span><br><span class="line">    <span class="built_in">this</span>.ctx.session.maxAge = <span class="number">2000</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 显示表单页面，加载并渲染 HTML 模版文件</span></span><br><span class="line">    <span class="comment">// this.ctx.csrf 用户访问页面时生成的密钥</span></span><br><span class="line">    <span class="keyword">await</span> <span class="built_in">this</span>.ctx.render(<span class="string">&#x27;home&#x27;</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = HomeController;</span><br></pre></td></tr></table></figure>
+
+<h4 id="方法二（全局配置）"><a href="#方法二（全局配置）" class="headerlink" title="方法二（全局配置）"></a>方法二（全局配置）</h4><p>推荐在 <strong>config.default.js</strong> 文件中设置 Session。</p>
+<p>因为 Session 是基于 Cookies 的，所以 Session 的配置和 Cookies 基本是一样的，可以使用 Cookies 里面的配置：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 配置 Session</span></span><br><span class="line">config.session = &#123;</span><br><span class="line">  key: <span class="string">&#x27;SESSION_ID&#x27;</span>, <span class="comment">// 设置 Session cookies 里面的 key</span></span><br><span class="line">  maxAge: <span class="number">24</span> * <span class="number">3600</span> * <span class="number">1000</span>, <span class="comment">// 1 天</span></span><br><span class="line">  httpOnly: <span class="literal">true</span>,</span><br><span class="line">  encrypt: <span class="literal">true</span>,</span><br><span class="line">  renew: <span class="literal">true</span>, <span class="comment">// 每次刷新页面，Session 都会被延期。</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>独木舟的木
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://andy0570.com/2019/04/26/Egg.js_Cookie%20%E4%B8%8E%20Session/" title="Egg.js_Cookie 与 Session">https://andy0570.com/2019/04/26/Egg.js_Cookie 与 Session/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <span class="exturl" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpo"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</span> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Node-js/" rel="tag"># Node.js</a>
+              <a href="/tags/Egg-js/" rel="tag"># Egg.js</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/04/25/Egg.js_%E6%90%AD%E5%BB%BA%E7%88%AC%E8%99%AB%E7%B3%BB%E7%BB%9F%E6%98%BE%E7%A4%BA%E6%96%B0%E9%97%BB%E9%A1%B5%E9%9D%A2/" rel="prev" title="Egg.js_搭建爬虫系统显示新闻页面">
+      <i class="fa fa-chevron-left"></i> Egg.js_搭建爬虫系统显示新闻页面
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/05/09/%E4%BD%BF%E7%94%A8-OpenSSL-%E5%91%BD%E4%BB%A4%E8%A1%8C%E7%AE%A1%E7%90%86%E8%AF%81%E4%B9%A6/" rel="next" title="使用 OpenSSL 命令行管理证书">
+      使用 OpenSSL 命令行管理证书 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+        </div>
+        
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">独木舟的木</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">2.1m</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">31:21</span>
+</div>
+  <div class="powered-by">由 <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZw==">NexT.Gemini</span> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

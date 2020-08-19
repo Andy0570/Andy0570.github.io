@@ -1,23 +1,621 @@
-{% extends '_layout.swig' %}
-{% import '_macro/post.swig' as post_template %}
-{% import '_macro/sidebar.swig' as sidebar_template %}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.0.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+  <meta name="google-site-verification" content="wioXOS3Gv2wXUpJ3sLtfZ4ft6YJYKNLLWSw6QoZTFYM">
+  <meta name="msvalidate.01" content="C96491A81239C517A50597C54EE53CD1">
+  <meta name="baidu-site-verification" content="h8asiToN1b">
 
-{% block title %}{{ page.title }} | {{ title }}{% endblock %}
+<link rel="stylesheet" href="/css/main.css">
 
-{% block page_class %}page-post-detail{% endblock %}
 
-{% block content %}
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  
+  <link rel="stylesheet" href="/lib/animate-css/animate.min.css">
 
-  <div id="posts" class="posts-expand">
-    {{ post_template.render(page) }}
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"andy0570.com","root":"/","scheme":"Gemini","version":"8.0.0-rc.5","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":"mac","bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false};
+  </script>
+
+  <meta name="description" content="以下内容来源于官方源码、 README 文档、测试 Demo或个人使用总结 ！  YYModel查看在线文档 高性能 iOS&#x2F;OSX 模型转换框架。(该项目是 YYKit 组件之一) 性能处理 GithubUser 数据 10000 次耗时统计 (iPhone 6):  更多测试代码和用例见 Benchmark&#x2F;ModelBenchmark.xcodeproj。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="YYModel——模型转换框架">
+<meta property="og:url" content="https://andy0570.com/2017/06/05/YYModel%E2%80%94%E2%80%94%E6%A8%A1%E5%9E%8B%E8%BD%AC%E6%8D%A2%E6%A1%86%E6%9E%B6/index.html">
+<meta property="og:site_name" content="独木舟的木">
+<meta property="og:description" content="以下内容来源于官方源码、 README 文档、测试 Demo或个人使用总结 ！  YYModel查看在线文档 高性能 iOS&#x2F;OSX 模型转换框架。(该项目是 YYKit 组件之一) 性能处理 GithubUser 数据 10000 次耗时统计 (iPhone 6):  更多测试代码和用例见 Benchmark&#x2F;ModelBenchmark.xcodeproj。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/073256.jpg">
+<meta property="article:published_time" content="2017-06-05T07:21:00.000Z">
+<meta property="article:modified_time" content="2019-05-01T14:43:41.000Z">
+<meta property="article:author" content="独木舟的木">
+<meta property="article:tag" content="iOS">
+<meta property="article:tag" content="GitHub">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/073256.jpg">
+
+<link rel="canonical" href="https://andy0570.com/2017/06/05/YYModel%E2%80%94%E2%80%94%E6%A8%A1%E5%9E%8B%E8%BD%AC%E6%8D%A2%E6%A1%86%E6%9E%B6/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>YYModel——模型转换框架 | 独木舟的木</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="独木舟的木" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <main class="main">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+        <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
   </div>
 
-{% endblock %}
+  <div class="site-meta">
 
-{% block sidebar %}
-  {{ sidebar_template.render(true) }}
-{% endblock %}
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">独木舟的木</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">iOS Developer</p>
+  </div>
 
-{% block script_extra %}
-  {% include '_scripts/pages/post-details.swig' %}
-{% endblock %}
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">14</span></a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">36</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">310</span></a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <section class="post-toc-wrap sidebar-panel">
+          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#YYModel"><span class="nav-number">1.</span> <span class="nav-text">YYModel</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%A7%E8%83%BD"><span class="nav-number">2.</span> <span class="nav-text">性能</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%89%B9%E6%80%A7"><span class="nav-number">3.</span> <span class="nav-text">特性</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95"><span class="nav-number">4.</span> <span class="nav-text">使用方法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#JSON-Array-%E2%86%92-Model-Array%E3%80%90%E5%B0%86%E5%AD%97%E5%85%B8%E6%95%B0%E7%BB%84%E8%BD%AC%E6%88%90%E6%A8%A1%E5%9E%8B%E6%95%B0%E7%BB%84%E3%80%91"><span class="nav-number">4.0.1.</span> <span class="nav-text">JSON Array → Model Array【将字典数组转成模型数组】</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#JSON-Dictioanry-%E2%86%92-Model-Dictionary%E3%80%90-JSON-%E5%AD%97%E5%85%B8%E8%BD%AC%E6%88%90-%E5%AD%97%E5%85%B8%E6%A8%A1%E5%9E%8B%E3%80%91"><span class="nav-number">4.0.2.</span> <span class="nav-text">JSON Dictioanry → Model Dictionary【 JSON 字典转成 字典模型】</span></a></li></ol></li></ol></li></ol></div>
+      </section>
+      <!--/noindex-->
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="独木舟的木"
+      src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+  <p class="site-author-name" itemprop="name">独木舟的木</p>
+  <div class="site-description" itemprop="description">生若直木，不语斧凿。</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">310</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">36</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL0FuZHkwNTcw" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Andy0570"><i class="fab fa-github fa-fw"></i>GitHub</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9zdGFja292ZXJmbG93LmNvbS91c2Vycy83MjY1NDAwL2FuZHkwNTcw" title="StackOverflow → https:&#x2F;&#x2F;stackoverflow.com&#x2F;users&#x2F;7265400&#x2F;andy0570"><i class="fab fa-stack-overflow fa-fw"></i>StackOverflow</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuamlhbnNodS5jb20vdS84NGM1ZmFkYzdjMTg=" title="简书 → https:&#x2F;&#x2F;www.jianshu.com&#x2F;u&#x2F;84c5fadc7c18"><i class="heartbeat fa-fw"></i>简书</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="bWFpbHRvOmFuZHl3aG1AMTYzLmNvbQ==" title="E-Mail → mailto:andywhm@163.com"><i class="fa fa-envelope fa-fw"></i>E-Mail</span>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <span class="exturl cc-opacity" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpo"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></span>
+  </div>
+
+
+
+      </section>
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </header>
+
+      
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div id="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+      <div class="main-inner">
+        
+
+        <div class="content post posts-expand">
+          
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://andy0570.com/2017/06/05/YYModel%E2%80%94%E2%80%94%E6%A8%A1%E5%9E%8B%E8%BD%AC%E6%8D%A2%E6%A1%86%E6%9E%B6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+      <meta itemprop="name" content="独木舟的木">
+      <meta itemprop="description" content="生若直木，不语斧凿。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="独木舟的木">
+    </span>
+
+    
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          YYModel——模型转换框架
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2017-06-05 15:21:00" itemprop="dateCreated datePublished" datetime="2017-06-05T15:21:00+08:00">2017-06-05</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-05-01 22:43:41" itemprop="dateModified" datetime="2019-05-01T22:43:41+08:00">2019-05-01</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS-%E5%BC%80%E6%BA%90%E6%A1%86%E6%9E%B6/" itemprop="url" rel="index"><span itemprop="name">iOS 开源框架</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>7.4k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>7 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <blockquote>
+<p>以下内容来源于官方源码、 README 文档、测试 Demo或个人使用总结 ！</p>
+</blockquote>
+<h1 id="YYModel"><a href="#YYModel" class="headerlink" title="YYModel"></a>YYModel</h1><p><a target="_blank" rel="noopener" href="http://cocoadocs.org/docsets/YYModel/1.0.4/"><strong>查看在线文档</strong></a></p>
+<p>高性能 iOS/OSX 模型转换框架。<br>(该项目是 <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2liaXJlbWUvWVlLaXQ=">YYKit<i class="fa fa-external-link-alt"></i></span> 组件之一)</p>
+<h1 id="性能"><a href="#性能" class="headerlink" title="性能"></a>性能</h1><p>处理 GithubUser 数据 10000 次耗时统计 (iPhone 6):</p>
+<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/073256.jpg"></p>
+<p>更多测试代码和用例见 <code>Benchmark/ModelBenchmark.xcodeproj</code>。</p>
+<a id="more"></a>
+
+<h1 id="特性"><a href="#特性" class="headerlink" title="特性"></a>特性</h1><ul>
+<li><strong>高性能</strong>: 模型转换性能接近手写解析代码。</li>
+<li><strong>自动类型转换</strong>: 对象类型可以自动转换，详情见下方表格。</li>
+<li><strong>类型安全</strong>: 转换过程中，所有的数据类型都会被检测一遍，以保证类型安全，避免崩溃问题。</li>
+<li><strong>无侵入性</strong>: 模型无需继承自其他基类。</li>
+<li><strong>轻量</strong>: 该框架只有 5 个文件 (包括.h文件)。</li>
+<li><strong>文档和单元测试</strong>: 文档覆盖率100%, 代码覆盖率99.6%。</li>
+</ul>
+<h1 id="使用方法"><a href="#使用方法" class="headerlink" title="使用方法"></a>使用方法</h1><p>###简单的 Model 与 JSON 相互转换</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; JSON:</span><br><span class="line">&#123;</span><br><span class="line">    &quot;uid&quot;:123456,</span><br><span class="line">    &quot;name&quot;:&quot;Harry&quot;,</span><br><span class="line">    &quot;created&quot;:&quot;1965-07-31T00:00:00+0000&quot;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; Model:</span><br><span class="line">@interface User : NSObject</span><br><span class="line">@property UInt64 uid;</span><br><span class="line">@property NSString *name;</span><br><span class="line">@property NSDate *created;</span><br><span class="line">@end</span><br><span class="line">@implementation User</span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; ❇️ 将 JSON (NSData,NSString,NSDictionary) 转换为 Model:</span><br><span class="line">User *user &#x3D; [User yy_modelWithJSON:json];</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; ❇️ 将 Model 转换为 JSON 对象:</span><br><span class="line">NSDictionary *json &#x3D; [user yy_modelToJSONObject];</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 1️⃣ JSON → Model</span><br><span class="line">+ (nullable instancetype)yy_modelWithJSON:(id)json;</span><br><span class="line">&#x2F;&#x2F;    NSDictionary → Model</span><br><span class="line">+ (nullable instancetype)yy_modelWithDictionary:(NSDictionary *)dictionary;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 2️⃣ 是否使用 JSON 对象设置接收者的属性。</span><br><span class="line">- (BOOL)yy_modelSetWithJSON:(id)json;</span><br><span class="line">&#x2F;&#x2F;  是否使用 NSDictionary 对象设置接收者的属性。</span><br><span class="line">- (BOOL)yy_modelSetWithDictionary:(NSDictionary *)dic;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 3️⃣  Model → JSON 对象:</span><br><span class="line">- (nullable id)yy_modelToJSONObject;</span><br><span class="line">&#x2F;&#x2F;     Model → JSONData:</span><br><span class="line">- (nullable NSData *)yy_modelToJSONData;</span><br><span class="line">&#x2F;&#x2F;     Model → JSONString:</span><br><span class="line">- (nullable NSString *)yy_modelToJSONString;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>⚠️</p>
+<p><del>实测 Bug：Model 中的  <code>@property</code>  属性不可以声明为 <code>readonly</code>。</del> （截止2017-06-05 ）</p>
+<p>更新 （2017-10-25）<br>经过与源码作者沟通后了解到：<br>在 .h 文件中<code>@property</code> 声明为 <code>readonly</code>后，需要在 .m 文件中的 extension 中重新将属性声明为 <code>readwrite</code>。<br>这也是《Effective Objective-C 2.0》书中第18条（尽量使用不可变对象）所推崇的做法。</p>
+</blockquote>
+<p>当 JSON/Dictionary 中的对象类型与 Model 属性不一致时，<strong>YYModel</strong> 将会进行如下自动转换。自动转换不支持的值将会被忽略，以避免各种潜在的崩溃问题。</p>
+<table>
+<thead>
+<tr>
+<th align="center">JSON/Dictionary</th>
+<th align="center">Model</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">NSString</td>
+<td align="center">NSNumber,NSURL,SEL,Class</td>
+</tr>
+<tr>
+<td align="center">NSNumber</td>
+<td align="center">NSString</td>
+</tr>
+<tr>
+<td align="center">NSString/NSNumber</td>
+<td align="center">基础类型 (BOOL,int,float,NSUInteger,UInt64,…)  <br> NaN 和 Inf 会被忽略</td>
+</tr>
+<tr>
+<td align="center">NSString</td>
+<td align="center">NSDate 以下列格式解析: <br> yyyy-MM-dd <br> yyyy-MM-dd HH:mm:ss<br>yyyy-MM-dd’T’HH:mm:ss<br>yyyy-MM-dd’T’HH:mm:ssZ<br>EEE MMM dd HH:mm:ss Z yyyy</td>
+</tr>
+<tr>
+<td align="center">NSDate</td>
+<td align="center">NSString 格式化为 ISO8601:<br>  “YYYY-MM-dd’T’HH:mm:ssZ”</td>
+</tr>
+<tr>
+<td align="center">NSValue</td>
+<td align="center">struct (CGRect,CGSize,…)</td>
+</tr>
+<tr>
+<td align="center">NSNull</td>
+<td align="center">nil,0</td>
+</tr>
+<tr>
+<td align="center">“no”,”false”,…</td>
+<td align="center">@(NO),0</td>
+</tr>
+<tr>
+<td align="center">“yes”,”true”,…</td>
+<td align="center">@(YES),1</td>
+</tr>
+</tbody></table>
+<p>###Model 属性名和 JSON 中的 Key 不相同</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; JSON:</span><br><span class="line">&#123;</span><br><span class="line">    &quot;n&quot;:&quot;Harry Pottery&quot;,</span><br><span class="line">    &quot;p&quot;: 256,</span><br><span class="line">    &quot;ext&quot; : &#123;</span><br><span class="line">        &quot;desc&quot; : &quot;A book written by J.K.Rowing.&quot;</span><br><span class="line">    &#125;,</span><br><span class="line">    &quot;ID&quot; : 100010</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; Model:</span><br><span class="line">@interface Book : NSObject</span><br><span class="line">@property NSString *name;</span><br><span class="line">@property NSInteger page;</span><br><span class="line">@property NSString *desc;</span><br><span class="line">@property NSString *bookID;</span><br><span class="line">@end</span><br><span class="line">@implementation Book</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; ❇️ 返回一个 Dict，将 Model 属性名对映射到 JSON 的 Key。</span><br><span class="line">+ (NSDictionary *)modelCustomPropertyMapper &#123;</span><br><span class="line">    return @&#123;@&quot;name&quot; : @&quot;n&quot;,</span><br><span class="line">             @&quot;page&quot; : @&quot;p&quot;,</span><br><span class="line">             @&quot;desc&quot; : @&quot;ext.desc&quot;,</span><br><span class="line">             @&quot;bookID&quot; : @[@&quot;id&quot;,@&quot;ID&quot;,@&quot;book_id&quot;]&#125;;</span><br><span class="line">&#125;</span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+
+<p>你可以把一个或一组 json key (key path) 映射到一个或多个属性。如果一个属性没有映射关系，那默认会使用相同属性名作为映射。</p>
+<ul>
+<li>在 json → model 的过程中：如果一个属性对应了多个 json key，那么转换过程会按顺序查找，并使用第一个不为空的值。</li>
+</ul>
+<ul>
+<li>在 model → json 的过程中：如果一个属性对应了多个 json key (key path)，那么转换过程仅会处理第一个 json key (key path)；如果多个属性对应了同一个 json key，则转换过过程会使用其中任意一个不为空的值。</li>
+</ul>
+<p>###Model 包含其他 Model</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; JSON</span><br><span class="line">&#123;</span><br><span class="line">    &quot;author&quot;:&#123;</span><br><span class="line">        &quot;name&quot;:&quot;J.K.Rowling&quot;,</span><br><span class="line">        &quot;birthday&quot;:&quot;1965-07-31T00:00:00+0000&quot;</span><br><span class="line">    &#125;,</span><br><span class="line">    &quot;name&quot;:&quot;Harry Potter&quot;,</span><br><span class="line">    &quot;pages&quot;:256</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; Model: 什么都不用做，转换会自动完成</span><br><span class="line">@interface Author : NSObject</span><br><span class="line">@property NSString *name;</span><br><span class="line">@property NSDate *birthday;</span><br><span class="line">@end</span><br><span class="line">@implementation Author</span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">@interface Book : NSObject</span><br><span class="line">@property NSString *name;</span><br><span class="line">@property NSUInteger pages;</span><br><span class="line">@property Author *author; &#x2F;&#x2F;Book 包含 Author 属性</span><br><span class="line">@end</span><br><span class="line">@implementation Book</span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+
+<p>​    </p>
+<p>###容器类属性</p>
+<blockquote>
+<p>含义：<br>模型类的属性是 Collection 类（NSArray、NSDictionary、NSSet等）,Collection 类中的项是其他模型</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">#import &lt;Foundation&#x2F;Foundation.h&gt;</span><br><span class="line">@class Shadow, Border, Attachment;</span><br><span class="line"></span><br><span class="line">@interface Attributes</span><br><span class="line">@property NSString *name;</span><br><span class="line">@property NSArray *shadows; &#x2F;&#x2F;Array&lt;Shadow&gt;</span><br><span class="line">@property NSSet *borders;   &#x2F;&#x2F;Set&lt;Border&gt;</span><br><span class="line">@property NSMutableDictionary *attachments; &#x2F;&#x2F;Dict&lt;NSString,Attachment&gt;</span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">@implementation Attributes</span><br><span class="line">&#x2F;&#x2F; ❇️ 返回容器类中的所需要存放的数据类型 (以 Class 或 Class Name 的形式)。</span><br><span class="line">+ (NSDictionary *)modelContainerPropertyGenericClass &#123;</span><br><span class="line">    return @&#123;@&quot;shadows&quot; : [Shadow class],</span><br><span class="line">             @&quot;borders&quot; : Border.class,</span><br><span class="line">             @&quot;attachments&quot; : @&quot;Attachment&quot; &#125;;</span><br><span class="line">&#125;</span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+
+
+
+
+<p>###黑名单与白名单</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">@interface User</span><br><span class="line">@property NSString *name;</span><br><span class="line">@property NSUInteger age;</span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">@implementation Attributes</span><br><span class="line">&#x2F;&#x2F; ❇️ 如果实现了该方法，则处理过程中会忽略该列表内的所有属性</span><br><span class="line">+ (NSArray *)modelPropertyBlacklist &#123;</span><br><span class="line">    return @[@&quot;test1&quot;, @&quot;test2&quot;];</span><br><span class="line">&#125;</span><br><span class="line">&#x2F;&#x2F; ❇️ 如果实现了该方法，则处理过程中不会处理该列表外的属性。</span><br><span class="line">+ (NSArray *)modelPropertyWhitelist &#123;</span><br><span class="line">    return @[@&quot;name&quot;];</span><br><span class="line">&#125;</span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+
+<p>###数据校验与自定义转换</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; JSON:</span><br><span class="line">&#123;</span><br><span class="line">    &quot;name&quot;:&quot;Harry&quot;,</span><br><span class="line">    &quot;timestamp&quot; : 1445534567</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; Model:</span><br><span class="line">@interface User</span><br><span class="line">@property NSString *name;</span><br><span class="line">@property NSDate *createdAt;</span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">@implementation User</span><br><span class="line">&#x2F;&#x2F; ❇️ 当 JSON 转为 Model 完成后，该方法会被调用。</span><br><span class="line">&#x2F;&#x2F; 你可以在这里对数据进行校验，如果校验不通过，可以返回 NO，则该 Model 会被忽略。</span><br><span class="line">&#x2F;&#x2F; 你也可以在这里做一些自动转换不能完成的工作。</span><br><span class="line">- (BOOL)modelCustomTransformFromDictionary:(NSDictionary *)dic &#123;</span><br><span class="line">    NSNumber *timestamp &#x3D; dic[@&quot;timestamp&quot;];</span><br><span class="line">    if (![timestamp isKindOfClass:[NSNumber class]]) return NO;</span><br><span class="line">    _createdAt &#x3D; [NSDate dateWithTimeIntervalSince1970:timestamp.floatValue];</span><br><span class="line">    return YES;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; ❇️ 当 Model 转为 JSON 完成后，该方法会被调用。</span><br><span class="line">&#x2F;&#x2F; 你可以在这里对数据进行校验，如果校验不通过，可以返回 NO，则该 Model 会被忽略。</span><br><span class="line">&#x2F;&#x2F; 你也可以在这里做一些自动转换不能完成的工作。</span><br><span class="line">- (BOOL)modelCustomTransformToDictionary:(NSMutableDictionary *)dic &#123;</span><br><span class="line">    if (!_createdAt) return NO;</span><br><span class="line">    dic[@&quot;timestamp&quot;] &#x3D; @(n.timeIntervalSince1970);</span><br><span class="line">    return YES;</span><br><span class="line">&#125;</span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+
+<p>###Coding/Copying/hash/equal/description</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">@interface YYShadow :NSObject &lt;NSCoding, NSCopying&gt;</span><br><span class="line">@property (nonatomic, copy) NSString *name;</span><br><span class="line">@property (nonatomic, assign) CGSize size;</span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">@implementation YYShadow</span><br><span class="line">&#x2F;&#x2F; 直接添加以下代码即可自动完成</span><br><span class="line">- (void)encodeWithCoder:(NSCoder *)aCoder &#123; [self yy_modelEncodeWithCoder:aCoder]; &#125;</span><br><span class="line">- (id)initWithCoder:(NSCoder *)aDecoder &#123; self &#x3D; [super init]; return [self yy_modelInitWithCoder:aDecoder]; &#125;</span><br><span class="line">- (id)copyWithZone:(NSZone *)zone &#123; return [self yy_modelCopy]; &#125;</span><br><span class="line">- (NSUInteger)hash &#123; return [self yy_modelHash]; &#125;</span><br><span class="line">- (BOOL)isEqual:(id)object &#123; return [self yy_modelIsEqual:object]; &#125;</span><br><span class="line">- (NSString *)description &#123; return [self yy_modelDescription]; &#125;</span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+
+<h3 id="JSON-Array-→-Model-Array【将字典数组转成模型数组】"><a href="#JSON-Array-→-Model-Array【将字典数组转成模型数组】" class="headerlink" title="JSON Array → Model Array【将字典数组转成模型数组】"></a>JSON Array → Model Array【将字典数组转成模型数组】</h3><p><span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL0NvZGVyTUpMZWUvTUpFeHRlbnNpb24=">MJExtension<i class="fa fa-external-link-alt"></i></span> 框架中有一个方法 <code>mj_objectArrayWithKeyValuesArray:</code> 可以将一个字典数组转换成模型数组，即 NSArray 中的项是模型指针，查看 <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2liaXJlbWUvWVlNb2RlbA==">YYModel<i class="fa fa-external-link-alt"></i></span> 源码，发现也有相同的方法：<code>+ (NSArray *)modelArrayWithClass:(Class)cls json:(id)json;</code></p>
+<p>示例：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 读取property list数据</span><br><span class="line">NSString *path &#x3D; [[NSBundle mainBundle] pathForResource:@&quot;navigationButton&quot;</span><br><span class="line">                                                 ofType:@&quot;plist&quot;];</span><br><span class="line">NSArray *rootArray &#x3D; [NSArray arrayWithContentsOfFile:path];</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; MJExtension:</span><br><span class="line">NSArray *squareModelArray &#x3D;</span><br><span class="line">    [Model mj_objectArrayWithKeyValuesArray:rootArray];</span><br><span class="line">&#x2F;&#x2F; YYModel:</span><br><span class="line">NSArray *squareModelArray &#x3D; [NSArray modelArrayWithClass:[Model class]</span><br><span class="line">                                                    json:rootArray];</span><br></pre></td></tr></table></figure>
+
+<h3 id="JSON-Dictioanry-→-Model-Dictionary【-JSON-字典转成-字典模型】"><a href="#JSON-Dictioanry-→-Model-Dictionary【-JSON-字典转成-字典模型】" class="headerlink" title="JSON Dictioanry → Model Dictionary【 JSON 字典转成 字典模型】"></a>JSON Dictioanry → Model Dictionary【 JSON 字典转成 字典模型】</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;**</span><br><span class="line"> 从 JSON 对象中创建并返回 NSDictionary 模型.</span><br><span class="line"> This method is thread-safe.</span><br><span class="line"> </span><br><span class="line"> @param cls  The value instance&#39;s class in dictionary.</span><br><span class="line"> @param json  A json dictionary of &#96;NSDictionary&#96;, &#96;NSString&#96; or &#96;NSData&#96;.</span><br><span class="line">              Example: &#123;&quot;user1&quot;:&#123;&quot;name&quot;,&quot;Mary&quot;&#125;, &quot;user2&quot;: &#123;name:&quot;Joe&quot;&#125;&#125;</span><br><span class="line"> </span><br><span class="line"> @return A dictionary, or nil if an error occurs.</span><br><span class="line"> *&#x2F;</span><br><span class="line">+ (nullable NSDictionary *)yy_modelDictionaryWithClass:(Class)cls json:(id)json;</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>独木舟的木
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://andy0570.com/2017/06/05/YYModel%E2%80%94%E2%80%94%E6%A8%A1%E5%9E%8B%E8%BD%AC%E6%8D%A2%E6%A1%86%E6%9E%B6/" title="YYModel——模型转换框架">https://andy0570.com/2017/06/05/YYModel——模型转换框架/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <span class="exturl" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpo"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</span> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/iOS/" rel="tag"># iOS</a>
+              <a href="/tags/GitHub/" rel="tag"># GitHub</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2017/06/02/AFViewShaker%E2%80%94%E2%80%94%E4%B8%BA%E8%A7%86%E5%9B%BE%E6%B7%BB%E5%8A%A0%E6%8A%96%E5%8A%A8%E6%95%88%E6%9E%9C/" rel="prev" title="AFViewShaker——为视图添加抖动效果">
+      <i class="fa fa-chevron-left"></i> AFViewShaker——为视图添加抖动效果
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2017/06/05/%E3%80%8AEffective%20Objective-C%202.0%E3%80%8B%E7%9B%AE%E5%BD%95/" rel="next" title="《Effective Objective-C 2.0》目录">
+      《Effective Objective-C 2.0》目录 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+        </div>
+        
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">独木舟的木</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">2.1m</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">31:21</span>
+</div>
+  <div class="powered-by">由 <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZw==">NexT.Gemini</span> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

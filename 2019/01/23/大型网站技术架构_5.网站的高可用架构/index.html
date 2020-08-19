@@ -1,23 +1,652 @@
-{% extends '_layout.swig' %}
-{% import '_macro/post.swig' as post_template %}
-{% import '_macro/sidebar.swig' as sidebar_template %}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.0.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+  <meta name="google-site-verification" content="wioXOS3Gv2wXUpJ3sLtfZ4ft6YJYKNLLWSw6QoZTFYM">
+  <meta name="msvalidate.01" content="C96491A81239C517A50597C54EE53CD1">
+  <meta name="baidu-site-verification" content="h8asiToN1b">
 
-{% block title %}{{ page.title }} | {{ title }}{% endblock %}
+<link rel="stylesheet" href="/css/main.css">
 
-{% block page_class %}page-post-detail{% endblock %}
 
-{% block content %}
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  
+  <link rel="stylesheet" href="/lib/animate-css/animate.min.css">
 
-  <div id="posts" class="posts-expand">
-    {{ post_template.render(page) }}
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"andy0570.com","root":"/","scheme":"Gemini","version":"8.0.0-rc.5","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":"mac","bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false};
+  </script>
+
+  <meta name="description" content="5. 网站的高可用架构网站的可用性（Availablilty）描述网站可有效访问的特性。网站的有用性（Usability），通常也被译作可用性，但是后者强调的是网站的有用性，即对最终用户的使用价值。 5.1 网站可用性度量 网站不可用时间（故障时间）&#x3D; 故障修复时间点 - 故障发现（报告）时间点。网站年度可用性指标 &#x3D; （1 - 网站不可用时间&#x2F;年度总时间）* 100%。  5.2 网站可用性考核">
+<meta property="og:type" content="article">
+<meta property="og:title" content="大型网站技术架构_5.网站的高可用架构">
+<meta property="og:url" content="https://andy0570.com/2019/01/23/%E5%A4%A7%E5%9E%8B%E7%BD%91%E7%AB%99%E6%8A%80%E6%9C%AF%E6%9E%B6%E6%9E%84_5.%E7%BD%91%E7%AB%99%E7%9A%84%E9%AB%98%E5%8F%AF%E7%94%A8%E6%9E%B6%E6%9E%84/index.html">
+<meta property="og:site_name" content="独木舟的木">
+<meta property="og:description" content="5. 网站的高可用架构网站的可用性（Availablilty）描述网站可有效访问的特性。网站的有用性（Usability），通常也被译作可用性，但是后者强调的是网站的有用性，即对最终用户的使用价值。 5.1 网站可用性度量 网站不可用时间（故障时间）&#x3D; 故障修复时间点 - 故障发现（报告）时间点。网站年度可用性指标 &#x3D; （1 - 网站不可用时间&#x2F;年度总时间）* 100%。  5.2 网站可用性考核">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/080013.jpg">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/080014.jpg">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/080016.jpg">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/080017.jpg">
+<meta property="article:published_time" content="2019-01-23T10:11:00.000Z">
+<meta property="article:modified_time" content="2019-05-01T12:39:24.000Z">
+<meta property="article:author" content="独木舟的木">
+<meta property="article:tag" content="大型网站技术架构">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/080013.jpg">
+
+<link rel="canonical" href="https://andy0570.com/2019/01/23/%E5%A4%A7%E5%9E%8B%E7%BD%91%E7%AB%99%E6%8A%80%E6%9C%AF%E6%9E%B6%E6%9E%84_5.%E7%BD%91%E7%AB%99%E7%9A%84%E9%AB%98%E5%8F%AF%E7%94%A8%E6%9E%B6%E6%9E%84/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>大型网站技术架构_5.网站的高可用架构 | 独木舟的木</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="独木舟的木" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <main class="main">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+        <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
   </div>
 
-{% endblock %}
+  <div class="site-meta">
 
-{% block sidebar %}
-  {{ sidebar_template.render(true) }}
-{% endblock %}
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">独木舟的木</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">iOS Developer</p>
+  </div>
 
-{% block script_extra %}
-  {% include '_scripts/pages/post-details.swig' %}
-{% endblock %}
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">14</span></a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">36</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">310</span></a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <section class="post-toc-wrap sidebar-panel">
+          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#5-%E7%BD%91%E7%AB%99%E7%9A%84%E9%AB%98%E5%8F%AF%E7%94%A8%E6%9E%B6%E6%9E%84"><span class="nav-number">1.</span> <span class="nav-text">5. 网站的高可用架构</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#5-1-%E7%BD%91%E7%AB%99%E5%8F%AF%E7%94%A8%E6%80%A7%E5%BA%A6%E9%87%8F"><span class="nav-number">1.1.</span> <span class="nav-text">5.1 网站可用性度量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-2-%E7%BD%91%E7%AB%99%E5%8F%AF%E7%94%A8%E6%80%A7%E8%80%83%E6%A0%B8"><span class="nav-number">1.2.</span> <span class="nav-text">5.2 网站可用性考核</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-3-%E9%AB%98%E5%8F%AF%E7%94%A8%E7%9A%84%E7%BD%91%E7%AB%99%E6%9E%B6%E6%9E%84"><span class="nav-number">1.3.</span> <span class="nav-text">5.3 高可用的网站架构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-4-%E9%AB%98%E5%8F%AF%E7%94%A8%E7%9A%84%E5%BA%94%E7%94%A8"><span class="nav-number">1.4.</span> <span class="nav-text">5.4 高可用的应用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%80%9A%E8%BF%87%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1%E8%BF%9B%E8%A1%8C%E6%97%A0%E7%8A%B6%E6%80%81%E6%9C%8D%E5%8A%A1%E7%9A%84%E5%A4%B1%E6%95%88%E8%BD%AC%E7%A7%BB"><span class="nav-number">1.4.1.</span> <span class="nav-text">通过负载均衡进行无状态服务的失效转移</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1%E5%BC%80%E6%BA%90%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88"><span class="nav-number">1.4.1.1.</span> <span class="nav-text">负载均衡开源解决方案</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-LVS"><span class="nav-number">1.4.1.1.1.</span> <span class="nav-text">1. LVS</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-Nginx"><span class="nav-number">1.4.1.1.2.</span> <span class="nav-text">2. Nginx</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-HAProxy"><span class="nav-number">1.4.1.1.3.</span> <span class="nav-text">3. HAProxy</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BA%94%E7%94%A8%E6%9C%8D%E5%8A%A1%E5%99%A8%E9%9B%86%E7%BE%A4%E7%9A%84-Session-%E7%AE%A1%E7%90%86"><span class="nav-number">1.4.2.</span> <span class="nav-text">应用服务器集群的 Session 管理</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-5-%E9%AB%98%E5%8F%AF%E7%94%A8%E7%9A%84%E6%9C%8D%E5%8A%A1"><span class="nav-number">1.5.</span> <span class="nav-text">5.5 高可用的服务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-6-%E9%AB%98%E5%8F%AF%E7%94%A8%E7%9A%84%E6%95%B0%E6%8D%AE"><span class="nav-number">1.6.</span> <span class="nav-text">5.6 高可用的数据</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#CAP-%E5%8E%9F%E7%90%86"><span class="nav-number">1.6.1.</span> <span class="nav-text">CAP 原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%A4%87%E4%BB%BD"><span class="nav-number">1.6.2.</span> <span class="nav-text">数据备份</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%B1%E6%95%88%E8%BD%AC%E7%A7%BB"><span class="nav-number">1.6.3.</span> <span class="nav-text">失效转移</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-7-%E9%AB%98%E5%8F%AF%E7%94%A8%E7%BD%91%E7%AB%99%E7%9A%84%E8%BD%AF%E4%BB%B6%E8%B4%A8%E9%87%8F%E4%BF%9D%E8%AF%81"><span class="nav-number">1.7.</span> <span class="nav-text">5.7 高可用网站的软件质量保证</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BD%91%E7%AB%99%E5%8F%91%E5%B8%83"><span class="nav-number">1.7.0.1.</span> <span class="nav-text">网站发布</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95"><span class="nav-number">1.7.0.2.</span> <span class="nav-text">自动化测试</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%A2%84%E5%8F%91%E5%B8%83%E9%AA%8C%E8%AF%81"><span class="nav-number">1.7.0.3.</span> <span class="nav-text">预发布验证</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E7%89%88%E6%9C%AC%E6%8E%A7%E5%88%B6"><span class="nav-number">1.7.0.4.</span> <span class="nav-text">代码版本控制</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%87%AA%E5%8A%A8%E5%8C%96%E5%8F%91%E5%B8%83"><span class="nav-number">1.7.0.5.</span> <span class="nav-text">自动化发布</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%81%B0%E5%BA%A6%E5%8F%91%E5%B8%83"><span class="nav-number">1.7.0.6.</span> <span class="nav-text">灰度发布</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-8-%E7%BD%91%E7%AB%99%E8%BF%90%E8%A1%8C%E7%9B%91%E6%8E%A7"><span class="nav-number">1.8.</span> <span class="nav-text">5.8 网站运行监控</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%9B%91%E6%8E%A7%E6%95%B0%E6%8D%AE%E9%87%87%E9%9B%86"><span class="nav-number">1.8.1.</span> <span class="nav-text">监控数据采集</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%9B%91%E6%8E%A7%E7%AE%A1%E7%90%86"><span class="nav-number">1.8.2.</span> <span class="nav-text">监控管理</span></a></li></ol></li></ol></li></ol></div>
+      </section>
+      <!--/noindex-->
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="独木舟的木"
+      src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+  <p class="site-author-name" itemprop="name">独木舟的木</p>
+  <div class="site-description" itemprop="description">生若直木，不语斧凿。</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">310</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">36</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL0FuZHkwNTcw" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Andy0570"><i class="fab fa-github fa-fw"></i>GitHub</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9zdGFja292ZXJmbG93LmNvbS91c2Vycy83MjY1NDAwL2FuZHkwNTcw" title="StackOverflow → https:&#x2F;&#x2F;stackoverflow.com&#x2F;users&#x2F;7265400&#x2F;andy0570"><i class="fab fa-stack-overflow fa-fw"></i>StackOverflow</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuamlhbnNodS5jb20vdS84NGM1ZmFkYzdjMTg=" title="简书 → https:&#x2F;&#x2F;www.jianshu.com&#x2F;u&#x2F;84c5fadc7c18"><i class="heartbeat fa-fw"></i>简书</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="bWFpbHRvOmFuZHl3aG1AMTYzLmNvbQ==" title="E-Mail → mailto:andywhm@163.com"><i class="fa fa-envelope fa-fw"></i>E-Mail</span>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <span class="exturl cc-opacity" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpo"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></span>
+  </div>
+
+
+
+      </section>
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </header>
+
+      
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div id="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+      <div class="main-inner">
+        
+
+        <div class="content post posts-expand">
+          
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://andy0570.com/2019/01/23/%E5%A4%A7%E5%9E%8B%E7%BD%91%E7%AB%99%E6%8A%80%E6%9C%AF%E6%9E%B6%E6%9E%84_5.%E7%BD%91%E7%AB%99%E7%9A%84%E9%AB%98%E5%8F%AF%E7%94%A8%E6%9E%B6%E6%9E%84/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+      <meta itemprop="name" content="独木舟的木">
+      <meta itemprop="description" content="生若直木，不语斧凿。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="独木舟的木">
+    </span>
+
+    
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          大型网站技术架构_5.网站的高可用架构
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-01-23 18:11:00" itemprop="dateCreated datePublished" datetime="2019-01-23T18:11:00+08:00">2019-01-23</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-05-01 20:39:24" itemprop="dateModified" datetime="2019-05-01T20:39:24+08:00">2019-05-01</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E4%BA%91%E8%AE%A1%E7%AE%97/" itemprop="url" rel="index"><span itemprop="name">云计算</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>2.8k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>3 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="5-网站的高可用架构"><a href="#5-网站的高可用架构" class="headerlink" title="5. 网站的高可用架构"></a>5. 网站的高可用架构</h1><p>网站的可用性（Availablilty）描述<strong>网站可有效访问的特性</strong>。<br>网站的有用性（Usability），通常也被译作可用性，但是后者强调的是网站的有用性，即对最终用户的使用价值。</p>
+<h2 id="5-1-网站可用性度量"><a href="#5-1-网站可用性度量" class="headerlink" title="5.1 网站可用性度量"></a>5.1 网站可用性度量</h2><blockquote>
+<p>网站不可用时间（故障时间）= 故障修复时间点 - 故障发现（报告）时间点。<br>网站年度可用性指标 = （1 - 网站不可用时间/年度总时间）* 100%。</p>
+</blockquote>
+<h2 id="5-2-网站可用性考核"><a href="#5-2-网站可用性考核" class="headerlink" title="5.2 网站可用性考核"></a>5.2 网站可用性考核</h2><p><strong>故障分</strong>是指对网站故障进行分类加权计算故障责任的方法。</p>
+<blockquote>
+<p>故障分的计算公式：<br>故障分 = 故障时间（分钟）* 故障权重</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>网站故障分类</th>
+<th>描述</th>
+<th>权重</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>事故级故障</td>
+<td>严重故障，网站整体不可用</td>
+<td>100</td>
+</tr>
+<tr>
+<td>A类故障</td>
+<td>网站访问不顺畅或核心功能不可用</td>
+<td>20</td>
+</tr>
+<tr>
+<td>B类故障</td>
+<td>非核心功能不可用，或核心功能少数用户不可用</td>
+<td>5</td>
+</tr>
+<tr>
+<td>C类故障</td>
+<td>以上故障以外的其他故障</td>
+<td>1</td>
+</tr>
+</tbody></table>
+<a id="more"></a>
+
+<h2 id="5-3-高可用的网站架构"><a href="#5-3-高可用的网站架构" class="headerlink" title="5.3 高可用的网站架构"></a>5.3 高可用的网站架构</h2><ul>
+<li>硬件故障是常态。</li>
+<li>网站可用性架构设计不但要考虑实际的硬件故障引起的宕机，还要考虑网站升级发布引起的宕机。</li>
+<li>网站高可用架构设计的主要目的：<strong>保证服务器硬件故障时服务依然可用、数据依然保存并能够被访问。</strong></li>
+<li>实现高可用架构的主要手段：<strong>数据和服务的冗余备份及失效转移。</strong></li>
+</ul>
+<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/080013.jpg" alt="网站架构基本分层模型"></p>
+<p>在复杂的大型网站架构中，划分的粒度会更小、更详细，结构更复杂，服务器规模更庞大，但通常还是能够把这些服务器划分到以上三层中。</p>
+<p>应用层服务器：负载均衡、心跳检测。<br>服务层服务器：集群部署、分布式服务调用框架、软件负载均衡、心跳检测。<br>数据层服务器：数据同步复制、数据冗余备份。</p>
+<h2 id="5-4-高可用的应用"><a href="#5-4-高可用的应用" class="headerlink" title="5.4 高可用的应用"></a>5.4 高可用的应用</h2><p>应用层（业务逻辑层）主要处理网站应用的业务逻辑。<br>应用层的特点：<strong>应用的无状态性</strong>。</p>
+<blockquote>
+<p>无状态应用：<br>应用服务器不保存业务的上下文信息，而仅根据每次请求提交的数据进行相应的业务逻辑处理，多个服务器实例之间完全对等，请求提交到任意服务器，处理结果完全一样。</p>
+</blockquote>
+<h3 id="通过负载均衡进行无状态服务的失效转移"><a href="#通过负载均衡进行无状态服务的失效转移" class="headerlink" title="通过负载均衡进行无状态服务的失效转移"></a>通过负载均衡进行无状态服务的失效转移</h3><blockquote>
+<p>负载均衡顾名思义，主要使用在业务量和数据量较高的情况下，当单台服务器不足以承担所有的负载压力时，通过负载均衡手段，将流量和数据分摊到一个集群组成的多台服务器上，以提高整体的负载处理能力。<br>目前，不管是开源免费的负载均衡软件还是昂贵的负载均衡硬件，都提供失效转移功能。在网站应用中，当集群中的服务是无状态对等时，负载均衡可以起到事实上高可用的作用。</p>
+</blockquote>
+<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/080014.jpg" alt="负载均衡"></p>
+<h4 id="负载均衡开源解决方案"><a href="#负载均衡开源解决方案" class="headerlink" title="负载均衡开源解决方案"></a>负载均衡开源解决方案</h4><h5 id="1-LVS"><a href="#1-LVS" class="headerlink" title="1. LVS"></a>1. LVS</h5><p>LVS，工作在 4 层，Linux 实现的高性能高并发、可伸缩性、可靠的的负载均衡器，支持多种转发方式 (NAT、DR、IP Tunneling)，其中 DR 模式支持通过广域网进行负载均衡。支持双机热备 (Keepalived 或者 Heartbeat)。对网络环境的依赖性比较高。</p>
+<h5 id="2-Nginx"><a href="#2-Nginx" class="headerlink" title="2. Nginx"></a>2. Nginx</h5><p>Nginx 工作在 7 层，事件驱动的、异步非阻塞的架构、支持多进程的高并发的负载均衡器 / 反向代理软件。可以针对域名、目录结构、正则规则针对 http 做一些分流。通过端口检测到服务器内部的故障，比如根据服务器处理网页返回的状态码、超时等等，并且会把返回错误的请求重新提交到另一个节点，不过其中缺点就是不支持 url 来检测。对于 session sticky，可以基于 ip hash 的算法来实现，通过基于 cookie 的扩展 nginx-sticky-module 支持 session sticky。</p>
+<h5 id="3-HAProxy"><a href="#3-HAProxy" class="headerlink" title="3. HAProxy"></a>3. HAProxy</h5><p>HAProxy 支持 4 层和 7 层做负载均衡，支持 session 的会话保持，cookie 的引导；支持后端 url 方式的检测；负载均衡的算法比较丰富，有 RR、权重等。</p>
+<h3 id="应用服务器集群的-Session-管理"><a href="#应用服务器集群的-Session-管理" class="headerlink" title="应用服务器集群的 Session 管理"></a>应用服务器集群的 Session 管理</h3><p>会话（Session）：Web 应用中多次请求修改使用的上下文对象。</p>
+<p>单机环境下的 Session 管理：由部署在 Web 容器（如 JBoss）管理。</p>
+<p>集群环境下的 Session 管理：</p>
+<ol>
+<li>Session 复制。</li>
+<li>Session 绑定：利用负载均衡的源地址 Hash 算法实现。</li>
+<li>利用 Cookie 记录 Session。</li>
+<li>Session 服务器：利用独立部署的 Session 服务器（集群）统一管理 Session。</li>
+</ol>
+<p>Session 服务器将应用服务器的状态分离：</p>
+<ul>
+<li>无状态的应用服务器。</li>
+<li>有状态的 Session 服务器：分布式缓存、数据库。</li>
+</ul>
+<h2 id="5-5-高可用的服务"><a href="#5-5-高可用的服务" class="headerlink" title="5.5 高可用的服务"></a>5.5 高可用的服务</h2><p><strong>可复用的服务模块</strong>为业务产品提供基础公共服务。<br>高可用服务策略：</p>
+<ol>
+<li>分级管理。（将服务器进行分级管理：核心服务器、非核心服务器）</li>
+<li>超时设置。（在应用服务中设置服务调用的超时时间）</li>
+<li>异步调用。（消息队列）</li>
+<li>服务降级。（拒绝服务、关闭功能）</li>
+<li><strong>幂等性设计</strong>：必须在服务层保证服务重复调用和调用一次产生的结果相同。</li>
+</ol>
+<h2 id="5-6-高可用的数据"><a href="#5-6-高可用的数据" class="headerlink" title="5.6 高可用的数据"></a>5.6 高可用的数据</h2><p>保证数据存储高可用的手段：</p>
+<ol>
+<li>数据备份；</li>
+<li>失效转移；</li>
+</ol>
+<p><strong>数据备份</strong>是保证数据有多个副本，任意副本的失效都不会导致数据的永久丢失，从而实现数据完全的持久化。<br><strong>失效转移</strong>保证当一个数据副本不可访问时，可以快速切换访问数据的其他副本，保证系统可用。</p>
+<h3 id="CAP-原理"><a href="#CAP-原理" class="headerlink" title="CAP 原理"></a>CAP 原理</h3><p>参考：<span class="exturl" data-url="aHR0cHM6Ly93ZWl3ZWkwMi5naXRodWIuaW8vMjAxNy8wOC8wMy9kYXRhYmFzZS90aGVvcnkvQ0FQJUU1JThFJTlGJUU3JTkwJTg2Lw==">数据库原理 - 数据 CAP 原理<i class="fa fa-external-link-alt"></i></span></p>
+<p>为了保证数据的高可用，网站通常会牺牲另一个很重要的指标：<strong>数据一致性</strong>。</p>
+<p>高可用数据的含义：数据持久性、数据可访问性、数据一致性。</p>
+<blockquote>
+<p>CAP 原理认为，一个提供数据服务的存储系统无法同时满足数据一致性（ Consistency）、数据可用性（Availibility）、分区耐受性（Partition Tolerance，系统具有跨网络分区的伸缩性）这三个条件。</p>
+</blockquote>
+<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/080016.jpg" alt="image"></p>
+<p>在大型网站中，通常会选择强化分布式存储系统的可用性和伸缩性，而在某种程度上放弃一致性。</p>
+<p>数据一致性：</p>
+<ul>
+<li>数据强一致。</li>
+<li>数据用户一致。</li>
+<li>数据最终一致。</li>
+</ul>
+<h3 id="数据备份"><a href="#数据备份" class="headerlink" title="数据备份"></a>数据备份</h3><p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/080017.jpg" alt="image"></p>
+<p>异步方式：多份数据副本的写入操作异步完成，应用程序收到数据服务系统的写操作成功响应时，只写成功一份，存储系统将会异步地写其他副本。<br>同步方式：多份数据副本的的写入操作同步完成。即应用程序收到数据服务系统的写成功响应时，多份数据都已经写操作成功。</p>
+<h3 id="失效转移"><a href="#失效转移" class="headerlink" title="失效转移"></a>失效转移</h3><p>若数据服务器集群中任何一台服务器宕机，那么应用程序针对这台服务器的所有读写操作都需要重新路由到其他服务器，保证数据访问不会失败，这个过程叫作<strong>失效转移</strong>。</p>
+<p>失效转移操作由三部分组成：<strong>失效确认</strong>、<strong>访问转移</strong>、<strong>数据恢复</strong>。</p>
+<p>系统确认一台服务器是否宕机的手段：</p>
+<ol>
+<li>心跳检测；</li>
+<li>应用程序访问失败报告；</li>
+</ol>
+<h2 id="5-7-高可用网站的软件质量保证"><a href="#5-7-高可用网站的软件质量保证" class="headerlink" title="5.7 高可用网站的软件质量保证"></a>5.7 高可用网站的软件质量保证</h2><h4 id="网站发布"><a href="#网站发布" class="headerlink" title="网站发布"></a>网站发布</h4><p>使用发布脚本完成发布</p>
+<h4 id="自动化测试"><a href="#自动化测试" class="headerlink" title="自动化测试"></a>自动化测试</h4><p>Web 自动化测试技术工具：<span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL1NlbGVuaXVtSFEvc2VsZW5pdW0=">Selenium<i class="fa fa-external-link-alt"></i></span></p>
+<h4 id="预发布验证"><a href="#预发布验证" class="headerlink" title="预发布验证"></a>预发布验证</h4><p>网站发布时，先发布到预发布服务器上。</p>
+<p>快速失败：如果系统在启动时发现问题就立刻抛出异常，停止启动让工程师介入排查错误，而不是启动后执行错误的操作。</p>
+<h4 id="代码版本控制"><a href="#代码版本控制" class="headerlink" title="代码版本控制"></a>代码版本控制</h4><p>版本控制工具：</p>
+<ul>
+<li>Git；</li>
+<li>SVN；</li>
+</ul>
+<h4 id="自动化发布"><a href="#自动化发布" class="headerlink" title="自动化发布"></a>自动化发布</h4><h4 id="灰度发布"><a href="#灰度发布" class="headerlink" title="灰度发布"></a>灰度发布</h4><p>灰度发布：将集群服务器分成若干部分，每天只发布一部分服务器，观察运行稳定没有故障，第二天继续发布一部分服务器，持续几天才把整个集群全部发布完毕，期间如果发现问题，只需要回滚已发布的一部分服务器即可。</p>
+<h2 id="5-8-网站运行监控"><a href="#5-8-网站运行监控" class="headerlink" title="5.8 网站运行监控"></a>5.8 网站运行监控</h2><blockquote>
+<p>不允许没有监控的系统上线。</p>
+</blockquote>
+<h3 id="监控数据采集"><a href="#监控数据采集" class="headerlink" title="监控数据采集"></a>监控数据采集</h3><ol>
+<li>用户行为日志收集。<ul>
+<li>服务器端日志收集；</li>
+<li>客户端浏览器端日志收集；</li>
+</ul>
+</li>
+<li>服务器性能监控。<ul>
+<li>开源性能监控工具：Ganglia。  </li>
+</ul>
+</li>
+<li>运行数据报告。</li>
+</ol>
+<h3 id="监控管理"><a href="#监控管理" class="headerlink" title="监控管理"></a>监控管理</h3><ul>
+<li>系统报警；</li>
+<li>失效转移；</li>
+<li>自动优雅降级；</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>独木舟的木
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://andy0570.com/2019/01/23/%E5%A4%A7%E5%9E%8B%E7%BD%91%E7%AB%99%E6%8A%80%E6%9C%AF%E6%9E%B6%E6%9E%84_5.%E7%BD%91%E7%AB%99%E7%9A%84%E9%AB%98%E5%8F%AF%E7%94%A8%E6%9E%B6%E6%9E%84/" title="大型网站技术架构_5.网站的高可用架构">https://andy0570.com/2019/01/23/大型网站技术架构_5.网站的高可用架构/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <span class="exturl" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpo"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</span> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%A4%A7%E5%9E%8B%E7%BD%91%E7%AB%99%E6%8A%80%E6%9C%AF%E6%9E%B6%E6%9E%84/" rel="tag"># 大型网站技术架构</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/01/23/%E5%A4%A7%E5%9E%8B%E7%BD%91%E7%AB%99%E6%8A%80%E6%9C%AF%E6%9E%B6%E6%9E%84_3.%E5%A4%A7%E5%9E%8B%E7%BD%91%E7%AB%99%E6%A0%B8%E5%BF%83%E6%9E%B6%E6%9E%84%E8%A6%81%E7%B4%A0/" rel="prev" title="大型网站技术架构_3.大型网站核心架构要素">
+      <i class="fa fa-chevron-left"></i> 大型网站技术架构_3.大型网站核心架构要素
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/01/23/%E5%A4%A7%E5%9E%8B%E7%BD%91%E7%AB%99%E6%8A%80%E6%9C%AF%E6%9E%B6%E6%9E%84_4.%E7%BD%91%E7%AB%99%E7%9A%84%E9%AB%98%E6%80%A7%E8%83%BD%E6%9E%B6%E6%9E%84/" rel="next" title="大型网站技术架构_4.网站的高性能架构">
+      大型网站技术架构_4.网站的高性能架构 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+        </div>
+        
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">独木舟的木</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">2.1m</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">31:21</span>
+</div>
+  <div class="powered-by">由 <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZw==">NexT.Gemini</span> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

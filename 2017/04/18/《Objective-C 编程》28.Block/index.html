@@ -1,23 +1,684 @@
-{% extends '_layout.swig' %}
-{% import '_macro/post.swig' as post_template %}
-{% import '_macro/sidebar.swig' as sidebar_template %}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.0.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+  <meta name="google-site-verification" content="wioXOS3Gv2wXUpJ3sLtfZ4ft6YJYKNLLWSw6QoZTFYM">
+  <meta name="msvalidate.01" content="C96491A81239C517A50597C54EE53CD1">
+  <meta name="baidu-site-verification" content="h8asiToN1b">
 
-{% block title %}{{ page.title }} | {{ title }}{% endblock %}
+<link rel="stylesheet" href="/css/main.css">
 
-{% block page_class %}page-post-detail{% endblock %}
 
-{% block content %}
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  
+  <link rel="stylesheet" href="/lib/animate-css/animate.min.css">
 
-  <div id="posts" class="posts-expand">
-    {{ post_template.render(page) }}
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"andy0570.com","root":"/","scheme":"Gemini","version":"8.0.0-rc.5","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":"mac","bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false};
+  </script>
+
+  <meta name="description" content="Block 对象Block 对象是一段代码。先给出一个 Block 对象的示例： 123^&amp;#123;  NSLog(@&quot;This is an instruction within a block.&quot;)&amp;#125;   ^表示这段代码是一个 Block 对象。 看上去和C函数类似，但是它没有函数名。  Block 对象也可以有实参和返回值： 1234^(double divid">
+<meta property="og:type" content="article">
+<meta property="og:title" content="《Objective-C 编程》28.Block">
+<meta property="og:url" content="https://andy0570.com/2017/04/18/%E3%80%8AObjective-C%20%E7%BC%96%E7%A8%8B%E3%80%8B28.Block/index.html">
+<meta property="og:site_name" content="独木舟的木">
+<meta property="og:description" content="Block 对象Block 对象是一段代码。先给出一个 Block 对象的示例： 123^&amp;#123;  NSLog(@&quot;This is an instruction within a block.&quot;)&amp;#125;   ^表示这段代码是一个 Block 对象。 看上去和C函数类似，但是它没有函数名。  Block 对象也可以有实参和返回值： 1234^(double divid">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2017-04-18T15:18:00.000Z">
+<meta property="article:modified_time" content="2019-05-01T13:16:56.000Z">
+<meta property="article:author" content="独木舟的木">
+<meta property="article:tag" content="iOS">
+<meta property="article:tag" content="Objective-C">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://andy0570.com/2017/04/18/%E3%80%8AObjective-C%20%E7%BC%96%E7%A8%8B%E3%80%8B28.Block/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>《Objective-C 编程》28.Block | 独木舟的木</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="独木舟的木" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <main class="main">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+        <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
   </div>
 
-{% endblock %}
+  <div class="site-meta">
 
-{% block sidebar %}
-  {{ sidebar_template.render(true) }}
-{% endblock %}
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">独木舟的木</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">iOS Developer</p>
+  </div>
 
-{% block script_extra %}
-  {% include '_scripts/pages/post-details.swig' %}
-{% endblock %}
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">14</span></a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">36</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">310</span></a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <section class="post-toc-wrap sidebar-panel">
+          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Block-%E5%AF%B9%E8%B1%A1"><span class="nav-number">1.</span> <span class="nav-text">Block 对象</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8-Block-%E5%AF%B9%E8%B1%A1"><span class="nav-number">1.1.</span> <span class="nav-text">使用 Block 对象</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#typedef"><span class="nav-number">1.2.</span> <span class="nav-text">typedef</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Block-%E5%AF%B9%E8%B1%A1-vs-%E5%85%B6%E4%BB%96%E5%9B%9E%E8%B0%83"><span class="nav-number">1.3.</span> <span class="nav-text">Block 对象 vs. 其他回调</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%94%E5%9B%9E%E5%80%BC"><span class="nav-number">1.4.</span> <span class="nav-text">返回值</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8C%BF%E5%90%8D-Block-%E5%AF%B9%E8%B1%A1"><span class="nav-number">1.5.</span> <span class="nav-text">匿名 Block 对象</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%96%E9%83%A8%E5%8F%98%E9%87%8F"><span class="nav-number">1.6.</span> <span class="nav-text">外部变量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9%E5%A4%96%E9%83%A8%E5%8F%98%E9%87%8F"><span class="nav-number">1.7.</span> <span class="nav-text">修改外部变量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9C%A8-Block-%E5%AF%B9%E8%B1%A1%E4%B8%AD%E4%BD%BF%E7%94%A8-self"><span class="nav-number">1.8.</span> <span class="nav-text">在 Block 对象中使用 self</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9C%A8-Block-%E5%AF%B9%E8%B1%A1%E4%B8%AD%E6%97%A0%E6%84%8F%E4%BD%BF%E7%94%A8-self"><span class="nav-number">1.9.</span> <span class="nav-text">在 Block 对象中无意使用 self</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">2.</span> <span class="nav-text">参考</span></a></li></ol></div>
+      </section>
+      <!--/noindex-->
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="独木舟的木"
+      src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+  <p class="site-author-name" itemprop="name">独木舟的木</p>
+  <div class="site-description" itemprop="description">生若直木，不语斧凿。</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">310</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">36</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL0FuZHkwNTcw" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Andy0570"><i class="fab fa-github fa-fw"></i>GitHub</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9zdGFja292ZXJmbG93LmNvbS91c2Vycy83MjY1NDAwL2FuZHkwNTcw" title="StackOverflow → https:&#x2F;&#x2F;stackoverflow.com&#x2F;users&#x2F;7265400&#x2F;andy0570"><i class="fab fa-stack-overflow fa-fw"></i>StackOverflow</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuamlhbnNodS5jb20vdS84NGM1ZmFkYzdjMTg=" title="简书 → https:&#x2F;&#x2F;www.jianshu.com&#x2F;u&#x2F;84c5fadc7c18"><i class="heartbeat fa-fw"></i>简书</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="bWFpbHRvOmFuZHl3aG1AMTYzLmNvbQ==" title="E-Mail → mailto:andywhm@163.com"><i class="fa fa-envelope fa-fw"></i>E-Mail</span>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <span class="exturl cc-opacity" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpo"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></span>
+  </div>
+
+
+
+      </section>
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </header>
+
+      
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div id="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+      <div class="main-inner">
+        
+
+        <div class="content post posts-expand">
+          
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://andy0570.com/2017/04/18/%E3%80%8AObjective-C%20%E7%BC%96%E7%A8%8B%E3%80%8B28.Block/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+      <meta itemprop="name" content="独木舟的木">
+      <meta itemprop="description" content="生若直木，不语斧凿。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="独木舟的木">
+    </span>
+
+    
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          《Objective-C 编程》28.Block
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2017-04-18 23:18:00" itemprop="dateCreated datePublished" datetime="2017-04-18T23:18:00+08:00">2017-04-18</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-05-01 21:16:56" itemprop="dateModified" datetime="2019-05-01T21:16:56+08:00">2019-05-01</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Objective-C-%E7%BC%96%E7%A8%8B/" itemprop="url" rel="index"><span itemprop="name">Objective-C 编程</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>11k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>10 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="Block-对象"><a href="#Block-对象" class="headerlink" title="Block 对象"></a>Block 对象</h1><p><strong>Block</strong> 对象是一段代码。先给出一个 <strong>Block</strong> 对象的示例：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">^&#123;</span><br><span class="line">  NSLog(@&quot;This is an instruction within a block.&quot;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>^表示这段代码是一个 <strong>Block</strong> 对象。</li>
+<li>看上去和C函数类似，但是它没有函数名。</li>
+</ul>
+<p><strong>Block</strong> 对象也可以有实参和返回值：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">^(double dividend,double divisor) &#123;</span><br><span class="line">  double quotient &#x3D; dividend &#x2F; divisor</span><br><span class="line">  return quotient;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>这段代码中的 <strong>Block</strong> 对象有两个 <strong>double</strong> 类型的实参，一个 <strong>double</strong> 类型的返回值。</li>
+<li><strong>Block</strong> 对象可以被当成一个实参来传递给可以接收 block 的方法。</li>
+</ul>
+<a id="more"></a>
+
+<h2 id="使用-Block-对象"><a href="#使用-Block-对象" class="headerlink" title="使用 Block 对象"></a>使用 Block 对象</h2><p>iOS SDK 4.0以后，随着block的加入很多特性也随之添加或者发生了升级。Apple所推荐的block使用范围包括以下几个方面：</p>
+<pre><code>枚举——通过block获取枚举对象或控制枚举进程
+View动画——简单明了的方式规定动画
+排序——在block内写排序算法
+通知——当某事件发生后执行block内的代码
+错误处理——当错误发生时执行block代码
+完成处理——当方法执行完毕后执行block代码
+GCD多线程——多线程控制</code></pre>
+<p><strong>Block</strong> 对象可以用变量保存。</p>
+<ul>
+<li><p>声明 <strong>Block</strong> 变量</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">void (^devowelizer)(id, NSUInteger, BOOL *);</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>Block</strong> 变量的名称（如devowelizer）是写在括号中，^字符后面的。</li>
+<li><strong>Block</strong> 对象的返回类型：void。</li>
+<li><strong>Block</strong> 对象的实参类型：id, NSUInteger, BOOL *。</li>
+<li><strong>Block</strong> 变量的类型：有三个参数（id, NSUInteger, BOOL *），并且没有返回值的 <strong>Block</strong> 对象。</li>
+<li>注意到，声明 <strong>Block</strong> 变量时参数类型没有写名称，而 <strong>Block</strong> 对象中的实参类型是有名称的。</li>
+</ul>
+</li>
+<li><p>将 <strong>Block</strong> 对象赋予变量</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">devowelizer &#x3D; ^(id string, NSUInteger i, BOOL *stop) &#123;</span><br><span class="line"></span><br><span class="line">    NSMutableString *newString &#x3D; [NSMutableString stringWithString:string];</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; 枚举数组中的字符串，将所有出现的元音字母替换成空字符串</span><br><span class="line">    for (NSString *s in vowels) &#123;</span><br><span class="line">        NSRange fullRange &#x3D; NSMakeRange(0, [newString length]);</span><br><span class="line">        [newString replaceOccurrencesOfString:s</span><br><span class="line">                                   withString:@&quot;&quot;</span><br><span class="line">                                      options:NSCaseInsensitiveSearch</span><br><span class="line">                                        range:fullRange];</span><br><span class="line">    &#125;</span><br><span class="line">    [devoweLizedStrings addObject:newString];</span><br><span class="line"></span><br><span class="line">&#125;;  &#x2F;&#x2F; Block 编码赋值结束</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>也可以将 <strong>Block</strong> 对象的声明和赋值写在一起:</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">void (^devowelizer2)(id, NSUInteger, BOOL *) &#x3D; ^(id string, NSUInteger i, BOOL *stop) &#123;</span><br><span class="line">  </span><br><span class="line">    NSMutableString *newString &#x3D; [NSMutableString stringWithString:string];</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; 枚举数组中的字符串，将所有出现的元音字母替换成空字符串</span><br><span class="line">    for (NSString *s in vowels) &#123;</span><br><span class="line">        NSRange fullRange &#x3D; NSMakeRange(0, [newString length]);</span><br><span class="line">        [newString replaceOccurrencesOfString:s</span><br><span class="line">                                   withString:@&quot;&quot;</span><br><span class="line">                                      options:NSCaseInsensitiveSearch</span><br><span class="line">                                        range:fullRange];</span><br><span class="line">    &#125;</span><br><span class="line">    [devoweLizedStrings addObject:newString];</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>完整示例：</p>
+<p>使用 <strong>Block</strong> 对象枚举数组中的字符串，并移除字符串中所有的元音字母（a、e、i、o、u）。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 创建两个数组对象，分别用于保存最初的字符串对象和去除元音字母后的版本</span><br><span class="line">NSArray *originalStrings &#x3D; @[@&quot;SagurrKraut&quot;,@&quot;Raygun&quot;,@&quot;Big Nerd Ranch&quot;,@&quot;Mississippi&quot;];</span><br><span class="line">NSLog(@&quot;%@&quot;,originalStrings);</span><br><span class="line">NSMutableArray *devoweLizedStrings &#x3D; [NSMutableArray array];</span><br><span class="line">&#x2F;&#x2F; 创建数组对象，保存需要从字符串中移除的字符</span><br><span class="line">NSArray *vowels &#x3D; @[@&quot;a&quot;,@&quot;e&quot;,@&quot;i&quot;,@&quot;o&quot;,@&quot;u&quot;];</span><br><span class="line"></span><br><span class="line">&#x2F;**</span><br><span class="line"> *  声明 Block 变量</span><br><span class="line"> *</span><br><span class="line"> *  Block 变量的名称（如devowelizer）是写在括号中，^字符后面的。</span><br><span class="line"> *  Block 对象的返回类型：void。</span><br><span class="line"> *  Block 对象的实参类型：id, NSUInteger, BOOL *。</span><br><span class="line"> *  Block变量的类型：有三个参数（id, NSUInteger, BOOL *），并且没有返回值的 Block 对象</span><br><span class="line"> *&#x2F;</span><br><span class="line">void (^devowelizer)(id, NSUInteger, BOOL *);</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 将 Block 对象赋予变量</span><br><span class="line">devowelizer &#x3D; ^(id string, NSUInteger i, BOOL *stop) &#123;</span><br><span class="line"></span><br><span class="line">    NSMutableString *newString &#x3D; [NSMutableString stringWithString:string];</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; 枚举数组中的字符串，将所有出现的元音字母替换成空字符串</span><br><span class="line">    for (NSString *s in vowels) &#123;</span><br><span class="line">        NSRange fullRange &#x3D; NSMakeRange(0, [newString length]);</span><br><span class="line">        [newString replaceOccurrencesOfString:s</span><br><span class="line">                                   withString:@&quot;&quot;</span><br><span class="line">                                      options:NSCaseInsensitiveSearch</span><br><span class="line">                                        range:fullRange];</span><br><span class="line">    &#125;</span><br><span class="line">    [devoweLizedStrings addObject:newString];</span><br><span class="line"></span><br><span class="line">&#125;;  &#x2F;&#x2F; Block 编码赋值结束</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 枚举数组对象，针对每个数组中的对象，执行 Block 对象 devowelizer</span><br><span class="line">[originalStrings enumerateObjectsUsingBlock:devowelizer];</span><br><span class="line">NSLog(@&quot;new strings:%@&quot;,devoweLizedStrings);</span><br></pre></td></tr></table></figure>
+
+<p>输出结果：</p>
+<blockquote>
+<p><strong>2017-04-18 10:48:03.345694+0800 VowelMovement[1057:125122] (</strong></p>
+<p><strong>SagurrKraut,</strong></p>
+<p><strong>Raygun,</strong></p>
+<p><strong>“Big Nerd Ranch”,</strong></p>
+<p><strong>Mississippi</strong></p>
+<p><strong>)</strong></p>
+<p><strong>2017-04-18 10:48:03.346101+0800 VowelMovement[1057:125122] new strings:(</strong></p>
+<p><strong>SgrrKrt,</strong></p>
+<p><strong>Rygn,</strong></p>
+<p><strong>“Bg Nrd Rnch”,</strong></p>
+<p><strong>Msssspp</strong></p>
+<p><strong>)</strong></p>
+</blockquote>
+<ul>
+<li><code>enumerateObjectsUsingBlock:</code> 这是一个枚举对象方法，完整的声明如下：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">- (void)enumerateObjectsUsingBlock:(void (NS_NOESCAPE ^)(ObjectType obj, NSUInteger idx, BOOL *stop))block NS_AVAILABLE(10_6, 4_0);</span><br></pre></td></tr></table></figure>
+
+<p>该方法要求传入的 <strong>Block</strong> 对象的三个实参类型是固定的：</p>
+<ul>
+<li>第一个实参是对象指针，指向当前（枚举）的对象。该指针的类型是 id，所以无论数组包含的是什么类型的对象，都可以将地址赋值给该指针。</li>
+<li>第二个实参的类型是 <strong>NSUInterger</strong>，其值是当前对象在数组中的索引。</li>
+<li>第三个实参是指向 <strong>BOOL</strong> 变量的指针，该变量的默认值是 NO。如果将该值设置为 YES，那么数组对象会在<strong>执行完当前</strong>的 <strong>Block</strong> 对象后终止枚举过程。</li>
+</ul>
+<p>下面不妨修改示例中 <strong>Block</strong> 对象的代码，检查字符串是否包含字符y（包含大小写），如果有，则设置指针指向YES（会阻止 <strong>Block</strong> 对象进行枚举），终止枚举：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 创建两个数组对象，分别用于保存最初的字符串对象和去除元音字母后的版本</span><br><span class="line">NSArray *originalStrings &#x3D; @[@&quot;SagurrKraut&quot;,@&quot;Raygun&quot;,@&quot;Big Nerd Ranch&quot;,@&quot;Mississippi&quot;];</span><br><span class="line">NSLog(@&quot;%@&quot;,originalStrings);</span><br><span class="line">NSMutableArray *devoweLizedStrings &#x3D; [NSMutableArray array];</span><br><span class="line">&#x2F;&#x2F; 创建数组对象，保存需要从字符串中移除的字符</span><br><span class="line">NSArray *vowels &#x3D; @[@&quot;a&quot;,@&quot;e&quot;,@&quot;i&quot;,@&quot;o&quot;,@&quot;u&quot;];</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 声明 Block 变量</span><br><span class="line">void (^devowelizer)(id, NSUInteger, BOOL *);</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 将 Block 对象赋予变量</span><br><span class="line">devowelizer &#x3D; ^(id string, NSUInteger i, BOOL *stop) &#123;</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; 检查字符串是否包含字符y(包含大小写)，如果有，则设置指针指向YES（会阻止 Block 对象进行枚举），终止枚举。</span><br><span class="line">    NSRange yRange &#x3D; [string rangeOfString:@&quot;y&quot;</span><br><span class="line">                                   options:NSCaseInsensitiveSearch];</span><br><span class="line">    &#x2F;&#x2F; 是否包含字符y?</span><br><span class="line">    if (yRange.location !&#x3D; NSNotFound) &#123;</span><br><span class="line">        *stop &#x3D; YES;    &#x2F;&#x2F; 执行完当前的 Block 对象后终止枚举过程</span><br><span class="line">        return;         &#x2F;&#x2F; 结束当前正在执行的 Block 对象</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    NSMutableString *newString &#x3D; [NSMutableString stringWithString:string];</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; 枚举数组中的字符串，将所有出现的元音字母替换成空字符串</span><br><span class="line">    for (NSString *s in vowels) &#123;</span><br><span class="line">        NSRange fullRange &#x3D; NSMakeRange(0, [newString length]);</span><br><span class="line">        [newString replaceOccurrencesOfString:s</span><br><span class="line">                                   withString:@&quot;&quot;</span><br><span class="line">                                      options:NSCaseInsensitiveSearch</span><br><span class="line">                                        range:fullRange];</span><br><span class="line">    &#125;</span><br><span class="line">    [devoweLizedStrings addObject:newString];</span><br><span class="line"></span><br><span class="line">&#125;;  &#x2F;&#x2F; Block 编码赋值结束</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 枚举数组对象，针对每个数组中的对象，执行 Block 对象 devowelizer</span><br><span class="line">[originalStrings enumerateObjectsUsingBlock:devowelizer];</span><br><span class="line">NSLog(@&quot;new strings:%@&quot;,devoweLizedStrings);</span><br></pre></td></tr></table></figure>
+
+<p>输出结果：</p>
+<blockquote>
+<p> <strong>2017-04-18 10:56:28.988924+0800 VowelMovement[1069:135213] (</strong></p>
+<p> <strong>SagurrKraut,</strong></p>
+<p> <strong>Raygun,</strong></p>
+<p> <strong>“Big Nerd Ranch”,</strong></p>
+<p> <strong>Mississippi</strong></p>
+<p> <strong>)</strong></p>
+<p> <strong>2017-04-18 10:56:28.989276+0800 VowelMovement[1069:135213] new strings:(</strong></p>
+<p> <strong>SgrrKrt</strong></p>
+<p> <strong>)</strong></p>
+</blockquote>
+<h2 id="typedef"><a href="#typedef" class="headerlink" title="typedef"></a>typedef</h2><p>通过 <strong>typedef</strong> 关键字，可以将某个 <strong>Block</strong> 对象类型定义为一个新类型，以方便使用。</p>
+<p>语法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">typedef &lt;#returnType#&gt;(^&lt;#name#&gt;)(&lt;#arguments#&gt;);</span><br></pre></td></tr></table></figure>
+
+
+
+<p>修改示例代码:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><span class="line">#import &lt;Foundation&#x2F;Foundation.h&gt;</span><br><span class="line"></span><br><span class="line">&#x2F;**</span><br><span class="line"> *  使用 typedef 关键字将某个 Block 对象定义为一个 新的类型</span><br><span class="line"> *</span><br><span class="line"> *  定义位置：实现文件的顶部，或是头文件内使用 typedef</span><br><span class="line"> *  这里只是声明了 Block 对象的实参和返回类型，并没有实现真正的Block对象</span><br><span class="line"> *&#x2F;</span><br><span class="line">typedef void(^ArrayEnumerationBlock)(id, NSUInteger, BOOL *);</span><br><span class="line"></span><br><span class="line">int main(int argc, const char * argv[]) &#123;</span><br><span class="line">    @autoreleasepool &#123;</span><br><span class="line">        </span><br><span class="line">        &#x2F;&#x2F; 创建两个数组对象，分别用于保存最初的字符串对象和去除元音字母后的版本</span><br><span class="line">        NSArray *originalStrings &#x3D; @[@&quot;SagurrKraut&quot;,@&quot;Raygun&quot;,@&quot;Big Nerd Ranch&quot;,@&quot;Mississippi&quot;];</span><br><span class="line">        NSLog(@&quot;%@&quot;,originalStrings);</span><br><span class="line">        NSMutableArray *devoweLizedStrings &#x3D; [NSMutableArray array];</span><br><span class="line">        &#x2F;&#x2F; 创建数组对象，保存需要从字符串中移除的字符</span><br><span class="line">        NSArray *vowels &#x3D; @[@&quot;a&quot;,@&quot;e&quot;,@&quot;i&quot;,@&quot;o&quot;,@&quot;u&quot;];</span><br><span class="line">        </span><br><span class="line">        &#x2F;&#x2F; 声明 Block 变量</span><br><span class="line">        ArrayEnumerationBlock devowelizer;</span><br><span class="line">        </span><br><span class="line">        &#x2F;&#x2F; 将 Block 对象赋予变量</span><br><span class="line">        devowelizer &#x3D; ^(id string, NSUInteger i, BOOL *stop) &#123;</span><br><span class="line">            </span><br><span class="line">            &#x2F;&#x2F; 检查字符串是否包含字符y(包含大小写)，如果有，则设置指针指向YES（会阻止 Block 对象进行枚举），终止枚举。</span><br><span class="line">            NSRange yRange &#x3D; [string rangeOfString:@&quot;y&quot;</span><br><span class="line">                                           options:NSCaseInsensitiveSearch];</span><br><span class="line">            &#x2F;&#x2F; 是否包含字符y?</span><br><span class="line">            if (yRange.location !&#x3D; NSNotFound) &#123;</span><br><span class="line">                *stop &#x3D; YES;    &#x2F;&#x2F; 执行完当前的 Block 对象后终止枚举过程</span><br><span class="line">                return;         &#x2F;&#x2F; 结束当前正在执行的 Block 对象</span><br><span class="line">            &#125;</span><br><span class="line">          </span><br><span class="line">            NSMutableString *newString &#x3D; [NSMutableString stringWithString:string];</span><br><span class="line">            </span><br><span class="line">            &#x2F;&#x2F; 枚举数组中的字符串，将所有出现的元音字母替换成空字符串</span><br><span class="line">            for (NSString *s in vowels) &#123;</span><br><span class="line">                NSRange fullRange &#x3D; NSMakeRange(0, [newString length]);</span><br><span class="line">                [newString replaceOccurrencesOfString:s</span><br><span class="line">                                           withString:@&quot;&quot;</span><br><span class="line">                                              options:NSCaseInsensitiveSearch</span><br><span class="line">                                                range:fullRange];</span><br><span class="line">            &#125;</span><br><span class="line">            [devoweLizedStrings addObject:newString];</span><br><span class="line">            </span><br><span class="line">        &#125;;  &#x2F;&#x2F; Block 编码赋值结束</span><br><span class="line">        </span><br><span class="line">        &#x2F;&#x2F; 枚举数组对象，针对每个数组中的对象，执行 Block 对象 devowelizer</span><br><span class="line">        [originalStrings enumerateObjectsUsingBlock:devowelizer];</span><br><span class="line">        NSLog(@&quot;new strings:%@&quot;,devoweLizedStrings);</span><br><span class="line">      </span><br><span class="line">    &#125;</span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="Block-对象-vs-其他回调"><a href="#Block-对象-vs-其他回调" class="headerlink" title="Block 对象 vs. 其他回调"></a>Block 对象 vs. 其他回调</h2><ul>
+<li><p>通知中心</p>
+<p>通过 <strong>委托机制</strong>（delegation）和 <strong>通告机制</strong>（notification）这两种回调机制，程序能够在特定事件发生时调用指定的方法。虽然这两种回调机制能够很好地完成任务，但缺点就是回调的设置代码和回调方法的具体实现无法写在同一行代码中。而且这两段代码经常会间隔很远，甚至出现在不同的文件中，</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 将 BNRLogger 实例注册为观察者，使之在系统的时区设置发生变化时能够收到相应的通知。</span><br><span class="line">[[NSNotificationCenter defaultCenter]</span><br><span class="line">                         addObserver:logger</span><br><span class="line">                         selector:@selector(zoneChange:)</span><br><span class="line">                         name:NSSystemTimeZoneDidChangeNotification</span><br><span class="line">                         object:nil];</span><br></pre></td></tr></table></figure>
+
+
+
+<ul>
+<li>使用 <strong>Block</strong> 对象可以将与回调相关的代码写在同一行代码中:</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[[NSNotificationCenter defaultCenter]</span><br><span class="line">                        addObserverForName:NSSystemTimeZoneDidChangeNotification</span><br><span class="line">                                    object:nil</span><br><span class="line">                                     queue:nil</span><br><span class="line">                                usingBlock:^(NSNotification * _Nonnull note) &#123;</span><br><span class="line">    NSLog(@&quot;The system time zone has changes!&quot;);</span><br><span class="line">&#125;];</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="返回值"><a href="#返回值" class="headerlink" title="返回值"></a>返回值</h2><p>对于有返回值的 <strong>Block</strong> 对象，可以像调用函数那样调用 <strong>Block</strong> 对象，然后使用其返回值。</p>
+<p>示例：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 声明 divBlock 变量</span><br><span class="line">double (^divBlock)(double,double);</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 将 Block 对象赋给变量</span><br><span class="line">divBlock &#x3D; ^(double dividend, double divisor) &#123;</span><br><span class="line">  double quotient &#x3D; dividend &#x2F; divisor;</span><br><span class="line">  return quitient;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 调用</span><br><span class="line">double myQuotient &#x3D; divBlock(42.0, 12.5);</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="匿名-Block-对象"><a href="#匿名-Block-对象" class="headerlink" title="匿名 Block 对象"></a>匿名 Block 对象</h2><p>匿名的 <strong>Block</strong> 对象是可以传递给方法的 Block对象的，而不需要先赋值给变量。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; Int i;</span><br><span class="line">&#x2F;&#x2F; i &#x3D; 5;</span><br><span class="line">NSNumber *num &#x3D; [NSNumber numberWithInt:5];</span><br></pre></td></tr></table></figure>
+
+<p>将 <strong>Block</strong> 对象传递给方法和传递整数相同。</p>
+<p>用 匿名 <strong>Block</strong> 对象修改示例代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line">#import &lt;Foundation&#x2F;Foundation.h&gt;</span><br><span class="line"></span><br><span class="line">int main(int argc, const char * argv[]) &#123;</span><br><span class="line">    @autoreleasepool &#123;</span><br><span class="line">        </span><br><span class="line">        &#x2F;&#x2F; 创建两个数组对象，分别用于保存最初的字符串对象和去除元音字母后的版本</span><br><span class="line">        NSArray *originalStrings &#x3D; @[@&quot;SagurrKraut&quot;,@&quot;Raygun&quot;,@&quot;Big Nerd Ranch&quot;,@&quot;Mississippi&quot;];</span><br><span class="line">        NSLog(@&quot;%@&quot;,originalStrings);</span><br><span class="line">        NSMutableArray *devoweLizedStrings &#x3D; [NSMutableArray array];</span><br><span class="line">        &#x2F;&#x2F; 创建数组对象，保存需要从字符串中移除的字符</span><br><span class="line">        NSArray *vowels &#x3D; @[@&quot;a&quot;,@&quot;e&quot;,@&quot;i&quot;,@&quot;o&quot;,@&quot;u&quot;];</span><br><span class="line">        </span><br><span class="line">        [originalStrings enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) &#123;</span><br><span class="line"></span><br><span class="line">            &#x2F;&#x2F; 检查字符串是否包含字符y(包含大小写)，如果有，则设置指针指向YES（会阻止 Block 对象进行枚举），终止枚举。</span><br><span class="line">            NSRange yRange &#x3D; [obj rangeOfString:@&quot;y&quot;</span><br><span class="line">                                           options:NSCaseInsensitiveSearch];</span><br><span class="line">            &#x2F;&#x2F; 是否包含字符y?</span><br><span class="line">            if (yRange.location !&#x3D; NSNotFound) &#123;</span><br><span class="line">                *stop &#x3D; YES;    &#x2F;&#x2F; 执行完当前的 Block 对象后终止枚举过程</span><br><span class="line">                return;         &#x2F;&#x2F; 结束当前正在执行的 Block 对象</span><br><span class="line">            &#125;</span><br><span class="line">            </span><br><span class="line">            NSMutableString *newString &#x3D; [NSMutableString stringWithString:obj];</span><br><span class="line">            </span><br><span class="line">            &#x2F;&#x2F; 枚举数组中的字符串，将所有出现的元音字母替换成空字符串</span><br><span class="line">            for (NSString *s in vowels) &#123;</span><br><span class="line">                NSRange fullRange &#x3D; NSMakeRange(0, [newString length]);</span><br><span class="line">                [newString replaceOccurrencesOfString:s</span><br><span class="line">                                           withString:@&quot;&quot;</span><br><span class="line">                                              options:NSCaseInsensitiveSearch</span><br><span class="line">                                                range:fullRange];</span><br><span class="line">            &#125;</span><br><span class="line">            [devoweLizedStrings addObject:newString];</span><br><span class="line">        &#125;];</span><br><span class="line">        </span><br><span class="line">        NSLog(@&quot;new strings:%@&quot;,devoweLizedStrings);</span><br><span class="line">    &#125;</span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="外部变量"><a href="#外部变量" class="headerlink" title="外部变量"></a>外部变量</h2><p><strong>外部变量</strong>：在 <strong>Block</strong> 对象中使用外部创建的其它变量。</p>
+<ul>
+<li>基本类型的变量：<strong>Block</strong> 对象通过拷贝变量的值，并用 <strong>Block</strong> 对象内的局部变量保存。</li>
+<li>指针类型的变量：<strong>Block</strong> 对象使用<strong>强引用</strong>。</li>
+</ul>
+<h2 id="修改外部变量"><a href="#修改外部变量" class="headerlink" title="修改外部变量"></a>修改外部变量</h2><p>正如上面所说，在 <strong>Block</strong> 对象，被捕获的变量是拷贝而获得的常数，外部变量的值在 <strong>Block</strong> 对象内部是无法被修改的。</p>
+<p>如果需要在 <strong>Block</strong> 对象内部修改某个外部变量，使用 <strong>__block</strong> 关键字修饰声明的外部变量。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">__block int counter &#x3D; 0;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h2 id="在-Block-对象中使用-self"><a href="#在-Block-对象中使用-self" class="headerlink" title="在 Block 对象中使用 self"></a>在 Block 对象中使用 self</h2><p>使用 self 可能会导致强引用循环的问题：</p>
+<ul>
+<li>如果【block内部】使用【外部声明的强引用】访问【对象A】, 那么【block内部】会自动产生一个【强引用】指向【对象A】</li>
+<li>如果【block内部】使用【外部声明的弱引用】访问【对象A】, 那么【block内部】会自动产生一个【弱引用】指向【对象A】</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">__weak __typeof(self) weakSelf &#x3D; self;</span><br><span class="line">dispatch_block_t block &#x3D; ^&#123;</span><br><span class="line">   [weakSelf doSomething]; &#x2F;&#x2F; weakSelf !&#x3D; nil</span><br><span class="line">&#x2F;&#x2F; preemption, weakSelf turned nil</span><br><span class="line">[weakSelf doSomethingElse]; &#x2F;&#x2F; weakSelf &#x3D;&#x3D; nil</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">最好这样调用：</span><br><span class="line">__weak __typeof(self) weakSelf &#x3D; self;</span><br><span class="line">myObj.myBlock &#x3D; ^&#123;</span><br><span class="line">__strong __typeof(self) strongSelf &#x3D; weakSelf;</span><br><span class="line">if (strongSelf) &#123;</span><br><span class="line">     [strongSelf doSomething]; &#x2F;&#x2F; strongSelf !&#x3D; nil</span><br><span class="line">&#x2F;&#x2F; preemption, strongSelf still not nil（抢占的时候，strongSelf 还是非 nil 的)</span><br><span class="line">[strongSelf doSomethingElse]; &#x2F;&#x2F; strongSelf !&#x3D; nil &#125;</span><br><span class="line">else &#123; &#x2F;&#x2F; Probably nothing... return;</span><br><span class="line">&#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="在-Block-对象中无意使用-self"><a href="#在-Block-对象中无意使用-self" class="headerlink" title="在 Block 对象中无意使用 self"></a>在 Block 对象中无意使用 self</h2><p>如果直接在 <strong>Block</strong> 对象中使用实例变量，那么 <strong>Block</strong> 会捕获 self，而不会捕获实例变量。</p>
+<ul>
+<li><p>不要直接存取实例变量，使用存取方法。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; Block中,不要直接存取实例变量</span><br><span class="line">NSLog(@&quot;%@&quot;,_employeeID);</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 要使用存取方法</span><br><span class="line">NSLog(@&quot;%@&quot;,weakSelf.employeeID);</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+</li>
+</ul>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><ul>
+<li><a target="_blank" rel="noopener" href="http://blog.devtang.com/2013/07/28/a-look-inside-blocks/"><span class="exturl" data-url="aHR0cDovL2Jsb2cuZGV2dGFuZy5jb20vMjAxMy8wNy8yOC9hLWxvb2staW5zaWRlLWJsb2Nrcy8=">谈Objective-C block的实现 @唐巧<i class="fa fa-external-link-alt"></i></span></a></li>
+<li><span class="exturl" data-url="aHR0cHM6Ly9vbmV2Y2F0LmNvbS8yMDExLzExL29iamMtYmxvY2sv">Objective-C中的Block @onevcat<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cDovL3d3dy5jb2NvYWNoaW5hLmNvbS9pb3MvMjAxNzAzMjQvMTg5NTAuaHRtbA==">iOS中书写代码规范35条小建议<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cDovL3d3dy5qaWFuc2h1LmNvbS9wL2M2Y2E1NDA4NjFkOQ==">关于Block内部要不要使用weakSelf的几种情况<i class="fa fa-external-link-alt"></i></span></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>独木舟的木
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://andy0570.com/2017/04/18/%E3%80%8AObjective-C%20%E7%BC%96%E7%A8%8B%E3%80%8B28.Block/" title="《Objective-C 编程》28.Block">https://andy0570.com/2017/04/18/《Objective-C 编程》28.Block/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <span class="exturl" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpo"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</span> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/iOS/" rel="tag"># iOS</a>
+              <a href="/tags/Objective-C/" rel="tag"># Objective-C</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2017/04/18/%E3%80%8AObjective-C%20%E7%BC%96%E7%A8%8B%E3%80%8B30.Property%20List/" rel="prev" title="《Objective-C 编程》30.Property List">
+      <i class="fa fa-chevron-left"></i> 《Objective-C 编程》30.Property List
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2017/04/19/%E3%80%8AObjective-C%20%E7%BC%96%E7%A8%8B%E3%80%8B33.init%E3%80%81instancetype%E3%80%81id/" rel="next" title="《Objective-C 编程》33.init、instancetype、id">
+      《Objective-C 编程》33.init、instancetype、id <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+        </div>
+        
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">独木舟的木</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">2.1m</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">31:21</span>
+</div>
+  <div class="powered-by">由 <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZw==">NexT.Gemini</span> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

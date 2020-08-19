@@ -1,23 +1,732 @@
-{% extends '_layout.swig' %}
-{% import '_macro/post.swig' as post_template %}
-{% import '_macro/sidebar.swig' as sidebar_template %}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.0.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+  <meta name="google-site-verification" content="wioXOS3Gv2wXUpJ3sLtfZ4ft6YJYKNLLWSw6QoZTFYM">
+  <meta name="msvalidate.01" content="C96491A81239C517A50597C54EE53CD1">
+  <meta name="baidu-site-verification" content="h8asiToN1b">
 
-{% block title %}{{ page.title }} | {{ title }}{% endblock %}
+<link rel="stylesheet" href="/css/main.css">
 
-{% block page_class %}page-post-detail{% endblock %}
 
-{% block content %}
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  
+  <link rel="stylesheet" href="/lib/animate-css/animate.min.css">
 
-  <div id="posts" class="posts-expand">
-    {{ post_template.render(page) }}
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"andy0570.com","root":"/","scheme":"Gemini","version":"8.0.0-rc.5","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":"mac","bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false};
+  </script>
+
+  <meta name="description" content="GitHub源码:CocoaLumberjack  star:9000+  iOS Console   README.md CocoaLumberjack 是一个适用于Mac和iOS的快速、简单，而且功能强大且灵活的日志框架">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CocoaLumberjack——简单好用的日志框架">
+<meta property="og:url" content="https://andy0570.com/2017/06/21/CocoaLumberjack%E2%80%94%E2%80%94%E7%AE%80%E5%8D%95%E5%A5%BD%E7%94%A8%E7%9A%84%E6%97%A5%E5%BF%97%E6%A1%86%E6%9E%B6/index.html">
+<meta property="og:site_name" content="独木舟的木">
+<meta property="og:description" content="GitHub源码:CocoaLumberjack  star:9000+  iOS Console   README.md CocoaLumberjack 是一个适用于Mac和iOS的快速、简单，而且功能强大且灵活的日志框架">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071911.jpg">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071914.jpg">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071921.png">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071923.jpg">
+<meta property="article:published_time" content="2017-06-21T09:38:00.000Z">
+<meta property="article:modified_time" content="2019-05-01T13:34:55.000Z">
+<meta property="article:author" content="独木舟的木">
+<meta property="article:tag" content="iOS">
+<meta property="article:tag" content="GitHub">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071911.jpg">
+
+<link rel="canonical" href="https://andy0570.com/2017/06/21/CocoaLumberjack%E2%80%94%E2%80%94%E7%AE%80%E5%8D%95%E5%A5%BD%E7%94%A8%E7%9A%84%E6%97%A5%E5%BF%97%E6%A1%86%E6%9E%B6/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>CocoaLumberjack——简单好用的日志框架 | 独木舟的木</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="独木舟的木" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <main class="main">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+        <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
   </div>
 
-{% endblock %}
+  <div class="site-meta">
 
-{% block sidebar %}
-  {{ sidebar_template.render(true) }}
-{% endblock %}
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">独木舟的木</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">iOS Developer</p>
+  </div>
 
-{% block script_extra %}
-  {% include '_scripts/pages/post-details.swig' %}
-{% endblock %}
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">14</span></a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">36</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">310</span></a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <section class="post-toc-wrap sidebar-panel">
+          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#README-md"><span class="nav-number">1.</span> <span class="nav-text">README.md</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E5%BC%80%E5%A7%8B"><span class="nav-number">1.0.1.</span> <span class="nav-text">如何开始</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E9%80%9A%E8%BF%87-CocoaPods-%E5%AE%89%E8%A3%85-Swift-%E7%89%88%E6%9C%AC"><span class="nav-number">1.0.1.0.1.</span> <span class="nav-text">通过 CocoaPods 安装 Swift 版本</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Swift-%E7%94%A8%E6%B3%95"><span class="nav-number">1.0.1.0.2.</span> <span class="nav-text">Swift 用法</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E9%80%9A%E8%BF%87-CocoaPods-%E5%AE%89%E8%A3%85-Objectice-C-%E7%89%88%E6%9C%AC"><span class="nav-number">1.0.1.0.3.</span> <span class="nav-text">通过 CocoaPods 安装 Objectice-C 版本</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Obj-C-%E7%94%A8%E6%B3%95"><span class="nav-number">1.0.1.0.4.</span> <span class="nav-text">Obj-C 用法</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8-Carthage-iOS-8-%E5%AE%89%E8%A3%85"><span class="nav-number">1.0.1.0.5.</span> <span class="nav-text">使用 Carthage (iOS 8+) 安装</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CocoaLumberjack-3"><span class="nav-number">1.0.2.</span> <span class="nav-text">CocoaLumberjack 3</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BF%81%E7%A7%BB%E5%88%B0-3-x"><span class="nav-number">1.0.2.1.</span> <span class="nav-text">迁移到 3.x</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%89%B9%E6%80%A7"><span class="nav-number">1.0.3.</span> <span class="nav-text">特性</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Lumberjack-%E6%98%AF-%E5%BF%AB%E9%80%9F-amp-%E7%AE%80%E5%8D%95-%E8%80%8C%E4%B8%94%E5%BC%BA%E5%A4%A7-amp-%E7%81%B5%E6%B4%BB%E7%9A%84"><span class="nav-number">1.0.3.1.</span> <span class="nav-text">Lumberjack 是 快速 &amp; 简单, 而且强大 &amp; 灵活的.</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Lumberjack-%E6%9B%B4%E5%BF%AB%E9%80%9F"><span class="nav-number">1.0.3.2.</span> <span class="nav-text">Lumberjack 更快速</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Lumberjack-%E6%98%AF%E7%AE%80%E5%8D%95%E7%9A%84"><span class="nav-number">1.0.3.3.</span> <span class="nav-text">Lumberjack 是简单的</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Lumberjack-%E6%98%AF%E5%BC%BA%E5%A4%A7%E7%9A%84"><span class="nav-number">1.0.3.4.</span> <span class="nav-text">Lumberjack 是强大的</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Lumberjack-%E6%98%AF%E7%81%B5%E6%B4%BB%E7%9A%84"><span class="nav-number">1.0.3.5.</span> <span class="nav-text">Lumberjack 是灵活的:</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%99%E4%B8%AA%E6%A1%86%E6%9E%B6%E5%B0%B1%E6%98%AF%E4%B8%BA%E4%BD%A0%E5%87%86%E5%A4%87%E7%9A%84%E5%A6%82%E6%9E%9C"><span class="nav-number">1.0.4.</span> <span class="nav-text">这个框架就是为你准备的如果:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%87%E6%A1%A3"><span class="nav-number">1.0.5.</span> <span class="nav-text">文档</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E9%9C%80%E6%B1%82"><span class="nav-number">1.0.6.</span> <span class="nav-text">配置需求</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%90%91%E5%90%8E%E5%85%BC%E5%AE%B9%E6%80%A7"><span class="nav-number">1.0.6.1.</span> <span class="nav-text">向后兼容性</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B2%9F%E9%80%9A"><span class="nav-number">1.0.7.</span> <span class="nav-text">沟通</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%9C%E8%80%85"><span class="nav-number">1.0.8.</span> <span class="nav-text">作者</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Collaborators"><span class="nav-number">1.0.9.</span> <span class="nav-text">Collaborators</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#License"><span class="nav-number">1.0.10.</span> <span class="nav-text">License</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A1%B9%E7%9B%AE%E7%BB%93%E6%9E%84"><span class="nav-number">1.0.11.</span> <span class="nav-text">项目结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E6%AD%A4%E6%A1%86%E6%9E%B6%E5%89%8D%EF%BC%8C%E6%89%93%E5%8D%B0%E6%97%A5%E5%BF%97%E6%98%AF%E8%BF%99%E4%B9%88%E5%81%9A%E7%9A%84"><span class="nav-number">1.0.12.</span> <span class="nav-text">使用此框架前，打印日志是这么做的</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A1%B9%E7%9B%AE%E4%B8%AD%E4%BD%BF%E7%94%A8CocoaLumberjack"><span class="nav-number">1.1.</span> <span class="nav-text">项目中使用CocoaLumberjack</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0-CocoaLumberjack-%E6%96%87%E4%BB%B6%E5%88%B0%E9%A1%B9%E7%9B%AE%E4%B8%AD"><span class="nav-number">1.1.1.</span> <span class="nav-text">添加 CocoaLumberjack 文件到项目中</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Cocoapods"><span class="nav-number">1.1.1.1.</span> <span class="nav-text">Cocoapods</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%93%BE%E6%8E%A5%E9%85%8D%E7%BD%AE-CocoaLumberjack"><span class="nav-number">1.1.2.</span> <span class="nav-text">链接配置 CocoaLumberjack</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CocoaLumberjack-%E7%9A%84-Log-%E6%A0%B7%E5%BC%8F"><span class="nav-number">1.2.</span> <span class="nav-text">CocoaLumberjack 的 Log 样式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Log%E7%BA%A7%E5%88%AB"><span class="nav-number">1.2.1.</span> <span class="nav-text">Log级别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%87%AA%E5%AE%9A%E4%B9%89%E6%97%A5%E5%BF%97%E6%A0%BC%E5%BC%8F"><span class="nav-number">1.2.2.</span> <span class="nav-text">自定义日志格式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98"><span class="nav-number">1.2.3.</span> <span class="nav-text">遇到的问题</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95%EF%BC%9A"><span class="nav-number">1.2.3.1.</span> <span class="nav-text">解决方法：</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">1.3.</span> <span class="nav-text">参考</span></a></li></ol></li></ol></div>
+      </section>
+      <!--/noindex-->
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="独木舟的木"
+      src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+  <p class="site-author-name" itemprop="name">独木舟的木</p>
+  <div class="site-description" itemprop="description">生若直木，不语斧凿。</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">310</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">36</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL0FuZHkwNTcw" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Andy0570"><i class="fab fa-github fa-fw"></i>GitHub</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9zdGFja292ZXJmbG93LmNvbS91c2Vycy83MjY1NDAwL2FuZHkwNTcw" title="StackOverflow → https:&#x2F;&#x2F;stackoverflow.com&#x2F;users&#x2F;7265400&#x2F;andy0570"><i class="fab fa-stack-overflow fa-fw"></i>StackOverflow</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuamlhbnNodS5jb20vdS84NGM1ZmFkYzdjMTg=" title="简书 → https:&#x2F;&#x2F;www.jianshu.com&#x2F;u&#x2F;84c5fadc7c18"><i class="heartbeat fa-fw"></i>简书</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="bWFpbHRvOmFuZHl3aG1AMTYzLmNvbQ==" title="E-Mail → mailto:andywhm@163.com"><i class="fa fa-envelope fa-fw"></i>E-Mail</span>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <span class="exturl cc-opacity" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpo"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></span>
+  </div>
+
+
+
+      </section>
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </header>
+
+      
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div id="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+      <div class="main-inner">
+        
+
+        <div class="content post posts-expand">
+          
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://andy0570.com/2017/06/21/CocoaLumberjack%E2%80%94%E2%80%94%E7%AE%80%E5%8D%95%E5%A5%BD%E7%94%A8%E7%9A%84%E6%97%A5%E5%BF%97%E6%A1%86%E6%9E%B6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+      <meta itemprop="name" content="独木舟的木">
+      <meta itemprop="description" content="生若直木，不语斧凿。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="独木舟的木">
+    </span>
+
+    
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          CocoaLumberjack——简单好用的日志框架
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2017-06-21 17:38:00" itemprop="dateCreated datePublished" datetime="2017-06-21T17:38:00+08:00">2017-06-21</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-05-01 21:34:55" itemprop="dateModified" datetime="2019-05-01T21:34:55+08:00">2019-05-01</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS-%E5%BC%80%E6%BA%90%E6%A1%86%E6%9E%B6/" itemprop="url" rel="index"><span itemprop="name">iOS 开源框架</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>12k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>11 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <ul>
+<li><p>GitHub源码:<span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL0NvY29hTHVtYmVyamFjay9Db2NvYUx1bWJlcmphY2s=">CocoaLumberjack<i class="fa fa-external-link-alt"></i></span></p>
+</li>
+<li><p>star:9000+</p>
+</li>
+<li><p><span class="exturl" data-url="aHR0cDovL2xlbW9uamFyLmNvbS9pb3Njb25zb2xlLw==">iOS Console<i class="fa fa-external-link-alt"></i></span></p>
+</li>
+</ul>
+<h1 id="README-md"><a href="#README-md" class="headerlink" title="README.md"></a>README.md</h1><p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071911.jpg" alt="Lumberjack logo"></p>
+<p><strong>CocoaLumberjack</strong> 是一个适用于Mac和iOS的快速、简单，而且功能强大且灵活的日志框架</p>
+<a id="more"></a>
+
+<h3 id="如何开始"><a href="#如何开始" class="headerlink" title="如何开始"></a>如何开始</h3><ul>
+<li>通过 <span class="exturl" data-url="aHR0cDovL2NvY29hcG9kcy5vcmcv">CocoaPods<i class="fa fa-external-link-alt"></i></span> 安装</li>
+</ul>
+<h5 id="通过-CocoaPods-安装-Swift-版本"><a href="#通过-CocoaPods-安装-Swift-版本" class="headerlink" title="通过 CocoaPods 安装 Swift 版本"></a>通过 CocoaPods 安装 Swift 版本</h5><figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">platform <span class="symbol">:ios</span>, <span class="string">&#x27;8.0&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># You need to set target when you use CocoaPods 1.0.0 or later.</span></span><br><span class="line">target <span class="string">&#x27;SampleTarget&#x27;</span> <span class="keyword">do</span> </span><br><span class="line">  use_frameworks!</span><br><span class="line">  pod <span class="string">&#x27;CocoaLumberjack/Swift&#x27;</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+<p>注意: <code>Swift</code> 子空间中包含了所有的 Objectice-C 代码和 Swift 代码，所以这是足够的。<br>For more details about how to use Swift with Lumberjack, see <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL0NvY29hTHVtYmVyamFjay9Db2NvYUx1bWJlcmphY2svaXNzdWVzLzQwNQ==">this conversation<i class="fa fa-external-link-alt"></i></span>.</p>
+<h5 id="Swift-用法"><a href="#Swift-用法" class="headerlink" title="Swift 用法"></a>Swift 用法</h5><p>If you installed using CocoaPods or manually:</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> CocoaLumberjack</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">DDLog</span>.add(<span class="type">DDTTYLogger</span>.sharedInstance) <span class="comment">// TTY = Xcode console</span></span><br><span class="line"><span class="type">DDLog</span>.add(<span class="type">DDASLLogger</span>.sharedInstance) <span class="comment">// ASL = Apple System Logs</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> fileLogger: <span class="type">DDFileLogger</span> = <span class="type">DDFileLogger</span>() <span class="comment">// File Logger</span></span><br><span class="line">fileLogger.rollingFrequency = <span class="type">TimeInterval</span>(<span class="number">60</span>*<span class="number">60</span>*<span class="number">24</span>)  <span class="comment">// 24 hours</span></span><br><span class="line">fileLogger.logFileManager.maximumNumberOfLogFiles = <span class="number">7</span></span><br><span class="line"><span class="type">DDLog</span>.add(fileLogger)</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line"></span><br><span class="line"><span class="type">DDLogVerbose</span>(<span class="string">&quot;Verbose&quot;</span>);</span><br><span class="line"><span class="type">DDLogDebug</span>(<span class="string">&quot;Debug&quot;</span>);</span><br><span class="line"><span class="type">DDLogInfo</span>(<span class="string">&quot;Info&quot;</span>);</span><br><span class="line"><span class="type">DDLogWarn</span>(<span class="string">&quot;⚠️&quot;</span>);</span><br><span class="line"><span class="type">DDLogError</span>(<span class="string">&quot;Error&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+
+
+<h5 id="通过-CocoaPods-安装-Objectice-C-版本"><a href="#通过-CocoaPods-安装-Objectice-C-版本" class="headerlink" title="通过 CocoaPods 安装 Objectice-C 版本"></a>通过 CocoaPods 安装 Objectice-C 版本</h5><figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">platform <span class="symbol">:ios</span>, <span class="string">&#x27;7.0&#x27;</span></span><br><span class="line">pod <span class="string">&#x27;CocoaLumberjack&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<h5 id="Obj-C-用法"><a href="#Obj-C-用法" class="headerlink" title="Obj-C 用法"></a>Obj-C 用法</h5><p>如果你把 <strong>Lumberjack</strong> 作为框架导入，你可以 <code>@import CocoaLumberjack</code>。</p>
+<p>否则, <code>#import &lt;CocoaLumberjack/CocoaLumberjack.h&gt;</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">[DDLog addLogger:[DDTTYLogger sharedInstance]]; &#x2F;&#x2F; TTY &#x3D; Xcode 控制台</span><br><span class="line">[DDLog addLogger:[DDASLLogger sharedInstance]]; &#x2F;&#x2F; ASL &#x3D; Apple System Logs 苹果系统日志</span><br><span class="line"></span><br><span class="line">DDFileLogger *fileLogger &#x3D; [[DDFileLogger alloc] init]; &#x2F;&#x2F; 本地文件日志</span><br><span class="line">fileLogger.rollingFrequency &#x3D; 60 * 60 * 24; &#x2F;&#x2F; 每24小时创建一个新文件</span><br><span class="line">fileLogger.logFileManager.maximumNumberOfLogFiles &#x3D; 7; &#x2F;&#x2F; 最多允许创建7个文件</span><br><span class="line">[DDLog addLogger:fileLogger];</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line"></span><br><span class="line">DDLogVerbose(@&quot;Verbose&quot;);</span><br><span class="line">DDLogDebug(@&quot;Debug&quot;);</span><br><span class="line">DDLogInfo(@&quot;Info&quot;);</span><br><span class="line">DDLogWarn(@&quot;⚠️&quot;);</span><br><span class="line">DDLogError(@&quot;Error&quot;);</span><br></pre></td></tr></table></figure>
+
+
+
+<h5 id="使用-Carthage-iOS-8-安装"><a href="#使用-Carthage-iOS-8-安装" class="headerlink" title="使用 Carthage (iOS 8+) 安装"></a>使用 Carthage (iOS 8+) 安装</h5><p><span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL0NhcnRoYWdlL0NhcnRoYWdl">Carthage<i class="fa fa-external-link-alt"></i></span> is a lightweight dependency manager for Swift and Objective-C. It leverages CocoaTouch modules and is less invasive than CocoaPods.</p>
+<p>To install with Carthage, follow the instruction on <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL0NhcnRoYWdlL0NhcnRoYWdl">Carthage<i class="fa fa-external-link-alt"></i></span></p>
+<p>Cartfile</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">github &quot;CocoaLumberjack&#x2F;CocoaLumberjack&quot;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>or <a href="Documentation/GettingStarted.md#manual-installation">install manually</a></li>
+<li>read the <a href="Documentation/GettingStarted.md">Getting started</a> guide, check out the <a href="Documentation/FAQ.md">FAQ</a> section or the other <a href="Documentation/">docs</a></li>
+<li>if you find issues or want to suggest improvements, create an issue or a pull request</li>
+<li>for all kinds of questions involving CocoaLumberjack, use the <span class="exturl" data-url="aHR0cDovL2dyb3Vwcy5nb29nbGUuY29tL2dyb3VwL2NvY29hbHVtYmVyamFjaw==">Google group<i class="fa fa-external-link-alt"></i></span> or StackOverflow (use <span class="exturl" data-url="aHR0cDovL3N0YWNrb3ZlcmZsb3cuY29tL3F1ZXN0aW9ucy90YWdnZWQvbHVtYmVyamFjaw==">#lumberjack<i class="fa fa-external-link-alt"></i></span>).</li>
+</ul>
+<h3 id="CocoaLumberjack-3"><a href="#CocoaLumberjack-3" class="headerlink" title="CocoaLumberjack 3"></a>CocoaLumberjack 3</h3><h4 id="迁移到-3-x"><a href="#迁移到-3-x" class="headerlink" title="迁移到 3.x"></a>迁移到 3.x</h4><ul>
+<li>待定</li>
+</ul>
+<h3 id="特性"><a href="#特性" class="headerlink" title="特性"></a>特性</h3><h4 id="Lumberjack-是-快速-amp-简单-而且强大-amp-灵活的"><a href="#Lumberjack-是-快速-amp-简单-而且强大-amp-灵活的" class="headerlink" title="Lumberjack 是 快速 &amp; 简单, 而且强大 &amp; 灵活的."></a>Lumberjack 是 快速 &amp; 简单, 而且强大 &amp; 灵活的.</h4><p>它在概念上与其他流行的日志记录框架类似，如log4j，它是专为 <strong>Objective-C</strong> 设计的，并且利用了诸如多线程，GCD（如果可用），无锁原子操作（lockless atomic operations）和动态性质的 <strong>Objective-C</strong> runtime。</p>
+<h4 id="Lumberjack-更快速"><a href="#Lumberjack-更快速" class="headerlink" title="Lumberjack 更快速"></a>Lumberjack 更快速</h4><p>在大多数情况下，它比 <code>NSLog</code> 快一个数量级。</p>
+<h4 id="Lumberjack-是简单的"><a href="#Lumberjack-是简单的" class="headerlink" title="Lumberjack 是简单的"></a>Lumberjack 是简单的</h4><p>当应用程序启动时，它几乎只需要一行代码来配置 <strong>lumberjack</strong>。 然后只需用 <code>DDLog</code> 语句替换您的 <code>NSLog</code> 语句即可。 （并且 <code>DDLog</code> 宏与 <code>NSLog</code> 具有完全相同的格式和语法，因此它非常简单。）</p>
+<h4 id="Lumberjack-是强大的"><a href="#Lumberjack-是强大的" class="headerlink" title="Lumberjack 是强大的"></a>Lumberjack 是强大的</h4><p>一条日志语句可以被发送到多个记录器上，这意味着你可以同时登录到文件和控制台。 想要更多？ 创建自己的记录器（很简单），并通过网络发送您的日志。 或者到数据库或分布式文件系统。 限制它的只有天空(The sky is the limit)。</p>
+<h4 id="Lumberjack-是灵活的"><a href="#Lumberjack-是灵活的" class="headerlink" title="Lumberjack 是灵活的:"></a>Lumberjack 是灵活的:</h4><p>配置你需要记录的日志。 更改每个文件的日志级别（便于完美调试）。更改每个记录器的日志级别（详细的控制台，但简明的日志文件）。 更改每个 Xcode配置的日志级别（详细调试，但简明扼要）。 将日志语句从发行版本中编译出来。 自定义应用程序的日志级别数量。 添加适合你自己的日志。 在运行时动态更改日志级别。 选择如何以及何时希望日志文件滚动。 将日志文件上传到中央服务器。 压缩归档日志文件以节省磁盘空间…</p>
+<h3 id="这个框架就是为你准备的如果"><a href="#这个框架就是为你准备的如果" class="headerlink" title="这个框架就是为你准备的如果:"></a>这个框架就是为你准备的如果:</h3><ul>
+<li>你正在寻找一种方法来追踪不可再现的错误，这些错误在该领域不断涌现。</li>
+<li>你对iPhone上的超短控制台日志感到沮丧。</li>
+<li>你正在寻求在支持性和稳定性方面将应用提升到一个新的水平。</li>
+<li>你正在为你的应用程序（Mac或iPhone）寻找企业级日志记录解决方案。</li>
+</ul>
+<h3 id="文档"><a href="#文档" class="headerlink" title="文档"></a>文档</h3><ul>
+<li><strong><a href="Documentation/GettingStarted.md">Get started using Lumberjack</a></strong></li>
+<li><a href="Documentation/XcodeTricks.md">Different log levels for Debug and Release builds</a></li>
+<li><a href="Documentation/PerLoggerLogLevels.md">Different log levels for each logger</a></li>
+<li><a href="Documentation/XcodeColors.md">Use colors in the Xcode debugging console</a></li>
+<li><a href="Documentation/CustomFormatters.md">Write your own custom formatters</a></li>
+<li><a href="Documentation/FAQ.md">FAQ</a></li>
+<li><a href="Documentation/Performance.md">Analysis of performance with benchmarks</a></li>
+<li><a href="Documentation/ProblemSolution.md">Common issues you may encounter and their solutions</a></li>
+<li><a href="Documentation/AppCode-support.md">AppCode support</a></li>
+<li><strong><a href="Documentation/">Full Lumberjack documentation</a></strong></li>
+</ul>
+<h3 id="配置需求"><a href="#配置需求" class="headerlink" title="配置需求"></a>配置需求</h3><p>当前版本的 <strong>Lumberjack</strong> 需要:</p>
+<ul>
+<li>Xcode 8 or later</li>
+<li>Swift 3.0 or later</li>
+<li>iOS 5 or later</li>
+<li>OS X 10.7 or later</li>
+<li>WatchOS 2 or later</li>
+<li>TVOS 9 or later</li>
+</ul>
+<h4 id="向后兼容性"><a href="#向后兼容性" class="headerlink" title="向后兼容性"></a>向后兼容性</h4><ul>
+<li>for Xcode 7.3 and Swift 2.3, use the 2.4.0 version</li>
+<li>for Xcode 7.3 and Swift 2.2, use the 2.3.0 version</li>
+<li>for Xcode 7.2 and 7.1, use the 2.2.0 version</li>
+<li>for Xcode 7.0 or earlier, use the 2.1.0 version</li>
+<li>for Xcode 6 or earlier, use the 2.0.x version</li>
+<li>for OS X &lt; 10.7 support, use the 1.6.0 version</li>
+</ul>
+<h3 id="沟通"><a href="#沟通" class="headerlink" title="沟通"></a>沟通</h3><ul>
+<li>If you <strong>need help</strong>, use <span class="exturl" data-url="aHR0cDovL3N0YWNrb3ZlcmZsb3cuY29tL3F1ZXN0aW9ucy90YWdnZWQvbHVtYmVyamFjaw==">Stack Overflow<i class="fa fa-external-link-alt"></i></span>. (Tag ‘lumberjack’)</li>
+<li>If you’d like to <strong>ask a general question</strong>, use <span class="exturl" data-url="aHR0cDovL3N0YWNrb3ZlcmZsb3cuY29tL3F1ZXN0aW9ucy90YWdnZWQvbHVtYmVyamFjaw==">Stack Overflow<i class="fa fa-external-link-alt"></i></span>.</li>
+<li>If you <strong>found a bug</strong>, open an issue.</li>
+<li>If you <strong>have a feature request</strong>, open an issue.</li>
+<li>If you <strong>want to contribute</strong>, submit a pull request.</li>
+</ul>
+<h3 id="作者"><a href="#作者" class="headerlink" title="作者"></a>作者</h3><ul>
+<li><span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL3JvYmJpZWhhbnNvbg==">Robbie Hanson<i class="fa fa-external-link-alt"></i></span></li>
+<li>Love the project? Wanna buy me a coffee? (or a beer :D) <span class="exturl" data-url="aHR0cHM6Ly93d3cucGF5cGFsLmNvbS9jZ2ktYmluL3dlYnNjcj9jbWQ9X3MteGNsaWNrJmhvc3RlZF9idXR0b25faWQ9VVpSQTI2SlBKQjNEQQ==">[图片上传失败…(image-d928bf-1510647423281)]<i class="fa fa-external-link-alt"></i></span></li>
+</ul>
+<h3 id="Collaborators"><a href="#Collaborators" class="headerlink" title="Collaborators"></a>Collaborators</h3><ul>
+<li><span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL3JpdmVyYS1lcm5lc3Rv">Ernesto Rivera<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2R2b3I=">Dmitry Vorobyov<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2Jwb3BsYXVzY2hp">Bogdan Poplauschi<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL01hZGRUaGVTYW5l">C.W. Betts<i class="fa fa-external-link-alt"></i></span></li>
+</ul>
+<h3 id="License"><a href="#License" class="headerlink" title="License"></a>License</h3><ul>
+<li>CocoaLumberjack is available under the BSD license. See the <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL0NvY29hTHVtYmVyamFjay9Db2NvYUx1bWJlcmphY2svYmxvYi9tYXN0ZXIvTElDRU5TRS50eHQ=">LICENSE file<i class="fa fa-external-link-alt"></i></span>.</li>
+</ul>
+<h3 id="项目结构"><a href="#项目结构" class="headerlink" title="项目结构"></a>项目结构</h3><p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071914.jpg"></p>
+<p>⚠️ 光看 <strong>README.md</strong> 文档其实是完全不够的，我发现实际项目中使用时还是有很多注意点，最好详细看看 <strong>Documentation</strong> 里面的文章。</p>
+<h3 id="使用此框架前，打印日志是这么做的"><a href="#使用此框架前，打印日志是这么做的" class="headerlink" title="使用此框架前，打印日志是这么做的"></a>使用此框架前，打印日志是这么做的</h3><hr>
+<p>记录日志一般做法是在 Release 模式下禁用 NSLog，比如在 <code>.pch</code> 文件中，通过对环境的判断，对 <code>NSLog</code> 做不同的处理。因此，在不使用 <strong>CocoaLumberjack</strong> 之前，我的<code>.pch</code> 文件中是这样写的：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;****************** 打印日志 ******************&#x2F;</span><br><span class="line">#ifdef DEBUG</span><br><span class="line">#define HQString [NSString stringWithFormat:@&quot;%s&quot;, __FILE__].lastPathComponent</span><br><span class="line">#define HQLog(...) printf(&quot;%s: %s 第%d行:\n %s\n\n&quot;, [[NSString hql_stringDate] UTF8String], [HQString UTF8String] , __LINE__, [[NSString stringWithFormat:__VA_ARGS__] UTF8String]);</span><br><span class="line">#else</span><br><span class="line">#define  HQLog(...);</span><br><span class="line">#endif    &#x2F;* DEBUG *&#x2F;</span><br></pre></td></tr></table></figure>
+
+<p>还需要为 <code>NSString</code> 类写一个范畴类方法输出时间：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">+ (NSString *)hql_stringDate &#123;</span><br><span class="line">    NSDateFormatter *dateFormatter &#x3D; [[NSDateFormatter alloc] init];</span><br><span class="line">    [dateFormatter setDateFormat:@&quot;YYYY-MM-dd hh:mm:ss&quot;];</span><br><span class="line">    NSString *dateString &#x3D; [dateFormatter stringFromDate:[NSDate date]];</span><br><span class="line">    return dateString;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="项目中使用CocoaLumberjack"><a href="#项目中使用CocoaLumberjack" class="headerlink" title="项目中使用CocoaLumberjack"></a>项目中使用CocoaLumberjack</h2><ul>
+<li><span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL0NvY29hTHVtYmVyamFjay9Db2NvYUx1bWJlcmphY2svYmxvYi9tYXN0ZXIvRG9jdW1lbnRhdGlvbi9HZXR0aW5nU3RhcnRlZC5tZA==">Getting started with the CocoaLumberjack framework.<i class="fa fa-external-link-alt"></i></span></li>
+</ul>
+<hr>
+<p>使用 <strong>CocoaLumberjack</strong>  分为三步：</p>
+<ol>
+<li>添加 <strong>CocoaLumberjack</strong> 文件到项目中；</li>
+<li>链接配置 <strong>CocoaLumberjack</strong>；</li>
+<li>将你的 <code>NSLog</code> 语句转换为使用 <strong>CocoaLumberjack</strong> 宏;</li>
+</ol>
+<h3 id="添加-CocoaLumberjack-文件到项目中"><a href="#添加-CocoaLumberjack-文件到项目中" class="headerlink" title="添加 CocoaLumberjack 文件到项目中"></a>添加 <strong>CocoaLumberjack</strong> 文件到项目中</h3><h4 id="Cocoapods"><a href="#Cocoapods" class="headerlink" title="Cocoapods"></a>Cocoapods</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">platform :ios, &#39;8.0&#39;</span><br><span class="line">pod &#39;CocoaLumberjack&#39;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="链接配置-CocoaLumberjack"><a href="#链接配置-CocoaLumberjack" class="headerlink" title="链接配置 CocoaLumberjack"></a>链接配置 <strong>CocoaLumberjack</strong></h3><ol>
+<li>引入头文件</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">#define LOG_LEVEL_DEF ddLogLevel</span><br><span class="line">#import &lt;CocoaLumberjack&#x2F;CocoaLumberjack.h&gt;</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>设置全局状态 Log 级别</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">static const DDLogLevel ddLogLevel &#x3D; DDLogLevelDebug;</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>以上两个步骤在 <code>.pch</code> 中设置如下：</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;** 打印日志 *&#x2F;</span><br><span class="line">#define LOG_LEVEL_DEF ddLogLevel</span><br><span class="line">#import &lt;CocoaLumberjack&#x2F;CocoaLumberjack.h&gt;</span><br><span class="line"></span><br><span class="line">#ifdef DEBUG</span><br><span class="line">static const DDLogLevel ddLogLevel &#x3D; DDLogLevelVerbose;</span><br><span class="line">#else</span><br><span class="line">static const DDLogLevel ddLogLevel &#x3D; DDLogLevelWarning;</span><br><span class="line">#endif    &#x2F;* DEBUG *&#x2F;</span><br></pre></td></tr></table></figure>
+
+<ol start="4">
+<li><code>AppDelegate.m</code>文件</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions &#123;</span><br><span class="line">    &#x2F;&#x2F; DDTTYLogger，你的日志语句将被发送到Xcode控制台</span><br><span class="line">    [DDLog addLogger:[DDTTYLogger sharedInstance]];</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; DDASLLogger，你的日志语句将被发送到苹果文件系统、你的日志状态会被发送到 Console.app</span><br><span class="line">    [DDLog addLogger:[DDASLLogger sharedInstance]];</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; DDFileLogger，你的日志语句将写入到一个文件中，默认路径在沙盒的Library&#x2F;Caches&#x2F;Logs&#x2F;目录下，文件名为bundleid+空格+日期.log。</span><br><span class="line">    DDFileLogger *fileLogger &#x3D; [[DDFileLogger alloc] init];</span><br><span class="line">    fileLogger.rollingFrequency &#x3D; 60 * 60 * 24; &#x2F;&#x2F; 刷新频率为24小时</span><br><span class="line">    fileLogger.logFileManager.maximumNumberOfLogFiles &#x3D; 7; &#x2F;&#x2F; 保存一周的日志，即7天</span><br><span class="line">    [DDLog addLogger:fileLogger];</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; 产生Log</span><br><span class="line">    DDLogVerbose(@&quot;Verbose&quot;);    &#x2F;&#x2F; 详细日志</span><br><span class="line">    DDLogDebug(@&quot;Debug&quot;);        &#x2F;&#x2F; 调试日志</span><br><span class="line">    DDLogInfo(@&quot;Info&quot;);         &#x2F;&#x2F; 信息日志</span><br><span class="line">    DDLogWarn(@&quot;Warn&quot;);            &#x2F;&#x2F; 警告日志</span><br><span class="line">    DDLogError(@&quot;Error&quot;);        &#x2F;&#x2F; 错误日志</span><br><span class="line"></span><br><span class="line">    return YES;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>运行程序，可以在Xocde控制台看到：</p>
+<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071921.png"></p>
+<p>使用前后的变化：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; Convert from this:</span><br><span class="line">NSLog(@&quot;Broken sprocket detected!&quot;);</span><br><span class="line">NSLog(@&quot;User selected file:%@ withSize:%u&quot;, filePath, fileSize);</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; To this:</span><br><span class="line">DDLogError(@&quot;Broken sprocket detected!&quot;);</span><br><span class="line">DDLogVerbose(@&quot;User selected file:%@ withSize:%u&quot;, filePath, fileSize);</span><br></pre></td></tr></table></figure>
+
+<p>正如你所看到的那样，<code>DDLog</code> 宏与 <code>NSLog</code> 具有完全相同的语法。</p>
+<h2 id="CocoaLumberjack-的-Log-样式"><a href="#CocoaLumberjack-的-Log-样式" class="headerlink" title="CocoaLumberjack 的 Log 样式"></a>CocoaLumberjack 的 Log 样式</h2><ol>
+<li><strong>DDLog</strong>（整个框架的基础）</li>
+<li><strong>DDASLLogger</strong>（发送日志到苹果的日志系统，以便它们显示在Console.app上）</li>
+<li><strong>DDTTYLoyger</strong>（发送日志到Xcode控制台）</li>
+<li><strong>DDFIleLoger</strong>（把日志写入本地文件）</li>
+</ol>
+<h3 id="Log级别"><a href="#Log级别" class="headerlink" title="Log级别"></a>Log级别</h3><p>你需要考虑用哪种日志级别，<strong>CocoaLumberjack</strong> 有5种 <code>DDLogFlag</code>：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">typedef NS_OPTIONS(NSUInteger, DDLogFlag)&#123;</span><br><span class="line">    DDLogFlagError      &#x3D; (1 &lt;&lt; 0),</span><br><span class="line">    DDLogFlagWarning    &#x3D; (1 &lt;&lt; 1),</span><br><span class="line">    DDLogFlagInfo       &#x3D; (1 &lt;&lt; 2),</span><br><span class="line">    DDLogFlagDebug      &#x3D; (1 &lt;&lt; 3),</span><br><span class="line">    DDLogFlagVerbose    &#x3D; (1 &lt;&lt; 4)</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p><code>DDLogLevel</code> 用来过滤每条Log</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">typedef NS_ENUM(NSUInteger, DDLogLevel)&#123;</span><br><span class="line">    DDLogLevelOff       &#x3D; 0,</span><br><span class="line">    DDLogLevelError     &#x3D; (DDLogFlagError),</span><br><span class="line">    DDLogLevelWarning   &#x3D; (DDLogLevelError   | DDLogFlagWarning),</span><br><span class="line">    DDLogLevelInfo      &#x3D; (DDLogLevelWarning | DDLogFlagInfo),</span><br><span class="line">    DDLogLevelDebug     &#x3D; (DDLogLevelInfo    | DDLogFlagDebug),</span><br><span class="line">    DDLogLevelVerbose   &#x3D; (DDLogLevelDebug   | DDLogFlagVerbose),</span><br><span class="line">    DDLogLevelAll       &#x3D; NSUIntegerMax</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>例如，如果你将日志级别设置为 <code>DDLogLevelInfo</code>，那么你会看到 <strong>DDLogLevelError</strong>、<strong>DDLogLevelWarning</strong> 和<strong>DDLogLevelInfo</strong>语句。</p>
+<p>你也可以<span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL0NvY29hTHVtYmVyamFjay9Db2NvYUx1bWJlcmphY2svYmxvYi9tYXN0ZXIvRG9jdW1lbnRhdGlvbi9DdXN0b21Mb2dMZXZlbHMubWQ=">自定义Log级别或者每个级别的名字<i class="fa fa-external-link-alt"></i></span>或者<span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL0NvY29hTHVtYmVyamFjay9Db2NvYUx1bWJlcmphY2svYmxvYi9tYXN0ZXIvRG9jdW1lbnRhdGlvbi9GaW5lR3JhaW5lZExvZ2dpbmcubWQ=">在单纯的级别上增加一些高级用法<i class="fa fa-external-link-alt"></i></span></p>
+<hr>
+<ul>
+<li><span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL0NvY29hTHVtYmVyamFjay9Db2NvYUx1bWJlcmphY2svYmxvYi9tYXN0ZXIvRG9jdW1lbnRhdGlvbi9YY29kZVRyaWNrcy5tZA==">Automatically use different log levels per xcode configuration.<i class="fa fa-external-link-alt"></i></span></li>
+</ul>
+<p>我们也可以为Debug和Release模式设置不同的Log级别：</p>
+<p>Xcode 4+ :</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">#ifdef DEBUG </span><br><span class="line">static const DDLogLevel ddLogLevel &#x3D; DDLogLevelVerbose;</span><br><span class="line">#else </span><br><span class="line">static const DDLogLevel ddLogLevel &#x3D; DDLogLevelWarning;</span><br><span class="line">#endif</span><br></pre></td></tr></table></figure>
+
+
+
+<hr>
+<ul>
+<li><span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL0NvY29hTHVtYmVyamFjay9Db2NvYUx1bWJlcmphY2svYmxvYi9tYXN0ZXIvRG9jdW1lbnRhdGlvbi9QZXJMb2dnZXJMb2dMZXZlbHMubWQ=">Use Log Level per Logger<i class="fa fa-external-link-alt"></i></span></li>
+</ul>
+<p>我们还可以为每种 logger 记录器设置不同的日志级别：</p>
+<p>如果你需要为每个 logger 记录器使用不同的日志级别（即，如果你有自定义记录器，如Crashlytics记录器，它不应该记录 Info 或 Debug），你就可以使用 <code>[DDLog addLogger：withLevel：]</code>方法轻松实现。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[DDLog addLogger:[DDASLLogger sharedInstance] withLevel:DDLogLevelInfo];</span><br><span class="line">[DDLog addLogger:[DDTTYLogger sharedInstance] withLevel:DDLogLevelDebug];</span><br></pre></td></tr></table></figure>
+
+<p>你仍然可以使用旧的类方法<code>+ addLogger：</code>，该方法使用 <strong>DDLogLevelVerbose</strong> 作为默认值，它不会排除任何日志。</p>
+<p>你可以通过 <code>[DDLog allLoggersWithLevel]</code>方法检索与 <strong>DDLog</strong> 关联的每个记录器和级别的列表。</p>
+<hr>
+<h3 id="自定义日志格式"><a href="#自定义日志格式" class="headerlink" title="自定义日志格式"></a>自定义日志格式</h3><ul>
+<li><span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL0NvY29hTHVtYmVyamFjay9Db2NvYUx1bWJlcmphY2svYmxvYi9tYXN0ZXIvRG9jdW1lbnRhdGlvbi9DdXN0b21Gb3JtYXR0ZXJzLm1k">官方文档自定义日志的formatter格式<i class="fa fa-external-link-alt"></i></span>：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; .h</span><br><span class="line">#import &lt;Foundation&#x2F;Foundation.h&gt;</span><br><span class="line">#import &lt;DDLog.h&gt;</span><br><span class="line"></span><br><span class="line">@interface HQLCustomFormatter : NSObject &lt;DDLogFormatter&gt; &#123;</span><br><span class="line">    int atomicLoggerCount;</span><br><span class="line">    NSDateFormatter *threadUnsafeDateFormatter;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; .m</span><br><span class="line">#import &quot;HQLCustomFormatter.h&quot;</span><br><span class="line">#import &lt;libkern&#x2F;OSAtomic.h&gt;</span><br><span class="line"></span><br><span class="line">static NSString *const KdateFormatString &#x3D; @&quot;yyyy&#x2F;MM&#x2F;dd HH:mm:ss&quot;;</span><br><span class="line"></span><br><span class="line">@implementation HQLCustomFormatter</span><br><span class="line"></span><br><span class="line">- (NSString *)stringFromDate:(NSDate *)date &#123;</span><br><span class="line">    int32_t loggerCount &#x3D; OSAtomicAdd32(0, &amp;atomicLoggerCount);</span><br><span class="line">    </span><br><span class="line">    if (loggerCount &lt;&#x3D; 1) &#123;</span><br><span class="line">        &#x2F;&#x2F; Single-threaded mode.</span><br><span class="line">        </span><br><span class="line">        if (threadUnsafeDateFormatter &#x3D;&#x3D; nil) &#123;</span><br><span class="line">            threadUnsafeDateFormatter &#x3D; [[NSDateFormatter alloc] init];</span><br><span class="line">            [threadUnsafeDateFormatter setDateFormat:KdateFormatString];</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        return [threadUnsafeDateFormatter stringFromDate:date];</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        &#x2F;&#x2F; Multi-threaded mode.</span><br><span class="line">        &#x2F;&#x2F; NSDateFormatter is NOT thread-safe.</span><br><span class="line">        </span><br><span class="line">        NSString *key &#x3D; @&quot;MyCustomFormatter_NSDateFormatter&quot;;</span><br><span class="line">        </span><br><span class="line">        NSMutableDictionary *threadDictionary &#x3D; [[NSThread currentThread] threadDictionary];</span><br><span class="line">        NSDateFormatter *dateFormatter &#x3D; [threadDictionary objectForKey:key];</span><br><span class="line">        </span><br><span class="line">        if (dateFormatter &#x3D;&#x3D; nil) &#123;</span><br><span class="line">            dateFormatter &#x3D; [[NSDateFormatter alloc] init];</span><br><span class="line">            [dateFormatter setDateFormat:KdateFormatString];</span><br><span class="line">            </span><br><span class="line">            [threadDictionary setObject:dateFormatter forKey:key];</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        return [dateFormatter stringFromDate:date];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">#pragma mark - DDLogFormatter</span><br><span class="line"></span><br><span class="line">- (NSString *)formatLogMessage:(DDLogMessage *)logMessage &#123;</span><br><span class="line">    NSString *logLevel; &#x2F;&#x2F; 日志等级</span><br><span class="line">    switch (logMessage-&gt;_flag) &#123;</span><br><span class="line">        case DDLogFlagError    : logLevel &#x3D; @&quot;Error&quot;;   break;</span><br><span class="line">        case DDLogFlagWarning  : logLevel &#x3D; @&quot;Warning&quot;; break;</span><br><span class="line">        case DDLogFlagInfo     : logLevel &#x3D; @&quot;Info&quot;;    break;</span><br><span class="line">        case DDLogFlagDebug    : logLevel &#x3D; @&quot;Debug&quot;;   break;</span><br><span class="line">        default                : logLevel &#x3D; @&quot;Verbose&quot;; break;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    NSString *dateAndTime &#x3D; [self stringFromDate:(logMessage.timestamp)]; &#x2F;&#x2F; 日期和时间</span><br><span class="line">    NSString *logFileName &#x3D; logMessage -&gt; _fileName; &#x2F;&#x2F; 文件名</span><br><span class="line">    NSString *logFunction &#x3D; logMessage -&gt; _function; &#x2F;&#x2F; 方法名</span><br><span class="line">    NSUInteger logLine &#x3D; logMessage -&gt; _line;        &#x2F;&#x2F; 行号</span><br><span class="line">    NSString *logMsg &#x3D; logMessage-&gt;_message;         &#x2F;&#x2F; 日志消息</span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F; 日志格式：日期和时间 文件名 方法名 : 行数 &lt;日志等级&gt; 日志消息</span><br><span class="line">    return [NSString stringWithFormat:@&quot;%@ %@ %@ : %lu &lt;%@&gt; %@&quot;, dateAndTime, logFileName, logFunction, logLine, logLevel, logMsg];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)didAddToLogger:(id &lt;DDLogger&gt;)logger &#123;</span><br><span class="line">    OSAtomicIncrement32(&amp;atomicLoggerCount);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)willRemoveFromLogger:(id &lt;DDLogger&gt;)logger &#123;</span><br><span class="line">    OSAtomicDecrement32(&amp;atomicLoggerCount);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+<p>最后，自定义好日志之后记得添加</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[DDTTYLogger sharedInstance].logFormatter &#x3D; [[HQLCustomFormatter alloc] init]; &#x2F;&#x2F; 自定义日志</span><br><span class="line">[DDLog addLogger:[DDTTYLogger sharedInstance]]; &#x2F;&#x2F; TTY &#x3D; Xcode console</span><br><span class="line">[DDLog addLogger:[DDASLLogger sharedInstance]]; &#x2F;&#x2F; ASL &#x3D; Apple System Logs</span><br><span class="line"></span><br><span class="line">DDFileLogger *fileLogger &#x3D; [[DDFileLogger alloc] init]; &#x2F;&#x2F; File Logger</span><br><span class="line">fileLogger.rollingFrequency &#x3D; 60 * 60 * 24; &#x2F;&#x2F; 24 hour rolling</span><br><span class="line">fileLogger.logFileManager.maximumNumberOfLogFiles &#x3D; 7;</span><br><span class="line">[DDLog addLogger:fileLogger];</span><br></pre></td></tr></table></figure>
+
+
+<p>更多详细文档:</p>
+<ul>
+<li><span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL0NvY29hTHVtYmVyamFjay9Db2NvYUx1bWJlcmphY2svdHJlZS9tYXN0ZXIvRG9jdW1lbnRhdGlvbg==">CocoaLumberjack Documentation<i class="fa fa-external-link-alt"></i></span></li>
+</ul>
+<h3 id="遇到的问题"><a href="#遇到的问题" class="headerlink" title="遇到的问题"></a>遇到的问题</h3><blockquote>
+<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071923.jpg"></p>
+</blockquote>
+<h4 id="解决方法："><a href="#解决方法：" class="headerlink" title="解决方法："></a>解决方法：</h4><ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/CocoaLumberjack/CocoaLumberjack/blob/master/Documentation/GettingStarted.md"><em>Getting started with the CocoaLumberjack framework.</em></a></li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">#define LOG_LEVEL_DEF ddLogLevel &#x2F;&#x2F; 要先设置宏定义</span><br><span class="line">#import &lt;CocoaLumberjack&#x2F;CocoaLumberjack.h&gt;</span><br><span class="line"></span><br><span class="line">#ifdef DEBUG</span><br><span class="line">static const DDLogLevel ddLogLevel &#x3D; DDLogLevelVerbose; &#x2F;&#x2F; ddLogLevel 注意大小写要一致</span><br><span class="line">#else</span><br><span class="line">static const DDLogLevel ddLogLevel &#x3D; DDLogLevelWarning;</span><br><span class="line">#endif    &#x2F;* DEBUG *&#x2F;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><span class="exturl" data-url="aHR0cDovL3d3dy5qaWFuc2h1LmNvbS9wLzdiNzk5YmVmMDEwNw==">CocoaLumberjack：简单好用的Log库<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cHM6Ly96bGxiaXJkLmdpdGh1Yi5pby8yMDE2LzAxLzA5L2NvY29hbHVtYmVyamFjayVFNyU5QSU4NCVFOSU5QiU4NiVFNiU4OCU5MCVFNSU5MiU4QyVFNSVBRCVBNiVFNCVCOSVBMC8=">CocoaLumberjack的集成和学习<i class="fa fa-external-link-alt"></i></span></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>独木舟的木
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://andy0570.com/2017/06/21/CocoaLumberjack%E2%80%94%E2%80%94%E7%AE%80%E5%8D%95%E5%A5%BD%E7%94%A8%E7%9A%84%E6%97%A5%E5%BF%97%E6%A1%86%E6%9E%B6/" title="CocoaLumberjack——简单好用的日志框架">https://andy0570.com/2017/06/21/CocoaLumberjack——简单好用的日志框架/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <span class="exturl" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpo"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</span> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/iOS/" rel="tag"># iOS</a>
+              <a href="/tags/GitHub/" rel="tag"># GitHub</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2017/06/21/iOS%20%E7%BC%96%E7%A8%8B%EF%BC%9A%E5%AF%86%E7%A0%81%E8%BE%93%E5%85%A5%E6%A1%86%20HQLPasswordViewDemo/" rel="prev" title="iOS 编程：密码输入框 HQLPasswordViewDemo">
+      <i class="fa fa-chevron-left"></i> iOS 编程：密码输入框 HQLPasswordViewDemo
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2017/06/22/iOS%20%E7%BC%96%E7%A8%8B%EF%BC%9ANSArray%E3%80%81NSDictionary%E6%89%93%E5%8D%B0%E4%B8%AD%E6%96%87%E4%B9%B1%E7%A0%81%E9%97%AE%E9%A2%98/" rel="next" title="iOS 编程：NSArray、NSDictionary 打印中文乱码问题">
+      iOS 编程：NSArray、NSDictionary 打印中文乱码问题 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+        </div>
+        
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">独木舟的木</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">2.1m</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">31:21</span>
+</div>
+  <div class="powered-by">由 <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZw==">NexT.Gemini</span> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

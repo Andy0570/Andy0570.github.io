@@ -1,23 +1,748 @@
-{% extends '_layout.swig' %}
-{% import '_macro/post.swig' as post_template %}
-{% import '_macro/sidebar.swig' as sidebar_template %}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.0.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+  <meta name="google-site-verification" content="wioXOS3Gv2wXUpJ3sLtfZ4ft6YJYKNLLWSw6QoZTFYM">
+  <meta name="msvalidate.01" content="C96491A81239C517A50597C54EE53CD1">
+  <meta name="baidu-site-verification" content="h8asiToN1b">
 
-{% block title %}{{ page.title }} | {{ title }}{% endblock %}
+<link rel="stylesheet" href="/css/main.css">
 
-{% block page_class %}page-post-detail{% endblock %}
 
-{% block content %}
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  
+  <link rel="stylesheet" href="/lib/animate-css/animate.min.css">
 
-  <div id="posts" class="posts-expand">
-    {{ post_template.render(page) }}
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"andy0570.com","root":"/","scheme":"Gemini","version":"8.0.0-rc.5","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":"mac","bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false};
+  </script>
+
+  <meta name="description" content="GitHub源码:AFNetworking star:30000+  README文档AFNetworking 是一个适用于 iOS 系统和 Mac OS X 系统的网络框架。它建立在 Foundation URL Loading System 之上，扩展了 Cocoa 强大的高级网络抽象。设计精良的模块化架构、功能丰富的 API，让你能够安心的使用，轻松实现各种网络请求，比如 GET 请求，P">
+<meta property="og:type" content="article">
+<meta property="og:title" content="AFNetworking——优雅的网络框架">
+<meta property="og:url" content="https://andy0570.com/2017/12/20/AFNetworking%E2%80%94%E2%80%94%E4%BC%98%E9%9B%85%E7%9A%84%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6/index.html">
+<meta property="og:site_name" content="独木舟的木">
+<meta property="og:description" content="GitHub源码:AFNetworking star:30000+  README文档AFNetworking 是一个适用于 iOS 系统和 Mac OS X 系统的网络框架。它建立在 Foundation URL Loading System 之上，扩展了 Cocoa 强大的高级网络抽象。设计精良的模块化架构、功能丰富的 API，让你能够安心的使用，轻松实现各种网络请求，比如 GET 请求，P">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072544.jpg">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072545.jpg">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072547.jpg">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072547-1.jpg">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072549.png">
+<meta property="article:published_time" content="2017-12-20T09:06:00.000Z">
+<meta property="article:modified_time" content="2019-05-01T13:33:12.000Z">
+<meta property="article:author" content="独木舟的木">
+<meta property="article:tag" content="iOS">
+<meta property="article:tag" content="GitHub">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072544.jpg">
+
+<link rel="canonical" href="https://andy0570.com/2017/12/20/AFNetworking%E2%80%94%E2%80%94%E4%BC%98%E9%9B%85%E7%9A%84%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>AFNetworking——优雅的网络框架 | 独木舟的木</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="独木舟的木" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <main class="main">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+        <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
   </div>
 
-{% endblock %}
+  <div class="site-meta">
 
-{% block sidebar %}
-  {{ sidebar_template.render(true) }}
-{% endblock %}
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">独木舟的木</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">iOS Developer</p>
+  </div>
 
-{% block script_extra %}
-  {% include '_scripts/pages/post-details.swig' %}
-{% endblock %}
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">14</span></a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">36</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">310</span></a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <section class="post-toc-wrap sidebar-panel">
+          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#README%E6%96%87%E6%A1%A3"><span class="nav-number">1.</span> <span class="nav-text">README文档</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E5%BC%80%E5%A7%8B"><span class="nav-number">1.1.</span> <span class="nav-text">如何开始</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%A8%E8%AE%BA"><span class="nav-number">1.2.</span> <span class="nav-text">讨论</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85"><span class="nav-number">1.3.</span> <span class="nav-text">安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CocoaPods-%E5%AE%89%E8%A3%85"><span class="nav-number">1.4.</span> <span class="nav-text">CocoaPods 安装</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE"><span class="nav-number">1.4.0.1.</span> <span class="nav-text">配置</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Carthage-%E5%AE%89%E8%A3%85"><span class="nav-number">1.4.1.</span> <span class="nav-text">Carthage 安装</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%89%88%E6%9C%AC%E8%A6%81%E6%B1%82"><span class="nav-number">1.5.</span> <span class="nav-text">版本要求</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%93%E6%9E%84"><span class="nav-number">1.6.</span> <span class="nav-text">结构</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#NSURLSession"><span class="nav-number">1.6.1.</span> <span class="nav-text">NSURLSession</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BA%8F%E5%88%97%E5%8C%96"><span class="nav-number">1.6.2.</span> <span class="nav-text">序列化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B6%E4%BB%96%E5%8A%9F%E8%83%BD"><span class="nav-number">1.6.3.</span> <span class="nav-text">其他功能</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BB%93%E6%9E%84%E5%9B%BE"><span class="nav-number">1.6.3.1.</span> <span class="nav-text">结构图</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%94%A8%E6%B3%95"><span class="nav-number">1.7.</span> <span class="nav-text">用法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%80%E3%80%81AFURLSessionManager"><span class="nav-number">1.7.1.</span> <span class="nav-text">一、AFURLSessionManager</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#NSURLSessionTask"><span class="nav-number">1.7.1.1.</span> <span class="nav-text">NSURLSessionTask</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#NSURLSessionDelegate-%E5%A7%94%E6%89%98%E5%8D%8F%E8%AE%AE"><span class="nav-number">1.7.1.2.</span> <span class="nav-text">NSURLSessionDelegate 委托协议</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-%E5%88%9B%E5%BB%BA%E4%B8%8B%E8%BD%BD%E4%BB%BB%E5%8A%A1"><span class="nav-number">1.7.1.3.</span> <span class="nav-text">1.创建下载任务</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-%E5%88%9B%E5%BB%BA%E4%B8%8A%E4%BC%A0%E4%BB%BB%E5%8A%A1"><span class="nav-number">1.7.1.4.</span> <span class="nav-text">2.创建上传任务</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-%E5%88%9B%E5%BB%BA%E4%B8%80%E4%B8%AA%E5%8D%95%E6%AC%A1%E5%90%AB%E6%9C%89%E5%A4%9A%E4%B8%AA%E4%BF%A1%E6%81%AF%E7%9A%84%E6%9C%89%E8%BF%9B%E5%BA%A6%E6%8C%87%E7%A4%BA%E7%9A%84%E4%B8%8A%E4%BC%A0%E4%BB%BB%E5%8A%A1"><span class="nav-number">1.7.1.5.</span> <span class="nav-text">3.创建一个单次含有多个信息的有进度指示的上传任务</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-%E5%88%9B%E5%BB%BA%E6%95%B0%E6%8D%AE%E4%BB%BB%E5%8A%A1"><span class="nav-number">1.7.1.6.</span> <span class="nav-text">4.创建数据任务</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%8C%E3%80%81AFHTTPSessionManager"><span class="nav-number">1.7.2.</span> <span class="nav-text">二、AFHTTPSessionManager</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%80%E3%80%81GET-%E8%AF%B7%E6%B1%82"><span class="nav-number">1.7.2.1.</span> <span class="nav-text">一、GET 请求</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BA%8C%E3%80%81POST-%E8%AF%B7%E6%B1%82"><span class="nav-number">1.7.2.2.</span> <span class="nav-text">二、POST 请求</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%85%B6%E4%BB%96%E8%AE%BE%E7%BD%AE"><span class="nav-number">1.7.2.3.</span> <span class="nav-text">其他设置</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#timeoutInterval-%E8%AE%BE%E7%BD%AE%E8%AF%B7%E6%B1%82%E8%B6%85%E6%97%B6%E6%97%B6%E9%97%B4%EF%BC%8C%E9%BB%98%E8%AE%A4%E4%B8%BA-60s%EF%BC%9A"><span class="nav-number">1.7.2.3.1.</span> <span class="nav-text">timeoutInterval 设置请求超时时间，默认为 60s：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#ContentTypes-%E7%B1%BB%E5%9E%8B"><span class="nav-number">1.7.2.3.2.</span> <span class="nav-text">ContentTypes 类型</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#responseSerializer-%E9%BB%98%E8%AE%A4%E6%8A%8A%E6%9C%8D%E5%8A%A1%E5%99%A8%E8%BF%94%E5%9B%9E%E7%9A%84%E6%95%B0%E6%8D%AE%E5%BD%93%E5%81%9A%E6%98%AF-JSON-%E7%B1%BB%E5%9E%8B%E5%B9%B6%E8%87%AA%E5%8A%A8%E8%BD%AC%E5%8C%96%E4%B8%BAObjec"><span class="nav-number">1.7.2.3.3.</span> <span class="nav-text">responseSerializer 默认把服务器返回的数据当做是 JSON 类型并自动转化为Objec</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E9%AA%8C%E8%AF%81SSL%E8%AF%81%E4%B9%A6"><span class="nav-number">1.7.2.3.4.</span> <span class="nav-text">验证SSL证书</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AE%E7%8A%B6%E6%80%81%E6%A0%8F%E6%B4%BB%E5%8A%A8%E6%8C%87%E7%A4%BA%E5%99%A8"><span class="nav-number">1.7.3.</span> <span class="nav-text">设置状态栏活动指示器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AF%B7%E6%B1%82%E5%BA%8F%E5%88%97%E5%8C%96"><span class="nav-number">1.7.4.</span> <span class="nav-text">请求序列化</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E7%BC%96%E7%A0%81%E4%B8%BA%E6%9F%A5%E8%AF%A2%E5%AD%97%E7%AC%A6%E4%B8%B2"><span class="nav-number">1.7.4.1.</span> <span class="nav-text">一、编码为查询字符串</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E7%BC%96%E7%A0%81%E4%B8%BAURL%E8%A1%A8%E5%8D%95"><span class="nav-number">1.7.4.2.</span> <span class="nav-text">二、编码为URL表单</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%89%E3%80%81%E7%BC%96%E7%A0%81%E4%B8%BAJSON%E5%AD%97%E7%AC%A6%E4%B8%B2"><span class="nav-number">1.7.4.3.</span> <span class="nav-text">三、编码为JSON字符串</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E7%8A%B6%E6%80%81%E7%AE%A1%E7%90%86"><span class="nav-number">1.7.5.</span> <span class="nav-text">网络状态管理</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%85%B1%E4%BA%AB%E7%BD%91%E7%BB%9C%E7%8A%B6%E6%80%81%E8%BF%9E%E9%80%9A%E6%80%A7"><span class="nav-number">1.7.5.1.</span> <span class="nav-text">共享网络状态连通性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8E%E7%89%B9%E5%AE%9A%E5%9F%9F%E5%90%8D%E7%9A%84%E7%BD%91%E7%BB%9C%E8%BF%9E%E9%80%9A%E6%80%A7"><span class="nav-number">1.7.5.2.</span> <span class="nav-text">基于特定域名的网络连通性</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E5%85%A8%E7%AD%96%E7%95%A5"><span class="nav-number">1.7.6.</span> <span class="nav-text">安全策略</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%85%81%E8%AE%B8%E6%97%A0%E6%95%88%E7%9A%84-SSL-%E8%AF%81%E4%B9%A6"><span class="nav-number">1.7.6.1.</span> <span class="nav-text">允许无效的 SSL 证书</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95"><span class="nav-number">1.8.</span> <span class="nav-text">单元测试</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B4%A6%E6%88%B7"><span class="nav-number">1.9.</span> <span class="nav-text">账户</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Security-Disclosure"><span class="nav-number">1.9.1.</span> <span class="nav-text">Security Disclosure</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#License"><span class="nav-number">1.10.</span> <span class="nav-text">License</span></a></li></ol></li></ol></div>
+      </section>
+      <!--/noindex-->
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="独木舟的木"
+      src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+  <p class="site-author-name" itemprop="name">独木舟的木</p>
+  <div class="site-description" itemprop="description">生若直木，不语斧凿。</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">310</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">36</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL0FuZHkwNTcw" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Andy0570"><i class="fab fa-github fa-fw"></i>GitHub</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9zdGFja292ZXJmbG93LmNvbS91c2Vycy83MjY1NDAwL2FuZHkwNTcw" title="StackOverflow → https:&#x2F;&#x2F;stackoverflow.com&#x2F;users&#x2F;7265400&#x2F;andy0570"><i class="fab fa-stack-overflow fa-fw"></i>StackOverflow</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuamlhbnNodS5jb20vdS84NGM1ZmFkYzdjMTg=" title="简书 → https:&#x2F;&#x2F;www.jianshu.com&#x2F;u&#x2F;84c5fadc7c18"><i class="heartbeat fa-fw"></i>简书</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="bWFpbHRvOmFuZHl3aG1AMTYzLmNvbQ==" title="E-Mail → mailto:andywhm@163.com"><i class="fa fa-envelope fa-fw"></i>E-Mail</span>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <span class="exturl cc-opacity" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpo"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></span>
+  </div>
+
+
+
+      </section>
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </header>
+
+      
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div id="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+      <div class="main-inner">
+        
+
+        <div class="content post posts-expand">
+          
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://andy0570.com/2017/12/20/AFNetworking%E2%80%94%E2%80%94%E4%BC%98%E9%9B%85%E7%9A%84%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+      <meta itemprop="name" content="独木舟的木">
+      <meta itemprop="description" content="生若直木，不语斧凿。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="独木舟的木">
+    </span>
+
+    
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          AFNetworking——优雅的网络框架
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2017-12-20 17:06:00" itemprop="dateCreated datePublished" datetime="2017-12-20T17:06:00+08:00">2017-12-20</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-05-01 21:33:12" itemprop="dateModified" datetime="2019-05-01T21:33:12+08:00">2019-05-01</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS-%E5%BC%80%E6%BA%90%E6%A1%86%E6%9E%B6/" itemprop="url" rel="index"><span itemprop="name">iOS 开源框架</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>17k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>15 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <ul>
+<li>GitHub源码:<span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL0FGTmV0d29ya2luZy9BRk5ldHdvcmtpbmc=">AFNetworking<i class="fa fa-external-link-alt"></i></span></li>
+<li>star:30000+</li>
+</ul>
+<h1 id="README文档"><a href="#README文档" class="headerlink" title="README文档"></a>README文档</h1><p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072544.jpg"><br>AFNetworking 是一个适用于 iOS 系统和 Mac OS X 系统的网络框架。它建立在 <span class="exturl" data-url="aHR0cDovL2RldmVsb3Blci5hcHBsZS5jb20vbGlicmFyeS9tYWMvI2RvY3VtZW50YXRpb24vQ29jb2EvQ29uY2VwdHVhbC9VUkxMb2FkaW5nU3lzdGVtL1VSTExvYWRpbmdTeXN0ZW0uaHRtbA==">Foundation URL Loading System<i class="fa fa-external-link-alt"></i></span> 之上，扩展了 Cocoa 强大的高级网络抽象。设计精良的模块化架构、功能丰富的 API，让你能够安心的使用，轻松实现各种网络请求，比如 GET 请求，POST 请求，以及上传多张图片等。</p>
+<a id="more"></a>
+
+<h2 id="如何开始"><a href="#如何开始" class="headerlink" title="如何开始"></a>如何开始</h2><ul>
+<li><span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL0FGTmV0d29ya2luZy9BRk5ldHdvcmtpbmcvYXJjaGl2ZS9tYXN0ZXIuemlw">Download AFNetworking<i class="fa fa-external-link-alt"></i></span> and try out the included Mac and iPhone example apps</li>
+<li>Read the <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL0FGTmV0d29ya2luZy9BRk5ldHdvcmtpbmcvd2lraS9HZXR0aW5nLVN0YXJ0ZWQtd2l0aC1BRk5ldHdvcmtpbmc=">“Getting Started” guide<i class="fa fa-external-link-alt"></i></span>, <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL0FGTmV0d29ya2luZy9BRk5ldHdvcmtpbmcvd2lraS9BRk5ldHdvcmtpbmctRkFR">FAQ<i class="fa fa-external-link-alt"></i></span>, or <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL0FGTmV0d29ya2luZy9BRk5ldHdvcmtpbmcvd2lraQ==">other articles on the Wiki<i class="fa fa-external-link-alt"></i></span></li>
+<li>Check out the <span class="exturl" data-url="aHR0cDovL2NvY29hZG9jcy5vcmcvZG9jc2V0cy9BRk5ldHdvcmtpbmcv">documentation<i class="fa fa-external-link-alt"></i></span> for a comprehensive look at all of the APIs available in AFNetworking</li>
+<li>Read the <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL0FGTmV0d29ya2luZy9BRk5ldHdvcmtpbmcvd2lraS9BRk5ldHdvcmtpbmctMy4wLU1pZ3JhdGlvbi1HdWlkZQ==">AFNetworking 3.0 Migration Guide<i class="fa fa-external-link-alt"></i></span> for an overview of the architectural changes from 2.0.</li>
+</ul>
+<h2 id="讨论"><a href="#讨论" class="headerlink" title="讨论"></a>讨论</h2><ul>
+<li>If you <strong>need help</strong>, use <span class="exturl" data-url="aHR0cDovL3N0YWNrb3ZlcmZsb3cuY29tL3F1ZXN0aW9ucy90YWdnZWQvYWZuZXR3b3JraW5n">Stack Overflow<i class="fa fa-external-link-alt"></i></span>. (Tag ‘afnetworking’)</li>
+<li>If you’d like to <strong>ask a general question</strong>, use <span class="exturl" data-url="aHR0cDovL3N0YWNrb3ZlcmZsb3cuY29tL3F1ZXN0aW9ucy90YWdnZWQvYWZuZXR3b3JraW5n">Stack Overflow<i class="fa fa-external-link-alt"></i></span>.</li>
+<li>If you <strong>found a bug</strong>, <em>and can provide steps to reliably reproduce it</em>, open an issue.</li>
+<li>If you <strong>have a feature request</strong>, open an issue.</li>
+<li>If you <strong>want to contribute</strong>, submit a pull request.</li>
+</ul>
+<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p>AFNetworking 支持在项目中安装库的多种方法。</p>
+<h2 id="CocoaPods-安装"><a href="#CocoaPods-安装" class="headerlink" title="CocoaPods 安装"></a>CocoaPods 安装</h2><p><span class="exturl" data-url="aHR0cDovL2NvY29hcG9kcy5vcmcv">CocoaPods<i class="fa fa-external-link-alt"></i></span> is a dependency manager for Objective-C, which automates and simplifies the process of using 3rd-party libraries like AFNetworking in your projects. See the <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL0FGTmV0d29ya2luZy9BRk5ldHdvcmtpbmcvd2lraS9HZXR0aW5nLVN0YXJ0ZWQtd2l0aC1BRk5ldHdvcmtpbmc=">“Getting Started” guide for more information<i class="fa fa-external-link-alt"></i></span>. You can install it with the following command:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ gem install cocoapods</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>CocoaPods 0.39.0+ is required to build AFNetworking 3.0.0+.</p>
+</blockquote>
+<h4 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h4><p>To integrate AFNetworking into your Xcode project using CocoaPods, specify it in your <code>Podfile</code>:</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">source <span class="string">&#x27;https://github.com/CocoaPods/Specs.git&#x27;</span></span><br><span class="line">platform <span class="symbol">:ios</span>, <span class="string">&#x27;8.0&#x27;</span></span><br><span class="line"></span><br><span class="line">target <span class="string">&#x27;TargetName&#x27;</span> <span class="keyword">do</span></span><br><span class="line">pod <span class="string">&#x27;AFNetworking&#x27;</span>, <span class="string">&#x27;~&gt; 3.0&#x27;</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+
+<p>Then, run the following command:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ pod install</span><br></pre></td></tr></table></figure>
+
+<h3 id="Carthage-安装"><a href="#Carthage-安装" class="headerlink" title="Carthage 安装"></a>Carthage 安装</h3><p><span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL0NhcnRoYWdlL0NhcnRoYWdl">Carthage<i class="fa fa-external-link-alt"></i></span> is a decentralized dependency manager that builds your dependencies and provides you with binary frameworks.</p>
+<p>You can install Carthage with <span class="exturl" data-url="aHR0cDovL2JyZXcuc2gv">Homebrew<i class="fa fa-external-link-alt"></i></span> using the following command:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ brew update</span><br><span class="line">$ brew install carthage</span><br></pre></td></tr></table></figure>
+
+<p>To integrate AFNetworking into your Xcode project using Carthage, specify it in your <code>Cartfile</code>:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">github &quot;AFNetworking&#x2F;AFNetworking&quot; ~&gt; 3.0</span><br></pre></td></tr></table></figure>
+
+<p>Run <code>carthage</code> to build the framework and drag the built <code>AFNetworking.framework</code> into your Xcode project.</p>
+<h2 id="版本要求"><a href="#版本要求" class="headerlink" title="版本要求"></a>版本要求</h2><table>
+<thead>
+<tr>
+<th align="center">AFNetworking Version</th>
+<th align="center">Minimum iOS Target</th>
+<th align="center">Minimum OS X Target</th>
+<th align="center">Minimum watchOS Target</th>
+<th align="center">Minimum tvOS Target</th>
+<th align="center">Notes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">3.x</td>
+<td align="center">iOS 7</td>
+<td align="center">OS X 10.9</td>
+<td align="center">watchOS 2.0</td>
+<td align="center">tvOS 9.0</td>
+<td align="center">Xcode 7+ is required. <code>NSURLConnectionOperation</code> support has been removed.</td>
+</tr>
+<tr>
+<td align="center">2.6 -&gt; 2.6.3</td>
+<td align="center">iOS 7</td>
+<td align="center">OS X 10.9</td>
+<td align="center">watchOS 2.0</td>
+<td align="center">n/a</td>
+<td align="center">Xcode 7+ is required.</td>
+</tr>
+<tr>
+<td align="center">2.0 -&gt; 2.5.4</td>
+<td align="center">iOS 6</td>
+<td align="center">OS X 10.8</td>
+<td align="center">n/a</td>
+<td align="center">n/a</td>
+<td align="center">Xcode 5+ is required. <code>NSURLSession</code> subspec requires iOS 7 or OS X 10.9.</td>
+</tr>
+<tr>
+<td align="center">1.x</td>
+<td align="center">iOS 5</td>
+<td align="center">Mac OS X 10.7</td>
+<td align="center">n/a</td>
+<td align="center">n/a</td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center">0.10.x</td>
+<td align="center">iOS 4</td>
+<td align="center">Mac OS X 10.6</td>
+<td align="center">n/a</td>
+<td align="center">n/a</td>
+<td align="center"></td>
+</tr>
+</tbody></table>
+<p>(OS X projects must support <span class="exturl" data-url="aHR0cHM6Ly9kZXZlbG9wZXIuYXBwbGUuY29tL2xpYnJhcnkvbWFjLyNkb2N1bWVudGF0aW9uL0NvY29hL0NvbmNlcHR1YWwvT2JqQ1J1bnRpbWVHdWlkZS9BcnRpY2xlcy9vY3J0VmVyc2lvbnNQbGF0Zm9ybXMuaHRtbA==">64-bit with modern Cocoa runtime<i class="fa fa-external-link-alt"></i></span>).</p>
+<blockquote>
+<p>Programming in Swift? Try <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL0FsYW1vZmlyZS9BbGFtb2ZpcmU=">Alamofire<i class="fa fa-external-link-alt"></i></span> for a more conventional set of APIs.</p>
+</blockquote>
+<h2 id="结构"><a href="#结构" class="headerlink" title="结构"></a>结构</h2><h3 id="NSURLSession"><a href="#NSURLSession" class="headerlink" title="NSURLSession"></a>NSURLSession</h3><ul>
+<li><code>AFURLSessionManager</code></li>
+<li><code>AFHTTPSessionManager</code></li>
+</ul>
+<h3 id="序列化"><a href="#序列化" class="headerlink" title="序列化"></a>序列化</h3><ul>
+<li><code>&lt;AFURLRequestSerialization&gt;</code> 请求序列化<ul>
+<li><code>AFHTTPRequestSerializer</code></li>
+<li><code>AFJSONRequestSerializer</code></li>
+<li><code>AFPropertyListRequestSerializer</code></li>
+</ul>
+</li>
+<li><code>&lt;AFURLResponseSerialization&gt;</code> 响应序列化<ul>
+<li><code>AFHTTPResponseSerializer</code></li>
+<li><code>AFJSONResponseSerializer</code></li>
+<li><code>AFXMLParserResponseSerializer</code></li>
+<li><code>AFXMLDocumentResponseSerializer</code> <em>(Mac OS X)</em></li>
+<li><code>AFPropertyListResponseSerializer</code></li>
+<li><code>AFImageResponseSerializer</code></li>
+<li><code>AFCompoundResponseSerializer</code></li>
+</ul>
+</li>
+</ul>
+<h3 id="其他功能"><a href="#其他功能" class="headerlink" title="其他功能"></a>其他功能</h3><ul>
+<li><code>AFSecurityPolicy</code></li>
+<li><code>AFNetworkReachabilityManager</code></li>
+</ul>
+<h4 id="结构图"><a href="#结构图" class="headerlink" title="结构图"></a>结构图</h4><p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072545.jpg" alt="006tKfTcly1fj0ndu06qaj307f0bqmye.jpg"></p>
+<h2 id="用法"><a href="#用法" class="headerlink" title="用法"></a>用法</h2><h3 id="一、AFURLSessionManager"><a href="#一、AFURLSessionManager" class="headerlink" title="一、AFURLSessionManager"></a>一、AFURLSessionManager</h3><ul>
+<li><code>AFURLSessionManager</code> 创建并管理 <code>NSURLSession</code> 对象。</li>
+<li><code>NSURLSession</code> 对象基于指定的 <code>NSURLSessionConfiguration</code> 对象。</li>
+<li><code>NSURLSessionConfiguration</code> 对象遵守如下协议： <code>&lt;NSURLSessionTaskDelegate&gt;</code>, <code>&lt;NSURLSessionDataDelegate&gt;</code>, <code>&lt;NSURLSessionDownloadDelegate&gt;</code>, 和 <code>&lt;NSURLSessionDelegate&gt;</code> 。</li>
+</ul>
+<h4 id="NSURLSessionTask"><a href="#NSURLSessionTask" class="headerlink" title="NSURLSessionTask"></a>NSURLSessionTask</h4><p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072547.jpg">  </p>
+<h4 id="NSURLSessionDelegate-委托协议"><a href="#NSURLSessionDelegate-委托协议" class="headerlink" title="NSURLSessionDelegate 委托协议"></a>NSURLSessionDelegate 委托协议</h4><p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072547-1.jpg"></p>
+<h4 id="1-创建下载任务"><a href="#1-创建下载任务" class="headerlink" title="1.创建下载任务"></a>1.创建下载任务</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 1.创建 NSURLSessionConfiguration 对象</span><br><span class="line">NSURLSessionConfiguration *configuration &#x3D; [NSURLSessionConfiguration defaultSessionConfiguration];</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 2.创建 AFURLSessionManager 对象</span><br><span class="line">AFURLSessionManager *manager &#x3D; [[AFURLSessionManager alloc] initWithSessionConfiguration:configuration];</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 3.创建 NSURL、NSURLRequest 对象</span><br><span class="line">NSURL *URL &#x3D; [NSURL URLWithString:@&quot;http:&#x2F;&#x2F;example.com&#x2F;download.zip&quot;];</span><br><span class="line">NSURLRequest *request &#x3D; [NSURLRequest requestWithURL:URL];</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 4.创建 NSURLSessionDownloadTask 对象</span><br><span class="line">NSURLSessionDownloadTask *downloadTask &#x3D; [manager downloadTaskWithRequest:request progress:nil destination:^NSURL *(NSURL *targetPath, NSURLResponse *response) &#123;</span><br><span class="line">    NSURL *documentsDirectoryURL &#x3D; [[NSFileManager defaultManager] URLForDirectory:NSDocumentDirectory inDomain:NSUserDomainMask appropriateForURL:nil create:NO error:nil];</span><br><span class="line">    return [documentsDirectoryURL URLByAppendingPathComponent:[response suggestedFilename]];</span><br><span class="line">&#125; completionHandler:^(NSURLResponse *response, NSURL *filePath, NSError *error) &#123;</span><br><span class="line">    NSLog(@&quot;File downloaded to: %@&quot;, filePath);</span><br><span class="line">&#125;];</span><br><span class="line">&#x2F;&#x2F; 5.开启下载任务</span><br><span class="line">[downloadTask resume];</span><br></pre></td></tr></table></figure>
+
+<h4 id="2-创建上传任务"><a href="#2-创建上传任务" class="headerlink" title="2.创建上传任务"></a>2.创建上传任务</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 1.创建 NSURLSessionConfiguration 对象</span><br><span class="line">NSURLSessionConfiguration *configuration &#x3D; [NSURLSessionConfiguration defaultSessionConfiguration];</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 2.创建 AFURLSessionManager 对象</span><br><span class="line">AFURLSessionManager *manager &#x3D; [[AFURLSessionManager alloc] initWithSessionConfiguration:configuration];</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 3.创建 NSURL、NSURLRequest 对象</span><br><span class="line">NSURL *URL &#x3D; [NSURL URLWithString:@&quot;http:&#x2F;&#x2F;example.com&#x2F;upload&quot;];</span><br><span class="line">NSURLRequest *request &#x3D; [NSURLRequest requestWithURL:URL];</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 4.创建 NSURLSessionUploadTask 对象</span><br><span class="line">NSURL *filePath &#x3D; [NSURL fileURLWithPath:@&quot;file:&#x2F;&#x2F;path&#x2F;to&#x2F;image.png&quot;];</span><br><span class="line">NSURLSessionUploadTask *uploadTask &#x3D; [manager uploadTaskWithRequest:request fromFile:filePath progress:nil completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) &#123;</span><br><span class="line">    if (error) &#123;</span><br><span class="line">        NSLog(@&quot;Error: %@&quot;, error);</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        NSLog(@&quot;Success: %@ %@&quot;, response, responseObject);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;];</span><br><span class="line">&#x2F;&#x2F; 5.开启下载任务</span><br><span class="line">[uploadTask resume];</span><br></pre></td></tr></table></figure>
+
+<h4 id="3-创建一个单次含有多个信息的有进度指示的上传任务"><a href="#3-创建一个单次含有多个信息的有进度指示的上传任务" class="headerlink" title="3.创建一个单次含有多个信息的有进度指示的上传任务"></a>3.创建一个单次含有多个信息的有进度指示的上传任务</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 1.创建 NSMutableURLRequest 对象</span><br><span class="line">NSMutableURLRequest *request &#x3D; [[AFHTTPRequestSerializer serializer] multipartFormRequestWithMethod:@&quot;POST&quot; URLString:@&quot;http:&#x2F;&#x2F;example.com&#x2F;upload&quot; parameters:nil constructingBodyWithBlock:^(id&lt;AFMultipartFormData&gt; formData) &#123;</span><br><span class="line">    [formData appendPartWithFileURL:[NSURL fileURLWithPath:@&quot;file:&#x2F;&#x2F;path&#x2F;to&#x2F;image.jpg&quot;] name:@&quot;file&quot; fileName:@&quot;filename.jpg&quot; mimeType:@&quot;image&#x2F;jpeg&quot; error:nil];</span><br><span class="line">&#125; error:nil];</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 2.创建 AFURLSessionManager 对象</span><br><span class="line">AFURLSessionManager *manager &#x3D; [[AFURLSessionManager alloc] initWithSessionConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]];</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 3.创建 NSURLSessionUploadTask 对象</span><br><span class="line">NSURLSessionUploadTask *uploadTask;</span><br><span class="line">uploadTask &#x3D; [manager</span><br><span class="line">              uploadTaskWithStreamedRequest:request</span><br><span class="line">              progress:^(NSProgress * _Nonnull uploadProgress) &#123;</span><br><span class="line">                  &#x2F;&#x2F; 此处不会在主线程上回调</span><br><span class="line">                  &#x2F;&#x2F; 你要负责在主线程上更新 UI</span><br><span class="line">                  dispatch_async(dispatch_get_main_queue(), ^&#123;</span><br><span class="line">                      &#x2F;&#x2F; Update the progress view</span><br><span class="line">                      [progressView setProgress:uploadProgress.fractionCompleted];</span><br><span class="line">                  &#125;);</span><br><span class="line">              &#125;</span><br><span class="line">              completionHandler:^(NSURLResponse * _Nonnull response, id  _Nullable responseObject, NSError * _Nullable error) &#123;</span><br><span class="line">                  if (error) &#123;</span><br><span class="line">                      NSLog(@&quot;Error: %@&quot;, error);</span><br><span class="line">                  &#125; else &#123;</span><br><span class="line">                      NSLog(@&quot;%@ %@&quot;, response, responseObject);</span><br><span class="line">                  &#125;</span><br><span class="line">              &#125;];</span><br><span class="line">&#x2F;&#x2F; 4.开启下载任务</span><br><span class="line">[uploadTask resume];</span><br></pre></td></tr></table></figure>
+
+<h4 id="4-创建数据任务"><a href="#4-创建数据任务" class="headerlink" title="4.创建数据任务"></a>4.创建数据任务</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 1.创建 NSURLSessionConfiguration 对象</span><br><span class="line">NSURLSessionConfiguration *configuration &#x3D; [NSURLSessionConfiguration defaultSessionConfiguration];</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 2.创建 AFURLSessionManager 对象</span><br><span class="line">AFURLSessionManager *manager &#x3D; [[AFURLSessionManager alloc] initWithSessionConfiguration:configuration];</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 3.创建 NSURL、NSURLRequest 对象</span><br><span class="line">NSURL *URL &#x3D; [NSURL URLWithString:@&quot;http:&#x2F;&#x2F;httpbin.org&#x2F;get&quot;];</span><br><span class="line">NSURLRequest *request &#x3D; [NSURLRequest requestWithURL:URL];</span><br><span class="line"> </span><br><span class="line">&#x2F;&#x2F; 4.创建 NSURLSessionDataTask 对象</span><br><span class="line">NSURLSessionDataTask *dataTask &#x3D; [manager dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) &#123;</span><br><span class="line">    if (error) &#123;</span><br><span class="line">        NSLog(@&quot;Error: %@&quot;, error);</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        NSLog(@&quot;%@ %@&quot;, response, responseObject);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;];</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 5.开启下载任务</span><br><span class="line">[dataTask resume];</span><br></pre></td></tr></table></figure>
+
+
+
+<p>从使用上看，<strong>AFURLSessionManager</strong> 只是封装了原生的 <strong>NSURLSession</strong> 对象，创建网络请求步骤流程与原生方法（使用 <code>NSURLSession</code> 类）类似：</p>
+<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072549.png" alt="AFURLSessionManager"></p>
+<hr>
+<h3 id="二、AFHTTPSessionManager"><a href="#二、AFHTTPSessionManager" class="headerlink" title="二、AFHTTPSessionManager"></a>二、AFHTTPSessionManager</h3><p>💡说明：官方 README 文档中并没有给出该类的示例代码，这里补充。</p>
+<p><strong>AFHTTPSessionManager</strong> 是 <strong>AFURLSessionManager</strong> 的子类对象，它提供了进行 HTTP 请求的便捷方法。当设置好  <code>baseURL</code>  （服务器地址）时，要发起 <code>GET</code>、<code>POST</code> 等请求，你可以使用一些便捷方法，而这些便捷方法只需要传入相对路径参数即可。</p>
+<p>总之，<strong>AFHTTPSessionManager</strong> 提供了发起 <strong>GET</strong>、<strong>HEAD</strong>、<strong>POST</strong>、<strong>PUT</strong>、<strong>PATCH</strong>、<strong>DELETE</strong> 请求的便捷语法。它调用的是父类 <strong>AFURLSessionManager</strong> 的 <strong>NSURLSessionDataTask</strong> 类型的任务。</p>
+<p>这个类并没有实现像 <strong>NSURLSessionUploadTask</strong>、<strong>NSURLSessionDownloadTask</strong>、<strong>NSURLSessionStreamTask</strong> 类型的任务。</p>
+<p>初始化方法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">+ (instancetype)manager;</span><br><span class="line">- (instancetype)initWithBaseURL:(nullable NSURL *)url;</span><br><span class="line">- (instancetype)initWithBaseURL:(nullable NSURL *)url</span><br><span class="line">           sessionConfiguration:(nullable NSURLSessionConfiguration *)configuration;</span><br></pre></td></tr></table></figure>
+
+<p>发起 HTTP 请求：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; GET</span><br><span class="line">- (nullable NSURLSessionDataTask *)GET:(NSString *)URLString</span><br><span class="line">                            parameters:(nullable id)parameters</span><br><span class="line">                              progress:(nullable void (^)(NSProgress *downloadProgress))downloadProgress</span><br><span class="line">                               success:(nullable void (^)(NSURLSessionDataTask *task, id _Nullable responseObject))success</span><br><span class="line">                               failure:(nullable void (^)(NSURLSessionDataTask * _Nullable task, NSError *error))failure;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; HEAD</span><br><span class="line">- (nullable NSURLSessionDataTask *)HEAD:(NSString *)URLString</span><br><span class="line">                    parameters:(nullable id)parameters</span><br><span class="line">                       success:(nullable void (^)(NSURLSessionDataTask *task))success</span><br><span class="line">                       failure:(nullable void (^)(NSURLSessionDataTask * _Nullable task, NSError *error))failure;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; POST</span><br><span class="line">- (nullable NSURLSessionDataTask *)POST:(NSString *)URLString</span><br><span class="line">                             parameters:(nullable id)parameters</span><br><span class="line">                               progress:(nullable void (^)(NSProgress *uploadProgress))uploadProgress</span><br><span class="line">                                success:(nullable void (^)(NSURLSessionDataTask *task, id _Nullable responseObject))success</span><br><span class="line">                                failure:(nullable void (^)(NSURLSessionDataTask * _Nullable task, NSError *error))failure;</span><br><span class="line"></span><br><span class="line">- (nullable NSURLSessionDataTask *)POST:(NSString *)URLString</span><br><span class="line">                             parameters:(nullable id)parameters</span><br><span class="line">              constructingBodyWithBlock:(nullable void (^)(id &lt;AFMultipartFormData&gt; formData))block</span><br><span class="line">                               progress:(nullable void (^)(NSProgress *uploadProgress))uploadProgress</span><br><span class="line">                                success:(nullable void (^)(NSURLSessionDataTask *task, id _Nullable responseObject))success</span><br><span class="line">                                failure:(nullable void (^)(NSURLSessionDataTask * _Nullable task, NSError *error))failure;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; PUT</span><br><span class="line">- (nullable NSURLSessionDataTask *)PUT:(NSString *)URLString</span><br><span class="line">                   parameters:(nullable id)parameters</span><br><span class="line">                      success:(nullable void (^)(NSURLSessionDataTask *task, id _Nullable responseObject))success</span><br><span class="line">                      failure:(nullable void (^)(NSURLSessionDataTask * _Nullable task, NSError *error))failure;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; PATCH</span><br><span class="line">- (nullable NSURLSessionDataTask *)PATCH:(NSString *)URLString</span><br><span class="line">                     parameters:(nullable id)parameters</span><br><span class="line">                        success:(nullable void (^)(NSURLSessionDataTask *task, id _Nullable responseObject))success</span><br><span class="line">                        failure:(nullable void (^)(NSURLSessionDataTask * _Nullable task, NSError *error))failure;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; DELETE</span><br><span class="line">- (nullable NSURLSessionDataTask *)DELETE:(NSString *)URLString</span><br><span class="line">                      parameters:(nullable id)parameters</span><br><span class="line">                         success:(nullable void (^)(NSURLSessionDataTask *task, id _Nullable responseObject))success</span><br><span class="line">                         failure:(nullable void (^)(NSURLSessionDataTask * _Nullable task, NSError *error))failure;</span><br></pre></td></tr></table></figure>
+
+<h4 id="一、GET-请求"><a href="#一、GET-请求" class="headerlink" title="一、GET 请求"></a>一、GET 请求</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 1.创建 AFHTTPSessionManager 对象</span><br><span class="line">AFHTTPSessionManager *manager &#x3D; [AFHTTPSessionManager manager];</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 2.构建参数，parameters 参数可以传 nil</span><br><span class="line">NSString *urlString &#x3D; @&quot;https:&#x2F;&#x2F;www.google.com&#x2F;login&quot;;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 3.Task 任务</span><br><span class="line">[manager GET:urlString parameters:nil progress:^(NSProgress * _Nonnull downloadProgress) &#123;</span><br><span class="line">    &#x2F;&#x2F; 进度</span><br><span class="line">&#125; success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) &#123;</span><br><span class="line">    &#x2F;&#x2F; 请求成功</span><br><span class="line">    &#x2F;&#x2F; task:通过task拿到响应头</span><br><span class="line">    &#x2F;&#x2F; responseObject:请求成功返回的响应结果（AFN内部已经把响应体转换为OC对象，通常是字典或数组)</span><br><span class="line">&#125; failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) &#123;</span><br><span class="line">    &#x2F;&#x2F; 请求失败</span><br><span class="line">    NSLog(@&quot;GET ERROR:%@&quot;,error.localizedDescription);</span><br><span class="line">&#125;];</span><br></pre></td></tr></table></figure>
+
+<h4 id="二、POST-请求"><a href="#二、POST-请求" class="headerlink" title="二、POST 请求"></a>二、POST 请求</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 1.创建 AFHTTPSessionManager 对象</span><br><span class="line">AFHTTPSessionManager *manager &#x3D; [AFHTTPSessionManager alloc]</span><br><span class="line">    initWithBaseURL:[NSURL URLWithString:@&quot;https:&#x2F;&#x2F;www.google.com&quot;]];</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 2.构建参数</span><br><span class="line">NSString *relativePaths &#x3D; @&quot;&#x2F;login&quot;;</span><br><span class="line">NSDictionary *parameters &#x3D; @&#123;</span><br><span class="line">                             @&quot;username&quot;:@&quot;admin&quot;,</span><br><span class="line">                             @&quot;password&quot;:@&quot;123456&quot;,</span><br><span class="line">                             &#125;;</span><br><span class="line">&#x2F;&#x2F; 3.Task 任务</span><br><span class="line">[manager POST:relativePaths parameters:parameters progress:^(NSProgress * _Nonnull uploadProgress) &#123;</span><br><span class="line">    &#x2F;&#x2F; 进度</span><br><span class="line">&#125; success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) &#123;</span><br><span class="line">    &#x2F;&#x2F; 请求成功</span><br><span class="line">&#125; failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) &#123;</span><br><span class="line">    &#x2F;&#x2F; 请求失败</span><br><span class="line">&#125;]</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="其他设置"><a href="#其他设置" class="headerlink" title="其他设置"></a>其他设置</h4><h5 id="timeoutInterval-设置请求超时时间，默认为-60s："><a href="#timeoutInterval-设置请求超时时间，默认为-60s：" class="headerlink" title="timeoutInterval 设置请求超时时间，默认为 60s："></a>timeoutInterval 设置请求超时时间，默认为 60s：</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 设置请求超时时间为 10s</span><br><span class="line">[manager.requestSerializer willChangeValueForKey:@&quot;timeoutInterval&quot;];</span><br><span class="line">manager.requestSerializer.timeoutInterval &#x3D; 10.f;</span><br><span class="line">[manager.requestSerializer didChangeValueForKey:@&quot;timeoutInterval&quot;];</span><br></pre></td></tr></table></figure>
+
+
+<h5 id="ContentTypes-类型"><a href="#ContentTypes-类型" class="headerlink" title="ContentTypes 类型"></a>ContentTypes 类型</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; AFN默认接收的 ContentTypes 有以下三种：</span><br><span class="line">self.acceptableContentTypes &#x3D; [NSSet setWithObjects:@&quot;application&#x2F;json&quot;, @&quot;text&#x2F;json&quot;, @&quot;text&#x2F;javascript&quot;, nil];</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 如果服务器返回的 ContentTypes 类型为 text&#x2F;html，需要设置如下：</span><br><span class="line">manager.responseSerializer.acceptableContentTypes &#x3D; [NSSet setWithObject:@&quot;text&#x2F;html&quot;];</span><br></pre></td></tr></table></figure>
+
+<h5 id="responseSerializer-默认把服务器返回的数据当做是-JSON-类型并自动转化为Objec"><a href="#responseSerializer-默认把服务器返回的数据当做是-JSON-类型并自动转化为Objec" class="headerlink" title="responseSerializer 默认把服务器返回的数据当做是 JSON 类型并自动转化为Objec"></a>responseSerializer 默认把服务器返回的数据当做是 JSON 类型并自动转化为Objec</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 设置为 XML 类型，此时返回的是 NSXMLParser 类型，需要我们自己解析。</span><br><span class="line">manager.responseSerializer &#x3D; [AFXMLParserResponseSerializer serializer];</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 设置为其他类型</span><br><span class="line">manager.responseSerializer &#x3D; [AFHTTPResponseSerializer serializer];</span><br></pre></td></tr></table></figure>
+
+<h5 id="验证SSL证书"><a href="#验证SSL证书" class="headerlink" title="验证SSL证书"></a>验证SSL证书</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 验证CN域名</span><br><span class="line">NSString *cerPath &#x3D; [[NSBundle mainBundle] pathForResource:@&quot;server&quot; ofType:@&quot;cer&quot;];</span><br><span class="line">NSData *cerData &#x3D; [NSData dataWithContentsOfFile:cerPath];</span><br><span class="line">manager.securityPolicy &#x3D; [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeCertificate withPinnedCertificates:[[NSSet alloc]initWithObjects:cerData, nil]];</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 是否信任具有无效或过期SSL证书的服务器（自建证书）</span><br><span class="line">manager.securityPolicy.allowInvalidCertificates &#x3D; YES;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 是否在证书的CN字段中验证域名</span><br><span class="line">manager.securityPolicy.validatesDomainName &#x3D; NO;</span><br></pre></td></tr></table></figure>
+
+<h3 id="设置状态栏活动指示器"><a href="#设置状态栏活动指示器" class="headerlink" title="设置状态栏活动指示器"></a>设置状态栏活动指示器</h3><p>启用后，系统会自动在应用程序发起网络请求时，在状态栏显示旋转的菊花。</p>
+<ol>
+<li>在项目的 <code>AppDelegate.m</code> 文件中导入<code> AFNetworkActivityIndicatorManager.h</code> 文件；</li>
+<li>在<code>AppDelegate application:didFinishLaunchingWithOptions:</code>方法中设置如下代码：</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[[AFNetworkActivityIndicatorManager sharedManager] setEnabled:YES];</span><br></pre></td></tr></table></figure>
+
+
+
+<hr>
+<h3 id="请求序列化"><a href="#请求序列化" class="headerlink" title="请求序列化"></a>请求序列化</h3><p>请求序列化通过将请求参数编码为查询字符串或者 HTTP 请求体,来为URL字符串创建请求。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">NSString *URLString &#x3D; @&quot;http:&#x2F;&#x2F;example.com&quot;;</span><br><span class="line">NSDictionary *parameters &#x3D; @&#123;@&quot;foo&quot;: @&quot;bar&quot;, @&quot;baz&quot;: @[@1, @2, @3]&#125;;</span><br></pre></td></tr></table></figure>
+
+<h4 id="一、编码为查询字符串"><a href="#一、编码为查询字符串" class="headerlink" title="一、编码为查询字符串"></a>一、编码为查询字符串</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; GET</span><br><span class="line">[[AFHTTPRequestSerializer serializer] requestWithMethod:@&quot;GET&quot; URLString:URLString parameters:parameters error:nil];</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">GET http:&#x2F;&#x2F;example.com?foo&#x3D;bar&amp;baz[]&#x3D;1&amp;baz[]&#x3D;2&amp;baz[]&#x3D;3</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="二、编码为URL表单"><a href="#二、编码为URL表单" class="headerlink" title="二、编码为URL表单"></a>二、编码为URL表单</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; POST</span><br><span class="line">[[AFHTTPRequestSerializer serializer] requestWithMethod:@&quot;POST&quot; URLString:URLString parameters:parameters error:nil];</span><br></pre></td></tr></table></figure>
+
+<pre><code>POST http://example.com/
+Content-Type: application/x-www-form-urlencoded
+
+foo=bar&amp;baz[]=1&amp;baz[]=2&amp;baz[]=3</code></pre>
+<h4 id="三、编码为JSON字符串"><a href="#三、编码为JSON字符串" class="headerlink" title="三、编码为JSON字符串"></a>三、编码为JSON字符串</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; AFJSONRequestSerializer</span><br><span class="line">[[AFJSONRequestSerializer serializer] requestWithMethod:@&quot;POST&quot; URLString:URLString parameters:parameters error:nil];</span><br></pre></td></tr></table></figure>
+
+<pre><code>POST http://example.com/
+Content-Type: application/json
+
+&#123;&quot;foo&quot;: &quot;bar&quot;, &quot;baz&quot;: [1,2,3]&#125;</code></pre>
+<hr>
+<h3 id="网络状态管理"><a href="#网络状态管理" class="headerlink" title="网络状态管理"></a>网络状态管理</h3><p><code>AFNetworkReachabilityManager</code> 类用于监测 WWAN 和 WiFi 接口的网络联通性。</p>
+<ul>
+<li>不要依据它来决定是否发起网络请求。<ul>
+<li>你应该尝试发送网络请求。</li>
+</ul>
+</li>
+<li>你可以依据它来选择是否自动重新发送请求。<ul>
+<li>虽然它可能仍然失败，但当连接可用时，可访问性通知是重试某些东西的好时机。</li>
+</ul>
+</li>
+<li>它是一个判断网络请求失败原因的很好用的工具。<ul>
+<li>当网络请求失败时,告诉用户他们已经离线,要比告诉他们一些比如”请求超时”一类的准确的错误更好。</li>
+</ul>
+</li>
+</ul>
+<p>See also <span class="exturl" data-url="aHR0cHM6Ly9kZXZlbG9wZXIuYXBwbGUuY29tL3ZpZGVvcy9wbGF5L3d3ZGMyMDEyLTcwNi8=">WWDC 2012 session 706, “Networking Best Practices.”<i class="fa fa-external-link-alt"></i></span>.</p>
+<h4 id="共享网络状态连通性"><a href="#共享网络状态连通性" class="headerlink" title="共享网络状态连通性"></a>共享网络状态连通性</h4><p>示例：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">AFNetworkReachabilityManager *manager &#x3D; [AFNetworkReachabilityManager sharedManager];</span><br><span class="line">[manager setReachabilityStatusChangeBlock:^(AFNetworkReachabilityStatus status) &#123;</span><br><span class="line">    switch (status) &#123;</span><br><span class="line">        case AFNetworkReachabilityStatusUnknown: &#123;</span><br><span class="line">            DDLogInfo(@&quot;网络异常：未知网络&quot;);</span><br><span class="line">            break;</span><br><span class="line">        &#125;</span><br><span class="line">        case AFNetworkReachabilityStatusNotReachable: &#123;</span><br><span class="line">            DDLogInfo(@&quot;网络异常：没有网络&quot;);</span><br><span class="line">            break;</span><br><span class="line">        &#125;</span><br><span class="line">        case AFNetworkReachabilityStatusReachableViaWWAN: &#123;</span><br><span class="line">            DDLogInfo(@&quot;网络状态检测：蜂窝网络&quot;);</span><br><span class="line">            break;</span><br><span class="line">        &#125;</span><br><span class="line">        case AFNetworkReachabilityStatusReachableViaWiFi: &#123;</span><br><span class="line">            DDLogInfo(@&quot;网络状态检测：WiFi&quot;);</span><br><span class="line">            break;                </span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;];</span><br><span class="line">[networkReachabilityManager startMonitoring]; &#x2F;&#x2F; 开启网络检测</span><br></pre></td></tr></table></figure>
+
+<h4 id="基于特定域名的网络连通性"><a href="#基于特定域名的网络连通性" class="headerlink" title="基于特定域名的网络连通性"></a><del>基于特定域名的网络连通性</del></h4><hr>
+<h3 id="安全策略"><a href="#安全策略" class="headerlink" title="安全策略"></a>安全策略</h3><p><code>AFSecurityPolicy</code> 基于 X.509 数字证书和公钥来确定服务器是否可信。</p>
+<p>向应用程序中添加固定的 SSL 证书有助于防止中间人攻击和其他漏洞。强烈建议处理敏感客户数据或财务信息的应用程序通过 HTTPS 连接来和服务器通信。</p>
+<h4 id="允许无效的-SSL-证书"><a href="#允许无效的-SSL-证书" class="headerlink" title="允许无效的 SSL 证书"></a>允许无效的 SSL 证书</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">AFHTTPSessionManager *manager &#x3D; [AFHTTPSessionManager manager];</span><br><span class="line">manager.securityPolicy.allowInvalidCertificates &#x3D; YES; &#x2F;&#x2F; 生产环境不建议使用</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="单元测试"><a href="#单元测试" class="headerlink" title="单元测试"></a>单元测试</h2><p>AFNetworking 在 Tests 子目录中包含一套单元测试。 这些测试可以简单地执行您想要测试的平台框架上的测试操作。</p>
+<h2 id="账户"><a href="#账户" class="headerlink" title="账户"></a>账户</h2><p>AFNetworking is owned and maintained by the <span class="exturl" data-url="aHR0cDovL2FsYW1vZmlyZS5vcmcv">Alamofire Software Foundation<i class="fa fa-external-link-alt"></i></span>.</p>
+<p>AFNetworking was originally created by <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL3Njby8=">Scott Raymond<i class="fa fa-external-link-alt"></i></span> and <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL21hdHR0Lw==">Mattt Thompson<i class="fa fa-external-link-alt"></i></span> in the development of <span class="exturl" data-url="aHR0cDovL2VuLndpa2lwZWRpYS5vcmcvd2lraS9Hb3dhbGxh">Gowalla for iPhone<i class="fa fa-external-link-alt"></i></span>.</p>
+<p>AFNetworking’s logo was designed by <span class="exturl" data-url="aHR0cDovL3d3dy5hbGFuZGVmaWJhdWdoLmNvbS8=">Alan Defibaugh<i class="fa fa-external-link-alt"></i></span>.</p>
+<p>And most of all, thanks to AFNetworking’s <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL0FGTmV0d29ya2luZy9BRk5ldHdvcmtpbmcvY29udHJpYnV0b3Jz">growing list of contributors<i class="fa fa-external-link-alt"></i></span>.</p>
+<h3 id="Security-Disclosure"><a href="#Security-Disclosure" class="headerlink" title="Security Disclosure"></a>Security Disclosure</h3><p>If you believe you have identified a security vulnerability with AFNetworking, you should report it as soon as possible via email to <span class="exturl" data-url="bWFpbHRvOiYjMTE1OyYjeDY1OyYjeDYzOyYjMTE3OyYjeDcyOyYjeDY5OyYjMTE2OyYjMTIxOyYjeDQwOyYjOTc7JiN4NmM7JiN4NjE7JiN4NmQ7JiMxMTE7JiMxMDI7JiMxMDU7JiN4NzI7JiMxMDE7JiM0NjsmIzExMTsmI3g3MjsmI3g2Nzs=">&#115;&#x65;&#x63;&#117;&#x72;&#x69;&#116;&#121;&#x40;&#97;&#x6c;&#x61;&#x6d;&#111;&#102;&#105;&#x72;&#101;&#46;&#111;&#x72;&#x67;<i class="fa fa-external-link-alt"></i></span>. Please do not post it to a public issue tracker.</p>
+<h2 id="License"><a href="#License" class="headerlink" title="License"></a>License</h2><p>AFNetworking is released under the MIT license. See LICENSE for details.<br>tive-C对象。</p>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>独木舟的木
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://andy0570.com/2017/12/20/AFNetworking%E2%80%94%E2%80%94%E4%BC%98%E9%9B%85%E7%9A%84%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6/" title="AFNetworking——优雅的网络框架">https://andy0570.com/2017/12/20/AFNetworking——优雅的网络框架/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <span class="exturl" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpo"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</span> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/iOS/" rel="tag"># iOS</a>
+              <a href="/tags/GitHub/" rel="tag"># GitHub</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2017/12/20/Reachability%E2%80%94%E2%80%94%E4%B8%80%E4%B8%AA%E7%94%A8%E4%BA%8E%E5%88%A4%E6%96%AD%E7%BD%91%E7%BB%9C%E5%8F%AF%E8%BE%BE%E6%80%A7%E7%9A%84%E5%BA%93/" rel="prev" title="Reachability——一个用于判断网络可达性的库">
+      <i class="fa fa-chevron-left"></i> Reachability——一个用于判断网络可达性的库
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2017/12/22/%E3%80%8AObjective-C%20%E7%BC%96%E7%A8%8B%E3%80%8B19.@property/" rel="next" title="《Objective-C 编程》19.@property">
+      《Objective-C 编程》19.@property <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+        </div>
+        
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">独木舟的木</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">2.1m</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">31:21</span>
+</div>
+  <div class="powered-by">由 <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZw==">NexT.Gemini</span> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

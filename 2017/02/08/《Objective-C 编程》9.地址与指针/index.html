@@ -1,23 +1,645 @@
-{% extends '_layout.swig' %}
-{% import '_macro/post.swig' as post_template %}
-{% import '_macro/sidebar.swig' as sidebar_template %}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.0.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+  <meta name="google-site-verification" content="wioXOS3Gv2wXUpJ3sLtfZ4ft6YJYKNLLWSw6QoZTFYM">
+  <meta name="msvalidate.01" content="C96491A81239C517A50597C54EE53CD1">
+  <meta name="baidu-site-verification" content="h8asiToN1b">
 
-{% block title %}{{ page.title }} | {{ title }}{% endblock %}
+<link rel="stylesheet" href="/css/main.css">
 
-{% block page_class %}page-post-detail{% endblock %}
 
-{% block content %}
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  
+  <link rel="stylesheet" href="/lib/animate-css/animate.min.css">
 
-  <div id="posts" class="posts-expand">
-    {{ post_template.render(page) }}
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"andy0570.com","root":"/","scheme":"Gemini","version":"8.0.0-rc.5","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":"mac","bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false};
+  </script>
+
+  <meta name="description" content="地址与指针 1字节（byte）&#x3D;  8 位（bit） 内存是有数字编号的，通常用 地址（address）来指代某个特定字节的数据。 32位CPU或64位CPU，其实是指地址的大小。而64位CPU的寻址能力比32位CPU更强。  获取地址 变量的地址：是指内存中的某个位置，该位置的内存中保存着变量的值。通过**&amp;运算符**，可以得到变量的地址。 %p 是针对内存地址的格式说明符。 一般情况下">
+<meta property="og:type" content="article">
+<meta property="og:title" content="《Objective-C 编程》9.地址与指针">
+<meta property="og:url" content="https://andy0570.com/2017/02/08/%E3%80%8AObjective-C%20%E7%BC%96%E7%A8%8B%E3%80%8B9.%E5%9C%B0%E5%9D%80%E4%B8%8E%E6%8C%87%E9%92%88/index.html">
+<meta property="og:site_name" content="独木舟的木">
+<meta property="og:description" content="地址与指针 1字节（byte）&#x3D;  8 位（bit） 内存是有数字编号的，通常用 地址（address）来指代某个特定字节的数据。 32位CPU或64位CPU，其实是指地址的大小。而64位CPU的寻址能力比32位CPU更强。  获取地址 变量的地址：是指内存中的某个位置，该位置的内存中保存着变量的值。通过**&amp;运算符**，可以得到变量的地址。 %p 是针对内存地址的格式说明符。 一般情况下">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2017-02-08T04:40:00.000Z">
+<meta property="article:modified_time" content="2019-05-01T13:14:40.000Z">
+<meta property="article:author" content="独木舟的木">
+<meta property="article:tag" content="iOS">
+<meta property="article:tag" content="Objective-C">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://andy0570.com/2017/02/08/%E3%80%8AObjective-C%20%E7%BC%96%E7%A8%8B%E3%80%8B9.%E5%9C%B0%E5%9D%80%E4%B8%8E%E6%8C%87%E9%92%88/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>《Objective-C 编程》9.地址与指针 | 独木舟的木</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="独木舟的木" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <main class="main">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+        <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
   </div>
 
-{% endblock %}
+  <div class="site-meta">
 
-{% block sidebar %}
-  {{ sidebar_template.render(true) }}
-{% endblock %}
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">独木舟的木</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">iOS Developer</p>
+  </div>
 
-{% block script_extra %}
-  {% include '_scripts/pages/post-details.swig' %}
-{% endblock %}
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">14</span></a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">36</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">310</span></a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <section class="post-toc-wrap sidebar-panel">
+          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9C%B0%E5%9D%80%E4%B8%8E%E6%8C%87%E9%92%88"><span class="nav-number">1.</span> <span class="nav-text">地址与指针</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96%E5%9C%B0%E5%9D%80"><span class="nav-number">1.0.1.</span> <span class="nav-text">获取地址</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8C%87%E9%92%88"><span class="nav-number">1.0.2.</span> <span class="nav-text">指针</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#%E6%8C%87%E9%92%88%E7%9A%84%E5%A3%B0%E6%98%8E%E6%96%B9%E5%BC%8F%EF%BC%9A%E4%BE%8B-float-a"><span class="nav-number">1.0.2.0.0.1.</span> <span class="nav-text">指针的声明方式：例 :float  *a;</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%8D%E5%90%8C%E7%B1%BB%E5%9E%8B%E7%9A%84%E6%95%B0%E6%8D%AE%E6%89%80%E5%8D%A0%E7%94%A8%E7%9A%84%E5%AD%97%E8%8A%82%E5%A4%A7%E5%B0%8F"><span class="nav-number">1.0.3.</span> <span class="nav-text">不同类型的数据所占用的字节大小</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#NULL"><span class="nav-number">1.0.4.</span> <span class="nav-text">NULL</span></a></li></ol></li></ol></li></ol></div>
+      </section>
+      <!--/noindex-->
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="独木舟的木"
+      src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+  <p class="site-author-name" itemprop="name">独木舟的木</p>
+  <div class="site-description" itemprop="description">生若直木，不语斧凿。</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">310</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">36</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL0FuZHkwNTcw" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Andy0570"><i class="fab fa-github fa-fw"></i>GitHub</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9zdGFja292ZXJmbG93LmNvbS91c2Vycy83MjY1NDAwL2FuZHkwNTcw" title="StackOverflow → https:&#x2F;&#x2F;stackoverflow.com&#x2F;users&#x2F;7265400&#x2F;andy0570"><i class="fab fa-stack-overflow fa-fw"></i>StackOverflow</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuamlhbnNodS5jb20vdS84NGM1ZmFkYzdjMTg=" title="简书 → https:&#x2F;&#x2F;www.jianshu.com&#x2F;u&#x2F;84c5fadc7c18"><i class="heartbeat fa-fw"></i>简书</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="bWFpbHRvOmFuZHl3aG1AMTYzLmNvbQ==" title="E-Mail → mailto:andywhm@163.com"><i class="fa fa-envelope fa-fw"></i>E-Mail</span>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <span class="exturl cc-opacity" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpo"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></span>
+  </div>
+
+
+
+      </section>
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </header>
+
+      
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div id="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+      <div class="main-inner">
+        
+
+        <div class="content post posts-expand">
+          
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://andy0570.com/2017/02/08/%E3%80%8AObjective-C%20%E7%BC%96%E7%A8%8B%E3%80%8B9.%E5%9C%B0%E5%9D%80%E4%B8%8E%E6%8C%87%E9%92%88/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+      <meta itemprop="name" content="独木舟的木">
+      <meta itemprop="description" content="生若直木，不语斧凿。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="独木舟的木">
+    </span>
+
+    
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          《Objective-C 编程》9.地址与指针
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2017-02-08 12:40:00" itemprop="dateCreated datePublished" datetime="2017-02-08T12:40:00+08:00">2017-02-08</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-05-01 21:14:40" itemprop="dateModified" datetime="2019-05-01T21:14:40+08:00">2019-05-01</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Objective-C-%E7%BC%96%E7%A8%8B/" itemprop="url" rel="index"><span itemprop="name">Objective-C 编程</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>2.6k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>2 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="地址与指针"><a href="#地址与指针" class="headerlink" title="地址与指针"></a>地址与指针</h1><ul>
+<li>1字节（byte）=  8 位（bit）</li>
+<li>内存是有数字编号的，通常用 <strong>地址</strong>（address）来指代某个特定字节的数据。</li>
+<li>32位CPU或64位CPU，其实是指地址的大小。而64位CPU的寻址能力比32位CPU更强。</li>
+</ul>
+<h3 id="获取地址"><a href="#获取地址" class="headerlink" title="获取地址"></a>获取地址</h3><ul>
+<li><strong>变量的地址</strong>：是指内存中的某个位置，该位置的内存中保存着变量的值。通过**&amp;运算符**，可以得到变量的地址。</li>
+<li><strong>%p</strong> 是针对内存地址的格式说明符。</li>
+<li>一般情况下，内存地址都会以<strong>十六进制</strong>格式输出。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">int i &#x3D; 17;</span><br><span class="line">printf(&quot;i stores its value at %p\n&quot;,&amp;i);</span><br></pre></td></tr></table></figure>
+
+<p>输出结果：</p>
+<blockquote>
+<p><strong>i stores its value at 0x7fff5fbff79c</strong></p>
+</blockquote>
+<a id="more"></a>
+
+<ul>
+<li>当程序在计算机上运行时，相关的一切数据都会保存在内存中，并有各自的地址。</li>
+<li><strong>函数</strong>也有自己的地址。通过函数的函数名，就能得到相应函数的地址。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">printf(&quot;this function starts at %p\n&quot;,main);</span><br></pre></td></tr></table></figure>
+
+<p>输出结果：</p>
+<blockquote>
+<p><strong>this function starts at 0x100000d10</strong></p>
+</blockquote>
+<h3 id="指针"><a href="#指针" class="headerlink" title="指针"></a>指针</h3><ul>
+<li><p><strong>指针</strong>，就是用特定类型的变量来保存某个内存地址。</p>
+</li>
+<li><p>使用指针的意义：程序不一定能够通过拷贝来传递数据，但是一定能够<strong>直接传递</strong>或<strong>通过拷贝</strong>来传递<strong>数据的起始地址</strong>。一旦有数据的起始地址，就能够很容易地存取相应数据。</p>
+</li>
+<li><h6 id="指针的声明方式：例-float-a"><a href="#指针的声明方式：例-float-a" class="headerlink" title="指针的声明方式：例 :float  *a;"></a>指针的声明方式：例 :float  *a;</h6></li>
+<li><p>使用*<strong>运算符</strong>，可以访问保存在某个地址中的数据。</p>
+</li>
+<li><p>*运算符在这里的作用：</p>
+<ul>
+<li><ol>
+<li>声明指针；</li>
+</ol>
+</li>
+<li><ol start="2">
+<li><strong>去引用</strong>：通过指针访问某个地址中的数据；</li>
+<li>向指定的地址保存数据；</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">int i &#x3D; 17;</span><br><span class="line">&#x2F;&#x2F; *声明指针，将变量addressOfI声明为int *，即指向保存int值的内存地址</span><br><span class="line">int *addressOfI &#x3D; &amp;i;</span><br><span class="line">printf(&quot;i stores its value at %p\n&quot;,addressOfI);</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; *访问保存在addressOfI地址中的int值</span><br><span class="line">printf(&quot;the int stored at addressOfI is %d\n&quot;,*addressOfI);</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;在赋值表达式的左侧使用*运算符，将数据保存在指定的地址中</span><br><span class="line">*addressOfI &#x3D; 89;</span><br><span class="line">printf(&quot;Now i is %d\n&quot;,i);</span><br></pre></td></tr></table></figure>
+
+<p>输出结果</p>
+<blockquote>
+<p><strong>i stores its value at 0x7fff5fbff79c</strong></p>
+<p><strong>the int stored at addressOfI is 17</strong></p>
+<p><strong>Now i is 89</strong></p>
+</blockquote>
+<h3 id="不同类型的数据所占用的字节大小"><a href="#不同类型的数据所占用的字节大小" class="headerlink" title="不同类型的数据所占用的字节大小"></a>不同类型的数据所占用的字节大小</h3><ul>
+<li><strong>sizeof()</strong> 可以得到某个数据类型的大小；</li>
+<li><strong>sizeof()</strong> 会返回一个类型为 <strong>size_t</strong> 的数，与之对应的格式说明符为：**%zu** ;</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;使用 sizeof() 可以得到某个数据类型的大小</span><br><span class="line">printf(&quot;An char is %zu bytes\n&quot;,sizeof(char));</span><br><span class="line">printf(&quot;An short is %zu bytes\n&quot;,sizeof(short));</span><br><span class="line">printf(&quot;An int is %zu bytes\n&quot;,sizeof(int));</span><br><span class="line">printf(&quot;An long is %zu bytes\n&quot;,sizeof(long));</span><br><span class="line">printf(&quot;An float is %zu bytes\n&quot;,sizeof(float));</span><br><span class="line">printf(&quot;An double is %zu bytes\n&quot;,sizeof(double));</span><br><span class="line"></span><br><span class="line">printf(&quot;A pointer is %zu bytes\n&quot;,sizeof(int *));</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;调用 sizeof() 时，传入的实参也可以是变量</span><br><span class="line">printf(&quot;An int is %zu bytes\n&quot;,sizeof(i));</span><br><span class="line">printf(&quot;A pointer is %zu bytes\n&quot;,sizeof(addressOfI));</span><br></pre></td></tr></table></figure>
+
+<p> 输出结果：</p>
+<blockquote>
+<p><strong>An char is 1 bytes</strong></p>
+<p><strong>An short is 2 bytes</strong></p>
+<p><strong>An int is 4 bytes</strong></p>
+<p><strong>An long is 8 bytes</strong></p>
+<p><strong>An float is 4 bytes</strong></p>
+<p><strong>An double is 8 bytes</strong></p>
+<p><strong>A pointer is 8 bytes</strong></p>
+<p><strong>An int is 4 bytes</strong></p>
+<p><strong>A pointer is 8 bytes</strong></p>
+</blockquote>
+<blockquote>
+<p>可以通过查看<strong>指针的所占用的字节大小</strong>反向判断运行该程序的处理器（CPU）位数。<br>如果指针的长度是4个字节，那么运行该程序的处理器就是32位的；<br>如果指针的长度是8个字节，那么处理器就是64位的。</p>
+</blockquote>
+<ul>
+<li>范围，能够保存的最小数和最大数</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>数据类型</th>
+<th>位数</th>
+<th>最小数</th>
+<th>最大数</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>char</td>
+<td>8位</td>
+<td>-128</td>
+<td>127</td>
+</tr>
+<tr>
+<td>Unsigned char</td>
+<td>8位</td>
+<td>0</td>
+<td>255</td>
+</tr>
+<tr>
+<td>short</td>
+<td>16位</td>
+<td>-32768</td>
+<td>32767</td>
+</tr>
+<tr>
+<td>Unsigned short</td>
+<td>16位</td>
+<td>0</td>
+<td>65535</td>
+</tr>
+</tbody></table>
+<h3 id="NULL"><a href="#NULL" class="headerlink" title="NULL"></a>NULL</h3><ul>
+<li><p><strong>“空”指针</strong>：某些情况下，要有一个能够保存地址的指针变量，但是要赋上某个值，用于明确表示该指针没有指向任何地址。C语言中的<strong>NULL</strong>就是这里的“某个值”；</p>
+</li>
+<li><p>NULL就是0；</p>
+<p>在 <strong>if</strong> 的条件表达式中，判断指针是否为空：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">float *myPointer;</span><br><span class="line">if (myPointer) &#123;</span><br><span class="line">    &#x2F;&#x2F; myPointer 为 真，即 myPointer !&#x3D; NULL</span><br><span class="line">    printf(&quot;myPointer 不是 NULL.\n&quot;);</span><br><span class="line">&#125;else &#123;</span><br><span class="line">    printf(&quot;myPointer 是 NULL.\n&quot;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;  同上</span><br><span class="line">if (myPointer !&#x3D; NULL) &#123;</span><br><span class="line">    printf(&quot;myPointer 不是 NULL.\n&quot;);</span><br><span class="line">&#125;else &#123;</span><br><span class="line">    printf(&quot;myPointer 是 NULL.\n&quot;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>输出结果：</p>
+<blockquote>
+<p><strong>myPointer ** **是</strong> <strong>NULL.</strong></p>
+<p><strong>myPointer ** **是</strong> <strong>NULL.</strong></p>
+</blockquote>
+</li>
+</ul>
+<ul>
+<li><p>有时NULL表示此处为空值；</p>
+</li>
+<li><p>nil和NULL是相等的，但是Objective-C的程序员通常会使用nil来代表该地址上没有对象。</p>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>独木舟的木
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://andy0570.com/2017/02/08/%E3%80%8AObjective-C%20%E7%BC%96%E7%A8%8B%E3%80%8B9.%E5%9C%B0%E5%9D%80%E4%B8%8E%E6%8C%87%E9%92%88/" title="《Objective-C 编程》9.地址与指针">https://andy0570.com/2017/02/08/《Objective-C 编程》9.地址与指针/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <span class="exturl" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpo"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</span> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/iOS/" rel="tag"># iOS</a>
+              <a href="/tags/Objective-C/" rel="tag"># Objective-C</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2017/02/07/%E3%80%8AObjective-C%20%E7%BC%96%E7%A8%8B%E3%80%8B7.%E6%95%B0%E5%AD%97/" rel="prev" title="《Objective-C 编程》7.数字">
+      <i class="fa fa-chevron-left"></i> 《Objective-C 编程》7.数字
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2017/02/08/%E3%80%8AObjective-C%20%E7%BC%96%E7%A8%8B%E3%80%8B10.%E9%80%9A%E8%BF%87%E5%BC%95%E7%94%A8%E4%BC%A0%E5%80%BC/" rel="next" title="《Objective-C 编程》10.通过引用传值">
+      《Objective-C 编程》10.通过引用传值 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+        </div>
+        
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">独木舟的木</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">2.1m</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">31:21</span>
+</div>
+  <div class="powered-by">由 <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZw==">NexT.Gemini</span> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

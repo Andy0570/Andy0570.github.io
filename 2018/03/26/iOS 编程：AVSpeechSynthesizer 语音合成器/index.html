@@ -1,23 +1,516 @@
-{% extends '_layout.swig' %}
-{% import '_macro/post.swig' as post_template %}
-{% import '_macro/sidebar.swig' as sidebar_template %}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.0.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+  <meta name="google-site-verification" content="wioXOS3Gv2wXUpJ3sLtfZ4ft6YJYKNLLWSw6QoZTFYM">
+  <meta name="msvalidate.01" content="C96491A81239C517A50597C54EE53CD1">
+  <meta name="baidu-site-verification" content="h8asiToN1b">
 
-{% block title %}{{ page.title }} | {{ title }}{% endblock %}
+<link rel="stylesheet" href="/css/main.css">
 
-{% block page_class %}page-post-detail{% endblock %}
 
-{% block content %}
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  
+  <link rel="stylesheet" href="/lib/animate-css/animate.min.css">
 
-  <div id="posts" class="posts-expand">
-    {{ post_template.render(page) }}
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"andy0570.com","root":"/","scheme":"Gemini","version":"8.0.0-rc.5","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":"mac","bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false};
+  </script>
+
+  <meta name="description" content="AVSpeechSynthesizer 及其相关类可以将文本转换为语音输出。 使用示例：需要导入框架：#import &lt;AVFoundation&#x2F;AVFoundation.h&gt; 12345678910111213141516&#x2F;&#x2F; 语音合成器AVSpeechSynthesizer *speechSynthesizer &#x3D; [[AVSpeechSynthesi">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS 编程：AVSpeechSynthesizer 语音合成器">
+<meta property="og:url" content="https://andy0570.com/2018/03/26/iOS%20%E7%BC%96%E7%A8%8B%EF%BC%9AAVSpeechSynthesizer%20%E8%AF%AD%E9%9F%B3%E5%90%88%E6%88%90%E5%99%A8/index.html">
+<meta property="og:site_name" content="独木舟的木">
+<meta property="og:description" content="AVSpeechSynthesizer 及其相关类可以将文本转换为语音输出。 使用示例：需要导入框架：#import &lt;AVFoundation&#x2F;AVFoundation.h&gt; 12345678910111213141516&#x2F;&#x2F; 语音合成器AVSpeechSynthesizer *speechSynthesizer &#x3D; [[AVSpeechSynthesi">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2018-03-26T07:33:00.000Z">
+<meta property="article:modified_time" content="2019-05-01T12:50:16.000Z">
+<meta property="article:author" content="独木舟的木">
+<meta property="article:tag" content="iOS">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://andy0570.com/2018/03/26/iOS%20%E7%BC%96%E7%A8%8B%EF%BC%9AAVSpeechSynthesizer%20%E8%AF%AD%E9%9F%B3%E5%90%88%E6%88%90%E5%99%A8/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>iOS 编程：AVSpeechSynthesizer 语音合成器 | 独木舟的木</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="独木舟的木" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <main class="main">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+        <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
   </div>
 
-{% endblock %}
+  <div class="site-meta">
 
-{% block sidebar %}
-  {{ sidebar_template.render(true) }}
-{% endblock %}
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">独木舟的木</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">iOS Developer</p>
+  </div>
 
-{% block script_extra %}
-  {% include '_scripts/pages/post-details.swig' %}
-{% endblock %}
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">14</span></a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">36</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">310</span></a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <section class="post-toc-wrap sidebar-panel">
+          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#AVSpeechSynthesizerDelegate-%E5%8F%AF%E4%BB%A5%E7%9B%91%E5%90%AC%E7%9A%84%E4%BB%A3%E7%90%86%E6%96%B9%E6%B3%95"><span class="nav-number">1.</span> <span class="nav-text">AVSpeechSynthesizerDelegate 可以监听的代理方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AF%AD%E8%A8%80%E7%B1%BB%E5%88%AB"><span class="nav-number">2.</span> <span class="nav-text">语言类别</span></a></li></ol></div>
+      </section>
+      <!--/noindex-->
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="独木舟的木"
+      src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+  <p class="site-author-name" itemprop="name">独木舟的木</p>
+  <div class="site-description" itemprop="description">生若直木，不语斧凿。</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">310</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">36</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL0FuZHkwNTcw" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Andy0570"><i class="fab fa-github fa-fw"></i>GitHub</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9zdGFja292ZXJmbG93LmNvbS91c2Vycy83MjY1NDAwL2FuZHkwNTcw" title="StackOverflow → https:&#x2F;&#x2F;stackoverflow.com&#x2F;users&#x2F;7265400&#x2F;andy0570"><i class="fab fa-stack-overflow fa-fw"></i>StackOverflow</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuamlhbnNodS5jb20vdS84NGM1ZmFkYzdjMTg=" title="简书 → https:&#x2F;&#x2F;www.jianshu.com&#x2F;u&#x2F;84c5fadc7c18"><i class="heartbeat fa-fw"></i>简书</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="bWFpbHRvOmFuZHl3aG1AMTYzLmNvbQ==" title="E-Mail → mailto:andywhm@163.com"><i class="fa fa-envelope fa-fw"></i>E-Mail</span>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <span class="exturl cc-opacity" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpo"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></span>
+  </div>
+
+
+
+      </section>
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </header>
+
+      
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div id="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+      <div class="main-inner">
+        
+
+        <div class="content post posts-expand">
+          
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://andy0570.com/2018/03/26/iOS%20%E7%BC%96%E7%A8%8B%EF%BC%9AAVSpeechSynthesizer%20%E8%AF%AD%E9%9F%B3%E5%90%88%E6%88%90%E5%99%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+      <meta itemprop="name" content="独木舟的木">
+      <meta itemprop="description" content="生若直木，不语斧凿。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="独木舟的木">
+    </span>
+
+    
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          iOS 编程：AVSpeechSynthesizer 语音合成器
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-03-26 15:33:00" itemprop="dateCreated datePublished" datetime="2018-03-26T15:33:00+08:00">2018-03-26</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-05-01 20:50:16" itemprop="dateModified" datetime="2019-05-01T20:50:16+08:00">2019-05-01</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS/" itemprop="url" rel="index"><span itemprop="name">iOS</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>6.3k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>6 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>AVSpeechSynthesizer 及其相关类可以将文本转换为语音输出。</p>
+<p>使用示例：<br>需要导入框架：<code>#import &lt;AVFoundation/AVFoundation.h&gt;</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 语音合成器</span><br><span class="line">AVSpeechSynthesizer *speechSynthesizer &#x3D; [[AVSpeechSynthesizer alloc] init];</span><br><span class="line">speechSynthesizer.delegate &#x3D; self;</span><br><span class="line">&#x2F;&#x2F; 需要转换的文本</span><br><span class="line">AVSpeechUtterance *utterance &#x3D; [AVSpeechUtterance speechUtteranceWithString:@&quot;人们敢于登上险峻的高山，只为追寻惊艳；人们乐于眺望辽阔的大海，只为饱览奇观；但人们也会在街上擦肩而过，却对彼此一无所感。倘若每个个体都是一场神迹，那为何所有人都对这神迹视而不见？&quot;];</span><br><span class="line">&#x2F;&#x2F; 设置语言类别</span><br><span class="line">AVSpeechSynthesisVoice *voice &#x3D; [AVSpeechSynthesisVoice voiceWithLanguage:@&quot;zh-CN&quot;];</span><br><span class="line">utterance.voice &#x3D; voice;</span><br><span class="line">&#x2F;&#x2F; 设置播放语速</span><br><span class="line">utterance.rate &#x3D; 0.4;</span><br><span class="line">&#x2F;&#x2F; 设置声调，属性值介于 0.5(低音调)~2.0(高音调) 之间。</span><br><span class="line">utterance.pitchMultiplier &#x3D; 1.0;</span><br><span class="line">&#x2F;&#x2F; 设置朗读语句停顿延迟</span><br><span class="line">utterance.postUtteranceDelay &#x3D; 0.1;</span><br><span class="line">&#x2F;&#x2F; 语音合成器生成音频</span><br><span class="line">[speechSynthesizer speakUtterance:utterance];</span><br></pre></td></tr></table></figure>
+<a id="more"></a>
+
+<h3 id="AVSpeechSynthesizerDelegate-可以监听的代理方法"><a href="#AVSpeechSynthesizerDelegate-可以监听的代理方法" class="headerlink" title="AVSpeechSynthesizerDelegate 可以监听的代理方法"></a>AVSpeechSynthesizerDelegate 可以监听的代理方法</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">#pragma mark - AVSpeechSynthesizerDelegate</span><br><span class="line"></span><br><span class="line">- (void)speechSynthesizer:(AVSpeechSynthesizer *)synthesizer didStartSpeechUtterance:(AVSpeechUtterance *)utterance &#123;</span><br><span class="line">    NSLog(@&quot;%s&quot;,__func__);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)speechSynthesizer:(AVSpeechSynthesizer *)synthesizer didFinishSpeechUtterance:(AVSpeechUtterance *)utterance &#123;</span><br><span class="line">    NSLog(@&quot;%s&quot;,__func__);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)speechSynthesizer:(AVSpeechSynthesizer *)synthesizer didPauseSpeechUtterance:(AVSpeechUtterance *)utterance &#123;</span><br><span class="line">    NSLog(@&quot;%s&quot;,__func__);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)speechSynthesizer:(AVSpeechSynthesizer *)synthesizer didContinueSpeechUtterance:(AVSpeechUtterance *)utterance &#123;</span><br><span class="line">    NSLog(@&quot;%s&quot;,__func__);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)speechSynthesizer:(AVSpeechSynthesizer *)synthesizer didCancelSpeechUtterance:(AVSpeechUtterance *)utterance &#123;</span><br><span class="line">    NSLog(@&quot;%s&quot;,__func__);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)speechSynthesizer:(AVSpeechSynthesizer *)synthesizer willSpeakRangeOfSpeechString:(NSRange)characterRange utterance:(AVSpeechUtterance *)utterance &#123;</span><br><span class="line">    NSLog(@&quot;%s&quot;,__func__);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="语言类别"><a href="#语言类别" class="headerlink" title="语言类别"></a>语言类别</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line">Language: ar-SA, Name: Maged, Quality: Default [com.apple.ttsbundle.Maged-compact]</span><br><span class="line">Language: cs-CZ, Name: Zuzana, Quality: Default [com.apple.ttsbundle.Zuzana-compact]</span><br><span class="line">Language: da-DK, Name: Sara, Quality: Default [com.apple.ttsbundle.Sara-compact]</span><br><span class="line">Language: de-DE, Name: Anna, Quality: Default [com.apple.ttsbundle.Anna-compact]</span><br><span class="line">Language: de-DE, Name: Helena, Quality: Default [com.apple.ttsbundle.siri_female_de-DE_compact]</span><br><span class="line">Language: de-DE, Name: Martin, Quality: Default [com.apple.ttsbundle.siri_male_de-DE_compact]</span><br><span class="line">Language: el-GR, Name: Melina, Quality: Default [com.apple.ttsbundle.Melina-compact]</span><br><span class="line">Language: en-AU, Name: Catherine, Quality: Default [com.apple.ttsbundle.siri_female_en-AU_compact]</span><br><span class="line">Language: en-AU, Name: Gordon, Quality: Default [com.apple.ttsbundle.siri_male_en-AU_compact]</span><br><span class="line">Language: en-AU, Name: Karen, Quality: Default [com.apple.ttsbundle.Karen-compact]</span><br><span class="line">Language: en-GB, Name: Arthur, Quality: Default [com.apple.ttsbundle.siri_male_en-GB_compact]</span><br><span class="line">Language: en-GB, Name: Daniel, Quality: Default [com.apple.ttsbundle.Daniel-compact]</span><br><span class="line">Language: en-GB, Name: Martha, Quality: Default [com.apple.ttsbundle.siri_female_en-GB_compact]</span><br><span class="line">Language: en-IE, Name: Moira, Quality: Default [com.apple.ttsbundle.Moira-compact]</span><br><span class="line">Language: en-US, Name: Aaron, Quality: Default [com.apple.ttsbundle.siri_male_en-US_compact]</span><br><span class="line">Language: en-US, Name: Fred, Quality: Default [com.apple.speech.synthesis.voice.Fred]</span><br><span class="line">Language: en-US, Name: Nicky, Quality: Default [com.apple.ttsbundle.siri_female_en-US_compact]</span><br><span class="line">Language: en-US, Name: Samantha, Quality: Default [com.apple.ttsbundle.Samantha-compact]</span><br><span class="line">Language: en-ZA, Name: Tessa, Quality: Default [com.apple.ttsbundle.Tessa-compact]</span><br><span class="line">Language: es-ES, Name: Monica, Quality: Default [com.apple.ttsbundle.Monica-compact]</span><br><span class="line">Language: es-MX, Name: Paulina, Quality: Default [com.apple.ttsbundle.Paulina-compact]</span><br><span class="line">Language: fi-FI, Name: Satu, Quality: Default [com.apple.ttsbundle.Satu-compact]</span><br><span class="line">Language: fr-CA, Name: Amelie, Quality: Default [com.apple.ttsbundle.Amelie-compact]</span><br><span class="line">Language: fr-FR, Name: Daniel, Quality: Default [com.apple.ttsbundle.siri_male_fr-FR_compact]</span><br><span class="line">Language: fr-FR, Name: Marie, Quality: Default [com.apple.ttsbundle.siri_female_fr-FR_compact]</span><br><span class="line">Language: fr-FR, Name: Thomas, Quality: Default [com.apple.ttsbundle.Thomas-compact]</span><br><span class="line">Language: he-IL, Name: Carmit, Quality: Default [com.apple.ttsbundle.Carmit-compact]</span><br><span class="line">Language: hi-IN, Name: Lekha, Quality: Default [com.apple.ttsbundle.Lekha-compact]</span><br><span class="line">Language: hu-HU, Name: Mariska, Quality: Default [com.apple.ttsbundle.Mariska-compact]</span><br><span class="line">Language: id-ID, Name: Damayanti, Quality: Default [com.apple.ttsbundle.Damayanti-compact]</span><br><span class="line">Language: it-IT, Name: Alice, Quality: Default [com.apple.ttsbundle.Alice-compact]</span><br><span class="line">Language: ja-JP, Name: Hattori, Quality: Default [com.apple.ttsbundle.siri_male_ja-JP_compact]</span><br><span class="line">Language: ja-JP, Name: Kyoko, Quality: Default [com.apple.ttsbundle.Kyoko-compact]</span><br><span class="line">Language: ja-JP, Name: O-ren, Quality: Default [com.apple.ttsbundle.siri_female_ja-JP_compact]</span><br><span class="line">Language: ko-KR, Name: Yuna, Quality: Default [com.apple.ttsbundle.Yuna-compact]</span><br><span class="line">Language: nl-BE, Name: Ellen, Quality: Default [com.apple.ttsbundle.Ellen-compact]</span><br><span class="line">Language: nl-NL, Name: Xander, Quality: Default [com.apple.ttsbundle.Xander-compact]</span><br><span class="line">Language: no-NO, Name: Nora, Quality: Default [com.apple.ttsbundle.Nora-compact]</span><br><span class="line">Language: pl-PL, Name: Zosia, Quality: Default [com.apple.ttsbundle.Zosia-compact]</span><br><span class="line">Language: pt-BR, Name: Luciana, Quality: Default [com.apple.ttsbundle.Luciana-compact]</span><br><span class="line">Language: pt-PT, Name: Joana, Quality: Default [com.apple.ttsbundle.Joana-compact]</span><br><span class="line">Language: ro-RO, Name: Ioana, Quality: Default [com.apple.ttsbundle.Ioana-compact]</span><br><span class="line">Language: ru-RU, Name: Milena, Quality: Default [com.apple.ttsbundle.Milena-compact]</span><br><span class="line">Language: sk-SK, Name: Laura, Quality: Default [com.apple.ttsbundle.Laura-compact]</span><br><span class="line">Language: sv-SE, Name: Alva, Quality: Default [com.apple.ttsbundle.Alva-compact]</span><br><span class="line">Language: th-TH, Name: Kanya, Quality: Default [com.apple.ttsbundle.Kanya-compact]</span><br><span class="line">Language: tr-TR, Name: Yelda, Quality: Default [com.apple.ttsbundle.Yelda-compact]</span><br><span class="line">Language: zh-CN, Name: Yu-shu (Enhanced), Quality: Enhanced [com.apple.ttsbundle.siri_female_zh-CN_premium]</span><br><span class="line">Language: zh-CN, Name: Li-mu, Quality: Default [com.apple.ttsbundle.siri_male_zh-CN_compact]</span><br><span class="line">Language: zh-CN, Name: Ting-Ting, Quality: Default [com.apple.ttsbundle.Ting-Ting-compact]</span><br><span class="line">Language: zh-CN, Name: Yu-shu, Quality: Default [com.apple.ttsbundle.siri_female_zh-CN_compact]</span><br><span class="line">Language: zh-HK, Name: Sin-Ji, Quality: Default [com.apple.ttsbundle.Sin-Ji-compact]</span><br><span class="line">Language: zh-TW, Name: Mei-Jia, Quality: Default [com.apple.ttsbundle.Mei-Jia-compact]</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>独木舟的木
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://andy0570.com/2018/03/26/iOS%20%E7%BC%96%E7%A8%8B%EF%BC%9AAVSpeechSynthesizer%20%E8%AF%AD%E9%9F%B3%E5%90%88%E6%88%90%E5%99%A8/" title="iOS 编程：AVSpeechSynthesizer 语音合成器">https://andy0570.com/2018/03/26/iOS 编程：AVSpeechSynthesizer 语音合成器/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <span class="exturl" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpo"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</span> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/iOS/" rel="tag"># iOS</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2018/03/19/HTML%20%E5%89%8D%E7%AB%AF%E8%B5%84%E6%BA%90/" rel="prev" title="HTML 前端资源">
+      <i class="fa fa-chevron-left"></i> HTML 前端资源
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2018/04/12/UI%20%E8%AE%BE%E8%AE%A1%E7%B4%A0%E6%9D%90%E5%BA%93%E6%8E%A8%E8%8D%90%E7%BD%91%E5%9D%80/" rel="next" title="UI 设计素材库推荐网址">
+      UI 设计素材库推荐网址 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+        </div>
+        
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">独木舟的木</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">2.1m</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">31:21</span>
+</div>
+  <div class="powered-by">由 <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZw==">NexT.Gemini</span> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

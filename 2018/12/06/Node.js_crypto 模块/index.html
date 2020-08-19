@@ -1,23 +1,606 @@
-{% extends '_layout.swig' %}
-{% import '_macro/post.swig' as post_template %}
-{% import '_macro/sidebar.swig' as sidebar_template %}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.0.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+  <meta name="google-site-verification" content="wioXOS3Gv2wXUpJ3sLtfZ4ft6YJYKNLLWSw6QoZTFYM">
+  <meta name="msvalidate.01" content="C96491A81239C517A50597C54EE53CD1">
+  <meta name="baidu-site-verification" content="h8asiToN1b">
 
-{% block title %}{{ page.title }} | {{ title }}{% endblock %}
+<link rel="stylesheet" href="/css/main.css">
 
-{% block page_class %}page-post-detail{% endblock %}
 
-{% block content %}
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  
+  <link rel="stylesheet" href="/lib/animate-css/animate.min.css">
 
-  <div id="posts" class="posts-expand">
-    {{ post_template.render(page) }}
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"andy0570.com","root":"/","scheme":"Gemini","version":"8.0.0-rc.5","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":"mac","bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false};
+  </script>
+
+  <meta name="description" content="Hash 算法查看 crypto 模块支持的 hash 函数：crypto.getHashes() 123456789101112131415161718192021222324252627282930313233343536[ &amp;#x27;RSA-MD4&amp;#x27;,  &amp;#x27;RSA-MD5&amp;#x27;,  &amp;#x27;RSA-MDC2&amp;#x27;,  &amp;#x27;RSA-RIPEMD16">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Node.js_crypto 模块">
+<meta property="og:url" content="https://andy0570.com/2018/12/06/Node.js_crypto%20%E6%A8%A1%E5%9D%97/index.html">
+<meta property="og:site_name" content="独木舟的木">
+<meta property="og:description" content="Hash 算法查看 crypto 模块支持的 hash 函数：crypto.getHashes() 123456789101112131415161718192021222324252627282930313233343536[ &amp;#x27;RSA-MD4&amp;#x27;,  &amp;#x27;RSA-MD5&amp;#x27;,  &amp;#x27;RSA-MDC2&amp;#x27;,  &amp;#x27;RSA-RIPEMD16">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2018-12-06T03:04:00.000Z">
+<meta property="article:modified_time" content="2019-05-13T02:26:31.000Z">
+<meta property="article:author" content="独木舟的木">
+<meta property="article:tag" content="Node.js">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://andy0570.com/2018/12/06/Node.js_crypto%20%E6%A8%A1%E5%9D%97/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Node.js_crypto 模块 | 独木舟的木</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="独木舟的木" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <main class="main">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+        <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
   </div>
 
-{% endblock %}
+  <div class="site-meta">
 
-{% block sidebar %}
-  {{ sidebar_template.render(true) }}
-{% endblock %}
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">独木舟的木</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">iOS Developer</p>
+  </div>
 
-{% block script_extra %}
-  {% include '_scripts/pages/post-details.swig' %}
-{% endblock %}
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">14</span></a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">36</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">310</span></a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <section class="post-toc-wrap sidebar-panel">
+          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Hash-%E7%AE%97%E6%B3%95"><span class="nav-number">1.</span> <span class="nav-text">Hash 算法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#SHA-256"><span class="nav-number">1.1.</span> <span class="nav-text">SHA-256</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#PBKDF2"><span class="nav-number">1.2.</span> <span class="nav-text">PBKDF2</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Hmac-%E7%AE%97%E6%B3%95"><span class="nav-number">2.</span> <span class="nav-text">Hmac 算法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%A0%E7%9B%90%EF%BC%88salt%EF%BC%89"><span class="nav-number">3.</span> <span class="nav-text">加盐（salt）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%A0%E5%AF%86%EF%BC%88Cipher%EF%BC%89%E5%92%8C%E8%A7%A3%E5%AF%86%EF%BC%88Decipher%EF%BC%89%E7%AE%97%E6%B3%95"><span class="nav-number">4.</span> <span class="nav-text">加密（Cipher）和解密（Decipher）算法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AF%B9%E7%A7%B0%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95"><span class="nav-number">4.1.</span> <span class="nav-text">对称加密算法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#AES-256-GCM-%E7%A4%BA%E4%BE%8B1"><span class="nav-number">4.1.1.</span> <span class="nav-text">AES-256-GCM 示例1:</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#AES-256-GCM-%E7%A4%BA%E4%BE%8B2"><span class="nav-number">4.1.2.</span> <span class="nav-text">AES-256-GCM 示例2:</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%9D%9E%E5%AF%B9%E7%A7%B0%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E4%BD%BF%E7%94%A8%EF%BC%8C1-%E5%85%AC%E9%92%A5%E5%8A%A0%E5%AF%86-%E7%A7%81%E9%92%A5%E8%A7%A3%E5%AF%86%EF%BC%9B2-%E7%A7%81%E9%92%A5%E5%8A%A0%E5%AF%86-%E5%85%AC%E9%92%A5%E8%A7%A3%E5%AF%86%E3%80%82"><span class="nav-number">4.2.</span> <span class="nav-text">非对称加密算法的使用，1. 公钥加密-私钥解密；2. 私钥加密-公钥解密。</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8-RSA-2048-%E8%BF%9B%E8%A1%8C%E5%85%AC%E9%92%A5%E5%8A%A0%E5%AF%86%EF%BC%8C%E7%A7%81%E9%92%A5%E8%A7%A3%E5%AF%86"><span class="nav-number">4.2.1.</span> <span class="nav-text">使用 RSA 2048 进行公钥加密，私钥解密</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AD%BE%E5%90%8D%EF%BC%88Sign%EF%BC%89%E5%92%8C%E9%AA%8C%E8%AF%81%EF%BC%88Verify%EF%BC%89%E7%AE%97%E6%B3%95"><span class="nav-number">5.</span> <span class="nav-text">签名（Sign）和验证（Verify）算法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">6.</span> <span class="nav-text">参考</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%9B%B8%E5%85%B3%E7%AC%AC%E4%B8%89%E6%96%B9%E5%BA%93"><span class="nav-number">6.1.</span> <span class="nav-text">相关第三方库</span></a></li></ol></li></ol></div>
+      </section>
+      <!--/noindex-->
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="独木舟的木"
+      src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+  <p class="site-author-name" itemprop="name">独木舟的木</p>
+  <div class="site-description" itemprop="description">生若直木，不语斧凿。</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">310</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">36</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL0FuZHkwNTcw" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Andy0570"><i class="fab fa-github fa-fw"></i>GitHub</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9zdGFja292ZXJmbG93LmNvbS91c2Vycy83MjY1NDAwL2FuZHkwNTcw" title="StackOverflow → https:&#x2F;&#x2F;stackoverflow.com&#x2F;users&#x2F;7265400&#x2F;andy0570"><i class="fab fa-stack-overflow fa-fw"></i>StackOverflow</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuamlhbnNodS5jb20vdS84NGM1ZmFkYzdjMTg=" title="简书 → https:&#x2F;&#x2F;www.jianshu.com&#x2F;u&#x2F;84c5fadc7c18"><i class="heartbeat fa-fw"></i>简书</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="bWFpbHRvOmFuZHl3aG1AMTYzLmNvbQ==" title="E-Mail → mailto:andywhm@163.com"><i class="fa fa-envelope fa-fw"></i>E-Mail</span>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <span class="exturl cc-opacity" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpo"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></span>
+  </div>
+
+
+
+      </section>
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </header>
+
+      
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div id="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+      <div class="main-inner">
+        
+
+        <div class="content post posts-expand">
+          
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://andy0570.com/2018/12/06/Node.js_crypto%20%E6%A8%A1%E5%9D%97/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+      <meta itemprop="name" content="独木舟的木">
+      <meta itemprop="description" content="生若直木，不语斧凿。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="独木舟的木">
+    </span>
+
+    
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Node.js_crypto 模块
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-12-06 11:04:00" itemprop="dateCreated datePublished" datetime="2018-12-06T11:04:00+08:00">2018-12-06</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-05-13 10:26:31" itemprop="dateModified" datetime="2019-05-13T10:26:31+08:00">2019-05-13</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Node-js/" itemprop="url" rel="index"><span itemprop="name">Node.js</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>8.9k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>8 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="Hash-算法"><a href="#Hash-算法" class="headerlink" title="Hash 算法"></a>Hash 算法</h2><p>查看 crypto 模块支持的 hash 函数：<code>crypto.getHashes()</code></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">[ <span class="string">&#x27;RSA-MD4&#x27;</span>,</span><br><span class="line">  <span class="string">&#x27;RSA-MD5&#x27;</span>,</span><br><span class="line">  <span class="string">&#x27;RSA-MDC2&#x27;</span>,</span><br><span class="line">  <span class="string">&#x27;RSA-RIPEMD160&#x27;</span>,</span><br><span class="line">  <span class="string">&#x27;RSA-SHA1&#x27;</span>,</span><br><span class="line">  <span class="string">&#x27;RSA-SHA1-2&#x27;</span>,</span><br><span class="line">  <span class="string">&#x27;RSA-SHA224&#x27;</span>,</span><br><span class="line">  <span class="string">&#x27;RSA-SHA256&#x27;</span>,</span><br><span class="line">  <span class="string">&#x27;RSA-SHA384&#x27;</span>,</span><br><span class="line">  <span class="string">&#x27;RSA-SHA512&#x27;</span>,</span><br><span class="line">  <span class="string">&#x27;blake2b512&#x27;</span>,</span><br><span class="line">  <span class="string">&#x27;blake2s256&#x27;</span>,</span><br><span class="line">  <span class="string">&#x27;md4&#x27;</span>,</span><br><span class="line">  <span class="string">&#x27;md4WithRSAEncryption&#x27;</span>,</span><br><span class="line">  <span class="string">&#x27;md5&#x27;</span>,</span><br><span class="line">  <span class="string">&#x27;md5-sha1&#x27;</span>,</span><br><span class="line">  <span class="string">&#x27;md5WithRSAEncryption&#x27;</span>,</span><br><span class="line">  <span class="string">&#x27;mdc2&#x27;</span>,</span><br><span class="line">  <span class="string">&#x27;mdc2WithRSA&#x27;</span>,</span><br><span class="line">  <span class="string">&#x27;ripemd&#x27;</span>,</span><br><span class="line">  <span class="string">&#x27;ripemd160&#x27;</span>,</span><br><span class="line">  <span class="string">&#x27;ripemd160WithRSA&#x27;</span>,</span><br><span class="line">  <span class="string">&#x27;rmd160&#x27;</span>,</span><br><span class="line">  <span class="string">&#x27;sha1&#x27;</span>,</span><br><span class="line">  <span class="string">&#x27;sha1WithRSAEncryption&#x27;</span>,</span><br><span class="line">  <span class="string">&#x27;sha224&#x27;</span>,</span><br><span class="line">  <span class="string">&#x27;sha224WithRSAEncryption&#x27;</span>,</span><br><span class="line">  <span class="string">&#x27;sha256&#x27;</span>,</span><br><span class="line">  <span class="string">&#x27;sha256WithRSAEncryption&#x27;</span>,</span><br><span class="line">  <span class="string">&#x27;sha384&#x27;</span>,</span><br><span class="line">  <span class="string">&#x27;sha384WithRSAEncryption&#x27;</span>,</span><br><span class="line">  <span class="string">&#x27;sha512&#x27;</span>,</span><br><span class="line">  <span class="string">&#x27;sha512WithRSAEncryption&#x27;</span>,</span><br><span class="line">  <span class="string">&#x27;ssl3-md5&#x27;</span>,</span><br><span class="line">  <span class="string">&#x27;ssl3-sha1&#x27;</span>,</span><br><span class="line">  <span class="string">&#x27;whirlpool&#x27;</span> ]</span><br></pre></td></tr></table></figure>
+
+<a id="more"></a>
+
+<h3 id="SHA-256"><a href="#SHA-256" class="headerlink" title="SHA-256"></a>SHA-256</h3><p>示例：使用 <code>hash.update()</code> 和 <code>hash.digest()</code>：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> crypto = <span class="built_in">require</span>(<span class="string">&#x27;crypto&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> hash = crypto.createHash(<span class="string">&#x27;sha256&#x27;</span>); <span class="comment">// 创建哈希函数 sha256</span></span><br><span class="line"></span><br><span class="line">hash.update(<span class="string">&#x27;some data to hash&#x27;</span>, <span class="string">&#x27;utf8&#x27;</span>);</span><br><span class="line"><span class="built_in">console</span>.log(hash.digest(<span class="string">&#x27;hex&#x27;</span>));</span><br><span class="line"></span><br><span class="line"><span class="comment">// 输出</span></span><br><span class="line"><span class="comment">// 6a2da20943931e9834fc12cfe5bb47bbd9ae43489a30726962b576f4e3993e50</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="PBKDF2"><a href="#PBKDF2" class="headerlink" title="PBKDF2"></a>PBKDF2</h3><p>PBKDF2 是 Node.js 的 <strong>crypto</strong> 模块原生支持的标准方法。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> crypto = <span class="built_in">require</span>(<span class="string">&#x27;crypto&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">pbkdf2_encrypt</span>(<span class="params">username, password</span>) </span>&#123;</span><br><span class="line">  <span class="comment">// crypto.randomBytes(）方法生成 32 字节的随机数 - 这里作为盐值</span></span><br><span class="line">  crypto.randomBytes(<span class="number">32</span>, <span class="function">(<span class="params">err, salt</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (err) <span class="keyword">throw</span> err;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 参数列表：（密码，盐值，迭代次数，密钥长度，摘要函数）</span></span><br><span class="line">    crypto.pbkdf2(password, salt, <span class="number">4096</span>, <span class="number">512</span>, <span class="string">&#x27;sha256&#x27;</span>, <span class="function">(<span class="params">err, key</span>) =&gt;</span> &#123;</span><br><span class="line">      <span class="keyword">if</span> (err) <span class="keyword">throw</span> err;</span><br><span class="line">      <span class="comment">// 将用户名、密码哈希值和盐值存入数据库</span></span><br><span class="line">      <span class="built_in">console</span>.log(username, key.toString(<span class="string">&#x27;hex&#x27;</span>), salt.toString(<span class="string">&#x27;hex&#x27;</span>));</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">pbkdf2_encrypt(<span class="string">&#x27;zhangSan&#x27;</span>, <span class="string">&#x27;123456&#x27;</span>);</span><br></pre></td></tr></table></figure>
+
+<p>同步函数示例：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> salt = crypto.randomBytes(<span class="number">32</span>);</span><br><span class="line"><span class="keyword">const</span> result = crypto.pbkdf2Sync(password, salt, <span class="number">4096</span>, <span class="number">512</span>, <span class="string">&#x27;sha256&#x27;</span>);</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="Hmac-算法"><a href="#Hmac-算法" class="headerlink" title="Hmac 算法"></a>Hmac 算法</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> crypto = <span class="built_in">require</span>(<span class="string">&#x27;crypto&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> key = <span class="string">&#x27;BDvDYUmfdykkBLgX&#x27;</span>;</span><br><span class="line"><span class="keyword">const</span> hmac = crypto.createHmac(<span class="string">&#x27;sha1&#x27;</span>, key.toString(<span class="string">&#x27;ascii&#x27;</span>));</span><br><span class="line"></span><br><span class="line">hmac.update(<span class="string">&#x27;data to crypt&#x27;</span>);</span><br><span class="line"><span class="built_in">console</span>.log(hmac.digest(<span class="string">&#x27;hex&#x27;</span>)); </span><br><span class="line"></span><br><span class="line"><span class="comment">// 输出</span></span><br><span class="line"><span class="comment">// a43bfb9f12b6f69ad9fcd4338a981efbed2569ae</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="加盐（salt）"><a href="#加盐（salt）" class="headerlink" title="加盐（salt）"></a>加盐（salt）</h2><blockquote>
+<p>盐值就是随机数值，用于在计算密码的哈希值时加强数据的安全性，可以有效抵御诸如字典攻击、彩虹表攻击等密码攻击媒介。</p>
+</blockquote>
+<p>常见的 Hash 算法使用示例：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> crypto = <span class="built_in">require</span>(<span class="string">&#x27;crypto&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> md5 = crypto.createHash(<span class="string">&#x27;md5&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> password = <span class="string">&#x27;123456&#x27;</span>;</span><br><span class="line"><span class="comment">// 直接对密码原文进行 Hash</span></span><br><span class="line">md5.update(password);</span><br><span class="line"><span class="built_in">console</span>.log(md5.digest(<span class="string">&#x27;hex&#x27;</span>)); </span><br><span class="line"></span><br><span class="line"><span class="comment">// 输出</span></span><br><span class="line"><span class="comment">// e10adc3949ba59abbe56e057f20f883e</span></span><br><span class="line"><span class="comment">// 可以通过 &lt;https://www.cmd5.com/&gt; 反向查询得到密码，不够安全。</span></span><br></pre></td></tr></table></figure>
+
+<p>加“盐”的 Hash 算法：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> crypto = <span class="built_in">require</span>(<span class="string">&#x27;crypto&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> md5 = crypto.createHash(<span class="string">&#x27;md5&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> password = <span class="string">&#x27;123456&#x27;</span>;</span><br><span class="line"><span class="keyword">let</span> salt = <span class="string">&#x27;hhug6dcKyCNBQ5sUC0i6hja5dCTqdSzV&#x27;</span>; <span class="comment">// 盐值</span></span><br><span class="line"><span class="comment">// 将密码拼接上任意长度的随机字符串后，再进行 Hash</span></span><br><span class="line">md5.update(password+salt);</span><br><span class="line"><span class="built_in">console</span>.log(md5.digest(<span class="string">&#x27;hex&#x27;</span>));</span><br><span class="line"></span><br><span class="line"><span class="comment">// 输出</span></span><br><span class="line"><span class="comment">// b2d23b0443c319e574f1ea3f8bddc6e0</span></span><br></pre></td></tr></table></figure>
+<p><code>crypto.randomBytes()</code> 方法可以生成随机数，用于作为密钥或者盐值：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> crypto = <span class="built_in">require</span>(<span class="string">&#x27;crypto&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// crypto.randomBytes() 生成强加密的伪随机数</span></span><br><span class="line">crypto.randomBytes(<span class="number">16</span>, <span class="function">(<span class="params">err, buf</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">if</span> (err) <span class="keyword">throw</span> err;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">`<span class="subst">$&#123;buf.length&#125;</span> bytes of random data: <span class="subst">$&#123;buf.toString(<span class="string">&#x27;hex&#x27;</span>)&#125;</span>`</span>);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 打印</span></span><br><span class="line"><span class="comment">// 16 bytes of random data: 411fd0a79188f2fde58a91ea0302f148</span></span><br></pre></td></tr></table></figure>
+
+<p>使用 Node <strong>crypto</strong> 模块为哈希函数生成随机的盐值：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> crypto = <span class="built_in">require</span>(<span class="string">&#x27;crypto&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 1. 异步方法</span></span><br><span class="line">crypto.randomBytes(<span class="number">32</span>, <span class="function">(<span class="params">err, salt</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">if</span> (err) <span class="keyword">throw</span> err;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 记录盐值可读的字符串版本</span></span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">&#x27;salt: &#x27;</span> + salt.toString(<span class="string">&#x27;hex&#x27;</span>));</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 后续步骤：使用盐值</span></span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 2. 同步方法</span></span><br><span class="line"><span class="keyword">const</span> buf = crypto.randomBytes(<span class="number">256</span>);</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="加密（Cipher）和解密（Decipher）算法"><a href="#加密（Cipher）和解密（Decipher）算法" class="headerlink" title="加密（Cipher）和解密（Decipher）算法"></a>加密（Cipher）和解密（Decipher）算法</h2><h3 id="对称加密算法"><a href="#对称加密算法" class="headerlink" title="对称加密算法"></a>对称加密算法</h3><p>查看 Openssl 对称加密算法列表：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ openssl list -cipher-algorithms</span><br><span class="line">$ openssl list-cipher-algorithms <span class="comment"># 旧版本命令</span></span><br></pre></td></tr></table></figure>
+<h4 id="AES-256-GCM-示例1"><a href="#AES-256-GCM-示例1" class="headerlink" title="AES-256-GCM 示例1:"></a>AES-256-GCM 示例1:</h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&#x27;use strict&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> crypto = <span class="built_in">require</span>(<span class="string">&#x27;crypto&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 初始化参数</span></span><br><span class="line"><span class="keyword">const</span> text = <span class="string">&#x27;Encryption Testing AES GCM mode&#x27;</span>; <span class="comment">// 要加密和解密的数据</span></span><br><span class="line"><span class="keyword">const</span> key = crypto.randomBytes(<span class="number">32</span>); <span class="comment">// 256 位的共享密钥</span></span><br><span class="line"><span class="keyword">const</span> iv = crypto.randomBytes(<span class="number">16</span>); <span class="comment">// 初始向量，16 字节</span></span><br><span class="line"><span class="keyword">const</span> algorithm = <span class="string">&#x27;aes-256-gcm&#x27;</span>; <span class="comment">// 加密算法和操作模式</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 加密</span></span><br><span class="line"><span class="keyword">const</span> cipher = crypto.createCipheriv(algorithm, key, iv); <span class="comment">// 初始化加密算法</span></span><br><span class="line"><span class="keyword">let</span> encrypted = cipher.update(text, <span class="string">&#x27;utf8&#x27;</span>, <span class="string">&#x27;hex&#x27;</span>);</span><br><span class="line">encrypted += cipher.final(<span class="string">&#x27;hex&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> tag = cipher.getAuthTag(); <span class="comment">// 生成标签，用于验证密文的来源</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 解密</span></span><br><span class="line"><span class="keyword">const</span> decipher = crypto.createDecipheriv(algorithm, key, iv); <span class="comment">// 初始化解密算法</span></span><br><span class="line">decipher.setAuthTag(tag); <span class="comment">// 传入验证标签，验证密文的来源</span></span><br><span class="line"><span class="keyword">let</span> decrypted = decipher.update(encrypted, <span class="string">&#x27;hex&#x27;</span>, <span class="string">&#x27;utf8&#x27;</span>);</span><br><span class="line">decrypted += decipher.final(<span class="string">&#x27;utf8&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(decrypted); <span class="comment">// Encryption Testing AES GCM mode</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="AES-256-GCM-示例2"><a href="#AES-256-GCM-示例2" class="headerlink" title="AES-256-GCM 示例2:"></a>AES-256-GCM 示例2:</h4><ul>
+<li><span class="exturl" data-url="aHR0cHM6Ly9naXN0LmdpdGh1Yi5jb20vcmp6LzE1YmFmZmVhYjQzNGI4MTI1Y2E0ZDc4M2Y0MTE2ZDgx">Github - crypto-aes-256-gem-demo.js<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL21hdHQtd3UvQUVT">GitHub: AES 简介<i class="fa fa-external-link-alt"></i></span></li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&#x27;use strict&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> crypto = <span class="built_in">require</span>(<span class="string">&#x27;crypto&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> aes256gcm = <span class="function"><span class="params">key</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">const</span> ALGO = <span class="string">&#x27;aes-256-gcm&#x27;</span>;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// encrypt returns base64-encoded ciphertext</span></span><br><span class="line">  <span class="keyword">const</span> encrypt = <span class="function"><span class="params">str</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="comment">// Hint: the &#x27;iv&#x27; should be unique (but not necessarily random).</span></span><br><span class="line">    <span class="comment">// &#x27;randomBytes&#x27; here are (relatively) slow but convenient for demonstration</span></span><br><span class="line">    <span class="keyword">const</span> iv = <span class="keyword">new</span> Buffer.from(crypto.randomBytes(<span class="number">16</span>), <span class="string">&#x27;utf8&#x27;</span>);</span><br><span class="line">    <span class="keyword">const</span> cipher = crypto.createCipheriv(ALGO, key, iv);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Hint: Larger inputs (it&#x27;s GCM, after all!) should use the stream API</span></span><br><span class="line">    <span class="keyword">let</span> enc = cipher.update(str, <span class="string">&#x27;utf8&#x27;</span>, <span class="string">&#x27;base64&#x27;</span>);</span><br><span class="line">    enc += cipher.final(<span class="string">&#x27;base64&#x27;</span>);</span><br><span class="line">    <span class="keyword">return</span> [ enc, iv, cipher.getAuthTag() ];</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// decrypt decodes base64-encoded ciphertext into a utf8-encoded string</span></span><br><span class="line">  <span class="keyword">const</span> decrpt = <span class="function">(<span class="params">enc, iv, authTag</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> decipher = crypto.createDecipheriv(ALGO, key, iv);</span><br><span class="line">    decipher.setAuthTag(authTag);</span><br><span class="line">    <span class="keyword">let</span> str = decipher.update(enc, <span class="string">&#x27;base64&#x27;</span>, <span class="string">&#x27;utf8&#x27;</span>);</span><br><span class="line">    str += decipher.final(<span class="string">&#x27;utf8&#x27;</span>);</span><br><span class="line">    <span class="keyword">return</span> str;</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> &#123; encrypt, decrpt &#125;;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 加密密钥</span></span><br><span class="line"><span class="comment">// Note: a key size of 16 bytes will use AES-128, 24 =&gt; AES-192, 32 =&gt; AES-256</span></span><br><span class="line"><span class="keyword">const</span> KEY = <span class="keyword">new</span> Buffer.from(crypto.randomBytes(<span class="number">32</span>), <span class="string">&#x27;utf8&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> aesCipher = aes256gcm(KEY);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 加密</span></span><br><span class="line"><span class="keyword">const</span> [ encrypted, iv, authTag ] = aesCipher.encrypt(<span class="string">&#x27;hello world&#x27;</span>);</span><br><span class="line"><span class="comment">// 解密</span></span><br><span class="line"><span class="keyword">const</span> decrypted = aesCipher.decrpt(encrypted, iv, authTag);</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(decrypted); <span class="comment">// hello world</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="非对称加密算法的使用，1-公钥加密-私钥解密；2-私钥加密-公钥解密。"><a href="#非对称加密算法的使用，1-公钥加密-私钥解密；2-私钥加密-公钥解密。" class="headerlink" title="非对称加密算法的使用，1. 公钥加密-私钥解密；2. 私钥加密-公钥解密。"></a>非对称加密算法的使用，1. 公钥加密-私钥解密；2. 私钥加密-公钥解密。</h3><ul>
+<li><code>crypto.publicEncrypt(key, buffer)</code></li>
+<li><code>crypto.publicDecrypt(key, buffer)</code></li>
+<li><code>crypto.privateEncrypt(privateKey, buffer)</code></li>
+<li><code>crypto.privateDecrypt(privateKey, buffer)</code></li>
+</ul>
+<h4 id="使用-RSA-2048-进行公钥加密，私钥解密"><a href="#使用-RSA-2048-进行公钥加密，私钥解密" class="headerlink" title="使用 RSA 2048 进行公钥加密，私钥解密"></a>使用 RSA 2048 进行公钥加密，私钥解密</h4><p>使用 OpenSSL 生成 2048位 RSA 密钥：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 1.生成 2048位 RSA 私钥</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> openssl genrsa -out rsa_private_key.pem 2048</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 2. 通过私钥生成公钥</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> openssl rsa -<span class="keyword">in</span> rsa_private_key.pem -pubout -out rsa_public_key.pem</span></span><br></pre></td></tr></table></figure>
+
+<p>使用公钥加密数据，再使用私钥解密数据：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> crypto = <span class="built_in">require</span>(<span class="string">&#x27;crypto&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> fs = <span class="built_in">require</span>(<span class="string">&#x27;fs&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> path = <span class="built_in">require</span>(<span class="string">&#x27;path&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> root = __dirname;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> publicKey = fs.readFileSync(path.join(root, <span class="string">&#x27;./rsa_public_key.pem&#x27;</span>)).toString(<span class="string">&#x27;ascii&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> privateKey = fs.readFileSync(path.join(root, <span class="string">&#x27;./rsa_private_key.pem&#x27;</span>)).toString(<span class="string">&#x27;ascii&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> data = <span class="string">&#x27;data to crypt&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 公钥加密</span></span><br><span class="line"><span class="keyword">const</span> encryptData = crypto.publicEncrypt(publicKey, Buffer.from(data)).toString(<span class="string">&#x27;base64&#x27;</span>);</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">&#x27;encode&#x27;</span>, encryptData);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 私钥解密</span></span><br><span class="line"><span class="keyword">const</span> decryptData = crypto.privateDecrypt(privateKey, Buffer.from(encryptData.toString(<span class="string">&#x27;base64&#x27;</span>), <span class="string">&#x27;base64&#x27;</span>));</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">&#x27;decode&#x27;</span>, decryptData.toString());</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h2 id="签名（Sign）和验证（Verify）算法"><a href="#签名（Sign）和验证（Verify）算法" class="headerlink" title="签名（Sign）和验证（Verify）算法"></a>签名（Sign）和验证（Verify）算法</h2><p>签名算法示例：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> crypto = <span class="built_in">require</span>(<span class="string">&#x27;crypto&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> fs = <span class="built_in">require</span>(<span class="string">&#x27;fs&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> path = <span class="built_in">require</span>(<span class="string">&#x27;path&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> root = __dirname;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 加载私钥文件</span></span><br><span class="line"><span class="keyword">const</span> pem = fs.readFileSync(path.join(root, <span class="string">&#x27;./rsa_private_key.pem&#x27;</span>));</span><br><span class="line"><span class="keyword">const</span> key = pem.toString(<span class="string">&#x27;ascii&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> sign = crypto.createSign(<span class="string">&#x27;RSA-SHA256&#x27;</span>); <span class="comment">// 创建签名算法</span></span><br><span class="line">sign.update(<span class="string">&#x27;data to sign&#x27;</span>); <span class="comment">// 更新待签名内容</span></span><br><span class="line"><span class="keyword">const</span> result = sign.sign(key, <span class="string">&#x27;hex&#x27;</span>); <span class="comment">// 生成并返回签名</span></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">&#x27;result:&#x27;</span>, result);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 打印</span></span><br><span class="line"><span class="comment">// 3a26e0c3ec5ad1f517aad27f0f3a48cc0db156c2221800e4c2f995220f62a9077b4507a72ac6b0f1f50ee72386191d5ada4013945ff2afdb1ea6aa4e8d51a94f186089a67c2d6f4236150d59a1db134286fd7ba8deab0fc28f97eba7ad35820113f24dc6e30c6d11f0773527c4d81582c2b42016c9f972b5f4809e6d1f9115c2fb6db3168c68af3cfca986a458e3ea1c15606e7d33ee0bf5400ca460cf5371a51e800abe7ac943f16d9546239949bf7eec77488212d815b6a013e68fc2f456c4f2eb9d38c551e3f94168b076c3f761341afa3b724d8e73f486aacbace5a09412ef16c9b88182fcaeaaf97d96fdb402832530708a915d34c42131d7a26e4f04d4</span></span><br></pre></td></tr></table></figure>
+
+<p>验证算法示例：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> crypto = <span class="built_in">require</span>(<span class="string">&#x27;crypto&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> fs = <span class="built_in">require</span>(<span class="string">&#x27;fs&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> path = <span class="built_in">require</span>(<span class="string">&#x27;path&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> root = __dirname;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 加载公钥文件</span></span><br><span class="line"><span class="keyword">const</span> publicKey = fs.readFileSync(path.join(root, <span class="string">&#x27;./rsa_public_key.pem&#x27;</span>)).toString(<span class="string">&#x27;ascii&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> verify = crypto.createVerify(<span class="string">&#x27;RSA-SHA256&#x27;</span>); <span class="comment">// 创建验证算法</span></span><br><span class="line">verify.update(<span class="string">&#x27;data to sign&#x27;</span>);</span><br><span class="line"><span class="built_in">console</span>.log(verify.verify(publicKey, result, <span class="string">&#x27;hex&#x27;</span>));</span><br><span class="line"></span><br><span class="line"><span class="comment">// 打印</span></span><br><span class="line"><span class="comment">// true</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><p><span class="exturl" data-url="aHR0cHM6Ly9pdGJpbHUuY29tL25vZGVqcy9jb3JlLzRrb0dUR05ZLmh0bWw=">Node.js 的加密模块 crypto 之使用 Hash 类计算数据的哈希值<i class="fa fa-external-link-alt"></i></span></p>
+</li>
+<li><p><span class="exturl" data-url="aHR0cHM6Ly9pdGJpbHUuY29tL25vZGVqcy9jb3JlL1ZKS05JT1ZGLmh0bWw=">Node.js 的加密模块 crypto 之使用 Hmac 类计算哈希密钥<i class="fa fa-external-link-alt"></i></span></p>
+</li>
+<li><p><span class="exturl" data-url="aHR0cHM6Ly9pdGJpbHUuY29tL25vZGVqcy9jb3JlL0VKT2o2aEJZLmh0bWw=">Node.js 的加密模块 crypto 之使用 Cipher 类加密数据<i class="fa fa-external-link-alt"></i></span></p>
+</li>
+<li><p><span class="exturl" data-url="aHR0cHM6Ly9pdGJpbHUuY29tL25vZGVqcy9jb3JlLzR5U01xbFVGLmh0bWw=">Node.js 的加密模块 crypto 之使用 Decipher 类解密数据<i class="fa fa-external-link-alt"></i></span></p>
+</li>
+<li><p><span class="exturl" data-url="aHR0cHM6Ly9pdGJpbHUuY29tL25vZGVqcy9jb3JlL05rUU9FVExLLmh0bWw=">Node.js 的加密模块 crypto 之使用 Sign 类生成数字签名并使用 Verify 类验证数字签名<i class="fa fa-external-link-alt"></i></span></p>
+</li>
+<li><p><span class="exturl" data-url="aHR0cHM6Ly9pdGJpbHUuY29tL25vZGVqcy9jb3JlL0VrblpXVkt0Lmh0bWw=">Node.js 的加密模块 crypto 之使用 DiffieHellman 类生成交换密钥<i class="fa fa-external-link-alt"></i></span></p>
+</li>
+<li><p><span class="exturl" data-url="aHR0cHM6Ly9pdGJpbHUuY29tL25vZGVqcy9jb3JlLzQxaVh6Vm90Lmh0bWw=">Node.js 的加密模块 crypto 之使用 ECDH 类生成 EC Diffie-Hellman 交换密钥<i class="fa fa-external-link-alt"></i></span></p>
+</li>
+<li><p><span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2lkZGF0YXNlY3VyaXR5Ym9vaw==">Identity and Data Security for Web DevelopmentReport abuse<i class="fa fa-external-link-alt"></i></span></p>
+</li>
+<li><p><span class="exturl" data-url="aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM5NzkxNzA1L2FydGljbGUvZGV0YWlscy83OTU2NzQxMA==">Node.js 使用 RSA 加密 / 解密<i class="fa fa-external-link-alt"></i></span></p>
+</li>
+</ul>
+<h3 id="相关第三方库"><a href="#相关第三方库" class="headerlink" title="相关第三方库"></a>相关第三方库</h3><ul>
+<li><span class="exturl" data-url="aHR0cHM6Ly93d3cubnBtanMuY29tL3BhY2thZ2UvYmNyeXB0">bcrypt<i class="fa fa-external-link-alt"></i></span>——密码哈希函数</li>
+<li><span class="exturl" data-url="aHR0cHM6Ly93d3cubnBtanMuY29tL3BhY2thZ2UvYmNyeXB0anM=">bcrypt.js<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cHM6Ly93d3cubnBtanMuY29tL3BhY2thZ2Uvbm9kZS1yc2E=">node-rsa<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cHM6Ly93d3cubnBtanMuY29tL3BhY2thZ2Uvbm9kZS1mb3JnZQ==">node-forge<i class="fa fa-external-link-alt"></i></span></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>独木舟的木
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://andy0570.com/2018/12/06/Node.js_crypto%20%E6%A8%A1%E5%9D%97/" title="Node.js_crypto 模块">https://andy0570.com/2018/12/06/Node.js_crypto 模块/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <span class="exturl" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpo"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</span> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Node-js/" rel="tag"># Node.js</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2018/12/05/%E5%85%A8%E7%90%83%E7%BD%91%E7%BB%9C%E8%BA%AB%E4%BB%BD%E7%AE%A1%E7%90%86%E7%9A%84%E7%8E%B0%E7%8A%B6%E4%B8%8E%E5%8F%91%E5%B1%95/" rel="prev" title="全球网络身份管理的现状与发展">
+      <i class="fa fa-chevron-left"></i> 全球网络身份管理的现状与发展
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2018/12/06/Node.js_uuid%20%E6%A8%A1%E5%9D%97/" rel="next" title="Node.js_uuid 模块">
+      Node.js_uuid 模块 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+        </div>
+        
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">独木舟的木</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">2.1m</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">31:21</span>
+</div>
+  <div class="powered-by">由 <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZw==">NexT.Gemini</span> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

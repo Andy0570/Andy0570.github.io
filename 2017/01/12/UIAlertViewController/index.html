@@ -1,23 +1,584 @@
-{% extends '_layout.swig' %}
-{% import '_macro/post.swig' as post_template %}
-{% import '_macro/sidebar.swig' as sidebar_template %}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.0.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+  <meta name="google-site-verification" content="wioXOS3Gv2wXUpJ3sLtfZ4ft6YJYKNLLWSw6QoZTFYM">
+  <meta name="msvalidate.01" content="C96491A81239C517A50597C54EE53CD1">
+  <meta name="baidu-site-verification" content="h8asiToN1b">
 
-{% block title %}{{ page.title }} | {{ title }}{% endblock %}
+<link rel="stylesheet" href="/css/main.css">
 
-{% block page_class %}page-post-detail{% endblock %}
 
-{% block content %}
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  
+  <link rel="stylesheet" href="/lib/animate-css/animate.min.css">
 
-  <div id="posts" class="posts-expand">
-    {{ post_template.render(page) }}
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"andy0570.com","root":"/","scheme":"Gemini","version":"8.0.0-rc.5","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":"mac","bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false};
+  </script>
+
+  <meta name="description" content="UIAlertController UIAlertController 同时替代了 UIAlertView 和 UIActionSheet，从系统层级上统一了 alert 的概念 —— 即以 modal 方式或 popover 方式展示。   UIAlertController 是 UIViewController 的子类，而非其先前的方式。因此新的 alert 可以由 view controll">
+<meta property="og:type" content="article">
+<meta property="og:title" content="UIAlertController">
+<meta property="og:url" content="https://andy0570.com/2017/01/12/UIAlertViewController/index.html">
+<meta property="og:site_name" content="独木舟的木">
+<meta property="og:description" content="UIAlertController UIAlertController 同时替代了 UIAlertView 和 UIActionSheet，从系统层级上统一了 alert 的概念 —— 即以 modal 方式或 popover 方式展示。   UIAlertController 是 UIViewController 的子类，而非其先前的方式。因此新的 alert 可以由 view controll">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071611-1.jpg">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071612.jpg">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071614.jpg">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071614-1.jpg">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071616.jpg">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071617.png">
+<meta property="article:published_time" content="2017-01-12T03:35:00.000Z">
+<meta property="article:modified_time" content="2019-05-01T14:25:04.000Z">
+<meta property="article:author" content="独木舟的木">
+<meta property="article:tag" content="iOS">
+<meta property="article:tag" content="UIKit">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071611-1.jpg">
+
+<link rel="canonical" href="https://andy0570.com/2017/01/12/UIAlertViewController/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>UIAlertController | 独木舟的木</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="独木舟的木" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <main class="main">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+        <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
   </div>
 
-{% endblock %}
+  <div class="site-meta">
 
-{% block sidebar %}
-  {{ sidebar_template.render(true) }}
-{% endblock %}
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">独木舟的木</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">iOS Developer</p>
+  </div>
 
-{% block script_extra %}
-  {% include '_scripts/pages/post-details.swig' %}
-{% endblock %}
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">14</span></a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">36</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">310</span></a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <section class="post-toc-wrap sidebar-panel">
+          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#UIAlertController"><span class="nav-number">1.</span> <span class="nav-text">UIAlertController</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#UIAlertControllerStyle-%E2%80%94%E2%80%94Alert-%E6%A0%B7%E5%BC%8F"><span class="nav-number">1.1.</span> <span class="nav-text">UIAlertControllerStyle ——Alert 样式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#UIAlertActionStyle-%E2%80%94%E2%80%94-%E6%8C%89%E9%92%AE%E6%A0%B7%E5%BC%8F"><span class="nav-number">1.2.</span> <span class="nav-text">UIAlertActionStyle —— 按钮样式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-1%E4%B8%80%E4%B8%AA%E6%8C%89%E9%92%AE%E7%9A%84-Alert-%E6%A0%B7%E5%BC%8F"><span class="nav-number">1.3.</span> <span class="nav-text">1.1一个按钮的 Alert 样式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E6%96%B9%E6%B3%95"><span class="nav-number">1.4.</span> <span class="nav-text">创建方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-2-%E6%A0%87%E5%87%86%E7%9A%84-Alert-%E6%A0%B7%E5%BC%8F"><span class="nav-number">1.5.</span> <span class="nav-text">1.2 标准的 Alert 样式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E6%96%B9%E6%B3%95-1"><span class="nav-number">1.6.</span> <span class="nav-text">创建方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-3-%E5%B8%A6%E6%9C%89%E5%A4%9A%E4%B8%AA%E6%8C%89%E9%92%AE%E7%9A%84-Alert-%E6%A0%B7%E5%BC%8F"><span class="nav-number">1.7.</span> <span class="nav-text">1.3 带有多个按钮的 Alert 样式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E6%96%B9%E6%B3%95-2"><span class="nav-number">1.8.</span> <span class="nav-text">创建方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E6%A0%87%E5%87%86%E7%9A%84-Alert-Sheet-%E6%A0%B7%E5%BC%8F"><span class="nav-number">1.9.</span> <span class="nav-text">2.标准的 Alert Sheet 样式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E6%96%B9%E6%B3%95-3"><span class="nav-number">1.10.</span> <span class="nav-text">创建方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E5%B8%A6%E8%BE%93%E5%85%A5%E6%A1%86%E6%A0%B7%E5%BC%8F"><span class="nav-number">1.11.</span> <span class="nav-text">3.带输入框样式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E6%96%B9%E6%B3%95-4"><span class="nav-number">1.12.</span> <span class="nav-text">创建方法</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%AC%AC%E4%B8%89%E6%96%B9%E6%A1%86%E6%9E%B6%EF%BC%9A"><span class="nav-number">2.</span> <span class="nav-text">第三方框架：</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#ryanmaxwell-UIAlertController-Blocks"><span class="nav-number">2.1.</span> <span class="nav-text">ryanmaxwell&#x2F;UIAlertController-Blocks</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B0%83%E7%94%A8%E7%A4%BA%E4%BE%8B"><span class="nav-number">2.1.1.</span> <span class="nav-text">调用示例</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%A4%BA%E4%BE%8B%E4%B8%80%EF%BC%9A"><span class="nav-number">2.1.1.0.1.</span> <span class="nav-text">示例一：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%A4%BA%E4%BE%8B%E4%BA%8C%EF%BC%9A"><span class="nav-number">2.1.1.0.2.</span> <span class="nav-text">示例二：</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E4%B8%89%E6%96%B9%E6%A1%86%E6%9E%B6%EF%BC%9AkukumaluCN-JXTAlertManager"><span class="nav-number">2.1.2.</span> <span class="nav-text">第三方框架：kukumaluCN&#x2F;JXTAlertManager</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-Alert"><span class="nav-number">2.1.2.1.</span> <span class="nav-text">1.Alert</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-AlertSheet"><span class="nav-number">2.1.2.2.</span> <span class="nav-text">2.AlertSheet</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%92%AD%E6%94%BE%E7%B3%BB%E7%BB%9F%E5%A3%B0%E9%9F%B3%E3%80%81%E6%8F%90%E9%86%92%E5%A3%B0%E9%9F%B3%E5%92%8C%E6%8C%AF%E5%8A%A8%E8%AE%BE%E5%A4%87"><span class="nav-number">2.2.</span> <span class="nav-text">播放系统声音、提醒声音和振动设备</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%92%AD%E6%94%BE%E7%B3%BB%E7%BB%9F%E5%A3%B0%E9%9F%B3"><span class="nav-number">2.3.</span> <span class="nav-text">播放系统声音</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%92%AD%E6%94%BE%E6%8F%90%E9%86%92%E5%A3%B0%E9%9F%B3"><span class="nav-number">2.4.</span> <span class="nav-text">播放提醒声音</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%89%A7%E8%A1%8C%E9%9C%87%E5%8A%A8"><span class="nav-number">2.5.</span> <span class="nav-text">执行震动</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B6%E5%AE%83%E5%BC%80%E6%BA%90%E6%A1%86%E6%9E%B6"><span class="nav-number">2.5.1.</span> <span class="nav-text">其它开源框架</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">2.5.2.</span> <span class="nav-text">参考资料</span></a></li></ol></li></ol></li></ol></div>
+      </section>
+      <!--/noindex-->
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="独木舟的木"
+      src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+  <p class="site-author-name" itemprop="name">独木舟的木</p>
+  <div class="site-description" itemprop="description">生若直木，不语斧凿。</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">310</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">36</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL0FuZHkwNTcw" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Andy0570"><i class="fab fa-github fa-fw"></i>GitHub</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9zdGFja292ZXJmbG93LmNvbS91c2Vycy83MjY1NDAwL2FuZHkwNTcw" title="StackOverflow → https:&#x2F;&#x2F;stackoverflow.com&#x2F;users&#x2F;7265400&#x2F;andy0570"><i class="fab fa-stack-overflow fa-fw"></i>StackOverflow</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuamlhbnNodS5jb20vdS84NGM1ZmFkYzdjMTg=" title="简书 → https:&#x2F;&#x2F;www.jianshu.com&#x2F;u&#x2F;84c5fadc7c18"><i class="heartbeat fa-fw"></i>简书</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="bWFpbHRvOmFuZHl3aG1AMTYzLmNvbQ==" title="E-Mail → mailto:andywhm@163.com"><i class="fa fa-envelope fa-fw"></i>E-Mail</span>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <span class="exturl cc-opacity" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpo"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></span>
+  </div>
+
+
+
+      </section>
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </header>
+
+      
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div id="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+      <div class="main-inner">
+        
+
+        <div class="content post posts-expand">
+          
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://andy0570.com/2017/01/12/UIAlertViewController/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+      <meta itemprop="name" content="独木舟的木">
+      <meta itemprop="description" content="生若直木，不语斧凿。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="独木舟的木">
+    </span>
+
+    
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          UIAlertController
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2017-01-12 11:35:00" itemprop="dateCreated datePublished" datetime="2017-01-12T11:35:00+08:00">2017-01-12</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-05-01 22:25:04" itemprop="dateModified" datetime="2019-05-01T22:25:04+08:00">2019-05-01</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS/" itemprop="url" rel="index"><span itemprop="name">iOS</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>12k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>11 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="UIAlertController"><a href="#UIAlertController" class="headerlink" title="UIAlertController"></a>UIAlertController</h1><blockquote>
+<p>UIAlertController 同时替代了 UIAlertView 和 UIActionSheet，从系统层级上统一了 alert 的概念 —— 即以 modal 方式或 popover 方式展示。</p>
+</blockquote>
+<blockquote>
+<p>UIAlertController 是 UIViewController 的子类，而非其先前的方式。因此新的 alert 可以由 view controller 展示相关的配置中获益很多。</p>
+</blockquote>
+<blockquote>
+<p>UIAlertController 不管是要用 alert 还是 action sheet 方式展示，都要以 title 和 message 参数来初始化。Alert 会在当前显示的 view controller 中心以模态形式出现，action sheet 则会在底部滑出。Alert 可以同时有按钮和输入框，action sheet 仅支持按钮。</p>
+</blockquote>
+<blockquote>
+<p>新的方式并没有把所有的 alert 按钮配置都放在初始化函数中，而是引入了一个新类 UIAlertAction 的对象，在初始化之后可以进行配置。这种形式的 API 重构让对按钮数量、类型、顺序方便有了更大的控制。同时也弃用了 UIAlertView 和 UIActionSheet 使用的delegate 这种方式，而是采用更简便的完成时回调。<br>                                       -<span class="exturl" data-url="aHR0cDovL25zaGlwc3Rlci5jbi91aWFsZXJ0Y29udHJvbGxlci8=">摘自Mattt Thompson<i class="fa fa-external-link-alt"></i></span></p>
+</blockquote>
+<a id="more"></a>
+
+<h2 id="UIAlertControllerStyle-——Alert-样式"><a href="#UIAlertControllerStyle-——Alert-样式" class="headerlink" title="UIAlertControllerStyle ——Alert 样式"></a>UIAlertControllerStyle ——Alert 样式</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">typedef enum UIAlertControllerStyle : NSInteger &#123;</span><br><span class="line">    UIAlertControllerStyleActionSheet &#x3D; 0, &#x2F;&#x2F; 从底部向上推出的 action sheet 列表方式</span><br><span class="line">    UIAlertControllerStyleAlert            &#x2F;&#x2F; 模态显示的 alert</span><br><span class="line">&#125; UIAlertControllerStyle;</span><br></pre></td></tr></table></figure>
+
+<h2 id="UIAlertActionStyle-——-按钮样式"><a href="#UIAlertActionStyle-——-按钮样式" class="headerlink" title="UIAlertActionStyle —— 按钮样式"></a>UIAlertActionStyle —— 按钮样式</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">typedef enum UIAlertActionStyle : NSInteger &#123;</span><br><span class="line">    UIAlertActionStyleDefault &#x3D; 0,</span><br><span class="line">    UIAlertActionStyleCancel,</span><br><span class="line">    UIAlertActionStyleDestructive</span><br><span class="line">&#125; UIAlertActionStyle;</span><br></pre></td></tr></table></figure>
+<ol>
+<li><strong>UIAlertActionStyleDefault</strong><br> 默认风格样式的动作按钮;</li>
+<li><strong>UIAlertActionStyleCancel</strong><br> 取消操作并且保持视图内容不变的动作按钮;</li>
+<li><strong>UIAlertActionStyleDestructive</strong><br> 可能更改或删除数据样式的动作按钮,警示性样式，默认按钮字体为红色，提示用户这样做可能会删除或者改变某些数据.</li>
+</ol>
+<h2 id="1-1一个按钮的-Alert-样式"><a href="#1-1一个按钮的-Alert-样式" class="headerlink" title="1.1一个按钮的 Alert 样式"></a>1.1一个按钮的 Alert 样式</h2><p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071611-1.jpg" alt="一个按钮的Alert样式"></p>
+<h2 id="创建方法"><a href="#创建方法" class="headerlink" title="创建方法"></a>创建方法</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 1.实例化alertController</span><br><span class="line">UIAlertController *alert &#x3D; [UIAlertController alertControllerWithTitle:@&quot;标题&quot;</span><br><span class="line">                                                               message:@&quot;消息&quot;</span><br><span class="line">                                                        preferredStyle:UIAlertControllerStyleAlert];</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 2.实例化按钮</span><br><span class="line">UIAlertAction *action &#x3D; [UIAlertAction actionWithTitle:@&quot;确定&quot;</span><br><span class="line">                                                 style:UIAlertActionStyleDefault</span><br><span class="line">                                               handler:^(UIAlertAction * _Nonnull action) &#123;</span><br><span class="line">                                                   &#x2F;&#x2F; 点击按钮，调用此block</span><br><span class="line">                                                   NSLog(@&quot;Button Click&quot;);</span><br><span class="line">                                               &#125;];</span><br><span class="line">[alert addAction:action];</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;  3.显示alertController</span><br><span class="line">[self presentViewController:alert animated:YES completion:nil];</span><br></pre></td></tr></table></figure>
+<h2 id="1-2-标准的-Alert-样式"><a href="#1-2-标准的-Alert-样式" class="headerlink" title="1.2 标准的 Alert 样式"></a>1.2 标准的 Alert 样式</h2><p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071612.jpg"></p>
+<h2 id="创建方法-1"><a href="#创建方法-1" class="headerlink" title="创建方法"></a>创建方法</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;  1.实例化UIAlertController对象</span><br><span class="line">UIAlertController *alert &#x3D; [UIAlertController alertControllerWithTitle:@&quot;标准的Alert 样式&quot;</span><br><span class="line">                                                               message:@&quot;UIAlertControllerStyleAlert&quot;</span><br><span class="line">                                                        preferredStyle:UIAlertControllerStyleAlert];</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;  2.1实例化UIAlertAction按钮:取消按钮</span><br><span class="line">UIAlertAction *cancelAction &#x3D; [UIAlertAction actionWithTitle:@&quot;取消&quot;</span><br><span class="line">                                                       style:UIAlertActionStyleCancel</span><br><span class="line">                                                     handler:^(UIAlertAction * _Nonnull action) &#123;</span><br><span class="line">                                                         &#x2F;&#x2F; 点击取消按钮，调用此block</span><br><span class="line">                                                         NSLog(@&quot;取消按钮被按下！&quot;);</span><br><span class="line">                                                     &#125;];</span><br><span class="line">[alert addAction:cancelAction];</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;  2.2实例化UIAlertAction按钮:确定按钮</span><br><span class="line">UIAlertAction *defaultAction &#x3D; [UIAlertAction actionWithTitle:@&quot;确定&quot;</span><br><span class="line">                                                        style:UIAlertActionStyleDefault</span><br><span class="line">                                                      handler:^(UIAlertAction * _Nonnull action) &#123;</span><br><span class="line">                                                          &#x2F;&#x2F; 点击按钮，调用此block</span><br><span class="line">                                                          NSLog(@&quot;确定按钮被按下&quot;);</span><br><span class="line">                                                      &#125;];</span><br><span class="line">[alert addAction:defaultAction];</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;  3.显示alertController</span><br><span class="line">[self presentViewController:alert animated:YES completion:nil];</span><br></pre></td></tr></table></figure>
+<h2 id="1-3-带有多个按钮的-Alert-样式"><a href="#1-3-带有多个按钮的-Alert-样式" class="headerlink" title="1.3 带有多个按钮的 Alert 样式"></a>1.3 带有多个按钮的 Alert 样式</h2><p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071614.jpg"></p>
+<h2 id="创建方法-2"><a href="#创建方法-2" class="headerlink" title="创建方法"></a>创建方法</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;  1.实例化UIAlertController对象</span><br><span class="line">UIAlertController *alert &#x3D; [UIAlertController alertControllerWithTitle:@&quot;多个按钮的Alert 样式&quot;</span><br><span class="line">                                                               message:@&quot;有1个或者2个操作按钮的时候，按钮会水平排布。更多按钮的情况，就会像action sheet那样展示：&quot;</span><br><span class="line">                                                        preferredStyle:UIAlertControllerStyleAlert];</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;  2.1实例化UIAlertAction按钮:确定按钮</span><br><span class="line">UIAlertAction *defaultAction &#x3D; [UIAlertAction actionWithTitle:@&quot;确定&quot;</span><br><span class="line">                                                        style:UIAlertActionStyleDefault</span><br><span class="line">                                                      handler:^(UIAlertAction * _Nonnull action) &#123;</span><br><span class="line">                                                          &#x2F;&#x2F; 点击按钮，调用此block</span><br><span class="line">                                                          NSLog(@&quot;确定按钮被按下&quot;);</span><br><span class="line">                                                      &#125;];</span><br><span class="line">[alert addAction:defaultAction];</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;  2.2实例化UIAlertAction按钮:更多按钮</span><br><span class="line">UIAlertAction *moreAction &#x3D; [UIAlertAction actionWithTitle:@&quot;更多&quot;</span><br><span class="line">                                                     style:UIAlertActionStyleDestructive</span><br><span class="line">                                                   handler:^(UIAlertAction * _Nonnull action) &#123;</span><br><span class="line">                                                       &#x2F;&#x2F; 点击按钮，调用此block</span><br><span class="line">                                                       NSLog(@&quot;更多按钮被按下&quot;);</span><br><span class="line">                                                   &#125;];</span><br><span class="line">[alert addAction:moreAction];</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;  2.3实例化UIAlertAction按钮:取消按钮</span><br><span class="line">UIAlertAction *cancelAction &#x3D; [UIAlertAction actionWithTitle:@&quot;取消&quot;</span><br><span class="line">                                                       style:UIAlertActionStyleCancel</span><br><span class="line">                                                     handler:^(UIAlertAction * _Nonnull action) &#123;</span><br><span class="line">                                                         &#x2F;&#x2F; 点击取消按钮，调用此block</span><br><span class="line">                                                         NSLog(@&quot;取消按钮被按下！&quot;);</span><br><span class="line">                                                     &#125;];</span><br><span class="line">[alert addAction:cancelAction];</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;  3.显示alertController</span><br><span class="line">[self presentViewController:alert animated:YES completion:nil];</span><br></pre></td></tr></table></figure>
+
+<h2 id="2-标准的-Alert-Sheet-样式"><a href="#2-标准的-Alert-Sheet-样式" class="headerlink" title="2.标准的 Alert Sheet 样式"></a>2.标准的 Alert Sheet 样式</h2><p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071614-1.jpg"></p>
+<h2 id="创建方法-3"><a href="#创建方法-3" class="headerlink" title="创建方法"></a>创建方法</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 1.实例化UIAlertController对象</span><br><span class="line">UIAlertController *alert &#x3D; [UIAlertController alertControllerWithTitle:@&quot;标准的Action Sheet样式&quot;</span><br><span class="line">                                                               message:@&quot;UIAlertControllerStyleActionSheet&quot;</span><br><span class="line">                                                        preferredStyle:UIAlertControllerStyleActionSheet];</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 2.1实例化UIAlertAction按钮:取消按钮</span><br><span class="line">UIAlertAction *cancelAction &#x3D; [UIAlertAction actionWithTitle:@&quot;取消&quot;</span><br><span class="line">                                                       style:UIAlertActionStyleCancel</span><br><span class="line">                                                     handler:^(UIAlertAction * _Nonnull action) &#123;</span><br><span class="line">                                                         NSLog(@&quot;取消按钮被按下！&quot;);</span><br><span class="line">                                                     &#125;];</span><br><span class="line">[alert addAction:cancelAction];</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 2.2实例化UIAlertAction按钮:更多按钮</span><br><span class="line">UIAlertAction *moreAction &#x3D; [UIAlertAction actionWithTitle:@&quot;更多&quot;</span><br><span class="line">                                                     style:UIAlertActionStyleDestructive</span><br><span class="line">                                                   handler:^(UIAlertAction * _Nonnull action) &#123;</span><br><span class="line">                                                       NSLog(@&quot;更多按钮被按下！&quot;);</span><br><span class="line">                                                   &#125;];</span><br><span class="line">[alert addAction:moreAction];</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 2.3实例化UIAlertAction按钮:确定按钮</span><br><span class="line">UIAlertAction *confirmAction &#x3D; [UIAlertAction actionWithTitle:@&quot;确定&quot;</span><br><span class="line">                                                        style:UIAlertActionStyleDefault</span><br><span class="line">                                                      handler:^(UIAlertAction * _Nonnull action) &#123;</span><br><span class="line">                                                          NSLog(@&quot;确定按钮被按下&quot;);</span><br><span class="line">                                                      &#125;];</span><br><span class="line">[alert addAction:confirmAction];</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;  3.显示alertController</span><br><span class="line">[self presentViewController:alert animated:YES completion:nil];</span><br></pre></td></tr></table></figure>
+
+<h2 id="3-带输入框样式"><a href="#3-带输入框样式" class="headerlink" title="3.带输入框样式"></a>3.带输入框样式</h2><p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071616.jpg"></p>
+<h2 id="创建方法-4"><a href="#创建方法-4" class="headerlink" title="创建方法"></a>创建方法</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 1.实例化UIAlertController对象</span><br><span class="line">UIAlertController *alert &#x3D; [UIAlertController alertControllerWithTitle:@&quot;标题&quot;</span><br><span class="line">                                                               message:@&quot;信息&quot;</span><br><span class="line">                                                        preferredStyle:UIAlertControllerStyleAlert];</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 2.1添加输入文本框</span><br><span class="line">[alert addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) &#123;</span><br><span class="line">    textField.placeholder &#x3D; @&quot;支付密码&quot;;</span><br><span class="line">    textField.secureTextEntry &#x3D; YES;</span><br><span class="line">&#125;];</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 2.2实例化UIAlertAction按钮:确定按钮</span><br><span class="line">UIAlertAction *confirmAction &#x3D; [UIAlertAction actionWithTitle:@&quot;确定&quot;</span><br><span class="line">                                                        style:UIAlertActionStyleDefault</span><br><span class="line">                                                      handler:^(UIAlertAction * _Nonnull action) &#123;</span><br><span class="line">                                                          NSLog(@&quot;确定按钮被按下&quot;);</span><br><span class="line">                                                          UITextField *passwordTextField &#x3D; alert.textFields.firstObject;</span><br><span class="line">                                                          NSLog(@&quot;读取输入密码：%@&quot;,passwordTextField.text);</span><br><span class="line">                                &#125;];</span><br><span class="line">[alert addAction:confirmAction];</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;  3.显示alertController</span><br><span class="line">[self presentViewController:alert animated:YES completion:nil];</span><br></pre></td></tr></table></figure>
+
+<h1 id="第三方框架："><a href="#第三方框架：" class="headerlink" title="第三方框架："></a>第三方框架：</h1><h2 id="ryanmaxwell-UIAlertController-Blocks"><a href="#ryanmaxwell-UIAlertController-Blocks" class="headerlink" title="ryanmaxwell/UIAlertController-Blocks"></a><a target="_blank" rel="noopener" href="https://github.com/ryanmaxwell/UIAlertController-Blocks">ryanmaxwell/<strong>UIAlertController-Blocks</strong></a></h2><p>用 Blocks 方式封装的便捷扩展类，调用更简单：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 通用创建方法</span><br><span class="line">+ (nonnull instancetype)showInViewController:(nonnull UIViewController *)viewController</span><br><span class="line">                                   withTitle:(nullable NSString *)title</span><br><span class="line">                                     message:(nullable NSString *)message</span><br><span class="line">                              preferredStyle:(UIAlertControllerStyle)preferredStyle</span><br><span class="line">                           cancelButtonTitle:(nullable NSString *)cancelButtonTitle</span><br><span class="line">                      destructiveButtonTitle:(nullable NSString *)destructiveButtonTitle</span><br><span class="line">                           otherButtonTitles:(nullable NSArray *)otherButtonTitles</span><br><span class="line">#if TARGET_OS_iOS</span><br><span class="line">          popoverPresentationControllerBlock:(nullable UIAlertControllerPopoverPresentationControllerBlock)popoverPresentationControllerBlock</span><br><span class="line">#endif</span><br><span class="line">                                    tapBlock:(nullable UIAlertControllerCompletionBlock)tapBlock;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 指明创建 UIAlertControllerStyleAlert 样式的弹窗：</span><br><span class="line">+ (nonnull instancetype)showAlertInViewController:(nonnull UIViewController *)viewController</span><br><span class="line">                                        withTitle:(nullable NSString *)title</span><br><span class="line">                                          message:(nullable NSString *)message</span><br><span class="line">                                cancelButtonTitle:(nullable NSString *)cancelButtonTitle</span><br><span class="line">                           destructiveButtonTitle:(nullable NSString *)destructiveButtonTitle</span><br><span class="line">                                otherButtonTitles:(nullable NSArray *)otherButtonTitles</span><br><span class="line">                                         tapBlock:(nullable UIAlertControllerCompletionBlock)tapBlock;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 指明创建 UIAlertControllerStyleActionSheet 样式的弹窗：</span><br><span class="line">+ (nonnull instancetype)showActionSheetInViewController:(nonnull UIViewController *)viewController</span><br><span class="line">                                              withTitle:(nullable NSString *)title</span><br><span class="line">                                                message:(nullable NSString *)message</span><br><span class="line">                                      cancelButtonTitle:(nullable NSString *)cancelButtonTitle</span><br><span class="line">                                 destructiveButtonTitle:(nullable NSString *)destructiveButtonTitle</span><br><span class="line">                                      otherButtonTitles:(nullable NSArray *)otherButtonTitles</span><br><span class="line">#if TARGET_OS_iOS</span><br><span class="line">                     popoverPresentationControllerBlock:(nullable UIAlertControllerPopoverPresentationControllerBlock)popoverPresentationControllerBlock</span><br><span class="line">#endif</span><br><span class="line">                                               tapBlock:(nullable UIAlertControllerCompletionBlock)tapBlock;</span><br></pre></td></tr></table></figure>
+<h3 id="调用示例"><a href="#调用示例" class="headerlink" title="调用示例"></a>调用示例</h3><h5 id="示例一："><a href="#示例一：" class="headerlink" title="示例一："></a>示例一：</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[UIAlertController showAlertInViewController:self</span><br><span class="line">                                           withTitle:@&quot;无法访问位置信息&quot;</span><br><span class="line">                                             message:@&quot;请去设置-隐私-定位服务中开启该功能&quot;</span><br><span class="line">                                   cancelButtonTitle:@&quot;知道了&quot;</span><br><span class="line">                              destructiveButtonTitle:nil</span><br><span class="line">                                   otherButtonTitles:nil</span><br><span class="line">                                            tapBlock:nil];</span><br></pre></td></tr></table></figure>
+<h5 id="示例二："><a href="#示例二：" class="headerlink" title="示例二："></a>示例二：</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">self.tapBlock &#x3D; ^(UIAlertController *controller, UIAlertAction *action, NSInteger buttonIndex)&#123;</span><br><span class="line">            if (buttonIndex &#x3D;&#x3D; controller.destructiveButtonIndex) &#123;</span><br><span class="line">                NSLog(@&quot;Delete&quot;);</span><br><span class="line">            &#125; else if (buttonIndex &#x3D;&#x3D; controller.cancelButtonIndex) &#123;</span><br><span class="line">                NSLog(@&quot;Cancel&quot;);</span><br><span class="line">            &#125; else if (buttonIndex &gt;&#x3D; controller.firstOtherButtonIndex) &#123;</span><br><span class="line">                NSLog(@&quot;Other %ld&quot;, (long)buttonIndex - controller.firstOtherButtonIndex + 1);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; Alert 样式</span><br><span class="line">[UIAlertController showAlertInViewController:self</span><br><span class="line">                                       withTitle:@&quot;Test Alert&quot;</span><br><span class="line">                                         message:@&quot;Test Message&quot;</span><br><span class="line">                               cancelButtonTitle:@&quot;Cancel&quot;</span><br><span class="line">                          destructiveButtonTitle:@&quot;Delete&quot;</span><br><span class="line">                               otherButtonTitles:@[@&quot;First Other&quot;, @&quot;Second Other&quot;]</span><br><span class="line">                                        tapBlock:self.tapBlock];</span><br><span class="line">&#x2F;&#x2F; ActionSheet 样式</span><br><span class="line">[UIAlertController showActionSheetInViewController:self</span><br><span class="line">                                         withTitle:@&quot;Test Action Sheet&quot;</span><br><span class="line">                                           message:@&quot;Test Message&quot;</span><br><span class="line">                                 cancelButtonTitle:@&quot;Cancel&quot;</span><br><span class="line">                            destructiveButtonTitle:@&quot;Delete&quot;</span><br><span class="line">                                 otherButtonTitles:@[@&quot;First Other&quot;, @&quot;Second Other&quot;]</span><br><span class="line">#if TARGET_OS_iOS</span><br><span class="line">                popoverPresentationControllerBlock:^(UIPopoverPresentationController *popover)&#123;</span><br><span class="line"></span><br><span class="line">                    popover.sourceView &#x3D; self.view;</span><br><span class="line">                    popover.sourceRect &#x3D; sender.frame;</span><br><span class="line">                &#125;</span><br><span class="line">#endif</span><br><span class="line">                                          tapBlock:self.tapBlock];</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>Tips:如果不需要某个按钮，就给按钮的Title 传 nil。</p>
+</blockquote>
+<ul>
+<li>ButtonIndex判断：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">static NSInteger const UIAlertControllerBlocksCancelButtonIndex &#x3D; 0; &#x2F;&#x2F; 取消、返回按钮</span><br><span class="line">static NSInteger const UIAlertControllerBlocksDestructiveButtonIndex &#x3D; 1; &#x2F;&#x2F; 更改、删除按钮</span><br><span class="line">static NSInteger const UIAlertControllerBlocksFirstOtherButtonIndex &#x3D; 2; &#x2F;&#x2F; 第一个默认按钮</span><br></pre></td></tr></table></figure>
+<img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071617.png" alt="button Index"></li>
+</ul>
+<h3 id="第三方框架：kukumaluCN-JXTAlertManager"><a href="#第三方框架：kukumaluCN-JXTAlertManager" class="headerlink" title="第三方框架：kukumaluCN/JXTAlertManager"></a>第三方框架：<span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2t1a3VtYWx1Q04vSlhUQWxlcnRNYW5hZ2Vy">kukumaluCN/JXTAlertManager<i class="fa fa-external-link-alt"></i></span></h3><p>这个框架支持链式语法：<br>使用示例：</p>
+<h4 id="1-Alert"><a href="#1-Alert" class="headerlink" title="1.Alert"></a>1.Alert</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">[self jxt_showAlertWithTitle:@&quot;title&quot;</span><br><span class="line">                     message:@&quot;message&quot;</span><br><span class="line">           appearanceProcess:^(JXTAlertController * _Nonnull alertMaker) &#123;</span><br><span class="line">    alertMaker.</span><br><span class="line">    addActionCancelTitle(@&quot;cancel&quot;).</span><br><span class="line">    addActionDestructiveTitle(@&quot;按钮1&quot;);</span><br><span class="line">&#125; actionsBlock:^(NSInteger buttonIndex, UIAlertAction * _Nonnull action, JXTAlertController * _Nonnull alertSelf) &#123;</span><br><span class="line">    if (buttonIndex &#x3D;&#x3D; 0) &#123;</span><br><span class="line">        NSLog(@&quot;cancel&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">    else if (buttonIndex &#x3D;&#x3D; 1) &#123;</span><br><span class="line">        NSLog(@&quot;按钮1&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;];</span><br></pre></td></tr></table></figure>
+<h4 id="2-AlertSheet"><a href="#2-AlertSheet" class="headerlink" title="2.AlertSheet"></a>2.AlertSheet</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">[self jxt_showAlertWithTitle:@&quot;title&quot;</span><br><span class="line">                     message:@&quot;message&quot;</span><br><span class="line">           appearanceProcess:^(JXTAlertController * _Nonnull alertMaker) &#123;</span><br><span class="line">    alertMaker.</span><br><span class="line">    addActionDestructiveTitle(@&quot;获取输入框1&quot;).</span><br><span class="line">    addActionDestructiveTitle(@&quot;获取输入框2&quot;);</span><br><span class="line">    </span><br><span class="line">    [alertMaker addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) &#123;</span><br><span class="line">        textField.placeholder &#x3D; @&quot;输入框1-请输入&quot;;</span><br><span class="line">    &#125;];</span><br><span class="line">    [alertMaker addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) &#123;</span><br><span class="line">        textField.placeholder &#x3D; @&quot;输入框2-请输入&quot;;</span><br><span class="line">    &#125;];</span><br><span class="line">&#125; actionsBlock:^(NSInteger buttonIndex, UIAlertAction * _Nonnull action, JXTAlertController * _Nonnull alertSelf) &#123;</span><br><span class="line">    if (buttonIndex &#x3D;&#x3D; 0) &#123;</span><br><span class="line">        UITextField *textField &#x3D; alertSelf.textFields.firstObject;</span><br><span class="line">        [self logMsg:textField.text];&#x2F;&#x2F;不用担心循环引用</span><br><span class="line">    &#125;</span><br><span class="line">    else if (buttonIndex &#x3D;&#x3D; 1) &#123;</span><br><span class="line">        UITextField *textField &#x3D; alertSelf.textFields.lastObject;</span><br><span class="line">        [self logMsg:textField.text];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;];</span><br></pre></td></tr></table></figure>
+
+<h2 id="播放系统声音、提醒声音和振动设备"><a href="#播放系统声音、提醒声音和振动设备" class="headerlink" title="播放系统声音、提醒声音和振动设备"></a>播放系统声音、提醒声音和振动设备</h2><pre><code>// 导入框架
+#import &lt;AudioToolbox/AudioToolbox.h&gt;</code></pre>
+<h2 id="播放系统声音"><a href="#播放系统声音" class="headerlink" title="播放系统声音"></a>播放系统声音</h2><pre><code>AudioServicesPlaySystemSound(1005);</code></pre>
+<h2 id="播放提醒声音"><a href="#播放提醒声音" class="headerlink" title="播放提醒声音"></a>播放提醒声音</h2><pre><code>AudioServicesPlayAlertSound(1006);</code></pre>
+<h2 id="执行震动"><a href="#执行震动" class="headerlink" title="执行震动"></a>执行震动</h2><pre><code>AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);</code></pre>
+<h3 id="其它开源框架"><a href="#其它开源框架" class="headerlink" title="其它开源框架"></a>其它开源框架</h3><ul>
+<li><span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2RvZ28vU0NMQWxlcnRWaWV3">dogo/SCLAlertView<i class="fa fa-external-link-alt"></i></span> ⭐️3000</li>
+<li><span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2FkYWQxODQvTU1Qb3B1cFZpZXc=">GitHub:adad184/MMPopupView<i class="fa fa-external-link-alt"></i></span> ⭐️1800</li>
+<li><span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL210b25pbzkxL0FNU21vb3RoQWxlcnQ=">GitHub:mtonio91/AMSmoothAlert<i class="fa fa-external-link-alt"></i></span> ⭐️1300</li>
+<li><span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tLzEyMjA3NDgwL1RZQWxlcnRDb250cm9sbGVy">GitHub:12207480/TYAlertController<i class="fa fa-external-link-alt"></i></span> ⭐️1000</li>
+</ul>
+<h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><ul>
+<li><span class="exturl" data-url="aHR0cDovL25zaGlwc3Rlci5jbi91aWFsZXJ0Y29udHJvbGxlci8=">UIAlert​Controller @Mattt Thompson撰写、 Croath Liu翻译<i class="fa fa-external-link-alt"></i></span>-<strong>Swift</strong></li>
+<li><span class="exturl" data-url="aHR0cDovL3d3dy5qaWFuc2h1LmNvbS9wL2M0MDE4ZjRmZWYwYg==">iOS开发笔记：提示框（UIAlertController）学习<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cDovL2Jsb2cuY3Nkbi5uZXQvYmh0ODkwODExL2FydGljbGUvZGV0YWlscy80MDk1MjQzOQ=="> iOS 8 新特性初学：UIAlertController @关东糖<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cDovL3d3dy5qaWFuc2h1LmNvbS9wL2FlMzM2NTk0ZGFmMA==">iOS 更加优雅便捷的UIAlertView/UIAlertController封装使用 @霖溦<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cDovL3d3dy5qaWFuc2h1LmNvbS9wL2QxMTQ1M2RiZDk4MA==">模仿支付宝支付密码输入对话框<i class="fa fa-external-link-alt"></i></span></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>独木舟的木
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://andy0570.com/2017/01/12/UIAlertViewController/" title="UIAlertController">https://andy0570.com/2017/01/12/UIAlertViewController/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <span class="exturl" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpo"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</span> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/iOS/" rel="tag"># iOS</a>
+              <a href="/tags/UIKit/" rel="tag"># UIKit</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2017/01/09/iOS%20%E7%BC%96%E7%A8%8B%EF%BC%9AAES%20%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95/" rel="prev" title="iOS 编程：AES 加密算法">
+      <i class="fa fa-chevron-left"></i> iOS 编程：AES 加密算法
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2017/01/12/iOS%20%E7%BC%96%E7%A8%8B%EF%BC%9A%E5%90%AF%E5%8A%A8%E5%BC%95%E5%AF%BC%E9%A1%B5/" rel="next" title="iOS 编程：启动引导页">
+      iOS 编程：启动引导页 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+        </div>
+        
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">独木舟的木</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">2.1m</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">31:21</span>
+</div>
+  <div class="powered-by">由 <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZw==">NexT.Gemini</span> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

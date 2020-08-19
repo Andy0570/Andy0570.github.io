@@ -1,23 +1,559 @@
-{% extends '_layout.swig' %}
-{% import '_macro/post.swig' as post_template %}
-{% import '_macro/sidebar.swig' as sidebar_template %}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.0.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+  <meta name="google-site-verification" content="wioXOS3Gv2wXUpJ3sLtfZ4ft6YJYKNLLWSw6QoZTFYM">
+  <meta name="msvalidate.01" content="C96491A81239C517A50597C54EE53CD1">
+  <meta name="baidu-site-verification" content="h8asiToN1b">
 
-{% block title %}{{ page.title }} | {{ title }}{% endblock %}
+<link rel="stylesheet" href="/css/main.css">
 
-{% block page_class %}page-post-detail{% endblock %}
 
-{% block content %}
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  
+  <link rel="stylesheet" href="/lib/animate-css/animate.min.css">
 
-  <div id="posts" class="posts-expand">
-    {{ post_template.render(page) }}
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"andy0570.com","root":"/","scheme":"Gemini","version":"8.0.0-rc.5","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":"mac","bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false};
+  </script>
+
+  <meta name="description" content="贴上陆陆续续从各个地方看过的搭建  iOS APP 框架的文章，整理出来，以后看到好的再贴出来。 理论部分  objccn.io——架构 iOS 架构模式–解密 MVC，MVP，MVVM以及VIPER架构 iOS应用架构现状分析@MrPeak 👍    做一个 App 前需要考虑的几件事本文从宏观的角度来讨论开发移动应用需要关注的点，理论性思考多一些。包括完善的日志系统、Commit Messa">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS APP 框架体系">
+<meta property="og:url" content="https://andy0570.com/2017/06/22/iOS%20APP%20%E6%A1%86%E6%9E%B6%E4%BD%93%E7%B3%BB/index.html">
+<meta property="og:site_name" content="独木舟的木">
+<meta property="og:description" content="贴上陆陆续续从各个地方看过的搭建  iOS APP 框架的文章，整理出来，以后看到好的再贴出来。 理论部分  objccn.io——架构 iOS 架构模式–解密 MVC，MVP，MVVM以及VIPER架构 iOS应用架构现状分析@MrPeak 👍    做一个 App 前需要考虑的几件事本文从宏观的角度来讨论开发移动应用需要关注的点，理论性思考多一些。包括完善的日志系统、Commit Messa">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2017-06-22T06:37:00.000Z">
+<meta property="article:modified_time" content="2019-05-01T14:08:39.000Z">
+<meta property="article:author" content="独木舟的木">
+<meta property="article:tag" content="iOS">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://andy0570.com/2017/06/22/iOS%20APP%20%E6%A1%86%E6%9E%B6%E4%BD%93%E7%B3%BB/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>iOS APP 框架体系 | 独木舟的木</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="独木舟的木" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <main class="main">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+        <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
   </div>
 
-{% endblock %}
+  <div class="site-meta">
 
-{% block sidebar %}
-  {{ sidebar_template.render(true) }}
-{% endblock %}
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">独木舟的木</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">iOS Developer</p>
+  </div>
 
-{% block script_extra %}
-  {% include '_scripts/pages/post-details.swig' %}
-{% endblock %}
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">14</span></a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">36</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">310</span></a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <section class="post-toc-wrap sidebar-panel">
+          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%90%86%E8%AE%BA%E9%83%A8%E5%88%86"><span class="nav-number">1.</span> <span class="nav-text">理论部分</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9E%E7%94%A8%E9%83%A8%E5%88%86"><span class="nav-number">2.</span> <span class="nav-text">实用部分</span></a></li></ol></div>
+      </section>
+      <!--/noindex-->
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="独木舟的木"
+      src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+  <p class="site-author-name" itemprop="name">独木舟的木</p>
+  <div class="site-description" itemprop="description">生若直木，不语斧凿。</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">310</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">36</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL0FuZHkwNTcw" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Andy0570"><i class="fab fa-github fa-fw"></i>GitHub</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9zdGFja292ZXJmbG93LmNvbS91c2Vycy83MjY1NDAwL2FuZHkwNTcw" title="StackOverflow → https:&#x2F;&#x2F;stackoverflow.com&#x2F;users&#x2F;7265400&#x2F;andy0570"><i class="fab fa-stack-overflow fa-fw"></i>StackOverflow</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuamlhbnNodS5jb20vdS84NGM1ZmFkYzdjMTg=" title="简书 → https:&#x2F;&#x2F;www.jianshu.com&#x2F;u&#x2F;84c5fadc7c18"><i class="heartbeat fa-fw"></i>简书</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="bWFpbHRvOmFuZHl3aG1AMTYzLmNvbQ==" title="E-Mail → mailto:andywhm@163.com"><i class="fa fa-envelope fa-fw"></i>E-Mail</span>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <span class="exturl cc-opacity" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpo"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></span>
+  </div>
+
+
+
+      </section>
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </header>
+
+      
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div id="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+      <div class="main-inner">
+        
+
+        <div class="content post posts-expand">
+          
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://andy0570.com/2017/06/22/iOS%20APP%20%E6%A1%86%E6%9E%B6%E4%BD%93%E7%B3%BB/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+      <meta itemprop="name" content="独木舟的木">
+      <meta itemprop="description" content="生若直木，不语斧凿。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="独木舟的木">
+    </span>
+
+    
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          iOS APP 框架体系
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2017-06-22 14:37:00" itemprop="dateCreated datePublished" datetime="2017-06-22T14:37:00+08:00">2017-06-22</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-05-01 22:08:39" itemprop="dateModified" datetime="2019-05-01T22:08:39+08:00">2019-05-01</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS-%E8%B5%84%E6%BA%90/" itemprop="url" rel="index"><span itemprop="name">iOS 资源</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>889</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>1 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>贴上陆陆续续从各个地方看过的搭建  iOS APP 框架的文章，整理出来，以后看到好的再贴出来。</p>
+<h3 id="理论部分"><a href="#理论部分" class="headerlink" title="理论部分"></a>理论部分</h3><hr>
+<ul>
+<li><span class="exturl" data-url="aHR0cHM6Ly93d3cub2JqY2NuLmlvL2lzc3VlLTEzLTAv">objccn.io——架构<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cDovL3d3dy5jb2NvYWNoaW5hLmNvbS9jbXMvd2FwLnBocD9hY3Rpb249YXJ0aWNsZSZpZD0xNDkxNiZmcm9tPXNpbmdsZW1lc3NhZ2UmaXNhcHBpbnN0YWxsZWQ9MQ==">iOS 架构模式–解密 MVC，MVP，MVVM以及VIPER架构<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cDovL21ycGVhay5jbi9ibG9nL2lvcy1hcmNoLw==">iOS应用架构现状分析@MrPeak<i class="fa fa-external-link-alt"></i></span> 👍</li>
+</ul>
+<hr>
+<ul>
+<li><span class="exturl" data-url="aHR0cDovL3d3dy5jb2NvYWNoaW5hLmNvbS9pb3MvMjAxNjEwMjUvMTc4NDkuaHRtbA==">做一个 App 前需要考虑的几件事<i class="fa fa-external-link-alt"></i></span><br>本文从宏观的角度来讨论开发移动应用需要关注的点，理论性思考多一些。包括完善的日志系统、Commit Message 规范、代码规范、准备一份编程守则、页面布局规范、统计埋点、App 架构、页面跳转机制、在线配置、选择合适的 Crash 平台、Code Review、选择合适的开发模式、持续集成、Bug 管理系统、项目管理工具、Checklist。</li>
+</ul>
+<hr>
+<ul>
+<li><span class="exturl" data-url="aHR0cDovL3d3dy5jb2NvYWNoaW5hLmNvbS9pb3MvMjAxNjAzMTYvMTU2ODUuaHRtbA==">在写一个iOS应用之前必须做的7件事(附相关资源)<i class="fa fa-external-link-alt"></i></span><br>翻译作品、非常值得一看，主要是附有相关<strong>资源链接</strong>（比心❤️）。<br>其中提到的几个点：<ol>
+<li>为工程设置编码风格规范；</li>
+<li>在写代码之前确定应用的架构；</li>
+<li>设定应用的目录结构；</li>
+<li>项目依赖管理；</li>
+<li>为应用设置合适的Scheme；</li>
+<li>设置合适的Certificates和Provisioning Profiles；</li>
+<li>设置应用持续集成和交付过程。</li>
+</ol>
+</li>
+</ul>
+<hr>
+<ul>
+<li><span class="exturl" data-url="aHR0cDovL3d3dy5jb2NvYWNoaW5hLmNvbS9pb3MvMjAxNzA4MDQvMjAxMzEuaHRtbA==">[贝聊科技]iOS 代码架构（一）如何创建一个易复用的组件<i class="fa fa-external-link-alt"></i></span><br>以一个较简单的 UI 组件为例，介绍贝聊 iOS 组在设计可复用组件时的一点小技巧。</li>
+</ul>
+<a id="more"></a>
+
+<h3 id="实用部分"><a href="#实用部分" class="headerlink" title="实用部分"></a>实用部分</h3><ul>
+<li><span class="exturl" data-url="aHR0cDovL3d3dy5jb2NvYWNoaW5hLmNvbS9pb3MvMjAxNzA4MTUvMjAyNTIuaHRtbA==">让你快速了解并掌握如何进行iOS开发技能<i class="fa fa-external-link-alt"></i></span></li>
+</ul>
+<hr>
+<ul>
+<li><span class="exturl" data-url="aHR0cDovL3d3dy5jb2NvYWNoaW5hLmNvbS9pb3MvMjAxNzA1MjUvMTkzNjMuaHRtbA==">iOS 从0到1搭建高可用App框架<i class="fa fa-external-link-alt"></i></span><br>探讨了 <strong>Xcode</strong> 项目应包含的目录结构。提出易读性、易维护性、易扩展性的架构原则。并附有基于MVC设计的通用APP框架: <a target="_blank" rel="noopener" href="https://github.com/XuYang8026/UniversalProject"><strong>MiAiApp</strong></a>，可以参考。</li>
+</ul>
+<hr>
+<ul>
+<li><span class="exturl" data-url="aHR0cDovL3d3dy5jb2NvYWNoaW5hLmNvbS9pb3MvMjAxNzA2MjAvMTk1NzkuaHRtbA==">iOS:怎样创建一个好的App目录结构 @雪山踏痕<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cDovL3d3dy5qaWFuc2h1LmNvbS9wLzBjNmYzZjRiM2IzNA==">手把手教你如何搭建iOS项目基本框架<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cDovL3d3dy5qaWFuc2h1LmNvbS9wLzg5ZTI1YzI4OGQ3Ng==">iOS APP框架搭建简析（附GitHub托管Demo）<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cDovL3d3dy5qaWFuc2h1LmNvbS9wLzZlYjdlYWJkYTM4Ng==">十分钟搭建主流框架_简单的网络部分(OC)<i class="fa fa-external-link-alt"></i></span><br>也是搭建 iOS 应用目录结构、内容或繁琐或简单，或边角，可以参考看看。</li>
+</ul>
+<hr>
+<ul>
+<li><span class="exturl" data-url="aHR0cDovL3d3dy5qaWFuc2h1LmNvbS9wLzRlZjNkMzczNzY2MQ==">什么是开发 App 的正确步骤?<i class="fa fa-external-link-alt"></i></span><br>本文从一个简单的 tableView App 说起，谈论了开发一个 App 的4个步骤：需求分析、构建架构、细节实现、优化拓展。简单介绍了多线程和几种设计模式，希望对大家有所帮助。</li>
+</ul>
+<hr>
+<ul>
+<li><span class="exturl" data-url="aHR0cDovL3d3dy4xMHRpYW8uY29tL2h0bWwvMjE2LzIwMTcwNi8yNjUyNTQ5OTAzLzEuaHRtbA==">用 Swift 架构 iOS 应用的正确姿势<i class="fa fa-external-link-alt"></i></span></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>独木舟的木
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://andy0570.com/2017/06/22/iOS%20APP%20%E6%A1%86%E6%9E%B6%E4%BD%93%E7%B3%BB/" title="iOS APP 框架体系">https://andy0570.com/2017/06/22/iOS APP 框架体系/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <span class="exturl" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpo"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</span> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/iOS/" rel="tag"># iOS</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2017/06/22/%E7%BF%BB%E8%AF%91%E6%96%87%E6%A1%A3%EF%BC%9A%E5%86%99%E5%A5%BD%20commit%20messages/" rel="prev" title="翻译文档：写好 commit messages">
+      <i class="fa fa-chevron-left"></i> 翻译文档：写好 commit messages
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2017/06/23/iOS%20%E7%BC%96%E7%A0%81%E9%A3%8E%E6%A0%BC%E8%A7%84%E8%8C%83/" rel="next" title="iOS 编码风格规范">
+      iOS 编码风格规范 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+        </div>
+        
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">独木舟的木</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">2.1m</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">31:21</span>
+</div>
+  <div class="powered-by">由 <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZw==">NexT.Gemini</span> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

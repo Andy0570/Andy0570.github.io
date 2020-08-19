@@ -1,23 +1,674 @@
-{% extends '_layout.swig' %}
-{% import '_macro/post.swig' as post_template %}
-{% import '_macro/sidebar.swig' as sidebar_template %}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.0.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+  <meta name="google-site-verification" content="wioXOS3Gv2wXUpJ3sLtfZ4ft6YJYKNLLWSw6QoZTFYM">
+  <meta name="msvalidate.01" content="C96491A81239C517A50597C54EE53CD1">
+  <meta name="baidu-site-verification" content="h8asiToN1b">
 
-{% block title %}{{ page.title }} | {{ title }}{% endblock %}
+<link rel="stylesheet" href="/css/main.css">
 
-{% block page_class %}page-post-detail{% endblock %}
 
-{% block content %}
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  
+  <link rel="stylesheet" href="/lib/animate-css/animate.min.css">
 
-  <div id="posts" class="posts-expand">
-    {{ post_template.render(page) }}
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"andy0570.com","root":"/","scheme":"Gemini","version":"8.0.0-rc.5","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":"mac","bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false};
+  </script>
+
+  <meta name="description" content="CA中心——CA系统——数字证书 CA 中心管理并运营 CA 系统，CA 系统负责颁发数字证书。 专门负责颁发数字证书的系统称为 CA 系统，负责管理并运营 CA 系统的机构称为 CA 中心。所有与数字证书相关的各种概念和技术，统称为 PKI（Public Key Infrastructure）。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="PKI 体系概述">
+<meta property="og:url" content="https://andy0570.com/2018/08/15/PKI%20%E4%BD%93%E7%B3%BB%E6%A6%82%E8%BF%B0/index.html">
+<meta property="og:site_name" content="独木舟的木">
+<meta property="og:description" content="CA中心——CA系统——数字证书 CA 中心管理并运营 CA 系统，CA 系统负责颁发数字证书。 专门负责颁发数字证书的系统称为 CA 系统，负责管理并运营 CA 系统的机构称为 CA 中心。所有与数字证书相关的各种概念和技术，统称为 PKI（Public Key Infrastructure）。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/%E5%AF%86%E7%A0%81%E5%AD%A6%E5%8A%A0%E5%AF%86%E5%9F%BA%E5%85%83.png">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/%E5%AF%86%E9%92%A5%E7%AE%A1%E7%90%86-1.png">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/PKI%20%E6%A8%A1%E5%BC%8F.png">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/185519.png">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/185637.png">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/075603.jpg">
+<meta property="article:published_time" content="2018-08-15T06:39:00.000Z">
+<meta property="article:modified_time" content="2019-05-13T03:18:57.000Z">
+<meta property="article:author" content="独木舟的木">
+<meta property="article:tag" content="PKI">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/%E5%AF%86%E7%A0%81%E5%AD%A6%E5%8A%A0%E5%AF%86%E5%9F%BA%E5%85%83.png">
+
+<link rel="canonical" href="https://andy0570.com/2018/08/15/PKI%20%E4%BD%93%E7%B3%BB%E6%A6%82%E8%BF%B0/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>PKI 体系概述 | 独木舟的木</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="独木舟的木" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <main class="main">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+        <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
   </div>
 
-{% endblock %}
+  <div class="site-meta">
 
-{% block sidebar %}
-  {{ sidebar_template.render(true) }}
-{% endblock %}
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">独木舟的木</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">iOS Developer</p>
+  </div>
 
-{% block script_extra %}
-  {% include '_scripts/pages/post-details.swig' %}
-{% endblock %}
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">14</span></a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">36</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">310</span></a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <section class="post-toc-wrap sidebar-panel">
+          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BC%A0%E7%BB%9F%E5%AF%86%E7%A0%81%E5%AD%A6"><span class="nav-number">1.</span> <span class="nav-text">传统密码学</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%8E%B0%E4%BB%A3%E5%AF%86%E7%A0%81%E5%AD%A6%E5%8A%A0%E5%AF%86%E5%9F%BA%E5%85%83"><span class="nav-number">2.</span> <span class="nav-text">现代密码学加密基元</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AF%86%E9%92%A5%E7%AE%A1%E7%90%86"><span class="nav-number">3.</span> <span class="nav-text">密钥管理</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#PKI-%E7%9A%84%E6%9C%AC%E8%B4%A8%E6%98%AF%E6%8A%8A%E9%9D%9E%E5%AF%B9%E7%A7%B0%E5%AF%86%E9%92%A5%E7%AE%A1%E7%90%86%E6%A0%87%E5%87%86%E5%8C%96"><span class="nav-number">4.</span> <span class="nav-text">PKI 的本质是把非对称密钥管理标准化</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%95%B0%E5%AD%97%E8%AF%81%E4%B9%A6%E5%88%86%E7%B1%BB"><span class="nav-number">5.</span> <span class="nav-text">数字证书分类</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8E%E6%95%B0%E5%AD%97%E8%AF%81%E4%B9%A6%E5%8F%AF%E4%BB%A5%E5%AE%9E%E7%8E%B0%E5%9B%9B%E7%A7%8D%E5%9F%BA%E6%9C%AC%E5%AE%89%E5%85%A8%E5%8A%9F%E8%83%BD"><span class="nav-number">5.1.</span> <span class="nav-text">基于数字证书可以实现四种基本安全功能</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#PKI-%E5%9F%BA%E6%9C%AC%E7%BB%84%E4%BB%B6"><span class="nav-number">6.</span> <span class="nav-text">PKI 基本组件</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#TLS%E6%9C%8D%E5%8A%A1%E5%AE%89%E5%85%A8%E9%83%A8%E7%BD%B2"><span class="nav-number">7.</span> <span class="nav-text">TLS服务安全部署</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AF%86%E7%A0%81%E5%A5%97%E4%BB%B6%E7%9A%84%E9%85%8D%E7%BD%AE"><span class="nav-number">7.1.</span> <span class="nav-text">密码套件的配置</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#HTTPS-%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5%E5%B7%A5%E5%85%B7"><span class="nav-number">8.</span> <span class="nav-text">HTTPS 最佳实践工具</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">9.</span> <span class="nav-text">参考</span></a></li></ol></div>
+      </section>
+      <!--/noindex-->
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="独木舟的木"
+      src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+  <p class="site-author-name" itemprop="name">独木舟的木</p>
+  <div class="site-description" itemprop="description">生若直木，不语斧凿。</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">310</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">36</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL0FuZHkwNTcw" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Andy0570"><i class="fab fa-github fa-fw"></i>GitHub</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9zdGFja292ZXJmbG93LmNvbS91c2Vycy83MjY1NDAwL2FuZHkwNTcw" title="StackOverflow → https:&#x2F;&#x2F;stackoverflow.com&#x2F;users&#x2F;7265400&#x2F;andy0570"><i class="fab fa-stack-overflow fa-fw"></i>StackOverflow</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuamlhbnNodS5jb20vdS84NGM1ZmFkYzdjMTg=" title="简书 → https:&#x2F;&#x2F;www.jianshu.com&#x2F;u&#x2F;84c5fadc7c18"><i class="heartbeat fa-fw"></i>简书</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="bWFpbHRvOmFuZHl3aG1AMTYzLmNvbQ==" title="E-Mail → mailto:andywhm@163.com"><i class="fa fa-envelope fa-fw"></i>E-Mail</span>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <span class="exturl cc-opacity" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpo"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></span>
+  </div>
+
+
+
+      </section>
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </header>
+
+      
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div id="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+      <div class="main-inner">
+        
+
+        <div class="content post posts-expand">
+          
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://andy0570.com/2018/08/15/PKI%20%E4%BD%93%E7%B3%BB%E6%A6%82%E8%BF%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+      <meta itemprop="name" content="独木舟的木">
+      <meta itemprop="description" content="生若直木，不语斧凿。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="独木舟的木">
+    </span>
+
+    
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          PKI 体系概述
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-08-15 14:39:00" itemprop="dateCreated datePublished" datetime="2018-08-15T14:39:00+08:00">2018-08-15</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-05-13 11:18:57" itemprop="dateModified" datetime="2019-05-13T11:18:57+08:00">2019-05-13</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/PKI-%E5%AF%86%E7%A0%81%E5%AD%A6/" itemprop="url" rel="index"><span itemprop="name">PKI&密码学</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>3.2k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>3 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <blockquote>
+<p>CA中心——CA系统——数字证书</p>
+<p>CA 中心管理并运营 CA 系统，CA 系统负责颁发数字证书。</p>
+<p>专门负责颁发数字证书的系统称为 CA 系统，负责管理并运营 CA 系统的机构称为 CA 中心。所有与数字证书相关的各种概念和技术，统称为 PKI（Public Key Infrastructure）。</p>
+</blockquote>
+<a id="more"></a>
+
+<h1 id="传统密码学"><a href="#传统密码学" class="headerlink" title="传统密码学"></a>传统密码学</h1><ul>
+<li>换位加密法；</li>
+<li>替换加密法；</li>
+</ul>
+<h1 id="现代密码学加密基元"><a href="#现代密码学加密基元" class="headerlink" title="现代密码学加密基元"></a>现代密码学加密基元</h1><p>加密基元就是一些基础的密码学算法，通过它们才能够构建更多的密码学算法、协议、应用程序。</p>
+<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/%E5%AF%86%E7%A0%81%E5%AD%A6%E5%8A%A0%E5%AF%86%E5%9F%BA%E5%85%83.png"></p>
+<p>说明：</p>
+<ul>
+<li><strong>散列函数（散列（hash）、指纹、消息摘要、摘要算法、杂凑函数）</strong>：把任意长度的输入消息数据转化成固定长度的输出数据的一种密码算法。</li>
+<li><strong>消息验证代码</strong>：验证数据完整性，即数据没有被篡改。</li>
+<li><strong>数字签名</strong>：RSA私钥加密，公钥解密，结合散列函数。验证消息真实性。</li>
+<li><strong>伪随机函数（PRF）</strong>：生成任意数量的伪随机数据。</li>
+<li><strong>RSA</strong>：可以同时用于密钥交换和身份验证（数字签名）。 </li>
+<li><strong>DHE_RSA</strong>：DHE 算法：密钥协商，RSA 算法：身份验证（数字签名）。</li>
+<li><strong>ECDHE_RSA</strong>： ECDHE 算法：密钥协商，RSA 算法：身份验证（数字签名）。</li>
+<li><strong>ECDHE_ECDSA</strong> ：ECDHE 算法：密钥协商，ECDSA 算法：身份验证（数字签名）。</li>
+</ul>
+<h1 id="密钥管理"><a href="#密钥管理" class="headerlink" title="密钥管理"></a>密钥管理</h1><p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/%E5%AF%86%E9%92%A5%E7%AE%A1%E7%90%86-1.png"></p>
+<p>密钥管理模式：</p>
+<ul>
+<li>无中心模式；</li>
+<li>有中心模式；</li>
+</ul>
+<h1 id="PKI-的本质是把非对称密钥管理标准化"><a href="#PKI-的本质是把非对称密钥管理标准化" class="headerlink" title="PKI 的本质是把非对称密钥管理标准化"></a>PKI 的本质是把非对称密钥管理标准化</h1><p>PKI 是 Public Key Infrastructure 的缩写，其主要功能是绑定证书持有者的身份和相关的密钥对（通过为公钥及相关的用户身份信息签发数字证书），为用户提供方便的证书申请、证书作废、证书获取、证书状态查询的途径，并利用数字证书及相关的各种服务（证书发布，黑名单发布，时间戳服务等）实现通信中各实体的身份认证、完整性、抗抵赖性和保密性。</p>
+<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/PKI%20%E6%A8%A1%E5%BC%8F.png"></p>
+<ul>
+<li><strong>数字证书</strong>：解决公钥与用户映射关系问题；</li>
+<li><strong>CA</strong>：解决数字证书签发问题；<br><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/185519.png" alt="CA管理数字证书的全生命周期"></li>
+<li><strong>KMC</strong>：解决私钥的备份与恢复问题；</li>
+<li><strong>双证书机制</strong>：「签名证书及私钥」只用于签名验签，「加密证书及私钥」只用于加密解密。</li>
+<li><strong>LDAP</strong>：解决数字证书查询和下载的性能问题，避免 CA 中心成为性能瓶颈。</li>
+<li><strong>CRL（证书作废列表）</strong> 和 <strong>OSCP（在线证书状态协议）</strong>：方便用户快速获得证书状态。</li>
+<li><strong>RA</strong>：方便证书业务远程办理、方便证书管理流程与应用系统结合。</li>
+<li><strong>电子认证服务机构</strong>：保证 CA 系统在数字证书管理方面的规范性、合规性和安全性。</li>
+</ul>
+<h1 id="数字证书分类"><a href="#数字证书分类" class="headerlink" title="数字证书分类"></a>数字证书分类</h1><p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/185637.png" alt="数字证书分类"></p>
+<h2 id="基于数字证书可以实现四种基本安全功能"><a href="#基于数字证书可以实现四种基本安全功能" class="headerlink" title="基于数字证书可以实现四种基本安全功能"></a>基于数字证书可以实现四种基本安全功能</h2><ol>
+<li>身份认证；</li>
+<li>保密性；</li>
+<li>完整性；</li>
+<li>抗抵赖性；</li>
+</ol>
+<h1 id="PKI-基本组件"><a href="#PKI-基本组件" class="headerlink" title="PKI 基本组件"></a>PKI 基本组件</h1><p>完整的 PKI 系统必须具有数字证书、认证中心（CA）、证书资料库、证书吊销系统、密钥备份及恢复系统、PKI 应用接口系统等构成部分。</p>
+<table>
+<thead>
+<tr>
+<th>组件</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>数字证书</td>
+<td>包含了用于签名和加密数据的公钥的电子凭证，是PKI的核心元素</td>
+</tr>
+<tr>
+<td>认证中心（CA）</td>
+<td>数字证书的申请及签发机关，CA必须具备权威性</td>
+</tr>
+<tr>
+<td>证书资料库</td>
+<td>存储已签发的数字证书和公钥，以及相关证书目录，用户可由此获得所需的其他用户的证书及公钥</td>
+</tr>
+<tr>
+<td>证书吊销列表（CRL）/OCSP</td>
+<td>在有效期内吊销的证书列表，在线证书状态协议OCSP是获得证书状态的国际协议</td>
+</tr>
+<tr>
+<td>密钥备份及恢复</td>
+<td>为避免因用户丢失解密密钥而无法解密合法数据的情况，PKI提供备份与恢复密钥的机制。必须由可信的机构来完成。并且，密钥备份与恢复只能针对解密密钥，签名私钥不能够作备份</td>
+</tr>
+<tr>
+<td>PKI应用接口（API）</td>
+<td>为各种各样的应用提供安全、一致、 可信的方式与PKI交互，确保建立起来的网络环境安全可靠，并降低管理成本</td>
+</tr>
+</tbody></table>
+<h1 id="TLS服务安全部署"><a href="#TLS服务安全部署" class="headerlink" title="TLS服务安全部署"></a>TLS服务安全部署</h1><p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/075603.jpg" alt="TLS服务安全部署"></p>
+<p>说明：</p>
+<ul>
+<li>密码套件决定了本次连接采用哪一种加密算法、密钥协商算法、HMAC 算法，即各个密码学算法的组合。</li>
+</ul>
+<h2 id="密码套件的配置"><a href="#密码套件的配置" class="headerlink" title="密码套件的配置"></a>密码套件的配置</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 密码套件名称构成：密钥交换算法-身份验证算法-加密算法（加密方法-加密强度-模式）-HMAC或PRF算法</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 密钥交换算法/密钥协商算法：ECDHE &gt; DHE &gt; RSA</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 身份验证算法：ECDSA 256 &gt; RSA 2048</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 加密算法：AES-256-GCM、</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> PRF（伪随机函数）：HMAC、SHA256</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 如：TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 如：TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384</span></span><br></pre></td></tr></table></figure>
+
+<p>列出当前系统所支持的密码套件列表：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">$ openssl ciphers -V <span class="string">&#x27;ALL:COMPLEMENTOFALL&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 推荐的配置，同时满足强加密和高性能</span></span><br><span class="line">ECDHE-ECDSA-AES128-GCM-SHA256 </span><br><span class="line">ECDHE-ECDSA-AES256-GCM-SHA384 </span><br><span class="line">ECDHE-ECDSA-AES128-SHA </span><br><span class="line">ECDHE-ECDSA-AES256-SHA </span><br><span class="line">ECDHE-ECDSA-AES128-SHA256 </span><br><span class="line">ECDHE-ECDSA-AES256-SHA384 </span><br><span class="line">ECDHE-RSA-AES128-GCM-SHA256 </span><br><span class="line">ECDHE-RSA-AES256-GCM-SHA384 </span><br><span class="line">ECDHE-RSA-AES128-SHA </span><br><span class="line">ECDHE-RSA-AES256-SHA </span><br><span class="line">ECDHE-RSA-AES128-SHA256 </span><br><span class="line">ECDHE-RSA-AES256-SHA384 </span><br><span class="line">DHE-RSA-AES128-GCM-SHA256 </span><br><span class="line">DHE-RSA-AES256-GCM-SHA384 </span><br><span class="line">DHE-RSA-AES128-SHA </span><br><span class="line">DHE-RSA-AES256-SHA </span><br><span class="line">DHE-RSA-AES128-SHA256 </span><br><span class="line">DHE-RSA-AES256-SHA256 </span><br><span class="line">EDH-RSA-DES-CBC3-SHA</span><br></pre></td></tr></table></figure>
+
+<p>测试某个服务器是否支持特定的密码套件：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">$ openssl s_client -cipher <span class="string">&quot;ECDHE-RSA-AES128-SHA&quot;</span> -connect www.qq.com:443 -tls1_1</span><br><span class="line"></span><br><span class="line"><span class="comment"># 参数说明</span></span><br><span class="line"><span class="comment"># -cipher 参数表示本次连接支持的密码套件</span></span><br><span class="line"><span class="comment"># -connect 表示连接服务器的 443 端口</span></span><br><span class="line"><span class="comment"># -tls1_1 表示客户端最高支持的 TLS/SSL 版本是 TLS v1.1</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="HTTPS-最佳实践工具"><a href="#HTTPS-最佳实践工具" class="headerlink" title="HTTPS 最佳实践工具"></a>HTTPS 最佳实践工具</h1><table>
+<thead>
+<tr>
+<th>网站</th>
+<th>文档或工具名称</th>
+<th>地址</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>SSL Labs</td>
+<td>SSL Server Test</td>
+<td><span class="exturl" data-url="aHR0cHM6Ly93d3cuc3NsbGFicy5jb20vc3NsdGVzdC8=">https://www.ssllabs.com/ssltest/<i class="fa fa-external-link-alt"></i></span></td>
+<td>对服务器的 HTTPS 配置进行测试，指出潜在的问题，并对安全级别打分。</td>
+</tr>
+<tr>
+<td>SSL Labs</td>
+<td>SSL Client Test</td>
+<td><span class="exturl" data-url="aHR0cHM6Ly93d3cuc3NsbGFicy5jb20vc3NsdGVzdC92aWV3TXlDbGllbnQuaHRtbA==">https://www.ssllabs.com/ssltest/viewMyClient.html<i class="fa fa-external-link-alt"></i></span></td>
+<td>测试客户端的配置情况</td>
+</tr>
+<tr>
+<td>SSL Labs</td>
+<td>SSL Pulse</td>
+<td><span class="exturl" data-url="aHR0cHM6Ly93d3cuc3NsbGFicy5jb20vc3NsLXB1bHNlLw==">https://www.ssllabs.com/ssl-pulse/<i class="fa fa-external-link-alt"></i></span></td>
+<td>对全球顶尖 HTTPS 网站进行长期跟踪，统计和 HTTPS 有关的一些数据</td>
+</tr>
+<tr>
+<td>SSL Labs</td>
+<td>SSL and TLS Deployment Best Practices</td>
+<td><span class="exturl" data-url="aHR0cHM6Ly93d3cuc3NsbGFicy5jb20vcHJvamVjdHMvZG9jdW1lbnRhdGlvbi8=">https://www.ssllabs.com/projects/documentation/<i class="fa fa-external-link-alt"></i></span></td>
+<td>最佳部署文档</td>
+</tr>
+<tr>
+<td>Mozilla</td>
+<td>最佳部署文档</td>
+<td><span class="exturl" data-url="aHR0cHM6Ly93aWtpLm1vemlsbGEub3JnL1NlY3VyaXR5L1NlcnZlcl9TaWRlX1RMUw==">https://wiki.mozilla.org/Security/Server_Side_TLS<i class="fa fa-external-link-alt"></i></span></td>
+<td>重点介绍密码套件配置、HTTPS 潜在的攻击、最佳部署等</td>
+</tr>
+<tr>
+<td>Mozilla</td>
+<td>Mozilla SSL Configuration Generator</td>
+<td><span class="exturl" data-url="aHR0cHM6Ly9tb3ppbGxhLmdpdGh1Yi5pby9zZXJ2ZXItc2lkZS10bHMvc3NsLWNvbmZpZy1nZW5lcmF0b3Iv">https://mozilla.github.io/server-side-tls/ssl-config-generator/<i class="fa fa-external-link-alt"></i></span></td>
+<td>用于自动化为服务器配置 HTTPS 协议</td>
+</tr>
+<tr>
+<td>RFC</td>
+<td>Summarizing Known Attacks on TLS</td>
+<td><span class="exturl" data-url="aHR0cHM6Ly90b29scy5pZXRmLm9yZy9odG1sL3JmYzc0NTc=">https://tools.ietf.org/html/rfc7457<i class="fa fa-external-link-alt"></i></span></td>
+<td>详细描述 TLS/SSL 协议，历史上出现的漏洞</td>
+</tr>
+<tr>
+<td>RFC</td>
+<td>Recommendations for Secure Use of TLS</td>
+<td><span class="exturl" data-url="aHR0cHM6Ly90b29scy5pZXRmLm9yZy9odG1sL3JmYzc1MjU=">https://tools.ietf.org/html/rfc7525<i class="fa fa-external-link-alt"></i></span></td>
+<td>描述如何更好地部署 HTTPS 网站</td>
+</tr>
+</tbody></table>
+<p>——摘自《深入浅出 HTTPS》</p>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><ul>
+<li><span class="exturl" data-url="aHR0cHM6Ly93d3cuamlhbnNodS5jb20vcC9iOThiMTJkZTg1ZjM=">[译] PKCS 是什么？<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cHM6Ly93d3cub3NjaGluYS5uZXQvdHJhbnNsYXRlL3JmYy04NDQ2LWFrYS10bHMtMS0z">详细介绍 RFC 8446（即 TLS 1.3） <i class="fa fa-external-link-alt"></i></span></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>独木舟的木
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://andy0570.com/2018/08/15/PKI%20%E4%BD%93%E7%B3%BB%E6%A6%82%E8%BF%B0/" title="PKI 体系概述">https://andy0570.com/2018/08/15/PKI 体系概述/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <span class="exturl" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpo"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</span> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/PKI/" rel="tag"># PKI</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2018/07/20/Mac%20%E4%B8%8B%20Ubuntu%20USB%20%E5%AE%89%E8%A3%85%E5%90%AF%E5%8A%A8%E7%9B%98%E5%88%B6%E4%BD%9C/" rel="prev" title="Mac 下 Ubuntu USB 安装启动盘制作">
+      <i class="fa fa-chevron-left"></i> Mac 下 Ubuntu USB 安装启动盘制作
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2018/08/15/%E3%80%8AThinking%20in%20UML%E3%80%8B%E7%AC%94%E8%AE%B0/" rel="next" title="《Thinking in UML》笔记">
+      《Thinking in UML》笔记 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+        </div>
+        
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">独木舟的木</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">2.1m</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">31:21</span>
+</div>
+  <div class="powered-by">由 <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZw==">NexT.Gemini</span> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

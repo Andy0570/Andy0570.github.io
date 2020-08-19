@@ -1,23 +1,569 @@
-{% extends '_layout.swig' %}
-{% import '_macro/post.swig' as post_template %}
-{% import '_macro/sidebar.swig' as sidebar_template %}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.0.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+  <meta name="google-site-verification" content="wioXOS3Gv2wXUpJ3sLtfZ4ft6YJYKNLLWSw6QoZTFYM">
+  <meta name="msvalidate.01" content="C96491A81239C517A50597C54EE53CD1">
+  <meta name="baidu-site-verification" content="h8asiToN1b">
 
-{% block title %}{{ page.title }} | {{ title }}{% endblock %}
+<link rel="stylesheet" href="/css/main.css">
 
-{% block page_class %}page-post-detail{% endblock %}
 
-{% block content %}
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  
+  <link rel="stylesheet" href="/lib/animate-css/animate.min.css">
 
-  <div id="posts" class="posts-expand">
-    {{ post_template.render(page) }}
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"andy0570.com","root":"/","scheme":"Gemini","version":"8.0.0-rc.5","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":"mac","bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false};
+  </script>
+
+  <meta property="og:type" content="article">
+<meta property="og:title" content="nullable 与 nonnull 的使用">
+<meta property="og:url" content="https://andy0570.com/2017/12/22/nullable%20%E4%B8%8E%20nonnull%20%E7%9A%84%E4%BD%BF%E7%94%A8/index.html">
+<meta property="og:site_name" content="独木舟的木">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071608.jpg">
+<meta property="article:published_time" content="2017-12-22T06:25:00.000Z">
+<meta property="article:modified_time" content="2019-05-01T14:11:27.000Z">
+<meta property="article:author" content="独木舟的木">
+<meta property="article:tag" content="iOS">
+<meta property="article:tag" content="Objective-C">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071608.jpg">
+
+<link rel="canonical" href="https://andy0570.com/2017/12/22/nullable%20%E4%B8%8E%20nonnull%20%E7%9A%84%E4%BD%BF%E7%94%A8/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>nullable 与 nonnull 的使用 | 独木舟的木</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="独木舟的木" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <main class="main">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+        <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
   </div>
 
-{% endblock %}
+  <div class="site-meta">
 
-{% block sidebar %}
-  {{ sidebar_template.render(true) }}
-{% endblock %}
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">独木舟的木</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">iOS Developer</p>
+  </div>
 
-{% block script_extra %}
-  {% include '_scripts/pages/post-details.swig' %}
-{% endblock %}
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">14</span></a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">36</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">310</span></a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <section class="post-toc-wrap sidebar-panel">
+          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#nullable-%E4%B8%8E-nonnull-%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="nav-number">1.</span> <span class="nav-text">nullable 与 nonnull 的区别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E8%A7%84%E8%8C%83%EF%BC%9A"><span class="nav-number">2.</span> <span class="nav-text">使用规范：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E5%8C%BA%E5%88%AB"><span class="nav-number">3.</span> <span class="nav-text">使用区别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E7%A4%BA%E4%BE%8B%EF%BC%9A"><span class="nav-number">4.</span> <span class="nav-text">使用示例：</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%A3%B0%E6%98%8E%E5%B1%9E%E6%80%A7"><span class="nav-number">4.1.</span> <span class="nav-text">声明属性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BF%AE%E9%A5%B0%E6%96%B9%E6%B3%95%E8%BF%94%E5%9B%9E%E5%80%BC"><span class="nav-number">4.2.</span> <span class="nav-text">修饰方法返回值</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BF%AE%E9%A5%B0%E6%96%B9%E6%B3%95%E5%8F%82%E6%95%B0"><span class="nav-number">4.3.</span> <span class="nav-text">修饰方法参数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BE%8B%E5%A4%96%E6%83%85%E5%86%B5"><span class="nav-number">4.4.</span> <span class="nav-text">例外情况</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Block-%E8%BF%94%E5%9B%9E%E5%80%BC"><span class="nav-number">4.5.</span> <span class="nav-text">Block 返回值</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Block-%E4%BC%A0%E5%85%A5%E5%8F%82%E6%95%B0"><span class="nav-number">4.6.</span> <span class="nav-text">Block 传入参数</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%8F-NS-ASSUME-NONNULL-BEGIN-%E4%B8%8E-NS-ASSUME-NONNULL-END"><span class="nav-number">5.</span> <span class="nav-text">宏 NS_ASSUME_NONNULL_BEGIN 与 NS_ASSUME_NONNULL_END</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">6.</span> <span class="nav-text">参考</span></a></li></ol></div>
+      </section>
+      <!--/noindex-->
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="独木舟的木"
+      src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+  <p class="site-author-name" itemprop="name">独木舟的木</p>
+  <div class="site-description" itemprop="description">生若直木，不语斧凿。</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">310</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">36</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL0FuZHkwNTcw" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Andy0570"><i class="fab fa-github fa-fw"></i>GitHub</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9zdGFja292ZXJmbG93LmNvbS91c2Vycy83MjY1NDAwL2FuZHkwNTcw" title="StackOverflow → https:&#x2F;&#x2F;stackoverflow.com&#x2F;users&#x2F;7265400&#x2F;andy0570"><i class="fab fa-stack-overflow fa-fw"></i>StackOverflow</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuamlhbnNodS5jb20vdS84NGM1ZmFkYzdjMTg=" title="简书 → https:&#x2F;&#x2F;www.jianshu.com&#x2F;u&#x2F;84c5fadc7c18"><i class="heartbeat fa-fw"></i>简书</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="bWFpbHRvOmFuZHl3aG1AMTYzLmNvbQ==" title="E-Mail → mailto:andywhm@163.com"><i class="fa fa-envelope fa-fw"></i>E-Mail</span>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <span class="exturl cc-opacity" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpo"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></span>
+  </div>
+
+
+
+      </section>
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </header>
+
+      
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div id="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+      <div class="main-inner">
+        
+
+        <div class="content post posts-expand">
+          
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://andy0570.com/2017/12/22/nullable%20%E4%B8%8E%20nonnull%20%E7%9A%84%E4%BD%BF%E7%94%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+      <meta itemprop="name" content="独木舟的木">
+      <meta itemprop="description" content="生若直木，不语斧凿。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="独木舟的木">
+    </span>
+
+    
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          nullable 与 nonnull 的使用
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2017-12-22 14:25:00" itemprop="dateCreated datePublished" datetime="2017-12-22T14:25:00+08:00">2017-12-22</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-05-01 22:11:27" itemprop="dateModified" datetime="2019-05-01T22:11:27+08:00">2019-05-01</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Objective-C-%E7%BC%96%E7%A8%8B/" itemprop="url" rel="index"><span itemprop="name">Objective-C 编程</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>2.6k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>2 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071608.jpg" alt="生命是什么呢？生命是时时刻刻不知如何是好。"></p>
+<a id="more"></a>
+
+
+<h3 id="nullable-与-nonnull-的区别"><a href="#nullable-与-nonnull-的区别" class="headerlink" title="nullable 与 nonnull 的区别"></a>nullable 与 nonnull 的区别</h3><p> <code>__nullable</code>:表示对象可以是 NULL 或者 nil。</p>
+<p> <code>__nonnull</code>:表示对象不可以为空。</p>
+<p><code>__null_unspecified</code>：表示对象未指定、不明确。</p>
+<p> 如果没有显式声明，则表示 <code>__nonnull</code> 或者<code> _Null_unspecified</code> （不明确）</p>
+<p> 在 Xcode 7 中，为了避免与第三方库的冲突，Apple 把 <code>__nullable</code>/<code>__nonnull</code> 改成了 <code>_Nullable</code>/<code>_Nonnull</code>，也支持没有下划线的写法：<code>nullable</code>/<code>nonnull</code>。</p>
+<h3 id="使用规范："><a href="#使用规范：" class="headerlink" title="使用规范："></a>使用规范：</h3><ol>
+<li>对于属性、方法返回值、方法参数的修饰，使用 <code>nonnull</code>/<code>nullable</code>。</li>
+<li>对于 C 函数的参数、Block的参数、Block返回值 的修饰，使用 <code>_Nonnull</code>/<code>_Nullable</code>,建议弃用 <code>__nonnull</code>/<code>__nullable</code>。</li>
+</ol>
+<p> 为安全起见，Apple 制定的使用规则：</p>
+<ol>
+<li>通过 typedef 定义的类型的 nullability 特性通常依赖于上下文，即使是在 Audited Regions 中，也不能假定它为 <code>nonnull</code> ；</li>
+<li>对于复杂的指针类型（如 id * ）必须显式去指定是 <code>nonnull</code> 还是 <code>nullable</code>。例如，指定一个指向 <code>nullable</code> 对象的 <code>nonnull</code> 指针，可以使用 <code>__nullable id * __nonnul</code>l ；</li>
+<li>我们经常使用的 <code>NSError **</code> 通常是被假定为一个指向 <code>nullable</code> NSError 对象的 <code>nullable</code> 指针。</li>
+</ol>
+<h3 id="使用区别"><a href="#使用区别" class="headerlink" title="使用区别"></a>使用区别</h3><p>共有三种用法：</p>
+<ul>
+<li><code>nonnull</code>，<code>nullable</code>, <code>null_unspecified</code></li>
+<li><code>_Nonnull</code>，<code>_Nullable</code>，<code>_Null_unspecified</code>，</li>
+<li><code>__nonnull</code>，<code>__nullable</code>，<code>__null_unspecified</code>。</li>
+</ul>
+<p>这几种用法在声明时的位置区别：</p>
+<ol>
+<li>单下划线和双下划线的需要放在类型定义之后。</li>
+<li>无下划线的需要放在类型定义之前。</li>
+</ol>
+<h3 id="使用示例："><a href="#使用示例：" class="headerlink" title="使用示例："></a>使用示例：</h3><h4 id="声明属性"><a href="#声明属性" class="headerlink" title="声明属性"></a>声明属性</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">@property (nonatomic, copy, nullable) NSString *name;</span><br><span class="line">@property (nonatomic, copy) NSString *__nullable firstName;</span><br><span class="line">@property (nonatomic, copy) NSString *_Nullable lastName;</span><br></pre></td></tr></table></figure>
+
+<h4 id="修饰方法返回值"><a href="#修饰方法返回值" class="headerlink" title="修饰方法返回值"></a>修饰方法返回值</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">- (nullable NSString *)method1;</span><br><span class="line">- (NSString *__nullable)method2;</span><br><span class="line">- (NSString *_Nullable)method3;</span><br></pre></td></tr></table></figure>
+
+<h4 id="修饰方法参数"><a href="#修饰方法参数" class="headerlink" title="修饰方法参数"></a>修饰方法参数</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">- (void)methodWithString1:(nullable NSString *)aString;</span><br><span class="line">- (void)methodWithString2:(NSString *__nullable)aString;</span><br><span class="line">- (void)methodWithString3:(NSString *_Nullable)aString;</span><br></pre></td></tr></table></figure>
+
+<h4 id="例外情况"><a href="#例外情况" class="headerlink" title="例外情况"></a>例外情况</h4><p> ⚠️双指针类型对象、Block 的返回值、Block 的传入参数等，不能用 <code>nonnull</code>/<code>nullable</code> 修饰，只能用带下划线的 <code>__nonnull</code>/<code>__nullable</code> 或者 <code>_Nonnull</code>/<code>_Nullable</code>。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">- (void)methodwithError1:(NSError * _Nullable * __null_unspecified)error;</span><br><span class="line">- (void)methodwithError2:(NSError * nullable * null_unspecified)error;</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="Block-返回值"><a href="#Block-返回值" class="headerlink" title="Block 返回值"></a>Block 返回值</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">- (void)methodWithBlock1:(nullable void(^)(void))block;</span><br><span class="line">&#x2F;&#x2F; ⚠️ 以上 nullable 修饰的是方法传入参数，表示传入的 Block 可以为空，而不是修饰 BlocK 返回值。</span><br><span class="line"></span><br><span class="line">- (void)methodWithBlock2:(void (^ _Nullable)(void))block;</span><br><span class="line">- (void)methodWithBlock3:(void (^ __nullable)(void))block;</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="Block-传入参数"><a href="#Block-传入参数" class="headerlink" title="Block 传入参数"></a>Block 传入参数</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">- (void)methodWithBlock21:(nullable id nonnull(^)(id nullable parameters))block;</span><br><span class="line">&#x2F;&#x2F; ⚠️ 以上 nullable 修饰的是方法传入参数，表示传入的 BlocK 可以为空。而 __nonnull 用于修饰 Block 返回值 id 不能为空。</span><br><span class="line"></span><br><span class="line">- (void)methodWithBlock22:(id  nonnull(^ nullable)(id _Nullable parameters))block;</span><br><span class="line">- (void)methodWithBlock23:(id  _Nonnull (^ _Nonnull)(id _Nullable parameters))block;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="宏-NS-ASSUME-NONNULL-BEGIN-与-NS-ASSUME-NONNULL-END"><a href="#宏-NS-ASSUME-NONNULL-BEGIN-与-NS-ASSUME-NONNULL-END" class="headerlink" title="宏 NS_ASSUME_NONNULL_BEGIN 与 NS_ASSUME_NONNULL_END"></a>宏 NS_ASSUME_NONNULL_BEGIN 与 NS_ASSUME_NONNULL_END</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">#import &lt;Foundation&#x2F;Foundation.h&gt;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 在这两个宏之间的代码，所有简单指针对象都被假定为 nonnull ，因此我们只需要去指定那些 nullable 指针对象即可。</span><br><span class="line">NS_ASSUME_NONNULL_BEGIN</span><br><span class="line"></span><br><span class="line">@interface MyObject : NSObject</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 默认为 nonnull</span><br><span class="line">@property (nonatomic, copy) NSString *aString;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 方法返回值默认为 nonnull</span><br><span class="line">&#x2F;&#x2F; 方法的参数显式声明为 nullabel,表示入参可以为空</span><br><span class="line">- (id)methodWithString:(nullable NSString *)string;</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">NS_ASSUME_NONNULL_END</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><ul>
+<li><span class="exturl" data-url="aHR0cHM6Ly9kZXZlbG9wZXIuYXBwbGUuY29tL3N3aWZ0L2Jsb2cvP2lkPTI1">Apple Blog:Nullability and Objective-C<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cHM6Ly9zdGFja292ZXJmbG93LmNvbS9xdWVzdGlvbnMvMzI0NTI4ODkvZGlmZmVyZW5jZS1iZXR3ZWVuLW51bGxhYmxlLW51bGxhYmxlLWFuZC1udWxsYWJsZS1pbi1vYmplY3RpdmUtYw==">Difference between nullable, __nullable and _Nullable in Objective-C<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cDovL25zaGlwc3Rlci5jbi9uaWwv">nshipster: nil / Nil / NULL / NSNull<i class="fa fa-external-link-alt"></i></span></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>独木舟的木
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://andy0570.com/2017/12/22/nullable%20%E4%B8%8E%20nonnull%20%E7%9A%84%E4%BD%BF%E7%94%A8/" title="nullable 与 nonnull 的使用">https://andy0570.com/2017/12/22/nullable 与 nonnull 的使用/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <span class="exturl" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpo"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</span> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/iOS/" rel="tag"># iOS</a>
+              <a href="/tags/Objective-C/" rel="tag"># Objective-C</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2017/12/22/%E3%80%8AObjective-C%20%E7%BC%96%E7%A8%8B%E3%80%8B19.@property/" rel="prev" title="《Objective-C 编程》19.@property">
+      <i class="fa fa-chevron-left"></i> 《Objective-C 编程》19.@property
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2017/12/26/iOS%20%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%BC%96%E7%A8%8B%E2%80%94%E2%80%94iOS%E5%BC%80%E5%8F%91%E7%9A%84%E4%B8%80%E5%BA%A7%E5%A4%A7%E5%B1%B1/" rel="next" title="iOS 多线程编程——iOS开发的一座大山">
+      iOS 多线程编程——iOS开发的一座大山 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+        </div>
+        
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">独木舟的木</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">2.1m</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">31:21</span>
+</div>
+  <div class="powered-by">由 <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZw==">NexT.Gemini</span> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

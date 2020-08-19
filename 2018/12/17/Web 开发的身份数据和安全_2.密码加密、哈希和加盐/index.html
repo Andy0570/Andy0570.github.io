@@ -1,23 +1,608 @@
-{% extends '_layout.swig' %}
-{% import '_macro/post.swig' as post_template %}
-{% import '_macro/sidebar.swig' as sidebar_template %}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.0.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+  <meta name="google-site-verification" content="wioXOS3Gv2wXUpJ3sLtfZ4ft6YJYKNLLWSw6QoZTFYM">
+  <meta name="msvalidate.01" content="C96491A81239C517A50597C54EE53CD1">
+  <meta name="baidu-site-verification" content="h8asiToN1b">
 
-{% block title %}{{ page.title }} | {{ title }}{% endblock %}
+<link rel="stylesheet" href="/css/main.css">
 
-{% block page_class %}page-post-detail{% endblock %}
 
-{% block content %}
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  
+  <link rel="stylesheet" href="/lib/animate-css/animate.min.css">
 
-  <div id="posts" class="posts-expand">
-    {{ post_template.render(page) }}
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"andy0570.com","root":"/","scheme":"Gemini","version":"8.0.0-rc.5","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":"mac","bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false};
+  </script>
+
+  <meta name="description" content="本文主要内容：探讨密码加密和安全性。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Web 开发的身份数据和安全_2.密码加密、哈希和加盐">
+<meta property="og:url" content="https://andy0570.com/2018/12/17/Web%20%E5%BC%80%E5%8F%91%E7%9A%84%E8%BA%AB%E4%BB%BD%E6%95%B0%E6%8D%AE%E5%92%8C%E5%AE%89%E5%85%A8_2.%E5%AF%86%E7%A0%81%E5%8A%A0%E5%AF%86%E3%80%81%E5%93%88%E5%B8%8C%E5%92%8C%E5%8A%A0%E7%9B%90/index.html">
+<meta property="og:site_name" content="独木舟的木">
+<meta property="og:description" content="本文主要内容：探讨密码加密和安全性。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/wooden-shelf-with-laptop-and-notebook.jpg">
+<meta property="article:published_time" content="2018-12-17T05:47:00.000Z">
+<meta property="article:modified_time" content="2019-05-17T06:18:43.000Z">
+<meta property="article:author" content="独木舟的木">
+<meta property="article:tag" content="PKI">
+<meta property="article:tag" content="密码学">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/wooden-shelf-with-laptop-and-notebook.jpg">
+
+<link rel="canonical" href="https://andy0570.com/2018/12/17/Web%20%E5%BC%80%E5%8F%91%E7%9A%84%E8%BA%AB%E4%BB%BD%E6%95%B0%E6%8D%AE%E5%92%8C%E5%AE%89%E5%85%A8_2.%E5%AF%86%E7%A0%81%E5%8A%A0%E5%AF%86%E3%80%81%E5%93%88%E5%B8%8C%E5%92%8C%E5%8A%A0%E7%9B%90/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Web 开发的身份数据和安全_2.密码加密、哈希和加盐 | 独木舟的木</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="独木舟的木" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <main class="main">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+        <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
   </div>
 
-{% endblock %}
+  <div class="site-meta">
 
-{% block sidebar %}
-  {{ sidebar_template.render(true) }}
-{% endblock %}
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">独木舟的木</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">iOS Developer</p>
+  </div>
 
-{% block script_extra %}
-  {% include '_scripts/pages/post-details.swig' %}
-{% endblock %}
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">14</span></a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">36</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">310</span></a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <section class="post-toc-wrap sidebar-panel">
+          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%9D%99%E6%80%81%E6%95%B0%E6%8D%AE-amp-%E5%8A%A8%E6%80%81%E6%95%B0%E6%8D%AE"><span class="nav-number">1.</span> <span class="nav-text">静态数据&amp;动态数据</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9D%99%E6%80%81%E6%95%B0%E6%8D%AE"><span class="nav-number">1.1.</span> <span class="nav-text">静态数据</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%A8%E6%80%81%E6%95%B0%E6%8D%AE"><span class="nav-number">1.2.</span> <span class="nav-text">动态数据</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AF%86%E7%A0%81%E6%94%BB%E5%87%BB%E5%AA%92%E4%BB%8B"><span class="nav-number">1.3.</span> <span class="nav-text">密码攻击媒介</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8A%A0%E7%9B%90"><span class="nav-number">2.</span> <span class="nav-text">加盐</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%94%9F%E6%88%90%E9%9A%8F%E6%9C%BA%E7%9B%90%E5%80%BC"><span class="nav-number">2.1.</span> <span class="nav-text">生成随机盐值</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%87%8D%E7%94%A8%E7%9B%90%E5%80%BC"><span class="nav-number">2.2.</span> <span class="nav-text">重用盐值</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9B%90%E5%80%BC%E7%9A%84%E9%95%BF%E5%BA%A6"><span class="nav-number">2.3.</span> <span class="nav-text">盐值的长度</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8A%8A%E7%9B%90%E5%80%BC%E5%AD%98%E5%82%A8%E5%9C%A8%E5%93%AA%EF%BC%9F"><span class="nav-number">2.4.</span> <span class="nav-text">把盐值存储在哪？</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%92%92%E8%83%A1%E6%A4%92"><span class="nav-number">3.</span> <span class="nav-text">撒胡椒</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%80%89%E6%8B%A9%E6%AD%A3%E7%A1%AE%E7%9A%84%E5%AF%86%E7%A0%81%E5%93%88%E5%B8%8C%E5%87%BD%E6%95%B0"><span class="nav-number">4.</span> <span class="nav-text">选择正确的密码哈希函数</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#bcrypt-%E2%AD%90%EF%B8%8F%E2%AD%90%EF%B8%8F%E2%AD%90%EF%B8%8F"><span class="nav-number">4.1.</span> <span class="nav-text">bcrypt ⭐️⭐️⭐️</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#PBKDF2"><span class="nav-number">4.2.</span> <span class="nav-text">PBKDF2</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#scrypt"><span class="nav-number">4.3.</span> <span class="nav-text">scrypt</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AF%86%E9%92%A5%E5%BB%B6%E4%BC%B8"><span class="nav-number">4.4.</span> <span class="nav-text">密钥延伸</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%87%8D%E6%96%B0%E8%AE%A1%E7%AE%97%E5%93%88%E5%B8%8C%E5%80%BC"><span class="nav-number">5.</span> <span class="nav-text">重新计算哈希值</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">6.</span> <span class="nav-text">参考</span></a></li></ol></div>
+      </section>
+      <!--/noindex-->
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="独木舟的木"
+      src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+  <p class="site-author-name" itemprop="name">独木舟的木</p>
+  <div class="site-description" itemprop="description">生若直木，不语斧凿。</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">310</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">36</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL0FuZHkwNTcw" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Andy0570"><i class="fab fa-github fa-fw"></i>GitHub</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9zdGFja292ZXJmbG93LmNvbS91c2Vycy83MjY1NDAwL2FuZHkwNTcw" title="StackOverflow → https:&#x2F;&#x2F;stackoverflow.com&#x2F;users&#x2F;7265400&#x2F;andy0570"><i class="fab fa-stack-overflow fa-fw"></i>StackOverflow</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuamlhbnNodS5jb20vdS84NGM1ZmFkYzdjMTg=" title="简书 → https:&#x2F;&#x2F;www.jianshu.com&#x2F;u&#x2F;84c5fadc7c18"><i class="heartbeat fa-fw"></i>简书</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="bWFpbHRvOmFuZHl3aG1AMTYzLmNvbQ==" title="E-Mail → mailto:andywhm@163.com"><i class="fa fa-envelope fa-fw"></i>E-Mail</span>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <span class="exturl cc-opacity" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpo"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></span>
+  </div>
+
+
+
+      </section>
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </header>
+
+      
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div id="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+      <div class="main-inner">
+        
+
+        <div class="content post posts-expand">
+          
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://andy0570.com/2018/12/17/Web%20%E5%BC%80%E5%8F%91%E7%9A%84%E8%BA%AB%E4%BB%BD%E6%95%B0%E6%8D%AE%E5%92%8C%E5%AE%89%E5%85%A8_2.%E5%AF%86%E7%A0%81%E5%8A%A0%E5%AF%86%E3%80%81%E5%93%88%E5%B8%8C%E5%92%8C%E5%8A%A0%E7%9B%90/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+      <meta itemprop="name" content="独木舟的木">
+      <meta itemprop="description" content="生若直木，不语斧凿。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="独木舟的木">
+    </span>
+
+    
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Web 开发的身份数据和安全_2.密码加密、哈希和加盐
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-12-17 13:47:00" itemprop="dateCreated datePublished" datetime="2018-12-17T13:47:00+08:00">2018-12-17</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-05-17 14:18:43" itemprop="dateModified" datetime="2019-05-17T14:18:43+08:00">2019-05-17</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/PKI-%E5%AF%86%E7%A0%81%E5%AD%A6/" itemprop="url" rel="index"><span itemprop="name">PKI&密码学</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>4.4k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>4 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>本文主要内容：探讨密码加密和安全性。</p>
+<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/wooden-shelf-with-laptop-and-notebook.jpg" alt="Photo on &lt;a href=&quot;https://visualhunt.com/re3/fa8128d7&quot;&gt;Visualhunt.com&lt;/a&gt;"></p>
+<a id="more"></a>
+
+
+
+<h1 id="静态数据-amp-动态数据"><a href="#静态数据-amp-动态数据" class="headerlink" title="静态数据&amp;动态数据"></a>静态数据&amp;动态数据</h1><p><strong>静态数据</strong>：不活动的（或静止的）数字数据，存储在服务器中，例如用于存储密码、个人资料、或其他应用所需数据的数据库。</p>
+<p><strong>动态数据</strong>：传输中的数据，在应用和数据库之间来回发送，或者在网站和 API 或外部数据源之间来回传送。</p>
+<h2 id="静态数据"><a href="#静态数据" class="headerlink" title="静态数据"></a>静态数据</h2><ul>
+<li>数据库加密是绝对有必要的，尽管 99% 的团体没有这么做。</li>
+<li>加密数据库应该使用强加密、受 NIST 认可的算法，如：SHA-256、AES、RSA。</li>
+<li>遵循标准做法：1. 分开访问控制（用户登录）和数据加密；2. 定期更新加密数据库的密钥；3. 分开存储加密密钥和数据。</li>
+<li>对全球覆盖的应用来说，可以使用<strong>数据联合</strong>避免恶意访问数据存储器，在需要个人信息的不同区域维护不同的数据库系统。</li>
+<li>根据运行应用、网站或服务的需要，<strong>应该尽量少存储敏感的用户数据</strong>。</li>
+<li>敏感的财务信息（例如信用卡数据）可以交由他方（支付提供商）处理。</li>
+</ul>
+<h2 id="动态数据"><a href="#动态数据" class="headerlink" title="动态数据"></a>动态数据</h2><p>动态数据的使用场景：</p>
+<ul>
+<li>用户填写的注册信息，用于访问账户和认证身份。</li>
+<li>把个人档案信息传输给API服务，或从中获取。</li>
+<li>应用或网站收集的其他数据，传给数据库存储起来。</li>
+</ul>
+<h2 id="密码攻击媒介"><a href="#密码攻击媒介" class="headerlink" title="密码攻击媒介"></a>密码攻击媒介</h2><ul>
+<li>钓鱼；</li>
+<li>社会工程；</li>
+<li>暴力攻击；（抵抗方式：密钥延伸技术）<ul>
+<li>登录失败后显示验证码（<span class="exturl" data-url="aHR0cHM6Ly93d3cuZ29vZ2xlLmNvbS9yZWNhcHRjaGEvaW50cm8vdjMuaHRtbA==">Google reCAPTCHA<i class="fa fa-external-link-alt"></i></span>、<span class="exturl" data-url="aHR0cDovL2R1bi4xNjMuY29tL3RyaWFsL3NlbnNl">易盾 - 智能无感知验证码<i class="fa fa-external-link-alt"></i></span>），增加登录难度。</li>
+<li>添加 2FA （双因素身份认证）机制。</li>
+</ul>
+</li>
+<li>字典攻击；（抵抗方式：加盐）</li>
+<li>彩虹表；（抵抗方式：加盐）</li>
+<li>恶意软件；（抵抗方式：短信验证、n因素认证）</li>
+<li>离线破解；</li>
+</ul>
+<h1 id="加盐"><a href="#加盐" class="headerlink" title="加盐"></a>加盐</h1><p>盐值是一种随机数据，计算密码的哈希值时用于加强数据，抵御多种攻击媒介尤其是字典攻击和彩虹表。这个随机数据（特别长）能确保生成的哈希值是唯一的，即使多个用户使用相同的密码（确实有这种情况），添加唯一的盐值后能确保得到的哈希值仍是唯一的。就因为得到的哈希值是唯一的，我们才得以免受彩虹表和字典攻击的危害。</p>
+<p>盐值的特点：盐值需要<mark class="label info">足够长</mark>、<mark class="label info">不可预测</mark>、<mark class="label info">高度随机</mark>、需要使用<mark class="label info">安全的伪随机函数</mark>生成，另外，还要避免使用全局的盐值。</p>
+<h2 id="生成随机盐值"><a href="#生成随机盐值" class="headerlink" title="生成随机盐值"></a>生成随机盐值</h2><p>使用 Node 原生支持的的 <span class="exturl" data-url="aHR0cDovL25vZGVqcy5jbi9hcGkvY3J5cHRvLmh0bWwjY3J5cHRvX2NyeXB0b19yYW5kb21ieXRlc19zaXplX2NhbGxiYWNr">crypto<i class="fa fa-external-link-alt"></i></span> 库生成随机盐值。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> crypto = <span class="built_in">require</span>(<span class="string">&#x27;crypto&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// crypto.randomBytes() 生成 16 位强加密的伪随机数</span></span><br><span class="line">crypto.randomBytes(<span class="number">16</span>, <span class="function">(<span class="params">err, buf</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">if</span> (err) <span class="keyword">throw</span> err;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">`<span class="subst">$&#123;buf.length&#125;</span> bytes of random data: <span class="subst">$&#123;buf.toString(<span class="string">&#x27;hex&#x27;</span>)&#125;</span>`</span>);</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">`<span class="subst">$&#123;buf.length&#125;</span> bytes of random data: <span class="subst">$&#123;buf.toString(<span class="string">&#x27;base64&#x27;</span>)&#125;</span>`</span>);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 同步方法生成盐值</span></span><br><span class="line"><span class="keyword">const</span> buf = crypto.randomBytes(<span class="number">256</span>);</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="重用盐值"><a href="#重用盐值" class="headerlink" title="重用盐值"></a>重用盐值</h2><p>用户注册账户或修改密码时应该生成并存储新的盐值和哈希值。</p>
+<h2 id="盐值的长度"><a href="#盐值的长度" class="headerlink" title="盐值的长度"></a>盐值的长度</h2><ul>
+<li>根据经验，盐值的长度应该与哈希函数的输出长度一致。</li>
+<li>PBKDF2 标准建议至少应该使用 <mark class="label info">64 位（8字节）</mark>长度的盐值。通常，多数情况下使用的是2的7次方，即 <mark class="label info">128 位（16字节）</mark>。</li>
+</ul>
+<h2 id="把盐值存储在哪？"><a href="#把盐值存储在哪？" class="headerlink" title="把盐值存储在哪？"></a>把盐值存储在哪？</h2><p><del>盐值可以和哈希值一起以明文形式存储在数据库中。</del></p>
+<p>salt 不能和哈希值存储在一起，不然就和没有 salt 一样，因为攻击者拖库后，构建字典非常简单，因为它能够直接看到 salt，所以一定要分开存储（比如在不同的机器上），这样即使口令密文表被拖库了，而 salt 表没有被拖库，也是相对安全的。</p>
+<h1 id="撒胡椒"><a href="#撒胡椒" class="headerlink" title="撒胡椒"></a>撒胡椒</h1><ul>
+<li>胡椒是在计算哈希值时随盐值和密码一起传入的值。</li>
+<li>使用胡椒的简单公式：hash ( salt + pepper + password ) = password hash</li>
+<li>胡椒在代码层计算，而不是使用存储的值。</li>
+<li>使用胡椒的原因：利用额外的字符和符号加强密码的强度。</li>
+</ul>
+<h1 id="选择正确的密码哈希函数"><a href="#选择正确的密码哈希函数" class="headerlink" title="选择正确的密码哈希函数"></a>选择正确的密码哈希函数</h1><h2 id="bcrypt-⭐️⭐️⭐️"><a href="#bcrypt-⭐️⭐️⭐️" class="headerlink" title="bcrypt ⭐️⭐️⭐️"></a>bcrypt ⭐️⭐️⭐️</h2><p>GitHub 源码：<span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2tlbGVrdGl2L25vZGUuYmNyeXB0LmpzI3JlYWRtZQ==">node.bcrypt.js<i class="fa fa-external-link-alt"></i></span></p>
+<p>特性：专为加密密码设计，底层基于 Blowfish 密码法，有异步方法和同步方法、密码哈希函数、校验密码函数、带 promise 特性…</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> bcrypt = <span class="built_in">require</span>(<span class="string">&#x27;bcrypt&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 封装 hash 函数</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">bcrypt_encrypt</span>(<span class="params">username, password</span>) </span>&#123;</span><br><span class="line">  <span class="comment">// 1. bcrypt 内置了生成盐值的方法：getSalt()</span></span><br><span class="line">  bcrypt.genSalt(<span class="number">10</span>, <span class="function">(<span class="params">err, salt</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (err) <span class="keyword">throw</span> err;</span><br><span class="line">      </span><br><span class="line">    <span class="comment">// 2. 生成哈希值：hash()</span></span><br><span class="line">    bcrypt.hash(password, salt, <span class="function">(<span class="params">err, key</span>) =&gt;</span> &#123;</span><br><span class="line">      <span class="keyword">if</span> (err) <span class="keyword">throw</span> err;</span><br><span class="line">      </span><br><span class="line">      <span class="comment">// 3. 把用户名、密码哈希值和盐值存入数据库</span></span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 调用示例</span></span><br><span class="line">bcrypt_encrypt(<span class="string">&#x27;zhangsan&#x27;</span>, <span class="string">&#x27;123456&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 对比哈希值，验证密码：</span></span><br><span class="line">bcrypt.compare(password, hash, <span class="function">(<span class="params">err, same</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="comment">// 返回 true 或 false</span></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="PBKDF2"><a href="#PBKDF2" class="headerlink" title="PBKDF2"></a>PBKDF2</h2><ul>
+<li>1Password、LastPass 等密码管理系统采用的算法；</li>
+<li>Node.js 中的 crypt 模块原生支持的标准算法；</li>
+<li>通过该算法可以实现基于口令的加密（PBE），即<strong>基于口令生成密钥</strong>。</li>
+</ul>
+<p>加密示例：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// PBKDF2 算法</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">pbkdf2_encrypt</span>(<span class="params">username, password</span>) </span>&#123;</span><br><span class="line">  <span class="comment">// 1. crypto.randomBytes(）方法生成 32 字节的随机盐值</span></span><br><span class="line">  crypto.randomBytes(<span class="number">32</span>, <span class="function">(<span class="params">err, salt</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (err) <span class="keyword">throw</span> err;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 2. 参数列表：（密码，盐值，迭代次数，输出密钥长度，摘要算法）</span></span><br><span class="line">    crypto.pbkdf2(password, salt, <span class="number">4096</span>, <span class="number">512</span>, <span class="string">&#x27;sha256&#x27;</span>, <span class="function">(<span class="params">err, key</span>) =&gt;</span> &#123;</span><br><span class="line">      <span class="keyword">if</span> (err) <span class="keyword">throw</span> err;</span><br><span class="line">      </span><br><span class="line">      <span class="comment">// 3. 将用户名、密码哈希值和盐值存入数据库</span></span><br><span class="line">      <span class="comment">// Salt 盐值是明文保存的，一般不和最终生成的密钥保存在一起。</span></span><br><span class="line">      <span class="built_in">console</span>.log(username, key.toString(<span class="string">&#x27;hex&#x27;</span>), salt.toString(<span class="string">&#x27;hex&#x27;</span>));</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 调用示例</span></span><br><span class="line">pbkdf2_encrypt(<span class="string">&#x27;zhangSan&#x27;</span>, <span class="string">&#x27;123456&#x27;</span>);</span><br></pre></td></tr></table></figure>
+
+<p>对比哈希值，验证密码：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> dbsalt = <span class="string">&#x27;USER RECORD SALT FROM YOUR DATABASE&#x27;</span>;</span><br><span class="line"><span class="keyword">const</span> dbhash = <span class="string">&#x27;USER RECORD KEY FROM YOUR DATABASE&#x27;</span>;</span><br><span class="line"></span><br><span class="line">crypto.pbkdf2(password, dbsalt, <span class="number">4096</span>, <span class="number">512</span>, <span class="string">&#x27;sha256&#x27;</span>, <span class="function">(<span class="params">err, comparsehash</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">if</span> (err) <span class="keyword">throw</span> err;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 比较</span></span><br><span class="line">  <span class="keyword">if</span> (dbhash.toString(<span class="string">&#x27;hex&#x27;</span>) === comparsehash.toString(<span class="string">&#x27;hex&#x27;</span>)) &#123;</span><br><span class="line">    <span class="comment">// 密码匹配</span></span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="comment">// 密码不匹配</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="scrypt"><a href="#scrypt" class="headerlink" title="scrypt"></a>scrypt</h2><p>GitHub 源码：<a href="(https://github.com/barrysteyn/node-scrypt)">node-scrypt</a></p>
+<p>scrypt 的优势和实现如下：</p>
+<ul>
+<li>做了特殊设计，是硬件和内存密集型算法，攻击者要实施大型攻击，想要破解需要耗费异常多的硬件和内存。</li>
+<li>是加密数字货币莱特币和狗狗币背后采用的算法。</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&#x27;use strict&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> scrypt = <span class="built_in">require</span>(<span class="string">&#x27;scrypt&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> crypto = <span class="built_in">require</span>(<span class="string">&#x27;crypto&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">scrypt_encrypt</span>(<span class="params">username, password</span>) </span>&#123;</span><br><span class="line">  <span class="comment">// 1. 使用 crypto 的 crypto.randomBytes(...) 方法生成盐值。</span></span><br><span class="line">  crypto.randomBytes(<span class="number">32</span>, <span class="function">(<span class="params">err, salt</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (err) <span class="keyword">throw</span> err;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 2. scrypt.hash(...) 生成 64 位的哈希值</span></span><br><span class="line">    <span class="comment">// - N: scrypt 最多使用多长时间（秒数）计算密钥（偶数）。</span></span><br><span class="line">    <span class="comment">// - r:计算密钥时最多使用多少字节 RAM（整数）。默认为0。</span></span><br><span class="line">    <span class="comment">// - p:计算密钥时所用 RAM 占可用值的比例（0-1，换算成百分比）默认为0.5。</span></span><br><span class="line">    scrypt.hash(password, &#123;<span class="string">&quot;N&quot;</span>:<span class="number">16384</span>,<span class="string">&quot;r&quot;</span>:<span class="number">8</span>,<span class="string">&quot;p&quot;</span>:<span class="number">1</span>&#125;, <span class="number">64</span>, salt, <span class="function">(<span class="params">err, key</span>) =&gt;</span> &#123;</span><br><span class="line">      <span class="keyword">if</span> (err) <span class="keyword">throw</span> err;</span><br><span class="line"></span><br><span class="line">      <span class="comment">// 3. 把用户名、密码哈希值和盐值存入数据库</span></span><br><span class="line">      <span class="built_in">console</span>.log(<span class="string">`key is <span class="subst">$&#123;key&#125;</span>`</span>);</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="密钥延伸"><a href="#密钥延伸" class="headerlink" title="密钥延伸"></a>密钥延伸</h2><p>bcrypt、scrypt 和 PBKDF2 行之有效涉及到的底层概念——密钥延伸（Key Derivation Function，KDF）。<br><strong>密钥延伸</strong>：把弱密码变成特别复杂的长密码，致使暴力攻击等攻击媒介不再可行。</p>
+<p>对加密哈希函数来说，密钥延伸体现在不断循环应用哈希函数（哈希函数迭代），直到得到所需长度和复杂度的哈希值为止。</p>
+<h1 id="重新计算哈希值"><a href="#重新计算哈希值" class="headerlink" title="重新计算哈希值"></a>重新计算哈希值</h1><p>有时可能需要为用户生成新的密码哈希值。比如说:</p>
+<ul>
+<li>根据摩尔定律，硬件更新了，要修改加密算法使用的权重/工作因子。</li>
+<li>算法变了，或者有更好的算法出现，目前使用的算法不安全。</li>
+<li>觉得现有哈希值不再安全。</li>
+</ul>
+<p>遇到这些情况，符合常规的做法是为用户生成新哈希值，存储在系统中。用户提供用户名和密码请求登录时，正常比较根据输入值计算的哈希值和存储的哈希值，而不是拒绝登录。随后，为用户生成新的哈希值，替换用户记录中的旧值。</p>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><ul>
+<li><span class="exturl" data-url="aHR0cHM6Ly93d3cuY25ibG9ncy5jb20vbG9iYnkvcC81MzYxNzg5Lmh0bWw=">设计安全的账号系统的正确姿势<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cHM6Ly9tcC53ZWl4aW4ucXEuY29tL3MvMVhfYU9vYWRrMUNDQnpHRkMtRU0zdw==">如何安全存储口令？了解下 Hash 加盐的原理<i class="fa fa-external-link-alt"></i></span></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>独木舟的木
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://andy0570.com/2018/12/17/Web%20%E5%BC%80%E5%8F%91%E7%9A%84%E8%BA%AB%E4%BB%BD%E6%95%B0%E6%8D%AE%E5%92%8C%E5%AE%89%E5%85%A8_2.%E5%AF%86%E7%A0%81%E5%8A%A0%E5%AF%86%E3%80%81%E5%93%88%E5%B8%8C%E5%92%8C%E5%8A%A0%E7%9B%90/" title="Web 开发的身份数据和安全_2.密码加密、哈希和加盐">https://andy0570.com/2018/12/17/Web 开发的身份数据和安全_2.密码加密、哈希和加盐/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <span class="exturl" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpo"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</span> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/PKI/" rel="tag"># PKI</a>
+              <a href="/tags/%E5%AF%86%E7%A0%81%E5%AD%A6/" rel="tag"># 密码学</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2018/12/13/iOS%20%E5%BA%94%E7%94%A8%E4%B8%8A%E6%9E%B6%E5%8F%82%E8%80%83/" rel="prev" title="iOS 应用上架参考">
+      <i class="fa fa-chevron-left"></i> iOS 应用上架参考
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2018/12/17/Web%20%E5%BC%80%E5%8F%91%E7%9A%84%E8%BA%AB%E4%BB%BD%E6%95%B0%E6%8D%AE%E5%92%8C%E5%AE%89%E5%85%A8_3.%E8%BA%AB%E4%BB%BD%E5%AE%89%E5%85%A8%E5%9F%BA%E7%A1%80/" rel="next" title="Web 开发的身份数据和安全_3.身份安全基础">
+      Web 开发的身份数据和安全_3.身份安全基础 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+        </div>
+        
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">独木舟的木</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">2.1m</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">31:21</span>
+</div>
+  <div class="powered-by">由 <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZw==">NexT.Gemini</span> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

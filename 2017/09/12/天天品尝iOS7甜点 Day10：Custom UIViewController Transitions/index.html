@@ -1,23 +1,542 @@
-{% extends '_layout.swig' %}
-{% import '_macro/post.swig' as post_template %}
-{% import '_macro/sidebar.swig' as sidebar_template %}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.0.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+  <meta name="google-site-verification" content="wioXOS3Gv2wXUpJ3sLtfZ4ft6YJYKNLLWSw6QoZTFYM">
+  <meta name="msvalidate.01" content="C96491A81239C517A50597C54EE53CD1">
+  <meta name="baidu-site-verification" content="h8asiToN1b">
 
-{% block title %}{{ page.title }} | {{ title }}{% endblock %}
+<link rel="stylesheet" href="/css/main.css">
 
-{% block page_class %}page-post-detail{% endblock %}
 
-{% block content %}
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  
+  <link rel="stylesheet" href="/lib/animate-css/animate.min.css">
 
-  <div id="posts" class="posts-expand">
-    {{ post_template.render(page) }}
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"andy0570.com","root":"/","scheme":"Gemini","version":"8.0.0-rc.5","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":"mac","bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false};
+  </script>
+
+  <meta name="description" content="自定义视图控制器转场  参考 GitHub 源码：shinobicontrols&#x2F;iOS7-day-by-day 天天品尝iOS7甜点 :: Day 10 :: Custom UIViewController Transitions">
+<meta property="og:type" content="article">
+<meta property="og:title" content="天天品尝iOS7甜点 Day10：Custom UIViewController Transitions">
+<meta property="og:url" content="https://andy0570.com/2017/09/12/%E5%A4%A9%E5%A4%A9%E5%93%81%E5%B0%9DiOS7%E7%94%9C%E7%82%B9%20Day10%EF%BC%9ACustom%20UIViewController%20Transitions/index.html">
+<meta property="og:site_name" content="独木舟的木">
+<meta property="og:description" content="自定义视图控制器转场  参考 GitHub 源码：shinobicontrols&#x2F;iOS7-day-by-day 天天品尝iOS7甜点 :: Day 10 :: Custom UIViewController Transitions">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071744.gif">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071747.gif">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071752.jpg">
+<meta property="article:published_time" content="2017-09-12T09:42:00.000Z">
+<meta property="article:modified_time" content="2019-05-01T13:20:24.000Z">
+<meta property="article:author" content="独木舟的木">
+<meta property="article:tag" content="iOS">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071744.gif">
+
+<link rel="canonical" href="https://andy0570.com/2017/09/12/%E5%A4%A9%E5%A4%A9%E5%93%81%E5%B0%9DiOS7%E7%94%9C%E7%82%B9%20Day10%EF%BC%9ACustom%20UIViewController%20Transitions/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>天天品尝iOS7甜点 Day10：Custom UIViewController Transitions | 独木舟的木</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="独木舟的木" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <main class="main">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+        <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
   </div>
 
-{% endblock %}
+  <div class="site-meta">
 
-{% block sidebar %}
-  {{ sidebar_template.render(true) }}
-{% endblock %}
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">独木舟的木</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">iOS Developer</p>
+  </div>
 
-{% block script_extra %}
-  {% include '_scripts/pages/post-details.swig' %}
-{% endblock %}
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">14</span></a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">36</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">310</span></a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <section class="post-toc-wrap sidebar-panel">
+          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">1.</span> <span class="nav-text">参考</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BD%AC%E5%9C%BA%E6%95%88%E6%9E%9C"><span class="nav-number">2.</span> <span class="nav-text">转场效果</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A7%86%E5%9B%BE%E5%B1%82%E6%AC%A1%E7%BB%93%E6%9E%84"><span class="nav-number">3.</span> <span class="nav-text">视图层次结构</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A6%81%E6%83%B3%E5%AE%9E%E7%8E%B0%E8%87%AA%E5%AE%9A%E4%B9%89%E8%A7%86%E5%9B%BE%E6%8E%A7%E5%88%B6%E5%99%A8%E8%BD%AC%E5%9C%BA%E6%95%88%E6%9E%9C%EF%BC%8C%E9%9C%80%E8%A6%81%E5%AE%9E%E7%8E%B0-UINavigationControllerDelegate-%E5%8D%8F%E8%AE%AE%E3%80%82"><span class="nav-number">3.1.</span> <span class="nav-text">要想实现自定义视图控制器转场效果，需要实现 UINavigationControllerDelegate 协议。</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%8A%E9%9D%A2%E4%BB%A3%E7%A0%81%E4%B8%AD%E6%8A%8A%E5%AE%9E%E7%8E%B0%E8%BD%AC%E5%9C%BA%E6%95%88%E6%9E%9C%E7%9A%84%E5%8D%8F%E8%AE%AE%E6%96%B9%E6%B3%95%E5%B0%81%E8%A3%85%E6%88%90%E4%BA%86%E4%B8%80%E4%B8%AA%E7%B1%BBHQLNavControllerDelegate%EF%BC%9A"><span class="nav-number">3.2.</span> <span class="nav-text">上面代码中把实现转场效果的协议方法封装成了一个类HQLNavControllerDelegate：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%80%8C%E5%9C%A8-HQLNavControllerDelegate-%E7%B1%BB%E4%B8%AD%E5%8F%88%E6%8A%8A%E5%AE%9E%E7%8E%B0%E8%87%AA%E5%AE%9A%E4%B9%89%E8%BD%AC%E5%9C%BA%E6%95%88%E6%9E%9C%E7%9A%84%E8%BD%AC%E5%9C%BA%E5%8A%A8%E7%94%BB%E5%B0%81%E8%A3%85%E6%88%90%E4%BA%86%E4%B8%80%E4%B8%AA%E7%B1%BB-HQLFadeTransition"><span class="nav-number">3.3.</span> <span class="nav-text">而在 HQLNavControllerDelegate 类中又把实现自定义转场效果的转场动画封装成了一个类 HQLFadeTransition</span></a></li></ol></li></ol></div>
+      </section>
+      <!--/noindex-->
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="独木舟的木"
+      src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+  <p class="site-author-name" itemprop="name">独木舟的木</p>
+  <div class="site-description" itemprop="description">生若直木，不语斧凿。</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">310</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">36</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL0FuZHkwNTcw" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Andy0570"><i class="fab fa-github fa-fw"></i>GitHub</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9zdGFja292ZXJmbG93LmNvbS91c2Vycy83MjY1NDAwL2FuZHkwNTcw" title="StackOverflow → https:&#x2F;&#x2F;stackoverflow.com&#x2F;users&#x2F;7265400&#x2F;andy0570"><i class="fab fa-stack-overflow fa-fw"></i>StackOverflow</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuamlhbnNodS5jb20vdS84NGM1ZmFkYzdjMTg=" title="简书 → https:&#x2F;&#x2F;www.jianshu.com&#x2F;u&#x2F;84c5fadc7c18"><i class="heartbeat fa-fw"></i>简书</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="bWFpbHRvOmFuZHl3aG1AMTYzLmNvbQ==" title="E-Mail → mailto:andywhm@163.com"><i class="fa fa-envelope fa-fw"></i>E-Mail</span>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <span class="exturl cc-opacity" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpo"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></span>
+  </div>
+
+
+
+      </section>
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </header>
+
+      
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div id="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+      <div class="main-inner">
+        
+
+        <div class="content post posts-expand">
+          
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://andy0570.com/2017/09/12/%E5%A4%A9%E5%A4%A9%E5%93%81%E5%B0%9DiOS7%E7%94%9C%E7%82%B9%20Day10%EF%BC%9ACustom%20UIViewController%20Transitions/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+      <meta itemprop="name" content="独木舟的木">
+      <meta itemprop="description" content="生若直木，不语斧凿。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="独木舟的木">
+    </span>
+
+    
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          天天品尝iOS7甜点 Day10：Custom UIViewController Transitions
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2017-09-12 17:42:00" itemprop="dateCreated datePublished" datetime="2017-09-12T17:42:00+08:00">2017-09-12</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-05-01 21:20:24" itemprop="dateModified" datetime="2019-05-01T21:20:24+08:00">2019-05-01</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS/" itemprop="url" rel="index"><span itemprop="name">iOS</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>3.8k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>3 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <blockquote>
+<p>自定义视图控制器转场</p>
+</blockquote>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><ul>
+<li><span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL1NoaW5vYmlDb250cm9scy9pT1M3LWRheS1ieS1kYXk=">GitHub 源码：shinobicontrols/iOS7-day-by-day<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cDovL2Jsb2cua2luZ2lvbC5jb20vMjAxNC8wMS8xMi9pb3M3LWRheS1ieS1kYXktZGF5MTAtY3VzdG9tLXVpdmlld2NvbnRyb2xsZXItdHJhbnNpdGlvbnMv">天天品尝iOS7甜点 :: Day 10 :: Custom UIViewController Transitions<i class="fa fa-external-link-alt"></i></span></li>
+</ul>
+<a id="more"></a>
+
+<h3 id="转场效果"><a href="#转场效果" class="headerlink" title="转场效果"></a>转场效果</h3><p>默认的 <strong>UINavigationController</strong> 转场 push/pop 是这样的：</p>
+<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071744.gif"></p>
+<p>现在我们要实现自定义实现视图控制器转场效果：</p>
+<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071747.gif"></p>
+<h3 id="视图层次结构"><a href="#视图层次结构" class="headerlink" title="视图层次结构"></a>视图层次结构</h3><p>视图层次结构很简单：一个 UINavigationController 作为窗口的根视图控制器、而首页是 UINavigationController 的根视图控制器、首页可以 push 到第二页：</p>
+<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071752.jpg"></p>
+<h4 id="要想实现自定义视图控制器转场效果，需要实现-UINavigationControllerDelegate-协议。"><a href="#要想实现自定义视图控制器转场效果，需要实现-UINavigationControllerDelegate-协议。" class="headerlink" title="要想实现自定义视图控制器转场效果，需要实现 UINavigationControllerDelegate 协议。"></a>要想实现自定义视图控制器转场效果，需要实现 <code>UINavigationControllerDelegate</code> 协议。</h4><p>在 <strong>UINavigationController</strong> 实例对象中声明某个类（<code>HQLNavControllerDelegate</code>）实现了<code>UINavigationControllerDelegate</code> 协议：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">#import &quot;HQLNavigationController.h&quot;</span><br><span class="line">#import &quot;HQLNavControllerDelegate.h&quot;</span><br><span class="line"></span><br><span class="line">@interface HQLNavigationController () &#123;</span><br><span class="line">    id&lt;UINavigationControllerDelegate&gt; _navDelegate;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">@implementation HQLNavigationController</span><br><span class="line"></span><br><span class="line">- (instancetype)initWithCoder:(NSCoder *)aDecoder &#123;</span><br><span class="line">    self &#x3D; [super initWithCoder:aDecoder];</span><br><span class="line">    if (self) &#123;</span><br><span class="line">        _navDelegate &#x3D; [HQLNavControllerDelegate new];</span><br><span class="line">        self.delegate &#x3D; _navDelegate;</span><br><span class="line">    &#125;</span><br><span class="line">    return self;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="上面代码中把实现转场效果的协议方法封装成了一个类HQLNavControllerDelegate："><a href="#上面代码中把实现转场效果的协议方法封装成了一个类HQLNavControllerDelegate：" class="headerlink" title="上面代码中把实现转场效果的协议方法封装成了一个类HQLNavControllerDelegate："></a>上面代码中把实现转场效果的协议方法封装成了一个类<code>HQLNavControllerDelegate</code>：</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; ****************************************************</span><br><span class="line">&#x2F;&#x2F;  HQLNavControllerDelegate.h</span><br><span class="line">#import &lt;Foundation&#x2F;Foundation.h&gt;</span><br><span class="line">#import &lt;UIKit&#x2F;UIKit.h&gt;</span><br><span class="line"></span><br><span class="line">@interface HQLNavControllerDelegate : NSObject &lt;UINavigationControllerDelegate&gt;</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; ****************************************************</span><br><span class="line">&#x2F;&#x2F;  HQLNavControllerDelegate.m</span><br><span class="line">#import &quot;HQLNavControllerDelegate.h&quot;</span><br><span class="line">#import &quot;HQLFadeTransition.h&quot;</span><br><span class="line"></span><br><span class="line">@implementation HQLNavControllerDelegate</span><br><span class="line"></span><br><span class="line">- (nullable id &lt;UIViewControllerAnimatedTransitioning&gt;)navigationController:(UINavigationController *)navigationController</span><br><span class="line">                                            animationControllerForOperation:(UINavigationControllerOperation)operation</span><br><span class="line">                                                         fromViewController:(UIViewController *)fromVC</span><br><span class="line">                                                           toViewController:(UIViewController *)toVC&#123;</span><br><span class="line">    return [HQLFadeTransition new];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="而在-HQLNavControllerDelegate-类中又把实现自定义转场效果的转场动画封装成了一个类-HQLFadeTransition"><a href="#而在-HQLNavControllerDelegate-类中又把实现自定义转场效果的转场动画封装成了一个类-HQLFadeTransition" class="headerlink" title="而在 HQLNavControllerDelegate 类中又把实现自定义转场效果的转场动画封装成了一个类 HQLFadeTransition"></a>而在 <code>HQLNavControllerDelegate</code> 类中又把实现自定义转场效果的转场动画封装成了一个类 <code>HQLFadeTransition</code></h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; ****************************************************</span><br><span class="line">&#x2F;&#x2F;  HQLFadeTransition.h</span><br><span class="line">#import &lt;Foundation&#x2F;Foundation.h&gt;</span><br><span class="line">#import &lt;UIKit&#x2F;UIKit.h&gt;</span><br><span class="line"></span><br><span class="line">@interface HQLFadeTransition : NSObject &lt;UIViewControllerAnimatedTransitioning&gt;</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">  </span><br><span class="line">&#x2F;&#x2F; ****************************************************</span><br><span class="line">&#x2F;&#x2F;  HQLFadeTransition.m</span><br><span class="line">#import &quot;HQLFadeTransition.h&quot;</span><br><span class="line"></span><br><span class="line">@implementation HQLFadeTransition</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; @required 方法：返回动画的时长</span><br><span class="line">- (NSTimeInterval)transitionDuration:(id&lt;UIViewControllerContextTransitioning&gt;)transitionContext &#123;</span><br><span class="line">    return 2.0;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; @required 方法：实现视图控制器之间的转场效果</span><br><span class="line">- (void)animateTransition:(id&lt;UIViewControllerContextTransitioning&gt;)transitionContext &#123;</span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F; 1️⃣ viewControllerForKey:获取与转场相关的两个视图控制器</span><br><span class="line">    &#x2F;&#x2F; UITransitionContextFromViewControllerKey</span><br><span class="line">    UIViewController *fromVC &#x3D; [transitionContext viewControllerForKey:UITransitionContextFromViewControllerKey];</span><br><span class="line">    &#x2F;&#x2F; UITransitionContextToViewControllerKey</span><br><span class="line">    UIViewController *toVC &#x3D; [transitionContext viewControllerForKey:UITransitionContextToViewControllerKey];</span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F; 2️⃣ containerView - 动画发生的容器视图</span><br><span class="line">    UIView *containerView &#x3D; [transitionContext containerView];</span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F; 3️⃣ 将两个视图控制器的子视图添加到容器视图</span><br><span class="line">    [containerView addSubview:fromVC.view];</span><br><span class="line">    [containerView addSubview:toVC.view];</span><br><span class="line">    &#x2F;&#x2F; 4️⃣ 将要转换到的那个视图设置为透明</span><br><span class="line">    toVC.view.alpha &#x3D; 0.0;</span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F; 5️⃣ 执行动画</span><br><span class="line">    [UIView animateWithDuration:[self transitionDuration:transitionContext]</span><br><span class="line">                          delay:0</span><br><span class="line">                        options:0</span><br><span class="line">                     animations:^&#123;</span><br><span class="line">                         &#x2F;&#x2F; 动画效果</span><br><span class="line">                         toVC.view.alpha &#x3D; 1.f;</span><br><span class="line">                     &#125;</span><br><span class="line">                     completion:^(BOOL finished) &#123;</span><br><span class="line">                         &#x2F;&#x2F; 移除旧视图控制器视图</span><br><span class="line">                         [fromVC.view removeFromSuperview];</span><br><span class="line">                         &#x2F;&#x2F; 告诉 transitionContext 上下文，动画完成啦!</span><br><span class="line">                         [transitionContext completeTransition:YES];</span><br><span class="line">                     &#125;];</span><br><span class="line">    </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 转换完成后调用</span><br><span class="line">- (void)animationEnded:(BOOL) transitionCompleted &#123;</span><br><span class="line">    NSLog(@&quot;Transition Completed!&quot;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+
+
+
+<blockquote>
+<p>The end.</p>
+</blockquote>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>独木舟的木
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://andy0570.com/2017/09/12/%E5%A4%A9%E5%A4%A9%E5%93%81%E5%B0%9DiOS7%E7%94%9C%E7%82%B9%20Day10%EF%BC%9ACustom%20UIViewController%20Transitions/" title="天天品尝iOS7甜点 Day10：Custom UIViewController Transitions">https://andy0570.com/2017/09/12/天天品尝iOS7甜点 Day10：Custom UIViewController Transitions/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <span class="exturl" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpo"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</span> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/iOS/" rel="tag"># iOS</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2017/09/12/%E5%A4%A9%E5%A4%A9%E5%93%81%E5%B0%9DiOS7%E7%94%9C%E7%82%B9%20Day9%EF%BC%9ADevice%20Identification/" rel="prev" title="天天品尝iOS7甜点 Day9：Device Identification">
+      <i class="fa fa-chevron-left"></i> 天天品尝iOS7甜点 Day9：Device Identification
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2017/09/13/%E5%A4%A9%E5%A4%A9%E5%93%81%E5%B0%9DiOS7%E7%94%9C%E7%82%B9%20Day11%EF%BC%9AUIView%20Key-frame%20Animations/" rel="next" title="天天品尝iOS7甜点 Day11：UIView Key-frame Animations">
+      天天品尝iOS7甜点 Day11：UIView Key-frame Animations <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+        </div>
+        
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">独木舟的木</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">2.1m</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">31:21</span>
+</div>
+  <div class="powered-by">由 <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZw==">NexT.Gemini</span> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

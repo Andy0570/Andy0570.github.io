@@ -1,23 +1,731 @@
-{% extends '_layout.swig' %}
-{% import '_macro/post.swig' as post_template %}
-{% import '_macro/sidebar.swig' as sidebar_template %}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.0.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+  <meta name="google-site-verification" content="wioXOS3Gv2wXUpJ3sLtfZ4ft6YJYKNLLWSw6QoZTFYM">
+  <meta name="msvalidate.01" content="C96491A81239C517A50597C54EE53CD1">
+  <meta name="baidu-site-verification" content="h8asiToN1b">
 
-{% block title %}{{ page.title }} | {{ title }}{% endblock %}
+<link rel="stylesheet" href="/css/main.css">
 
-{% block page_class %}page-post-detail{% endblock %}
 
-{% block content %}
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  
+  <link rel="stylesheet" href="/lib/animate-css/animate.min.css">
 
-  <div id="posts" class="posts-expand">
-    {{ post_template.render(page) }}
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"andy0570.com","root":"/","scheme":"Gemini","version":"8.0.0-rc.5","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":"mac","bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false};
+  </script>
+
+  <meta name="description" content="LVSLVS 原理LVS 集群中的 IP 负载均衡技术 详情参考：LVS 集群中的 IP 负载均衡技术 @章文嵩博士">
+<meta property="og:type" content="article">
+<meta property="og:title" content="基于 LVS + keepalived 的双机热备负载均衡器">
+<meta property="og:url" content="https://andy0570.com/2019/04/03/%E5%9F%BA%E4%BA%8E%20LVS%20+%20keepalived%20%E7%9A%84%E5%8F%8C%E6%9C%BA%E7%83%AD%E5%A4%87%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1%E5%99%A8/index.html">
+<meta property="og:site_name" content="独木舟的木">
+<meta property="og:description" content="LVSLVS 原理LVS 集群中的 IP 负载均衡技术 详情参考：LVS 集群中的 IP 负载均衡技术 @章文嵩博士">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/080020.jpg">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/080021.jpg">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/080022.jpg">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/080023.jpg">
+<meta property="article:published_time" content="2019-04-03T05:53:00.000Z">
+<meta property="article:modified_time" content="2019-05-10T19:17:43.000Z">
+<meta property="article:author" content="独木舟的木">
+<meta property="article:tag" content="LVS">
+<meta property="article:tag" content="Keepalived">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/080020.jpg">
+
+<link rel="canonical" href="https://andy0570.com/2019/04/03/%E5%9F%BA%E4%BA%8E%20LVS%20+%20keepalived%20%E7%9A%84%E5%8F%8C%E6%9C%BA%E7%83%AD%E5%A4%87%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1%E5%99%A8/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>基于 LVS + keepalived 的双机热备负载均衡器 | 独木舟的木</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="独木舟的木" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <main class="main">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+        <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
   </div>
 
-{% endblock %}
+  <div class="site-meta">
 
-{% block sidebar %}
-  {{ sidebar_template.render(true) }}
-{% endblock %}
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">独木舟的木</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">iOS Developer</p>
+  </div>
 
-{% block script_extra %}
-  {% include '_scripts/pages/post-details.swig' %}
-{% endblock %}
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">14</span></a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">36</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">310</span></a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <section class="post-toc-wrap sidebar-panel">
+          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#LVS"><span class="nav-number">1.</span> <span class="nav-text">LVS</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#LVS-%E5%8E%9F%E7%90%86"><span class="nav-number">1.1.</span> <span class="nav-text">LVS 原理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#LVS-%E9%9B%86%E7%BE%A4%E4%B8%AD%E7%9A%84-IP-%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1%E6%8A%80%E6%9C%AF"><span class="nav-number">1.1.1.</span> <span class="nav-text">LVS 集群中的 IP 负载均衡技术</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#LVS-%E9%9B%86%E7%BE%A4%E7%9A%84%E8%B4%9F%E8%BD%BD%E8%B0%83%E5%BA%A6"><span class="nav-number">1.1.2.</span> <span class="nav-text">LVS 集群的负载调度</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Keepalived"><span class="nav-number">2.</span> <span class="nav-text">Keepalived</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Keepalived-%E6%9E%B6%E6%9E%84"><span class="nav-number">2.1.</span> <span class="nav-text">Keepalived 架构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Keepalived-%E5%AE%89%E8%A3%85%E5%8F%8A%E9%85%8D%E7%BD%AE"><span class="nav-number">2.2.</span> <span class="nav-text">Keepalived 安装及配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9F%A5%E8%AF%A2%E6%9C%AC%E6%9C%BA%E7%BD%91%E7%BB%9C%E6%8E%A5%E5%8F%A3"><span class="nav-number">2.2.1.</span> <span class="nav-text">查询本机网络接口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9%E7%B3%BB%E7%BB%9F%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="nav-number">2.2.2.</span> <span class="nav-text">修改系统配置文件</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BC%96%E8%BE%91%E7%B3%BB%E7%BB%9F%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%EF%BC%9Avim-etc-sysctl-conf"><span class="nav-number">2.2.2.1.</span> <span class="nav-text">编辑系统配置文件：vim &#x2F;etc&#x2F;sysctl.conf</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BD%BF%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E7%94%9F%E6%95%88"><span class="nav-number">2.2.2.2.</span> <span class="nav-text">使配置文件生效</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%AA%8C%E8%AF%81%E9%85%8D%E7%BD%AE%E6%98%AF%E5%90%A6%E7%94%9F%E6%95%88"><span class="nav-number">2.2.2.3.</span> <span class="nav-text">验证配置是否生效</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%8B%E8%BD%BD%E5%AE%89%E8%A3%85-Keepalived"><span class="nav-number">2.2.3.</span> <span class="nav-text">下载安装 Keepalived</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Keepalived-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3"><span class="nav-number">2.3.</span> <span class="nav-text">Keepalived 配置文件详解</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Keepalived-%E7%9A%84%E5%85%A8%E5%B1%80%E9%85%8D%E7%BD%AE"><span class="nav-number">2.3.1.</span> <span class="nav-text">Keepalived 的全局配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Keepalived-%E7%9A%84-VRRPD-%E9%85%8D%E7%BD%AE"><span class="nav-number">2.3.2.</span> <span class="nav-text">Keepalived 的 VRRPD 配置</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#VRRP-%E5%90%8C%E6%AD%A5%E7%BB%84%E9%85%8D%E7%BD%AE"><span class="nav-number">2.3.2.1.</span> <span class="nav-text">VRRP 同步组配置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#VRRP-%E5%AE%9E%E4%BE%8B%E9%85%8D%E7%BD%AE"><span class="nav-number">2.3.2.2.</span> <span class="nav-text">VRRP 实例配置</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Keepalived-%E7%9A%84-LVS-%E9%85%8D%E7%BD%AE"><span class="nav-number">2.3.3.</span> <span class="nav-text">Keepalived 的 LVS 配置</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8%E4%B8%8E%E5%81%9C%E6%AD%A2%E6%9C%8D%E5%8A%A1"><span class="nav-number">2.4.</span> <span class="nav-text">启动与停止服务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95"><span class="nav-number">2.5.</span> <span class="nav-text">测试</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E6%9C%8D%E5%8A%A1%E8%BF%9B%E7%A8%8B%E7%8A%B6%E6%80%81%EF%BC%9Aip"><span class="nav-number">2.5.1.</span> <span class="nav-text">查看服务进程状态：ip</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%85%B6%E6%AC%A1ip-addr%E6%9F%A5%E7%9C%8B%E8%99%9A%E6%8B%9F-ip-%E6%98%AF%E5%90%A6%E5%88%9B%E5%BB%BA%E6%88%90%E5%8A%9F%EF%BC%8Cping-%E8%99%9A%E6%8B%9F-ip-%E6%98%AF%E5%90%A6%E7%9B%B8%E9%80%9A%E3%80%82"><span class="nav-number">2.5.1.1.</span> <span class="nav-text">其次ip addr查看虚拟 ip 是否创建成功，ping 虚拟 ip 是否相通。</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E9%9B%86%E7%BE%A4%E4%B8%AD%E6%9C%8D%E5%8A%A1%E5%99%A8ip%E4%BF%A1%E6%81%AF%EF%BC%9Aipvsadm-ln"><span class="nav-number">2.5.1.2.</span> <span class="nav-text">查看集群中服务器ip信息：ipvsadm -ln</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B-Keepalived-%E6%97%A5%E5%BF%97%EF%BC%9Acat-var-log-syslog-grep-Keepalived"><span class="nav-number">2.5.1.3.</span> <span class="nav-text">查看 Keepalived 日志：cat &#x2F;var&#x2F;log&#x2F;syslog | grep Keepalived</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%AA%8C%E8%AF%81-VIP-%E6%BC%82%E7%A7%BB"><span class="nav-number">2.5.1.4.</span> <span class="nav-text">验证 VIP 漂移</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%E6%8A%93%E5%8F%96%E6%95%B0%E6%8D%AE%E5%8C%85"><span class="nav-number">2.5.1.5.</span> <span class="nav-text">测试抓取数据包</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#AWS-%E4%B8%8B%E7%9A%84%E9%83%A8%E7%BD%B2%E5%AE%9E%E4%BE%8B"><span class="nav-number">3.</span> <span class="nav-text">AWS 下的部署实例</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">3.0.1.</span> <span class="nav-text">参考</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%91%E5%AE%9A%E8%BE%85%E5%8A%A9%E7%A7%81%E6%9C%89IP-%E2%AD%90%EF%B8%8F%E2%AD%90%EF%B8%8F%E2%AD%90%EF%B8%8F"><span class="nav-number">3.0.2.</span> <span class="nav-text">绑定辅助私有IP ⭐️⭐️⭐️</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BC%B9%E6%80%A7IP%E9%85%8D%E7%BD%AE%E7%9A%84%E8%84%9A%E6%9C%AC%E6%96%87%E4%BB%B6"><span class="nav-number">3.1.</span> <span class="nav-text">弹性IP配置的脚本文件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#add-eip-sh"><span class="nav-number">3.1.1.</span> <span class="nav-text">add_eip.sh</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#del-eip-sh"><span class="nav-number">3.1.2.</span> <span class="nav-text">del_eip.sh</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="nav-number">4.</span> <span class="nav-text">配置文件</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#EC2-01"><span class="nav-number">4.1.</span> <span class="nav-text">EC2_01</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#EC2-02"><span class="nav-number">4.2.</span> <span class="nav-text">EC2_02</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Server-%E6%9C%8D%E5%8A%A1%E5%99%A8%E8%84%9A%E6%9C%AC"><span class="nav-number">4.2.1.</span> <span class="nav-text">Server 服务器脚本</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#etc-init-d-lvsrs-start"><span class="nav-number">4.2.2.</span> <span class="nav-text">&#x2F;etc&#x2F;init.d&#x2F;lvsrs start</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83-1"><span class="nav-number">4.3.</span> <span class="nav-text">参考</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-LVS"><span class="nav-number">4.3.1.</span> <span class="nav-text">1. LVS</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-Keepalived"><span class="nav-number">4.3.2.</span> <span class="nav-text">2. Keepalived</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E7%AC%AC%E4%B8%89%E6%96%B9%E5%8D%9A%E5%AE%A2%E3%80%81%E6%96%87%E7%AB%A0"><span class="nav-number">4.3.3.</span> <span class="nav-text">3. 第三方博客、文章</span></a></li></ol></li></ol></li></ol></div>
+      </section>
+      <!--/noindex-->
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="独木舟的木"
+      src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+  <p class="site-author-name" itemprop="name">独木舟的木</p>
+  <div class="site-description" itemprop="description">生若直木，不语斧凿。</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">310</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">36</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL0FuZHkwNTcw" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Andy0570"><i class="fab fa-github fa-fw"></i>GitHub</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9zdGFja292ZXJmbG93LmNvbS91c2Vycy83MjY1NDAwL2FuZHkwNTcw" title="StackOverflow → https:&#x2F;&#x2F;stackoverflow.com&#x2F;users&#x2F;7265400&#x2F;andy0570"><i class="fab fa-stack-overflow fa-fw"></i>StackOverflow</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuamlhbnNodS5jb20vdS84NGM1ZmFkYzdjMTg=" title="简书 → https:&#x2F;&#x2F;www.jianshu.com&#x2F;u&#x2F;84c5fadc7c18"><i class="heartbeat fa-fw"></i>简书</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="bWFpbHRvOmFuZHl3aG1AMTYzLmNvbQ==" title="E-Mail → mailto:andywhm@163.com"><i class="fa fa-envelope fa-fw"></i>E-Mail</span>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <span class="exturl cc-opacity" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpo"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></span>
+  </div>
+
+
+
+      </section>
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </header>
+
+      
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div id="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+      <div class="main-inner">
+        
+
+        <div class="content post posts-expand">
+          
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://andy0570.com/2019/04/03/%E5%9F%BA%E4%BA%8E%20LVS%20+%20keepalived%20%E7%9A%84%E5%8F%8C%E6%9C%BA%E7%83%AD%E5%A4%87%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1%E5%99%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+      <meta itemprop="name" content="独木舟的木">
+      <meta itemprop="description" content="生若直木，不语斧凿。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="独木舟的木">
+    </span>
+
+    
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          基于 LVS + keepalived 的双机热备负载均衡器
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-04-03 13:53:00" itemprop="dateCreated datePublished" datetime="2019-04-03T13:53:00+08:00">2019-04-03</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-05-11 03:17:43" itemprop="dateModified" datetime="2019-05-11T03:17:43+08:00">2019-05-11</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E4%BA%91%E8%AE%A1%E7%AE%97/" itemprop="url" rel="index"><span itemprop="name">云计算</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>17k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>15 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="LVS"><a href="#LVS" class="headerlink" title="LVS"></a>LVS</h1><h2 id="LVS-原理"><a href="#LVS-原理" class="headerlink" title="LVS 原理"></a>LVS 原理</h2><h3 id="LVS-集群中的-IP-负载均衡技术"><a href="#LVS-集群中的-IP-负载均衡技术" class="headerlink" title="LVS 集群中的 IP 负载均衡技术"></a>LVS 集群中的 IP 负载均衡技术</h3><p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/080020.jpg" alt="image"></p>
+<p>详情参考：<a target="_blank" rel="noopener" href="http://www.linuxvirtualserver.org/zh/lvs3.html"><strong>LVS 集群中的 IP 负载均衡技术 @章文嵩博士</strong></a></p>
+<a id="more"></a>
+
+<h3 id="LVS-集群的负载调度"><a href="#LVS-集群的负载调度" class="headerlink" title="LVS 集群的负载调度"></a>LVS 集群的负载调度</h3><p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/080021.jpg" alt="LVS 内核中的连接调度算法"></p>
+<p>详情参考：<a target="_blank" rel="noopener" href="http://www.linuxvirtualserver.org/zh/lvs4.html"><strong>LVS 集群的负载调度 @章文嵩博士</strong></a></p>
+<p>查看 ipvsadm 版本：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> ipvsadm --version</span></span><br><span class="line">ipvsadm v1.28 2015/02/09 (compiled with popt and IPVS v1.2.1)</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="Keepalived"><a href="#Keepalived" class="headerlink" title="Keepalived"></a>Keepalived</h1><h2 id="Keepalived-架构"><a href="#Keepalived-架构" class="headerlink" title="Keepalived 架构"></a>Keepalived 架构</h2><p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/080022.jpg" alt="Keepalived 架构图"></p>
+<h2 id="Keepalived-安装及配置"><a href="#Keepalived-安装及配置" class="headerlink" title="Keepalived 安装及配置"></a>Keepalived 安装及配置</h2><h3 id="查询本机网络接口"><a href="#查询本机网络接口" class="headerlink" title="查询本机网络接口"></a>查询本机网络接口</h3><p>查询本机 <code>IP</code> 地址命令：<code>ip addr list</code>、<code>ip addr show</code>、<code>ip a</code></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> ip a</span></span><br><span class="line">1: lo: &lt;LOOPBACK,UP,LOWER_UP&gt; mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000</span><br><span class="line">    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00</span><br><span class="line">    inet 127.0.0.1/8 scope host lo</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br><span class="line">    inet6 ::1/128 scope host </span><br><span class="line">       valid_lft forever preferred_lft forever</span><br><span class="line">2: eth0: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 9001 qdisc fq_codel state UP group default qlen 1000</span><br><span class="line">    link/ether 02:a2:63:89:23:50 brd ff:ff:ff:ff:ff:ff</span><br><span class="line">    inet 10.0.0.62/24 brd 10.0.0.255 scope global dynamic eth0</span><br><span class="line">       valid_lft 3505sec preferred_lft 3505sec</span><br><span class="line">    inet6 fe80::a2:63ff:fe89:2350/64 scope link </span><br><span class="line">       valid_lft forever preferred_lft forever</span><br><span class="line">       </span><br><span class="line"><span class="meta">#</span><span class="bash"> 配置并启动网络接口</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 配置虚拟IP</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 将网络接口 eth0:1 的 IP 地址设置为：172.27.0.10，子网掩码设置为：255.255.255.255，</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> up：启动网络接口</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> down：关闭网络接口</span></span><br><span class="line">ifconfig eth0:1 172.27.0.10 broadcast 172.27.0.10 netmask 255.255.255.255 up</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 关闭网络接口</span></span><br><span class="line">ifconfig eth0:1 172.27.0.10 broadcast 172.27.0.10 netmask 255.255.255.255 down</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="修改系统配置文件"><a href="#修改系统配置文件" class="headerlink" title="修改系统配置文件"></a>修改系统配置文件</h3><h4 id="编辑系统配置文件：vim-etc-sysctl-conf"><a href="#编辑系统配置文件：vim-etc-sysctl-conf" class="headerlink" title="编辑系统配置文件：vim /etc/sysctl.conf"></a>编辑系统配置文件：<code>vim /etc/sysctl.conf</code></h4><p>前端 LVS 配置：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> Uncomment the next line to <span class="built_in">enable</span> packet forwarding <span class="keyword">for</span> IPv4</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 开启 IPv4 数据包转发功能</span></span><br><span class="line">net.ipv4.ip_forward=1</span><br><span class="line"><span class="meta">#</span><span class="bash"> 允许绑定非本机的IP</span></span><br><span class="line">net.ipv4.ip_nonlocal_bind=1</span><br></pre></td></tr></table></figure>
+
+<p>参考：</p>
+<ul>
+<li><span class="exturl" data-url="aHR0cHM6Ly9oZWxwLmFsaXl1bi5jb20va25vd2xlZGdlX2RldGFpbC8zOTQyOC5odG1s">ECS 做负载均衡需要用户做额外的配置吗？<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cHM6Ly9oZWxwLmFsaXl1bi5jb20va25vd2xlZGdlX2RldGFpbC80MTMzNC5odG1s">Linux 实例常用内核网络参数介绍与常见问题处理<i class="fa fa-external-link-alt"></i></span></li>
+</ul>
+<p>后端 Server 配置：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> Uncomment the next two lines to <span class="built_in">enable</span> Spoof protection (reverse-path filter)</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> Turn on Source Address Verification <span class="keyword">in</span> all interfaces to</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> prevent some spoofing attacks</span></span><br><span class="line">net.ipv4.conf.default.rp_filter=0</span><br><span class="line">net.ipv4.conf.all.rp_filter=0</span><br><span class="line">net.ipv4.conf.eth0.rp_filter=0</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="使配置文件生效"><a href="#使配置文件生效" class="headerlink" title="使配置文件生效"></a>使配置文件生效</h4><p>每次系统启动时，初始化脚本 /etc/rc.d/rc.sysinit 会读取 /etc/sysctl.conf 文件的内容，所以修改此文件后每次系统重启时都会开启 IP 转发功能。但是只修改 sysctl 文件不会马上生效，如果需要使修改马上生效可以执行下面的命令：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 使配置文件马上生效</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo sysctl -p</span></span><br><span class="line">net.ipv4.ip_forward = 1</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="验证配置是否生效"><a href="#验证配置是否生效" class="headerlink" title="验证配置是否生效"></a>验证配置是否生效</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 查看 ip_forward 文件内容，默认值 0 表示禁止 IP 转发，1 表示开启 IP 转发功能。</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> cat /proc/sys/net/ipv4/ip_forward</span></span><br><span class="line">1</span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> cat /proc/sys/net/ipv4/ip_nonlocal_bind</span></span><br><span class="line">1</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="下载安装-Keepalived"><a href="#下载安装-Keepalived" class="headerlink" title="下载安装 Keepalived"></a>下载安装 Keepalived</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 1. 更新 apt 软件包</span></span><br><span class="line">apt-get update &amp;&amp; apt-get upgrade</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 2. 安装相关软件包</span></span><br><span class="line">apt-get install -y libssl-dev openssl libpopt-dev</span><br><span class="line">apt install jq</span><br><span class="line">apt install awscli</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 3. 下载安装 Keepalived</span></span><br><span class="line">apt-get install keepalived</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 4. 查看 Keepalived 安装版本</span></span><br><span class="line">keepalived --version</span><br><span class="line">Keepalived v1.3.9 (10/21,2017)</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="Keepalived-配置文件详解"><a href="#Keepalived-配置文件详解" class="headerlink" title="Keepalived 配置文件详解"></a>Keepalived 配置文件详解</h2><blockquote>
+<p>💡💡💡</p>
+<p>Keepalived 配置文件官方文档：<span class="exturl" data-url="aHR0cDovL3d3dy5rZWVwYWxpdmVkLm9yZy9tYW5wYWdlLmh0bWw=">http://www.keepalived.org/manpage.html<i class="fa fa-external-link-alt"></i></span></p>
+</blockquote>
+<ul>
+<li>keepalived 的配置文件路径为：**/etc/keepalived/keepalived.conf**</li>
+<li>Keepalived 的配置文件都是以块（block）的形式组织的，每个块的内容都包含在 {} 中，以 “#” 和 “!” 开头的行都是注释。</li>
+<li>根据 Keepalived 配置文件所实现的功能，可以将配置分为三类：<ol>
+<li>全局配置（Global Configuration）；</li>
+<li>VRRPD 配置；<ol>
+<li>VRRP 同步组配置；</li>
+<li>VRRP 实例配置；</li>
+</ol>
+</li>
+<li>LVS 配置；</li>
+</ol>
+</li>
+</ul>
+<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/080023.jpg" alt="Keepalived.conf 文件结构"></p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"># Define the script used to check if haproxy is still working</span><br><span class="line"># 检查 haproxy 是否正常运行的脚本</span><br><span class="line">vrrp_script chk_haproxy &#123; </span><br><span class="line">    script &quot;killall -0 haproxy&quot;</span><br><span class="line">    interval 2 </span><br><span class="line">    weight 2 </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h3 id="Keepalived-的全局配置"><a href="#Keepalived-的全局配置" class="headerlink" title="Keepalived 的全局配置"></a>Keepalived 的全局配置</h3><p>全局配置就是对整个 Keepalived 都生效的配置。</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"># Configuration File for keepalived</span><br><span class="line"></span><br><span class="line"># ------ 全局配置 ------</span><br><span class="line"># 报警邮件通知设置</span><br><span class="line"># 全局配置以 “global_defs” 作为标识符</span><br><span class="line">global_defs &#123;</span><br><span class="line">    notification_email &#123;</span><br><span class="line">        your@emailaddress.com    # 报警邮件地址，可以设置多个，每行一个。</span><br><span class="line">                                 # 开启邮件报警需要开启本机的 Sendmail 服务。 </span><br><span class="line">    &#125;</span><br><span class="line">    notification_email_from loadb01@domain.ext  # 报警邮件发送的地址。</span><br><span class="line">    smtp_server 127.0.0.1     # 邮件的 SMTP 服务器地址。</span><br><span class="line">    smtp_connect_timeout 15   # 连接 SMTP 服务器的超时时间。</span><br><span class="line">    router_id lVS_DEVER       # 运行 Keepalived 服务器的一个标识符，</span><br><span class="line">                              # 是发邮件时显示在邮件主题中的信息。</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>​        </p>
+<h3 id="Keepalived-的-VRRPD-配置"><a href="#Keepalived-的-VRRPD-配置" class="headerlink" title="Keepalived 的 VRRPD 配置"></a>Keepalived 的 VRRPD 配置</h3><p>VRRPD 配置是 Keepalived 所有配置的核心，主要用来实现 Keepalived  的<strong>高可用</strong>功能。<br>从结构上来看，VRRPD 配置可以分为 <strong>VRRP 同步组配置</strong> 和 <strong>VRRP 实例配置</strong>。</p>
+<h4 id="VRRP-同步组配置"><a href="#VRRP-同步组配置" class="headerlink" title="VRRP 同步组配置"></a>VRRP 同步组配置</h4><p>同步组是相对于多个 VRRP 实例而言的，在多个 VRRP 实例的环境中，每个 VRRP 实例所对应的网络环境会有所不同，假设一个实例处于网段A，另一个实例处于网段B，而如果 VRPD 只配置了A网段的检测，那么当B网段主机出现故障时， VRRPD 会认为自身仍处于正常状态，进而不会进行主备节点的切换，这样问题就出现了。同步组就是用来解决这个问题的，将所有 VRRP 实例都加入到同步组中，这样任何一个实例出现问题，都会导致 Keepalived进行主备切换。</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">vrrp_sync_group G1 &#123;</span><br><span class="line">    # G1 同步组包含 VI_1、VI_2、VI_5 三个 VRRP 实例</span><br><span class="line">    group &#123;</span><br><span class="line">       # name of the vrrp_instance (see below)</span><br><span class="line">       # Set of VRRP_Instance string</span><br><span class="line">       VI_1</span><br><span class="line">       VI_2</span><br><span class="line">       VI_5</span><br><span class="line">    &#125;</span><br><span class="line">   # to MASTER transition</span><br><span class="line">   # 指定当 Keepalived 进入 Master 状态时要执行的脚本，</span><br><span class="line">   # 这个脚本可以是一个状态报警脚本，也可以是一个服务管理脚本。</span><br><span class="line">   # Keepalived 允许脚本传入参数，因此灵活性很强。</span><br><span class="line">   notify_master &quot;usr/local/bin/vrrp.mast arg1 arg2&quot;</span><br><span class="line"></span><br><span class="line">   # to BACKUP transition</span><br><span class="line">   # 指定当 Keepalived 进入 Backup 状态时要执行的脚本，</span><br><span class="line">   # 这个脚本可以是一个状态报警脚本，也可以是一个服务管理脚本。</span><br><span class="line">   notify_backup &quot;usr/local/bin/vrrp.back arg1 arg2&quot;</span><br><span class="line"></span><br><span class="line">   # FAULT transition</span><br><span class="line">   # 指定当 Keepalived 进入 Fault 状态时要执行的脚本</span><br><span class="line">   notify_fault &quot;usr/local/bin/vrrp.fault arg1 arg2&quot;</span><br><span class="line"></span><br><span class="line">   # executed when stopping vrrp</span><br><span class="line">   # 指定 Keepalived 程序终止时需要执行的脚本。</span><br><span class="line">   notify_stop &quot;usr/local/bin/vrrp.stop arg1 arg2&quot;                                   </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">vrrp_sync_group G2 &#123;</span><br><span class="line">   # G2 同步组包含 VI_3、VI_4 三个 VRRP 实例</span><br><span class="line">   group &#123;</span><br><span class="line">       VI_3</span><br><span class="line">       VI_4</span><br><span class="line">    &#125;                                </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="VRRP-实例配置"><a href="#VRRP-实例配置" class="headerlink" title="VRRP 实例配置"></a>VRRP 实例配置</h4><p>VRRP 实例配置——配置 Keepalived 的高可用功能。</p>
+<p>VRRP 实例段主要用来配置节点角色（主或从）、实例绑定的网络接口、节点间验证机制、集群服务 IP 等。</p>
+<p>从调度器的配置与主调度器基本相同，也包括全局参数、热备参数、服务器池配置，只需要调整 router_id、state、prority 参数即可，其余内容完全相同，配置完成以后重启keepalived服务。</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"># ------ 虚拟服务器配置 ------</span><br><span class="line"># vrrp 实例配置</span><br><span class="line"># VRRP 配置以 “vrrp_instance” 作为标识符</span><br><span class="line">vrrp_instance VI_1 &#123;</span><br><span class="line">    state MASTER        # 指定 Keepalived 的角色。</span><br><span class="line">                        # MASTER 表示此主机是主服务器，Backup 表示此主机是备用服务器。</span><br><span class="line">                        # 因此，在另一台服务器上设置该值为 BACKUP。</span><br><span class="line">    interface eth0      # 指定 HA 监测网络的接口。</span><br><span class="line">    virtual_router_id 51 # 虚拟路由ID(0-255)，在一个VRRP实例中主备服务器ID必须一样</span><br><span class="line">    priority 101        # 定义节点优先级。set this to 100 on the other machine</span><br><span class="line">    advert_int 1        # 用于设定 MASTER 与 BACKUP 主机之间同步检查的时间间隔，单位是秒。</span><br><span class="line">    mcast_src_ip &lt;IPADDR&gt; # 发送多播包的地址。</span><br><span class="line">    garp_master_delay 10</span><br><span class="line">    smtp_alert          # Activate email notifications</span><br><span class="line">  </span><br><span class="line">    # 设置一些额外的网络监控接口</span><br><span class="line">    track_interface &#123;</span><br><span class="line">    eth0</span><br><span class="line">    eth1</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    # 设定节点间通信验证类型和密码</span><br><span class="line">    authentication &#123;</span><br><span class="line">        auth_type PSAA            # 验证类型，有 PASS 和 AH 两种模式。</span><br><span class="line">        auth_pass myPassw0rd      # Set this to some secret phrase</span><br><span class="line">    &#125;</span><br><span class="line">  </span><br><span class="line">    # The virtual ip address shared between the two loadbalancers</span><br><span class="line">    # 虚拟 IP 地址</span><br><span class="line">    virtual_ipaddress &#123;</span><br><span class="line">        #&lt;IPADDR&gt;/&lt;MASK&gt; brd &lt;IPADDR&gt; dev &lt;STRING&gt; scope &lt;SCOPT&gt; label &lt;LABEL&gt;</span><br><span class="line">        <span class="number">192.168</span><span class="number">.0</span><span class="number">.200</span></span><br><span class="line">        192.168.200.17 dev eth1</span><br><span class="line">        192.168.200.18 dev eth2</span><br><span class="line">    &#125;</span><br><span class="line">     </span><br><span class="line">    # Use the script above to check if we should fail over</span><br><span class="line">    track_script &#123;</span><br><span class="line">        chk_haproxy</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    nopreempt          # 设置高可用集群中的不抢占功能。</span><br><span class="line">                       # nopreempt 表示主节点故障恢复后不再切回到主节点，让服务一直在备用节点下工作，直到备用节点出现故障才会进行切换。</span><br><span class="line">    preemtp_delay 300  # 设置抢占延时时间，单位是秒。</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="Keepalived-的-LVS-配置"><a href="#Keepalived-的-LVS-配置" class="headerlink" title="Keepalived 的 LVS 配置"></a>Keepalived 的 LVS 配置</h3><p>由于 Keepalived 属于 LVS 的扩展项目，因此，Keepalived 可以与 LVS无缝整合，轻松搭建一套高性能的负载均衡集群系统。</p>
+<p>LVS 段的内容有两部分组成：</p>
+<ol>
+<li>real_server 段；</li>
+<li>健康检测段；</li>
+</ol>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"># 虚拟服务器配置</span><br><span class="line"># LVS 段的配置以“virtual_server”作为开始标识。</span><br><span class="line">virtual_server 192.168.80.200 80 &#123;  # 设置虚拟 IP 地址和服务端口</span><br><span class="line">    delay_loop 6 # 设置健康检查的时间间隔，单位是秒                    </span><br><span class="line">    lb_kind DR # 设置 LVS IP负载均衡模式，有NAT、TUN、DR三个模式</span><br><span class="line">    lb_algo rr # 设置 LVS 负载调度算法，rr                  </span><br><span class="line">    persistence_timeout 50 # 会话保持时间，单位是秒。</span><br><span class="line">    persistence_granularity &lt;NETMASK&gt; # 子网掩码。表示持久连接的粒度。默认是255.255.255.255</span><br><span class="line">    protocol TCP # 指定转发协议类型。有 TCP 和 UDP 两种选项。</span><br><span class="line">    ha_suspend   # 节点状态从 Master 到 Backup 切换时，暂不启用 real server 节点的健康检查。</span><br><span class="line">    virtualhost &lt;string&gt; # 健康检查时，指定 Web 服务器的虚拟主机地址。</span><br><span class="line">    sorry_server &lt;IPADDR&gt; &lt;PORT&gt; # 当所有 real server 失效后，指定的 Web 服务器的虚拟主机地址。</span><br><span class="line">    </span><br><span class="line">    # -------- real_server 段配置 --------</span><br><span class="line">    real_server 192.168.80.102 80 &#123;  # 指定 real server1 的IP地址</span><br><span class="line">        weight 3   # 配置节点权值，数字越大权重越高</span><br><span class="line">        inhibit_on_faliure # 在检测到 real_server 节点失效后，把它的 “Weight” 值设置为0，而不是从 IPVS 中删除。</span><br><span class="line">        notify_up &lt;STRING&gt; | &lt;QUOTED-STRING&gt; # 在检测到 real_server 节点服务处于 UP 状态后执行的脚本</span><br><span class="line">        notify_down &lt;STRING&gt; | &lt;QUOTED-STRING&gt; # 在检测到 real_server 节点服务处于 DOWN 状态后执行的脚本</span><br><span class="line">        </span><br><span class="line">        # -------- 健康检测段配置 -------</span><br><span class="line">        TCP_CHECK &#123; # 配置为 TCP_CHECK 检测方式</span><br><span class="line">            connect_port 80      # 健康检查的端口</span><br><span class="line">            connect_timeout 10   # 无响应超时时间。单位是秒。     </span><br><span class="line">            retry 3       # 重试次数</span><br><span class="line">            delay_before_retry 3 # 重试间隔 </span><br><span class="line">        &#125;  </span><br><span class="line">    &#125;  </span><br><span class="line">    real_server 192.168.80.103 80 &#123;  # 指定 real server2 的IP地址</span><br><span class="line">        weight 3  # 配置节点权值，数字越大权重越高  </span><br><span class="line">        TCP_CHECK &#123;  </span><br><span class="line">          connect_port 80</span><br><span class="line">            connect_timeout 10  </span><br><span class="line">            retry 3  </span><br><span class="line">            delay_before_retry 3    </span><br><span class="line">        &#125;  </span><br><span class="line">     &#125;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="启动与停止服务"><a href="#启动与停止服务" class="headerlink" title="启动与停止服务"></a>启动与停止服务</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 方式一</span></span><br><span class="line">/etc/init.d/keepalived status # 查看状态</span><br><span class="line">/etc/init.d/keepalived stop  # 停止</span><br><span class="line">/etc/init.d/keepalived start # 启动</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 方式二</span></span><br><span class="line">sudo service keepalived status</span><br><span class="line">sudo service keepalived start </span><br><span class="line">sudo service keepalived stop</span><br><span class="line">sudo service keepalived restart</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h2><h3 id="查看服务进程状态：ip"><a href="#查看服务进程状态：ip" class="headerlink" title="查看服务进程状态：ip"></a>查看服务进程状态：<code>ip</code></h3><p>必须要有三个keepalived的进程，这三个分别是keepalived父进程，vrrp子进程、check子进程；两个子进程都被系统watchlog看管，两个子进程各自负责复杂自己的事</p>
+<h4 id="其次ip-addr查看虚拟-ip-是否创建成功，ping-虚拟-ip-是否相通。"><a href="#其次ip-addr查看虚拟-ip-是否创建成功，ping-虚拟-ip-是否相通。" class="headerlink" title="其次ip addr查看虚拟 ip 是否创建成功，ping 虚拟 ip 是否相通。"></a>其次<code>ip addr</code>查看虚拟 ip 是否创建成功，ping 虚拟 ip 是否相通。</h4><h4 id="查看集群中服务器ip信息：ipvsadm-ln"><a href="#查看集群中服务器ip信息：ipvsadm-ln" class="headerlink" title="查看集群中服务器ip信息：ipvsadm -ln"></a>查看集群中服务器ip信息：<code>ipvsadm -ln</code></h4><h4 id="查看-Keepalived-日志：cat-var-log-syslog-grep-Keepalived"><a href="#查看-Keepalived-日志：cat-var-log-syslog-grep-Keepalived" class="headerlink" title="查看 Keepalived 日志：cat /var/log/syslog | grep Keepalived"></a>查看 Keepalived 日志：<code>cat /var/log/syslog | grep Keepalived</code></h4><p><span class="exturl" data-url="aHR0cHM6Ly93d3cuamlhbnNodS5jb20vcC8xOGQwZDcxNjkyODk=">简书：ipvsadm 指令详解<i class="fa fa-external-link-alt"></i></span></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 查看 ipvsadm 版本</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> ipvsadm --version</span></span><br><span class="line">ipvsadm v1.28 2015/02/09 (compiled with popt and IPVS v1.2.1)</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 查看集群中服务器ip信息</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> -l、-list:列出虚拟服务器表</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> -n:IP 地址和端口号将以数字格式打印，而不是作为主机名和服务分别打印，这是默认设置。</span></span><br><span class="line">ipvsadm -ln</span><br><span class="line">IP Virtual Server version 1.2.1 (size=4096)</span><br><span class="line">Prot LocalAddress:Port Scheduler Flags</span><br><span class="line"><span class="meta">  -&gt;</span><span class="bash"> RemoteAddress:Port           Forward Weight ActiveConn InActConn</span></span><br><span class="line">TCP  10.0.0.100:80 lc persistent 60</span><br><span class="line"><span class="meta">  -&gt;</span><span class="bash"> 10.0.0.102:80                Route   3      0          0</span></span><br><span class="line"><span class="meta">  -&gt;</span><span class="bash"> 10.0.0.202:80                Route   3      0          0</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> -c:连接输出。使用此选项的 list 命令将列出当前的 IPVS 连接</span></span><br><span class="line">ipvsadm -lnc</span><br><span class="line">IPVS connection entries</span><br><span class="line">pro expire state       source             virtual            destination</span><br><span class="line">TCP 00:48  NONE        111.187.40.59:0    10.0.0.138:80      10.0.0.214:80</span><br><span class="line">TCP 00:59  SYN_RECV    111.187.40.59:5196 10.0.0.138:80      10.0.0.214:80</span><br><span class="line">TCP 00:59  SYN_RECV    111.187.40.59:5197 10.0.0.138:80      10.0.0.214:80</span><br><span class="line">TCP 00:59  SYN_RECV    111.187.40.59:5198 10.0.0.138:80      10.0.0.214:80</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 查看</span></span><br><span class="line">arp -n</span><br><span class="line">Address                  HWtype  HWaddress           Flags Mask            Iface</span><br><span class="line">10.0.0.202               ether   02:fb:fd:00:12:ae   C                     eth0</span><br><span class="line">10.0.0.1                 ether   02:06:a0:5b:39:d2   C                     eth0</span><br><span class="line">10.0.0.2                 ether   02:06:a0:5b:39:d2   C                     eth0</span><br><span class="line">10.0.0.102               ether   02:2b:7d:01:b6:68   C                     eth0</span><br><span class="line">10.0.0.199               ether   02:63:16:9e:f2:08   C                     eth0</span><br><span class="line">10.0.0.100                       (incomplete)                              eth0</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="验证-VIP-漂移"><a href="#验证-VIP-漂移" class="headerlink" title="验证 VIP 漂移"></a>验证 VIP 漂移</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl stop keepalived.service</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="测试抓取数据包"><a href="#测试抓取数据包" class="headerlink" title="测试抓取数据包"></a>测试抓取数据包</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tcpdump -i eth0 -p -n -vv port 80</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="AWS-下的部署实例"><a href="#AWS-下的部署实例" class="headerlink" title="AWS 下的部署实例"></a>AWS 下的部署实例</h1><h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><ul>
+<li><span class="exturl" data-url="aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3Fpamtrd2N3L2FydGljbGUvZGV0YWlscy84MDkwMDU3OQ==">AWS 部署 keepalived实战<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3hpYWxpbmdtaW5nL2FydGljbGUvZGV0YWlscy84MTI5MTU3Mw==">如何在AWS中正确使用Keepalived<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cHM6Ly9jb2RlcGVuLmlvL3RzYWJhdC9wb3N0L2Fzc2lnbi1hLWZsb2F0aW5nLXNlY29uZGFyeS1pcC1hZGRyZXNzLWluLWF3cy12cGM=">Assign a floating (secondary) IP address in AWS VPC<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cHM6Ly9hd3MuYW1hem9uLmNvbS9jbi9hcnRpY2xlcy9sZXZlcmFnaW5nLW11bHRpcGxlLWlwLWFkZHJlc3Nlcy1mb3ItdmlydHVhbC1pcC1hZGRyZXNzLWZhaWwtb3Zlci1pbi02LXNpbXBsZS1zdGVwcy8=">Leveraging Multiple IP Addresses for Virtual IP Address Fail-over in 6 Simple Steps<i class="fa fa-external-link-alt"></i></span></li>
+</ul>
+<p>在私有环境中部署keepalived本身并没有好说的，但是aws中存在诸多限制，其中三个需要明确指出的： </p>
+<ol>
+<li><p>VRRP协议的组播被禁止，也就是说keepalived需要调整心跳的通知方式，修改/etc/keepalived/keepalived.conf配置文件中的通知为单播模式，一般配 web 服务器上数量较少，所以也不会损失太多网络带宽。 </p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">unicast_src_ip 172.*.*.1 # 本机IP</span><br><span class="line"></span><br><span class="line">unicast_peer &#123;</span><br><span class="line">172.*.*.124 # 备用节点 IP</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><span class="exturl" data-url="aHR0cHM6Ly9hd3MuYW1hem9uLmNvbS9jbi9ibG9ncy9jaGluYS9hd3MtYXJjaGl0ZWN0dXJlLWZhaWx1cmUtY29tbW9uLXByb2JsZW1zLw==">AWS 常见问题汇总<i class="fa fa-external-link-alt"></i></span></p>
+</li>
+<li><p>配置了VIP（floating ip）以后，AWS的VPC并不知道，尝试下arp也学习不到该vip的mac地址，所以必须要通过配置ENI（Elastic Network Interface弹性网络接口）使得该VIP可达。 </p>
+</li>
+<li><p>然而当你关了Master以后，ENI的网络配置并不会自动切换漂移IP，为了故障切换，我利用切换VIP的通知机制，通过调用添加和移除private-ip-addresses的方式达到漂移IP的效果。下面详细介绍。</p>
+</li>
+</ol>
+<p>还要新建一个 IAM 账户，以允许运行 AWS CLI 命令，并在服务器上进行注册。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">aws configure</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="绑定辅助私有IP-⭐️⭐️⭐️"><a href="#绑定辅助私有IP-⭐️⭐️⭐️" class="headerlink" title="绑定辅助私有IP ⭐️⭐️⭐️"></a>绑定辅助私有IP ⭐️⭐️⭐️</h3><p>亚马逊云虽然不允许广播 ARP，但可以用命令行指定网卡（ENI）的 Secondary-private-ip-address。这个命令的具体形式如下：</p>
+<p><span class="exturl" data-url="aHR0cHM6Ly9kb2NzLmF3cy5hbWF6b24uY29tL2NsaS9sYXRlc3QvcmVmZXJlbmNlL2VjMi9hc3NpZ24tcHJpdmF0ZS1pcC1hZGRyZXNzZXMuaHRtbA==">AWS CLI Command Reference：assign-private-ip-addresses<i class="fa fa-external-link-alt"></i></span></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 将一个或多个辅助私有 IP 地址分配给指定的网络接口。</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> ENI：网卡实例 ID</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> VIP：虚拟 IP 地址</span></span><br><span class="line">aws ec2 assign-private-ip-addresses \</span><br><span class="line">--network-interface-id $ENI \ </span><br><span class="line">--private-ip-addresses $VIP \ </span><br><span class="line">--allow-reassignment</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 示例：指定一个IP地址（10.0.0.100）作为网卡的私有IP地址</span></span><br><span class="line">aws ec2 assign-private-ip-addresses --network-interface-id eni-0a8a8f03710ecbb9e --private-ip-addresses 10.0.0.100 --allow-reassignment</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">aws ec2 assign-private-ip-addresses --network-interface-id eni-0eff36fde0c99958e --private-ip-addresses 10.0.0.100 --allow-reassignment</span><br></pre></td></tr></table></figure>
+
+
+
+<p>keepalived 配置：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">notify_master &quot;&#x2F;home&#x2F;keepalived&#x2F;scripts&#x2F;mysql_be_master.sh 172.*.*.201 eni-*&quot;</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="弹性IP配置的脚本文件"><a href="#弹性IP配置的脚本文件" class="headerlink" title="弹性IP配置的脚本文件"></a>弹性IP配置的脚本文件</h2><h3 id="add-eip-sh"><a href="#add-eip-sh" class="headerlink" title="add_eip.sh"></a>add_eip.sh</h3><p>作用：分离弹性 ip，并将弹性 ip 绑定到自身网口上</p>
+<p>授权：chmod -R 711 /etc/keepalived/scripts</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">/bin/bash</span></span><br><span class="line">EIP=13.*.*.201                          # 弹性 ip 地址（公网 ip）</span><br><span class="line">INSTANCE_ID=i-0b2d*************   #此服务器（EC2）的实例的 id</span><br><span class="line">aws ec2 disassociate-address --public-ip $EIP</span><br><span class="line"></span><br><span class="line">aws ec2 associate-address --public-ip $EIP --instance-id $INSTANCE_ID</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="del-eip-sh"><a href="#del-eip-sh" class="headerlink" title="del_eip.sh"></a>del_eip.sh</h3><p>授权             chmod +x ./add_eip.sh    chmod -R 711 add_eip.sh</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">/bin/bash</span></span><br><span class="line">EIP=13.*.*.201                                 #弹性 ip 地址（公网 ip）</span><br><span class="line">INSTANCE_ID=i-0b2d*************   #备服务器（EC2）的实例的 id</span><br><span class="line">aws ec2 disassociate-address --public-ip $EIP</span><br><span class="line"></span><br><span class="line">aws ec2 associate-address --public-ip $EIP --instance-id $INSTANCE_ID</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 取消关联需要传关联 ID，而不是分配 ID。</span></span><br><span class="line">aws ec2 disassociate-address --association-id $ASSOCIATION_ID</span><br><span class="line">aws ec2 disassociate-address --association-id eipassoc-09fe640e36c9d53b1</span><br></pre></td></tr></table></figure>
+
+
+
+<p>把外网 EIP 作为 VIP，先释放，再关联给一个网卡的辅助私有IP地址：</p>
+<p>参考：<span class="exturl" data-url="aHR0cHM6Ly9kb2NzLmF3cy5hbWF6b24uY29tL3poX2NuL2NsaS9sYXRlc3QvcmVmZXJlbmNlL2VjMi9hc3NvY2lhdGUtYWRkcmVzcy5odG1s">AWS CLI:associate-address<i class="fa fa-external-link-alt"></i></span></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">aws ec2 disassociate-address --public-ip $EIP</span><br><span class="line"></span><br><span class="line">aws ec2 associate-address \</span><br><span class="line">  --allocation-id eipalloc-09ce336dc7a1e8da7 \ # 分配 ID</span><br><span class="line">  --network-interface-id eni-0a8a8f03710ecbb9e \</span><br><span class="line">  --private-ip-address 10.0.0.100 \</span><br><span class="line">  --allow-reassociation</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 关联弹性公网 IP 到 网卡</span></span><br><span class="line">aws ec2 associate-address --allocation-id eipalloc-09ce336dc7a1e8da7 --network-interface-id eni-0a8a8f03710ecbb9e --private-ip-address 10.0.0.100 --allow-reassociation</span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 根据实例 ID 找到网卡 ID</span></span><br><span class="line">aws ec2 describe-instances \</span><br><span class="line">  --instance-ids i-0260f608cf698958c | \</span><br><span class="line">  jq -r \</span><br><span class="line">  &#x27;.Reservations[0].Instances[0].NetworkInterfaces[0].NetworkInterfaceId&#x27;</span><br><span class="line">  </span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 实例</span></span><br><span class="line">aws ec2 describe-instances --instance-ids i-0260f608cf698958c | jq -r &#x27;.Reservations[0].Instances[0].NetworkInterfaces[0].NetworkInterfaceId&#x27;</span><br><span class="line">eni-0a8a8f03710ecbb9e</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h1 id="配置文件"><a href="#配置文件" class="headerlink" title="配置文件"></a>配置文件</h1><h2 id="EC2-01"><a href="#EC2-01" class="headerlink" title="EC2_01"></a>EC2_01</h2><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br></pre></td><td class="code"><pre><span class="line"># Keepalived的全局配置</span><br><span class="line">global_defs &#123;</span><br><span class="line">    router_id LVS_Master</span><br><span class="line"></span><br><span class="line">    # 通知脚本设置</span><br><span class="line">    script_user root        </span><br><span class="line">    enable_script_security  </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"># VRRP的实例Group_LVS_1配置</span><br><span class="line">vrrp_instance Group_LVS_1 &#123;</span><br><span class="line">    state MASTER</span><br><span class="line">    interface eth0</span><br><span class="line">    virtual_router_id 51</span><br><span class="line">    priority 100</span><br><span class="line">    advert_int 1</span><br><span class="line"></span><br><span class="line">    track_interface &#123;</span><br><span class="line">        eth0</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    # AWS 上 VRRP 协议的组播被禁止，因此这里配置心跳通知为单播模式</span><br><span class="line">    unicast_src_ip 10.0.0.36  </span><br><span class="line">    unicast_peer &#123;            </span><br><span class="line">        <span class="number">10.0</span><span class="number">.0</span><span class="number">.56</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    authentication &#123;</span><br><span class="line">        auth_type PASS</span><br><span class="line">        auth_pass 123456</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    virtual_ipaddress &#123;</span><br><span class="line">        <span class="number">10.0</span><span class="number">.0</span><span class="number">.100</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    # 切换虚拟 IP 的脚本文件</span><br><span class="line">    notify_master &quot;/etc/keepalived/scripts/assign_private_ip.sh 18.223.129.244 10.0.0.100 i-0260f608cf698958c&quot;</span><br><span class="line">    notify_backup &quot;/etc/keepalived/scripts/unassign_private_ip.sh 18.223.129.244 10.0.0.100 i-0260f608cf698958c&quot;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"># Virtual Server 的配置 for Real Service</span><br><span class="line">virtual_server 10.0.0.100 80 &#123;</span><br><span class="line">    delay_loop 5</span><br><span class="line">    lb_algo lc</span><br><span class="line">    lb_kind DR</span><br><span class="line">    persistence_timeout 60</span><br><span class="line">    protocol TCP</span><br><span class="line"></span><br><span class="line">    # Real Server 1 的配置</span><br><span class="line">    real_server 10.0.0.80 80 &#123;</span><br><span class="line">        weight 3</span><br><span class="line">        inhibit_on_failure</span><br><span class="line">        TCP_CHECK &#123;</span><br><span class="line">            connect_timeout 10</span><br><span class="line">            retry 3</span><br><span class="line">            delay_before_retry 3</span><br><span class="line">            connect_port 80</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    # Real Server 2 的配置</span><br><span class="line">    real_server 10.0.0.194 80 &#123;</span><br><span class="line">        weight 3</span><br><span class="line">        inhibit_on_failure</span><br><span class="line">        TCP_CHECK &#123;</span><br><span class="line">            connect_timeout 10</span><br><span class="line">            retry 3</span><br><span class="line">            delay_before_retry 3</span><br><span class="line">            connect_port 80</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="EC2-02"><a href="#EC2-02" class="headerlink" title="EC2_02"></a>EC2_02</h2><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br></pre></td><td class="code"><pre><span class="line"># Keepalived的全局配置</span><br><span class="line">global_defs &#123;</span><br><span class="line">    router_id LVS_Master</span><br><span class="line"></span><br><span class="line">    # 通知脚本设置</span><br><span class="line">    script_user root</span><br><span class="line">    enable_script_security</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"># VRRP的实例Group_LVS_1配置</span><br><span class="line">vrrp_instance Group_LVS_1 &#123;</span><br><span class="line">    state BACKUP</span><br><span class="line">    interface eth0</span><br><span class="line">    virtual_router_id 51</span><br><span class="line">    priority 90</span><br><span class="line">    advert_int 1</span><br><span class="line"></span><br><span class="line">    track_interface &#123;</span><br><span class="line">        eth0</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    # AWS 上 VRRP 协议的组播被禁止，因此这里配置心跳通知为单播模式</span><br><span class="line">    unicast_src_ip 10.0.0.56</span><br><span class="line">    unicast_peer &#123;            </span><br><span class="line">        <span class="number">10.0</span><span class="number">.0</span><span class="number">.36</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    authentication &#123;</span><br><span class="line">        auth_type PASS</span><br><span class="line">        auth_pass 123456</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    virtual_ipaddress &#123;</span><br><span class="line">        <span class="number">10.0</span><span class="number">.0</span><span class="number">.100</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    # 切换虚拟 IP 的脚本文件</span><br><span class="line">    notify_master &quot;/etc/keepalived/scripts/assign_private_ip.sh 18.223.129.244 10.0.0.100  i-0f74aba2dc5e49679&quot;</span><br><span class="line">    notify_backup &quot;/etc/keepalived/scripts/unassign_private_ip.sh 18.223.129.244 10.0.0.100 i-0f74aba2dc5e49679&quot;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"># Virtual Server 的配置 for Real Service</span><br><span class="line">virtual_server 10.0.0.100 80 &#123;</span><br><span class="line">    delay_loop 5</span><br><span class="line">    lb_algo lc</span><br><span class="line">    lb_kind DR</span><br><span class="line">    persistence_timeout 60</span><br><span class="line">    protocol TCP</span><br><span class="line"></span><br><span class="line">    # Real Server 1 的配置</span><br><span class="line">    real_server 10.0.0.80 80 &#123;</span><br><span class="line">        weight 3</span><br><span class="line">        inhibit_on_failure</span><br><span class="line">        TCP_CHECK &#123;</span><br><span class="line">            connect_timeout 10</span><br><span class="line">            retry 3</span><br><span class="line">            delay_before_retry 3</span><br><span class="line">            connect_port 80</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    # Real Server 2 的配置</span><br><span class="line">    real_server 10.0.0.194 80 &#123;</span><br><span class="line">        weight 3</span><br><span class="line">        inhibit_on_failure</span><br><span class="line">        TCP_CHECK &#123;</span><br><span class="line">            connect_timeout 10</span><br><span class="line">            retry 3</span><br><span class="line">            delay_before_retry 3</span><br><span class="line">            connect_port 80</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="Server-服务器脚本"><a href="#Server-服务器脚本" class="headerlink" title="Server 服务器脚本"></a>Server 服务器脚本</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">#!&#x2F;bin&#x2F;bash</span><br><span class="line"># 配置realserver的lo和运用noarp</span><br><span class="line"># chmod 755 &#x2F;usr&#x2F;local&#x2F;sbin&#x2F;server</span><br><span class="line"># 执行server，启动realserver的LVS服务，&#x2F;etc&#x2F;init.d&#x2F;lvsrs start</span><br><span class="line"></span><br><span class="line">VIP&#x3D;10.0.0.100</span><br><span class="line">&#x2F;sbin&#x2F;ifconfig lo:0 $VIP broadcast $VIP netmask 255.255.255.255 up</span><br><span class="line">&#x2F;sbin&#x2F;route add -host $VIP dev lo:0</span><br><span class="line"></span><br><span class="line">echo &quot;1&quot; &gt;&#x2F;proc&#x2F;sys&#x2F;net&#x2F;ipv4&#x2F;conf&#x2F;lo&#x2F;arp_ignore</span><br><span class="line">echo &quot;2&quot; &gt;&#x2F;proc&#x2F;sys&#x2F;net&#x2F;ipv4&#x2F;conf&#x2F;lo&#x2F;arp_announce</span><br><span class="line">echo &quot;1&quot; &gt;&#x2F;proc&#x2F;sys&#x2F;net&#x2F;ipv4&#x2F;conf&#x2F;all&#x2F;arp_ignore</span><br><span class="line">echo &quot;2&quot; &gt;&#x2F;proc&#x2F;sys&#x2F;net&#x2F;ipv4&#x2F;conf&#x2F;all&#x2F;arp_announce</span><br><span class="line"></span><br><span class="line">sysctl -p</span><br><span class="line">#end</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="etc-init-d-lvsrs-start"><a href="#etc-init-d-lvsrs-start" class="headerlink" title="/etc/init.d/lvsrs start"></a>/etc/init.d/lvsrs start</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">#!&#x2F;bin&#x2F;bash</span><br><span class="line"># 配置realserver的lo和noarp</span><br><span class="line"># chmod 755 &#x2F;etc&#x2F;init.d&#x2F;lvsrs</span><br><span class="line"># 执行server，启动realserver的LVS服务，&#x2F;etc&#x2F;init.d&#x2F;lvsrs start</span><br><span class="line"></span><br><span class="line">VIP&#x3D;10.0.0.100</span><br><span class="line"></span><br><span class="line">&#x2F;etc&#x2F;rc.d&#x2F;init.d&#x2F;functions</span><br><span class="line"></span><br><span class="line">case &quot;$1&quot; in</span><br><span class="line">start)</span><br><span class="line"> ifconfig lo:0 $VIP netmask 255.255.255.255 broadcast $VIP</span><br><span class="line"> &#x2F;sbin&#x2F;route add -host $VIP dev lo:0</span><br><span class="line"> echo &quot;1&quot; &gt;&#x2F;proc&#x2F;sys&#x2F;net&#x2F;ipv4&#x2F;conf&#x2F;lo&#x2F;arp_ignore</span><br><span class="line"> echo &quot;2&quot; &gt;&#x2F;proc&#x2F;sys&#x2F;net&#x2F;ipv4&#x2F;conf&#x2F;lo&#x2F;arp_announce</span><br><span class="line"> echo &quot;1&quot; &gt;&#x2F;proc&#x2F;sys&#x2F;net&#x2F;ipv4&#x2F;conf&#x2F;all&#x2F;arp_ignore</span><br><span class="line"> echo &quot;2&quot; &gt;&#x2F;proc&#x2F;sys&#x2F;net&#x2F;ipv4&#x2F;conf&#x2F;all&#x2F;arp_announce</span><br><span class="line"> sysctl -p &gt;&#x2F;dev&#x2F;null 2&gt;&amp;1</span><br><span class="line"> echo &quot;RealServer Start OK&quot;</span><br><span class="line"> ;;</span><br><span class="line">stop)</span><br><span class="line"> ifconfig lo:0 down</span><br><span class="line"> route del $VIP &gt;&#x2F;dev&#x2F;null 2&gt;&amp;1</span><br><span class="line"> echo &quot;0&quot; &gt;&#x2F;proc&#x2F;sys&#x2F;net&#x2F;ipv4&#x2F;conf&#x2F;lo&#x2F;arp_ignore</span><br><span class="line"> echo &quot;0&quot; &gt;&#x2F;proc&#x2F;sys&#x2F;net&#x2F;ipv4&#x2F;conf&#x2F;lo&#x2F;arp_announce</span><br><span class="line"> echo &quot;0&quot; &gt;&#x2F;proc&#x2F;sys&#x2F;net&#x2F;ipv4&#x2F;conf&#x2F;all&#x2F;arp_ignore</span><br><span class="line"> echo &quot;0&quot; &gt;&#x2F;proc&#x2F;sys&#x2F;net&#x2F;ipv4&#x2F;conf&#x2F;all&#x2F;arp_announce</span><br><span class="line"> echo &quot;RealServer Stoped&quot;</span><br><span class="line"> ;;</span><br><span class="line">*)</span><br><span class="line"> echo &quot;Usage: $0 &#123;start|stop&#125;&quot;</span><br><span class="line"> exit 1</span><br><span class="line">esac</span><br><span class="line"></span><br><span class="line">exit 0</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="参考-1"><a href="#参考-1" class="headerlink" title="参考"></a>参考</h2><h3 id="1-LVS"><a href="#1-LVS" class="headerlink" title="1. LVS"></a>1. LVS</h3><ul>
+<li><span class="exturl" data-url="aHR0cDovL3d3dy5saW51eHZpcnR1YWxzZXJ2ZXIub3JnL3poL2luZGV4Lmh0bWw=">LVS 项目中文文档@章文嵩<i class="fa fa-external-link-alt"></i></span> ⭐️⭐️⭐️</li>
+<li><span class="exturl" data-url="aHR0cDovL3poLmxpbnV4dmlydHVhbHNlcnZlci5vcmcv">LVS 中文站点<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cHM6Ly93d3cuamlhbnNodS5jb20vcC84YTYxZGUzZjhiZTk=">简书：LVS 原理介绍<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cHM6Ly93d3cuY25ibG9ncy5jb20vbGl3ZWkwNTI2dmlwL3AvNjM3MDEwMy5odG1s">cnblogs：使用 LVS 实现负载均衡原理及安装配置详解<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cDovL3d3dy5pdDE2NS5uZXQvYWRtaW4vaHRtbC8yMDE0MDEvMjI0OC5odG1s">LVS 原理详解及部署之二：LVS 原理详解（3 种工作方式 8 种调度算法）<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cHM6Ly9ibG9nLjUxY3RvLmNvbS9ob29sZWUvMTQwNjI3MA==">LVS 集群：两种 VS/DR 模式<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cHM6Ly9ibG9nLjUxY3RvLmNvbS9ob29sZWUvMTQwNTgxMA==">LVS 集群：ipvsadm 使用及 VS/NAT 实现<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cHM6Ly9pbmZvcS5jbi9hcnRpY2xlLzIwMTQvMTAvbHZzLXVzZS1hdC1sYXJnZS1zY2FsYS1uZXR3b3Jr">InfoQ：LVS 在大规模网络环境中的应用<i class="fa fa-external-link-alt"></i></span></li>
+</ul>
+<h3 id="2-Keepalived"><a href="#2-Keepalived" class="headerlink" title="2. Keepalived"></a>2. Keepalived</h3><ul>
+<li><span class="exturl" data-url="aHR0cDovL3d3dy5rZWVwYWxpdmVkLm9yZy9tYW5wYWdlLmh0bWw=">keepalived 官网<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2FjYXNzZW4va2VlcGFsaXZlZA==">GitHub: Keepalived<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cHM6Ly93d3cuamlhbnNodS5jb20vcC8xNGEyYTlkYjYyZWM/dXRtX2NhbXBhaWduPW1hbGVza2luZSZ1dG1fY29udGVudD1ub3RlJnV0bV9tZWRpdW09c2VvX25vdGVzJnV0bV9zb3VyY2U9cmVjb21tZW5kYXRpb24=">简书：Keepalived in AWS<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cHM6Ly9ibG9nLjUxY3RvLmNvbS9tb3Jyb3dpbmQvMjM1Mjk4ND9zb3VyY2U9ZHJo">51CTO：aws ec2 keepalived 的高可用构建<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3Fpamtrd2N3L2FydGljbGUvZGV0YWlscy84MDkwMDU3OQ==">CSDN：AWS 部署 keepalived 实战<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cDovL3d3dy52b2lkY24uY29tL2FydGljbGUvcC14aHNvZWNjbi1ic2IuaHRtbA==">在 AWS 上部署 keepalived<i class="fa fa-external-link-alt"></i></span></li>
+</ul>
+<h3 id="3-第三方博客、文章"><a href="#3-第三方博客、文章" class="headerlink" title="3. 第三方博客、文章"></a>3. 第三方博客、文章</h3><ul>
+<li><span class="exturl" data-url="aHR0cHM6Ly93d3cuY25ibG9ncy5jb20vZWRpc29uY2hvdS9wLzQyODE5NzguaHRtbA==">【大型网站技术实践】初级篇：借助LVS+Keepalived实现负载均衡<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cHM6Ly93d3cuamlhbnNodS5jb20vcC9lMTQ2YTdhMTRiNGI=">简书：lvs+keepalived群集配置<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cHM6Ly9ibG9nLjUxY3RvLmNvbS9kZW5ncWkvMTMwODMxOA==">LVS+Keepalived实现高可用群集<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cHM6Ly93d3cuY2VudG9zLmJ6LzIwMTcvMDcvbHZzLWtlZXBhbGl2ZWQtaGEtbG9hZGJhbGFjZS8=">LVS Keepalived双机高可用负载均衡搭建<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cHM6Ly93d3cuY25ibG9ncy5jb20vZ3VveGltaW5nL3AvOTM5MDI2OS5odG1s">Ubuntu安装keepalived<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cHM6Ly93d3cubGVhc2V3ZWIuY29tL2xhYnMvMjAxMS8wOS9zZXR0aW5nLXVwLWtlZXBhbGl2ZWQtb24tdWJ1bnR1LWxvYWQtYmFsYW5jaW5nLXVzaW5nLWhhcHJveHktb24tdWJ1bnR1LXBhcnQtMi8=">Setting up keepalived on Ubuntu (load balancing using HAProxy on Ubuntu part 2)<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2plZXBlcl8vYXJ0aWNsZS9kZXRhaWxzLzUwNjgzMDQ3">LVS负载均衡在Ubuntu环境下部署详解<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cHM6Ly9jbG91ZC50ZW5jZW50LmNvbS9kZXZlbG9wZXIvYXJ0aWNsZS8xMTM5OTY4">Nginx/LVS/HAProxy 负载均衡软件的优缺点详解（转自云栖社区）<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cHM6Ly9jbG91ZC50ZW5jZW50LmNvbS9kZXZlbG9wZXIvYXJ0aWNsZS8xMzU5MDYz">深入理解负载均衡<i class="fa fa-external-link-alt"></i></span>【Tip：里面有一张负载均衡双机热备GIF图可以看看】</li>
+<li>双机热备架构图：<span class="exturl" data-url="aHR0cHM6Ly9hc2sucWNsb3VkaW1nLmNvbS9odHRwLXNhdmUveWVoZS0xMzA1NzYwLzI4aml4bjl2b3AuZ2lm">https://ask.qcloudimg.com/http-save/yehe-1305760/28jixn9vop.gif<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cHM6Ly9oZWxwLmFsaXl1bi5jb20va25vd2xlZGdlX2RldGFpbC8zOTQyOC5odG1s">阿里云文档：ECS 做负载均衡需要用户做额外的配置吗？<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cHM6Ly9oZWxwLmFsaXl1bi5jb20va25vd2xlZGdlX2RldGFpbC80MTMzNC5odG1s">阿里云文档：Linux 实例常用内核网络参数介绍与常见问题处理<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cHM6Ly9oZWxwLmFsaXl1bi5jb20va25vd2xlZGdlX2RldGFpbC80MDU3My5odG1s">阿里云文档：ping 丢包或不通时链路测试说明<i class="fa fa-external-link-alt"></i></span></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>独木舟的木
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://andy0570.com/2019/04/03/%E5%9F%BA%E4%BA%8E%20LVS%20+%20keepalived%20%E7%9A%84%E5%8F%8C%E6%9C%BA%E7%83%AD%E5%A4%87%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1%E5%99%A8/" title="基于 LVS + keepalived 的双机热备负载均衡器">https://andy0570.com/2019/04/03/基于 LVS + keepalived 的双机热备负载均衡器/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <span class="exturl" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpo"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</span> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/LVS/" rel="tag"># LVS</a>
+              <a href="/tags/Keepalived/" rel="tag"># Keepalived</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/03/01/AWS%20System%20Manager/" rel="prev" title="AWS System Manager">
+      <i class="fa fa-chevron-left"></i> AWS System Manager
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/04/03/AWS%20%E6%90%AD%E5%BB%BA%20LVS+keepalived%20%E6%AD%A5%E9%AA%A4/" rel="next" title="AWS 搭建 LVS+keepalived 步骤">
+      AWS 搭建 LVS+keepalived 步骤 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+        </div>
+        
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">独木舟的木</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">2.1m</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">31:21</span>
+</div>
+  <div class="powered-by">由 <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZw==">NexT.Gemini</span> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

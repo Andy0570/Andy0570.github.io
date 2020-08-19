@@ -1,23 +1,579 @@
-{% extends '_layout.swig' %}
-{% import '_macro/post.swig' as post_template %}
-{% import '_macro/sidebar.swig' as sidebar_template %}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.0.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+  <meta name="google-site-verification" content="wioXOS3Gv2wXUpJ3sLtfZ4ft6YJYKNLLWSw6QoZTFYM">
+  <meta name="msvalidate.01" content="C96491A81239C517A50597C54EE53CD1">
+  <meta name="baidu-site-verification" content="h8asiToN1b">
 
-{% block title %}{{ page.title }} | {{ title }}{% endblock %}
+<link rel="stylesheet" href="/css/main.css">
 
-{% block page_class %}page-post-detail{% endblock %}
 
-{% block content %}
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  
+  <link rel="stylesheet" href="/lib/animate-css/animate.min.css">
 
-  <div id="posts" class="posts-expand">
-    {{ post_template.render(page) }}
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"andy0570.com","root":"/","scheme":"Gemini","version":"8.0.0-rc.5","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":"mac","bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false};
+  </script>
+
+  <meta name="description" content="AWS 是一个云计算平台Amazon Web Service（AWS）是一个提供 Web 服务解决方案的平台，它提供了不同抽象层上的计算、存储和网络的解决方案。 Web 服务：可以通过 Web 界面来控制服务。 AWS 部署在世界各地的数据中心，可以为客户提供全球性的基础设施服务。  AWS 云在全球 20 个地理区域内运营着 60 个可用区，并宣布计划增加巴林、开普敦、中国香港特别行政区和米兰这">
+<meta property="og:type" content="article">
+<meta property="og:title" content="《AWS云计算实战》1.AWS">
+<meta property="og:url" content="https://andy0570.com/2019/01/01/%E3%80%8AAWS%E4%BA%91%E8%AE%A1%E7%AE%97%E5%AE%9E%E6%88%98%E3%80%8B1.AWS/index.html">
+<meta property="og:site_name" content="独木舟的木">
+<meta property="og:description" content="AWS 是一个云计算平台Amazon Web Service（AWS）是一个提供 Web 服务解决方案的平台，它提供了不同抽象层上的计算、存储和网络的解决方案。 Web 服务：可以通过 Web 界面来控制服务。 AWS 部署在世界各地的数据中心，可以为客户提供全球性的基础设施服务。  AWS 云在全球 20 个地理区域内运营着 60 个可用区，并宣布计划增加巴林、开普敦、中国香港特别行政区和米兰这">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/080126.jpg">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/080128.jpg">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/080128-1.jpg">
+<meta property="article:published_time" content="2019-01-01T12:12:00.000Z">
+<meta property="article:modified_time" content="2019-04-28T08:01:32.000Z">
+<meta property="article:author" content="独木舟的木">
+<meta property="article:tag" content="AWS">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/080126.jpg">
+
+<link rel="canonical" href="https://andy0570.com/2019/01/01/%E3%80%8AAWS%E4%BA%91%E8%AE%A1%E7%AE%97%E5%AE%9E%E6%88%98%E3%80%8B1.AWS/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>《AWS云计算实战》1.AWS | 独木舟的木</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="独木舟的木" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <main class="main">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+        <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
   </div>
 
-{% endblock %}
+  <div class="site-meta">
 
-{% block sidebar %}
-  {{ sidebar_template.render(true) }}
-{% endblock %}
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">独木舟的木</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">iOS Developer</p>
+  </div>
 
-{% block script_extra %}
-  {% include '_scripts/pages/post-details.swig' %}
-{% endblock %}
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">14</span></a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">36</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">310</span></a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <section class="post-toc-wrap sidebar-panel">
+          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#AWS-%E6%98%AF%E4%B8%80%E4%B8%AA%E4%BA%91%E8%AE%A1%E7%AE%97%E5%B9%B3%E5%8F%B0"><span class="nav-number">1.</span> <span class="nav-text">AWS 是一个云计算平台</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%91%E8%AE%A1%E7%AE%97"><span class="nav-number">1.1.</span> <span class="nav-text">云计算</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AWS-%E5%8F%AF%E4%BB%A5%E5%81%9A%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="nav-number">1.2.</span> <span class="nav-text">AWS 可以做什么？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8-AWS-%E7%9A%84%E4%BC%98%E5%8A%BF"><span class="nav-number">1.3.</span> <span class="nav-text">使用 AWS 的优势</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AWS-%E7%9A%84%E4%BB%98%E8%B4%B9%E6%9C%BA%E5%88%B6%E2%80%94%E2%80%94%E6%8C%89%E4%BD%BF%E7%94%A8%E9%87%8F%E4%BB%98%E8%B4%B9"><span class="nav-number">1.4.</span> <span class="nav-text">AWS 的付费机制——按使用量付费</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AWS-%E6%9C%8D%E5%8A%A1"><span class="nav-number">1.5.</span> <span class="nav-text">AWS 服务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%8E-AWS-%E4%BA%A4%E4%BA%92"><span class="nav-number">1.6.</span> <span class="nav-text">与 AWS 交互</span></a></li></ol></li></ol></div>
+      </section>
+      <!--/noindex-->
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="独木舟的木"
+      src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+  <p class="site-author-name" itemprop="name">独木舟的木</p>
+  <div class="site-description" itemprop="description">生若直木，不语斧凿。</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">310</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">36</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL0FuZHkwNTcw" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Andy0570"><i class="fab fa-github fa-fw"></i>GitHub</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9zdGFja292ZXJmbG93LmNvbS91c2Vycy83MjY1NDAwL2FuZHkwNTcw" title="StackOverflow → https:&#x2F;&#x2F;stackoverflow.com&#x2F;users&#x2F;7265400&#x2F;andy0570"><i class="fab fa-stack-overflow fa-fw"></i>StackOverflow</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuamlhbnNodS5jb20vdS84NGM1ZmFkYzdjMTg=" title="简书 → https:&#x2F;&#x2F;www.jianshu.com&#x2F;u&#x2F;84c5fadc7c18"><i class="heartbeat fa-fw"></i>简书</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="bWFpbHRvOmFuZHl3aG1AMTYzLmNvbQ==" title="E-Mail → mailto:andywhm@163.com"><i class="fa fa-envelope fa-fw"></i>E-Mail</span>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <span class="exturl cc-opacity" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpo"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></span>
+  </div>
+
+
+
+      </section>
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </header>
+
+      
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div id="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+      <div class="main-inner">
+        
+
+        <div class="content post posts-expand">
+          
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://andy0570.com/2019/01/01/%E3%80%8AAWS%E4%BA%91%E8%AE%A1%E7%AE%97%E5%AE%9E%E6%88%98%E3%80%8B1.AWS/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+      <meta itemprop="name" content="独木舟的木">
+      <meta itemprop="description" content="生若直木，不语斧凿。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="独木舟的木">
+    </span>
+
+    
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          《AWS云计算实战》1.AWS
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-01-01 20:12:00" itemprop="dateCreated datePublished" datetime="2019-01-01T20:12:00+08:00">2019-01-01</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-04-28 16:01:32" itemprop="dateModified" datetime="2019-04-28T16:01:32+08:00">2019-04-28</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E4%BA%91%E8%AE%A1%E7%AE%97/" itemprop="url" rel="index"><span itemprop="name">云计算</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>1.7k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>2 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="AWS-是一个云计算平台"><a href="#AWS-是一个云计算平台" class="headerlink" title="AWS 是一个云计算平台"></a>AWS 是一个云计算平台</h1><p><strong>Amazon Web Service</strong>（AWS）是一个提供 Web 服务解决方案的平台，它提供了不同抽象层上的计算、存储和网络的解决方案。</p>
+<p><strong>Web 服务</strong>：可以通过 Web 界面来控制服务。</p>
+<p>AWS 部署在世界各地的数据中心，可以为客户提供全球性的基础设施服务。</p>
+<blockquote>
+<p>AWS 云在全球 20 个地理区域内运营着 60 个可用区，并宣布计划增加巴林、开普敦、中国香港特别行政区和米兰这四个区域，同时再增加 12 个可用区。（201902）</p>
+</blockquote>
+<a id="more"></a>
+
+<h2 id="云计算"><a href="#云计算" class="headerlink" title="云计算"></a>云计算</h2><blockquote>
+<p>美国国家标准和技术研究所（NIST）对云计算的定义：</p>
+<p>云计算是一种普适的、方便的、按需提供网络访问的可配置的计算资源（如网络、服务器、存储、应用程序和服务）的共享池模型，它能够以最少的管理工作量或与服务提供者交互的方式快速进行分配和发布。</p>
+</blockquote>
+<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/080126.jpg" alt="云计算的分类"></p>
+<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/080128.jpg" alt="云计算服务"></p>
+<ul>
+<li><strong>基础设施即服务（Iaas）</strong>——提供计算、存储和网络功能等基本资源，使用 Amazon EC2、Google Compute Engine 和 Microsoft Azure 虚拟机这一类虚拟服务器。</li>
+<li><strong>平台即服务（Paas）</strong>——提供将定制的应用部署到云上的平台，如 AWS Elastic Beanstalk、Google App Engine 和 Heroku。</li>
+<li><strong>软件即服务（Saas）</strong>——结合了基础设施和软件并且运行在云端，包括 Amazon WorkSpaces、Google Apps for Work 和 Microsoft Office 365 这一类办公应用。还有例如 AWS ELB 负载均衡器、AWS RDS 数据库 等。</li>
+</ul>
+<h2 id="AWS-可以做什么？"><a href="#AWS-可以做什么？" class="headerlink" title="AWS 可以做什么？"></a>AWS 可以做什么？</h2><p>使用一个或多个服务组合在 AWS 上运行任何应用程序。</p>
+<p>如：托管一家网店、在 AWS 上运行企业应用程序、以可靠、耐用的方式存储和归档数据、实现容错的系统架构…</p>
+<h2 id="使用-AWS-的优势"><a href="#使用-AWS-的优势" class="headerlink" title="使用 AWS 的优势"></a>使用 AWS 的优势</h2><ol>
+<li><p>创新和快速发展的平台。使用 AWS 的新功能和服务转化为针对自己的客户的创新解决方案，从而体现竞争优势。</p>
+</li>
+<li><p>选择合适的服务构建复杂的系统。</p>
+</li>
+<li><p>利用 AWS API 实现自动化操作。</p>
+</li>
+<li><p>灵活的容量（可扩展性）。根据需求弹性部署应用。</p>
+</li>
+<li><p>为失效而构建（可靠性）。AWS 为客户提供了创建容错系统所需要的一切资源。</p>
+</li>
+<li><p>缩短上市的时间。客户可以在 AWS 上快速调整基础架构以满足需求。</p>
+</li>
+<li><p>从规模经济中受益（节约成本）。AWS 规模越大，价格就会越低。</p>
+<blockquote>
+<p>截止到 2017 年 11 月，AWS 已经进行了 62 次降价。</p>
+</blockquote>
+</li>
+<li><p>全球化的基础设施。</p>
+</li>
+<li><p>专业的合作伙伴。AWS 符合很多行业合规性要求。ISO 27001、FedRAMP &amp; DoD CSM、PCI DSS Level 1、ISO 9001。</p>
+</li>
+</ol>
+<h2 id="AWS-的付费机制——按使用量付费"><a href="#AWS-的付费机制——按使用量付费" class="headerlink" title="AWS 的付费机制——按使用量付费"></a>AWS 的付费机制——按使用量付费</h2><p>AWS 的计费方式：</p>
+<ul>
+<li>按使用时间计费；</li>
+<li>按流量计费；</li>
+<li>按存储用量计费；</li>
+</ul>
+<h2 id="AWS-服务"><a href="#AWS-服务" class="headerlink" title="AWS 服务"></a>AWS 服务</h2><p>用于计算、存储和联网的硬件是 AWS 云计算的基础。AWS 在硬件上运行软件服务来提供服务。</p>
+<ul>
+<li><strong>计算服务</strong>提供了计算能力以及内存。客户可以启动虚拟服务器并使用它们来运行应用程序。</li>
+<li><strong>应用服务</strong>为常见的使用场景提供解决方案，如消息队列、主题以及检索大量数据以集成到应用中。</li>
+<li><strong>企业服务</strong>提供独立的解决方案，如邮件服务器和目录服务。</li>
+<li><strong>部署和管理服务</strong>作用于迄今所提到的服务。这个服务可以帮助客户授予或者撤销对云资源的访问、虚拟服务系统的监控以及部署应用程序。</li>
+<li><strong>存储服务</strong>被用来搜集、保存和归档数据。AWS供了不同的存储选项:对象存储或者用于虚拟服务器的网络附加存储方案。</li>
+<li>当需要管理结构化数据时，<strong>数据库存储</strong>比其他存储方案有一些优势。AWS提供了关系数据库和 NOSQL数据库服务。</li>
+<li><strong>网络服务</strong>是AWS的基本组成部分。客户可以定义一个私有的网络并使用高度集成的DNS服务。</li>
+</ul>
+<h2 id="与-AWS-交互"><a href="#与-AWS-交互" class="headerlink" title="与 AWS 交互"></a>与 AWS 交互</h2><p>客户可以使用诸如管理控制台、基于 Web 的用户界面或命令行工具等工具实现对服务资源的管理。</p>
+<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/080128-1.jpg" alt="与 AWS 交互的方式"></p>
+<ul>
+<li>GUI：使用基于 Web 的管理控制台实现与 AWS 的交互；</li>
+<li>CLI 通常用于自动执行 AWS 上的任务，客户可以将多个 CLI 调用链接起来，以实现基础设施的自动化；</li>
+<li>SDK 通常用于将 AWS 服务集成到应用程序中；</li>
+<li>蓝图（AWS CloudFormation，官方称之为“堆栈”）是包含所有服务和依赖关系的对于系统的描述。蓝图可以帮助你自动化云中基础设施的配置。（简而言之，就是用一个 JSON 文件描述整个云服务基础设施架构，可以一键部署）。</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>独木舟的木
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://andy0570.com/2019/01/01/%E3%80%8AAWS%E4%BA%91%E8%AE%A1%E7%AE%97%E5%AE%9E%E6%88%98%E3%80%8B1.AWS/" title="《AWS云计算实战》1.AWS">https://andy0570.com/2019/01/01/《AWS云计算实战》1.AWS/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <span class="exturl" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpo"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</span> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/AWS/" rel="tag"># AWS</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/01/01/%E3%80%8AAWS%E4%BA%91%E8%AE%A1%E7%AE%97%E5%AE%9E%E6%88%98%E3%80%8B2.%E4%BA%94%E5%88%86%E9%92%9F%E6%90%AD%E5%BB%BA%20WordPress%20%E7%AB%99%E7%82%B9/" rel="prev" title="《AWS云计算实战》2.五分钟搭建 WordPress 站点">
+      <i class="fa fa-chevron-left"></i> 《AWS云计算实战》2.五分钟搭建 WordPress 站点
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/01/02/%E5%90%84%E5%8E%82%E5%95%86%E4%BA%91%E6%9C%8D%E5%8A%A1%E8%B4%B9%E7%94%A8%E8%B0%83%E6%9F%A5/" rel="next" title="各厂商云服务费用调查">
+      各厂商云服务费用调查 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+        </div>
+        
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">独木舟的木</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">2.1m</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">31:21</span>
+</div>
+  <div class="powered-by">由 <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZw==">NexT.Gemini</span> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

@@ -1,23 +1,580 @@
-{% extends '_layout.swig' %}
-{% import '_macro/post.swig' as post_template %}
-{% import '_macro/sidebar.swig' as sidebar_template %}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.0.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+  <meta name="google-site-verification" content="wioXOS3Gv2wXUpJ3sLtfZ4ft6YJYKNLLWSw6QoZTFYM">
+  <meta name="msvalidate.01" content="C96491A81239C517A50597C54EE53CD1">
+  <meta name="baidu-site-verification" content="h8asiToN1b">
 
-{% block title %}{{ page.title }} | {{ title }}{% endblock %}
+<link rel="stylesheet" href="/css/main.css">
 
-{% block page_class %}page-post-detail{% endblock %}
 
-{% block content %}
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  
+  <link rel="stylesheet" href="/lib/animate-css/animate.min.css">
 
-  <div id="posts" class="posts-expand">
-    {{ post_template.render(page) }}
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"andy0570.com","root":"/","scheme":"Gemini","version":"8.0.0-rc.5","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":"mac","bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false};
+  </script>
+
+  <meta name="description" content="OpenLDAP openLDAP（简体中文）  Docker-OpenLDAP GitHub: osixia&#x2F;docker-openldap GitHub:osixia&#x2F;docker-phpLDAPadmin  OpenLDAP 如何在 Ubuntu 16.04 上安装和配置 OpenLDAP 和 phpLDAPadmins 如何在 Ubuntu 12.04 VPS 上安装和配置基本 LDAP">
+<meta property="og:type" content="article">
+<meta property="og:title" content="OpenLDAP">
+<meta property="og:url" content="https://andy0570.com/2018/10/23/OpenLDAP/index.html">
+<meta property="og:site_name" content="独木舟的木">
+<meta property="og:description" content="OpenLDAP openLDAP（简体中文）  Docker-OpenLDAP GitHub: osixia&#x2F;docker-openldap GitHub:osixia&#x2F;docker-phpLDAPadmin  OpenLDAP 如何在 Ubuntu 16.04 上安装和配置 OpenLDAP 和 phpLDAPadmins 如何在 Ubuntu 12.04 VPS 上安装和配置基本 LDAP">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/075355.jpg">
+<meta property="article:published_time" content="2018-10-23T13:05:00.000Z">
+<meta property="article:modified_time" content="2019-05-01T13:02:44.000Z">
+<meta property="article:author" content="独木舟的木">
+<meta property="article:tag" content="PKI">
+<meta property="article:tag" content="密码学">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/075355.jpg">
+
+<link rel="canonical" href="https://andy0570.com/2018/10/23/OpenLDAP/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>OpenLDAP | 独木舟的木</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="独木舟的木" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <main class="main">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+        <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
   </div>
 
-{% endblock %}
+  <div class="site-meta">
 
-{% block sidebar %}
-  {{ sidebar_template.render(true) }}
-{% endblock %}
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">独木舟的木</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">iOS Developer</p>
+  </div>
 
-{% block script_extra %}
-  {% include '_scripts/pages/post-details.swig' %}
-{% endblock %}
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">14</span></a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">36</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">310</span></a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <section class="post-toc-wrap sidebar-panel">
+          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#OpenLDAP"><span class="nav-number">1.</span> <span class="nav-text">OpenLDAP</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Docker-OpenLDAP"><span class="nav-number">2.</span> <span class="nav-text">Docker-OpenLDAP</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#OpenLDAP-1"><span class="nav-number">3.</span> <span class="nav-text">OpenLDAP</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E4%B8%80%E6%AD%A5%EF%BC%9A%E5%AE%89%E8%A3%85%E5%92%8C%E9%85%8D%E7%BD%AE-OpenLDAP-%E6%9C%8D%E5%8A%A1%E5%99%A8"><span class="nav-number">3.0.1.</span> <span class="nav-text">第一步：安装和配置 OpenLDAP 服务器</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#LDAP-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="nav-number">3.0.1.1.</span> <span class="nav-text">LDAP 配置文件</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E4%BA%8C%E6%AD%A5%EF%BC%9A%E5%AE%89%E8%A3%85%E5%92%8C%E9%85%8D%E7%BD%AE-phpLDAPadmin-Web-%E9%A1%B5%E9%9D%A2"><span class="nav-number">3.0.2.</span> <span class="nav-text">第二步：安装和配置 phpLDAPadmin Web 页面</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E4%B8%89%E6%AD%A5%EF%BC%9A%E7%99%BB%E5%BD%95%E5%88%B0-phpLDAPadmin-Web-%E9%A1%B5%E9%9D%A2%EF%BC%9A"><span class="nav-number">3.0.3.</span> <span class="nav-text">第三步：登录到 phpLDAPadmin Web 页面：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E5%9B%9B%E6%AD%A5%EF%BC%9A%E9%85%8D%E7%BD%AE-StartTLS-LDAP-%E5%8A%A0%E5%AF%86"><span class="nav-number">3.0.4.</span> <span class="nav-text">第四步：配置 StartTLS LDAP 加密</span></a></li></ol></li></ol></li></ol></div>
+      </section>
+      <!--/noindex-->
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="独木舟的木"
+      src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+  <p class="site-author-name" itemprop="name">独木舟的木</p>
+  <div class="site-description" itemprop="description">生若直木，不语斧凿。</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">310</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">36</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL0FuZHkwNTcw" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Andy0570"><i class="fab fa-github fa-fw"></i>GitHub</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9zdGFja292ZXJmbG93LmNvbS91c2Vycy83MjY1NDAwL2FuZHkwNTcw" title="StackOverflow → https:&#x2F;&#x2F;stackoverflow.com&#x2F;users&#x2F;7265400&#x2F;andy0570"><i class="fab fa-stack-overflow fa-fw"></i>StackOverflow</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuamlhbnNodS5jb20vdS84NGM1ZmFkYzdjMTg=" title="简书 → https:&#x2F;&#x2F;www.jianshu.com&#x2F;u&#x2F;84c5fadc7c18"><i class="heartbeat fa-fw"></i>简书</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="bWFpbHRvOmFuZHl3aG1AMTYzLmNvbQ==" title="E-Mail → mailto:andywhm@163.com"><i class="fa fa-envelope fa-fw"></i>E-Mail</span>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <span class="exturl cc-opacity" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpo"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></span>
+  </div>
+
+
+
+      </section>
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </header>
+
+      
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div id="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+      <div class="main-inner">
+        
+
+        <div class="content post posts-expand">
+          
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://andy0570.com/2018/10/23/OpenLDAP/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+      <meta itemprop="name" content="独木舟的木">
+      <meta itemprop="description" content="生若直木，不语斧凿。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="独木舟的木">
+    </span>
+
+    
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          OpenLDAP
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-10-23 21:05:00" itemprop="dateCreated datePublished" datetime="2018-10-23T21:05:00+08:00">2018-10-23</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-05-01 21:02:44" itemprop="dateModified" datetime="2019-05-01T21:02:44+08:00">2019-05-01</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/PKI-%E5%AF%86%E7%A0%81%E5%AD%A6/" itemprop="url" rel="index"><span itemprop="name">PKI&密码学</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>2.9k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>3 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="OpenLDAP"><a href="#OpenLDAP" class="headerlink" title="OpenLDAP"></a>OpenLDAP</h1><ul>
+<li><span class="exturl" data-url="aHR0cHM6Ly93aWtpLmFyY2hsaW51eC5vcmcvaW5kZXgucGhwL09wZW5MREFQXyglRTclQUUlODAlRTQlQkQlOTMlRTQlQjglQUQlRTYlOTYlODcp">openLDAP（简体中文）<i class="fa fa-external-link-alt"></i></span></li>
+</ul>
+<h1 id="Docker-OpenLDAP"><a href="#Docker-OpenLDAP" class="headerlink" title="Docker-OpenLDAP"></a>Docker-OpenLDAP</h1><ul>
+<li><span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL29zaXhpYS9kb2NrZXItb3BlbmxkYXA=">GitHub: osixia/docker-openldap<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL29zaXhpYS9kb2NrZXItcGhwTERBUGFkbWlu">GitHub:osixia/docker-phpLDAPadmin<i class="fa fa-external-link-alt"></i></span></li>
+</ul>
+<h1 id="OpenLDAP-1"><a href="#OpenLDAP-1" class="headerlink" title="OpenLDAP"></a>OpenLDAP</h1><ul>
+<li><span class="exturl" data-url="aHR0cHM6Ly93d3cuaG93dG9pbmcuY29tL2hvdy10by1pbnN0YWxsLWFuZC1jb25maWd1cmUtb3BlbmxkYXAtYW5kLXBocGxkYXBhZG1pbi1vbi11YnVudHUtMTYtMDQ=">如何在 Ubuntu 16.04 上安装和配置 OpenLDAP 和 phpLDAPadmins<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cHM6Ly93d3cuaG93dG9pbmcuY29tL2hvdy10by1pbnN0YWxsLWFuZC1jb25maWd1cmUtYS1iYXNpYy1sZGFwLXNlcnZlci1vbi1hbi11YnVudHUtMTItMDQtdnBzLyNhZGQtb3JnYW5pemF0aW9uYWwtdW5pdHMtZ3JvdXBzLWFuZC11c2Vycw==">如何在 Ubuntu 12.04 VPS 上安装和配置基本 LDAP 服务器<i class="fa fa-external-link-alt"></i></span>—— 在 phpLDAPadmin 上添加组织单位，组和用户</li>
+<li><span class="exturl" data-url="aHR0cHM6Ly93d3cuaG93dG9pbmcuY29tL2hvdy10by1zZWN1cmUtYXBhY2hlLXdpdGgtbGV0LXMtZW5jcnlwdC1vbi11YnVudHUtMTYtMDQv">如何在 Ubuntu 16.04 使用安全加密的 Apache<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cHM6Ly9tcC53ZWl4aW4ucXEuY29tL3MvazdHZGE3Q1dtSTM4ZEY0WkotQlBWQQ==">OpenLDAP 管理工具 Phpldapadmin 的安装及使用<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cHM6Ly9tcC53ZWl4aW4ucXEuY29tL3MvcG5TbWRoeTc0X0hKTjZMQzctQlBrUQ==">一键添加 OpenLDAP 用户及 Kerberos 账号<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cHM6Ly93d3cuamI1MS5uZXQvYXJ0aWNsZS8xMTUyNTguaHRt">ubuntu 临时或永久修改 hostname 的方法<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cDovL2Jsb2cuNTFjdG8uY29tL2ppYW5nY2hlMDAvMTkyNTQ1NA==">51cto: Ubuntu 系统下 OpenLDAP 的安装及配置<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cHM6Ly93d3cuY25ibG9ncy5jb20va3VuZ2Z1cGFuZGEvcC80NzA0NDIxLmh0bWw=">ubuntu 12.04 下安装 openldap，slapd.conf 找不到的解决方法<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cHM6Ly9zZWdtZW50ZmF1bHQuY29tL2EvMTE5MDAwMDAxNDY4MzQxOA==">我花了一个五一终于搞懂了 OpenLDAP<i class="fa fa-external-link-alt"></i></span></li>
+</ul>
+<a id="more"></a>
+
+
+<p>轻量级目录访问协议（Lightweight Directory Access Protocol，LDAP）是用于通过网络管理和访问分层目录信息的标准协议。 它可以用于存储任何类型的信息，尽管它通常用作集中式身份验证系统或公司电子邮件和电话目录。</p>
+<p>OpenLDAP 是 LDAP 协议的一个开源实现。LDAP 服务器本质上是一个为只读访问而优化的非关系型数据库。它主要用作地址簿查询（如 email 客户端）或对各种服务访问做后台认证以及用户数据权限管控。（例如，访问 Samba 时，LDAP 可以起到域控制器的作用；或者 <span class="exturl" data-url="aHR0cHM6Ly93aWtpLmFyY2hsaW51eC5vcmcvaW5kZXgucGhwL0xEQVBfYXV0aGVudGljYXRpb24=">Linux 系统认证<i class="fa fa-external-link-alt"></i></span> 时代替 <code>/etc/passwd</code> 的作用。）</p>
+<blockquote>
+<p>⚠️ <strong>注意:</strong></p>
+<p>以 <code>slap</code> 开头的命令（如： <code>slapcat</code> <code>slapcat</code>）是<strong>服务端</strong>工具。</p>
+<p>以 <code>ldap</code> 开头的命令（如： <code>ldapsearch</code>）是<strong>客户端</strong>工具;</p>
+</blockquote>
+<h3 id="第一步：安装和配置-OpenLDAP-服务器"><a href="#第一步：安装和配置-OpenLDAP-服务器" class="headerlink" title="第一步：安装和配置 OpenLDAP 服务器"></a>第一步：安装和配置 OpenLDAP 服务器</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 安装 OpenLDAP:</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> slapd:OpenLDAP 服务端程序组件。</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> ldap-utils:OpenLDAP 命令行工具集。</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo apt-get update</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo apt-get install -y slapd ldap-utils</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 重新配置</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo dpkg-reconfigure slapd</span></span><br><span class="line">Domain Name:arling.com</span><br><span class="line">Organization Name:tonintech</span><br><span class="line">Password:paradise</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 打开防火墙LDAP端口（389、636）</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo ufw allow ldap</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> LDAP进程 slapd 生命周期管理</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo service slapd start   <span class="comment"># 开启</span></span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo serviec slapd stop    <span class="comment"># 关闭</span></span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo service slapd restart <span class="comment"># 重启</span></span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 获取 OpenLDAP 默认监听的端口</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> doc</span></span><br><span class="line">tcp        0      0 0.0.0.0:389             0.0.0.0:*               LISTEN      25135/slapd</span><br><span class="line">tcp6       0      0 :::389                  :::*                    LISTEN      25135/slapd</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 获取 OpenLDAP 进程的状态</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> ps aux | grep slapd | grep -v grep</span></span><br><span class="line">openldap 25135  0.0  0.0 1249408 7068 ?        Ssl  03:06   0:00 /usr/sbin/slapd -h ldap:/// ldapi:/// -g openldap -u openldap -F /etc/ldap/slapd.d</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 测试与 ldapwhoami 的 LDAP 连接</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> ldapwhoami -H ldap://18.217.226.78 -x</span></span><br><span class="line">anonymous</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="LDAP-配置文件"><a href="#LDAP-配置文件" class="headerlink" title="LDAP 配置文件"></a>LDAP 配置文件</h4><ul>
+<li>通过 apt-get 命名安装 OpenLDAP 后，配置文件路径为：<code>/etc/ldap</code></li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">/etc/ldap$</span><span class="bash"> ls -l</span></span><br><span class="line">total 16</span><br><span class="line">-rw-r--r-- 1 root     root      332 May 24 21:06 ldap.conf # 客户端配置文件</span><br><span class="line">drwxr-xr-x 2 root     root     4096 May 24 21:06 sasl2</span><br><span class="line">drwxr-xr-x 2 root     root     4096 Sep 14 09:32 schema</span><br><span class="line">drwxr-xr-x 3 openldap openldap 4096 Sep 17 08:27 slapd.d # 服务端配置文件</span><br></pre></td></tr></table></figure>
+
+
+
+<blockquote>
+<p>⚠️</p>
+<ul>
+<li>从 OpenLDAP 2.4 版本开始所有配置数据都保存在 <code>/etc/openldap/slapd.d/</code>中，建议不再使用 <code>slapd.conf</code> 作为配置文件。</li>
+<li>配置 OpenLDAP 最正确的姿势是通过<code>ldapmodify</code>命令执行<strong>一系列自己写好的</strong> ldif 文件，而<strong>不要修改任何 OpenLDAP 装好的配置文件</strong>。</li>
+</ul>
+</blockquote>
+<h3 id="第二步：安装和配置-phpLDAPadmin-Web-页面"><a href="#第二步：安装和配置-phpLDAPadmin-Web-页面" class="headerlink" title="第二步：安装和配置 phpLDAPadmin Web 页面"></a>第二步：安装和配置 phpLDAPadmin Web 页面</h3><p>安装 phpLDAPadmin：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo apt-get install phpldapadmin</span></span><br></pre></td></tr></table></figure>
+
+<p>修改 phpLDAPadmin 配置文件 <code>/etc/phpldapadmin/config.php</code>：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo vim /etc/phpldapadmin/config.php</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> ------ 配置内容如下 ------</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 1.LDAP 服务器名称</span></span><br><span class="line"><span class="meta">$</span><span class="bash">servers-&gt;setValue(<span class="string">&#x27;server&#x27;</span>,<span class="string">&#x27;name&#x27;</span>,<span class="string">&#x27;My LDAP Server&#x27;</span>); </span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 2.phpLDAPadmin LDAP 层次结构的根目录</span></span><br><span class="line"><span class="meta">$</span><span class="bash">servers-&gt;setValue(<span class="string">&#x27;server&#x27;</span>,<span class="string">&#x27;base&#x27;</span>,array(<span class="string">&#x27;dc=arling,dc=com&#x27;</span>)); </span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 3.注释掉登录bind_id配置行</span></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="variable">$servers</span>-&gt;setValue(<span class="string">&#x27;login&#x27;</span>,<span class="string">&#x27;bind_id&#x27;</span>,<span class="string">&#x27;cn=admin,dc=example,dc=com&#x27;</span>);</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 命令行模式下搜索：/hide_template_warning</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 4.隐藏 phpLDAPadmin 警告消息</span></span><br><span class="line"><span class="meta">$</span><span class="bash">config-&gt;custom-&gt;appearance[<span class="string">&#x27;hide_template_warning&#x27;</span>] = <span class="literal">true</span>;</span></span><br></pre></td></tr></table></figure>
+
+<p>关闭 Apache2 服务</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo /etc/init.d/apache2 stop</span></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h3 id="第三步：登录到-phpLDAPadmin-Web-页面："><a href="#第三步：登录到-phpLDAPadmin-Web-页面：" class="headerlink" title="第三步：登录到 phpLDAPadmin Web 页面："></a>第三步：登录到 phpLDAPadmin Web 页面：</h3><p>登录到 phpLDAPadmin 界面，添加用户，组织单位，组和关系。参考：<span class="exturl" data-url="aHR0cHM6Ly93d3cuaG93dG9pbmcuY29tL2hvdy10by1pbnN0YWxsLWFuZC1jb25maWd1cmUtYS1iYXNpYy1sZGFwLXNlcnZlci1vbi1hbi11YnVudHUtMTItMDQtdnBzLyNhZGQtb3JnYW5pemF0aW9uYWwtdW5pdHMtZ3JvdXBzLWFuZC11c2Vycw==">添加组织单位，组和用户<i class="fa fa-external-link-alt"></i></span></p>
+<ul>
+<li><span class="exturl" data-url="aHR0cDovLzE4LjIxNy4yMjYuNzgvcGhwbGRhcGFkbWluL2luZGV4LnBocA==">http://18.217.226.78/phpldapadmin/index.php<i class="fa fa-external-link-alt"></i></span></li>
+<li>Login DN:cn=admin,dc=arling,dc=com</li>
+<li>Password:paradise</li>
+</ul>
+<p>​    <img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/075355.jpg"></p>
+<p>​    1. 添加组织：Generic: Organisational Unit</p>
+<p>​    2. 添加组：Generic: Posix Group</p>
+<p>​    3. 添加用户：Generic: User Account</p>
+<h3 id="第四步：配置-StartTLS-LDAP-加密"><a href="#第四步：配置-StartTLS-LDAP-加密" class="headerlink" title="第四步：配置 StartTLS LDAP 加密"></a>第四步：配置 StartTLS LDAP 加密</h3>
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>独木舟的木
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://andy0570.com/2018/10/23/OpenLDAP/" title="OpenLDAP">https://andy0570.com/2018/10/23/OpenLDAP/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <span class="exturl" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpo"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</span> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/PKI/" rel="tag"># PKI</a>
+              <a href="/tags/%E5%AF%86%E7%A0%81%E5%AD%A6/" rel="tag"># 密码学</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2018/10/13/Node.js%20%E6%A1%86%E6%9E%B6&%E8%B5%84%E6%BA%90/" rel="prev" title="Node.js 框架&资源">
+      <i class="fa fa-chevron-left"></i> Node.js 框架&资源
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2018/10/26/%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BANode.js_%E5%BC%82%E6%AD%A5%E7%BC%96%E7%A8%8B/" rel="next" title="深入浅出Node.js_异步编程">
+      深入浅出Node.js_异步编程 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+        </div>
+        
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">独木舟的木</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">2.1m</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">31:21</span>
+</div>
+  <div class="powered-by">由 <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZw==">NexT.Gemini</span> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

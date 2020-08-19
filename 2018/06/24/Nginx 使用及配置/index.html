@@ -1,23 +1,606 @@
-{% extends '_layout.swig' %}
-{% import '_macro/post.swig' as post_template %}
-{% import '_macro/sidebar.swig' as sidebar_template %}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.0.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+  <meta name="google-site-verification" content="wioXOS3Gv2wXUpJ3sLtfZ4ft6YJYKNLLWSw6QoZTFYM">
+  <meta name="msvalidate.01" content="C96491A81239C517A50597C54EE53CD1">
+  <meta name="baidu-site-verification" content="h8asiToN1b">
 
-{% block title %}{{ page.title }} | {{ title }}{% endblock %}
+<link rel="stylesheet" href="/css/main.css">
 
-{% block page_class %}page-post-detail{% endblock %}
 
-{% block content %}
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  
+  <link rel="stylesheet" href="/lib/animate-css/animate.min.css">
 
-  <div id="posts" class="posts-expand">
-    {{ post_template.render(page) }}
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"andy0570.com","root":"/","scheme":"Gemini","version":"8.0.0-rc.5","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":"mac","bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false};
+  </script>
+
+  <meta name="description" content="Nginx 目录123456789101112131415161718$ cd &#x2F;etc&#x2F;nginx$ ls -ltotal 60drwx------ 2 ubuntu ubuntu 4096 Jun 16 09:27 cert    ## ssl证书目录drwxr-xr-x 2 root   root   4096 Jul 12  2017 conf.d-rw-r--r-- 1 root">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Nginx 使用及配置">
+<meta property="og:url" content="https://andy0570.com/2018/06/24/Nginx%20%E4%BD%BF%E7%94%A8%E5%8F%8A%E9%85%8D%E7%BD%AE/index.html">
+<meta property="og:site_name" content="独木舟的木">
+<meta property="og:description" content="Nginx 目录123456789101112131415161718$ cd &#x2F;etc&#x2F;nginx$ ls -ltotal 60drwx------ 2 ubuntu ubuntu 4096 Jun 16 09:27 cert    ## ssl证书目录drwxr-xr-x 2 root   root   4096 Jul 12  2017 conf.d-rw-r--r-- 1 root">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/075039.png">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/075040-1.jpg">
+<meta property="article:published_time" content="2018-06-24T09:15:00.000Z">
+<meta property="article:modified_time" content="2019-05-13T03:01:31.000Z">
+<meta property="article:author" content="独木舟的木">
+<meta property="article:tag" content="Nginx">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/075039.png">
+
+<link rel="canonical" href="https://andy0570.com/2018/06/24/Nginx%20%E4%BD%BF%E7%94%A8%E5%8F%8A%E9%85%8D%E7%BD%AE/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Nginx 使用及配置 | 独木舟的木</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="独木舟的木" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <main class="main">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+        <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
   </div>
 
-{% endblock %}
+  <div class="site-meta">
 
-{% block sidebar %}
-  {{ sidebar_template.render(true) }}
-{% endblock %}
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">独木舟的木</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">iOS Developer</p>
+  </div>
 
-{% block script_extra %}
-  {% include '_scripts/pages/post-details.swig' %}
-{% endblock %}
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">14</span></a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">36</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">310</span></a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <section class="post-toc-wrap sidebar-panel">
+          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Nginx-%E7%9B%AE%E5%BD%95"><span class="nav-number">1.</span> <span class="nav-text">Nginx 目录</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4"><span class="nav-number">2.</span> <span class="nav-text">常用命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Nginx-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%EF%BC%9A-etc-nginx-nginx-conf"><span class="nav-number">3.</span> <span class="nav-text">Nginx 配置文件：&#x2F;etc&#x2F;nginx&#x2F;nginx.conf</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E4%BB%A3%E7%90%86%E7%9B%AE%E5%BD%95%EF%BC%9A-etc-nginx-sites-available"><span class="nav-number">4.</span> <span class="nav-text">配置代理目录： &#x2F;etc&#x2F;nginx&#x2F;sites-available&#x2F;</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8%E9%85%8D%E7%BD%AE%E4%BB%A3%E7%90%86%E7%9B%AE%E5%BD%95%EF%BC%9A-etc-nginx-sites-enabled"><span class="nav-number">5.</span> <span class="nav-text">启动配置代理目录：&#x2F;etc&#x2F;nginx&#x2F;sites-enabled&#x2F;</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#nginx-conf-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3"><span class="nav-number">6.</span> <span class="nav-text">nginx.conf 配置文件详解</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%99%9A%E6%8B%9F%E6%9C%8D%E5%8A%A1%E5%99%A8%E9%85%8D%E7%BD%AE"><span class="nav-number">7.</span> <span class="nav-text">虚拟服务器配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE-HTTP-%E6%9C%8D%E5%8A%A1%EF%BC%8880%E7%AB%AF%E5%8F%A3%EF%BC%89"><span class="nav-number">7.1.</span> <span class="nav-text">配置 HTTP 服务（80端口）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE-HTTPS-%E6%9C%8D%E5%8A%A1%EF%BC%88443%E7%AB%AF%E5%8F%A3%EF%BC%89"><span class="nav-number">7.2.</span> <span class="nav-text">配置 HTTPS 服务（443端口）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ngx-http-limit-conn-module-%E6%A8%A1%E5%9D%97"><span class="nav-number">8.</span> <span class="nav-text">ngx_http_limit_conn_module 模块</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ngx-http-limit-req-module-%E6%A8%A1%E5%9D%97"><span class="nav-number">9.</span> <span class="nav-text">ngx_http_limit_req_module 模块</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">10.</span> <span class="nav-text">参考</span></a></li></ol></div>
+      </section>
+      <!--/noindex-->
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="独木舟的木"
+      src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+  <p class="site-author-name" itemprop="name">独木舟的木</p>
+  <div class="site-description" itemprop="description">生若直木，不语斧凿。</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">310</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">36</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL0FuZHkwNTcw" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Andy0570"><i class="fab fa-github fa-fw"></i>GitHub</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9zdGFja292ZXJmbG93LmNvbS91c2Vycy83MjY1NDAwL2FuZHkwNTcw" title="StackOverflow → https:&#x2F;&#x2F;stackoverflow.com&#x2F;users&#x2F;7265400&#x2F;andy0570"><i class="fab fa-stack-overflow fa-fw"></i>StackOverflow</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuamlhbnNodS5jb20vdS84NGM1ZmFkYzdjMTg=" title="简书 → https:&#x2F;&#x2F;www.jianshu.com&#x2F;u&#x2F;84c5fadc7c18"><i class="heartbeat fa-fw"></i>简书</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="bWFpbHRvOmFuZHl3aG1AMTYzLmNvbQ==" title="E-Mail → mailto:andywhm@163.com"><i class="fa fa-envelope fa-fw"></i>E-Mail</span>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <span class="exturl cc-opacity" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpo"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></span>
+  </div>
+
+
+
+      </section>
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </header>
+
+      
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div id="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+      <div class="main-inner">
+        
+
+        <div class="content post posts-expand">
+          
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://andy0570.com/2018/06/24/Nginx%20%E4%BD%BF%E7%94%A8%E5%8F%8A%E9%85%8D%E7%BD%AE/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+      <meta itemprop="name" content="独木舟的木">
+      <meta itemprop="description" content="生若直木，不语斧凿。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="独木舟的木">
+    </span>
+
+    
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Nginx 使用及配置
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-06-24 17:15:00" itemprop="dateCreated datePublished" datetime="2018-06-24T17:15:00+08:00">2018-06-24</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-05-13 11:01:31" itemprop="dateModified" datetime="2019-05-13T11:01:31+08:00">2019-05-13</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E4%BA%91%E8%AE%A1%E7%AE%97/" itemprop="url" rel="index"><span itemprop="name">云计算</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>9.6k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>9 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/075039.png"></p>
+<h2 id="Nginx-目录"><a href="#Nginx-目录" class="headerlink" title="Nginx 目录"></a><span class="exturl" data-url="aHR0cDovL25naW54Lm9yZy8=">Nginx<i class="fa fa-external-link-alt"></i></span> 目录</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">cd</span> /etc/nginx</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> ls -l</span></span><br><span class="line">total 60</span><br><span class="line">drwx------ 2 ubuntu ubuntu 4096 Jun 16 09:27 cert    ## ssl证书目录</span><br><span class="line">drwxr-xr-x 2 root   root   4096 Jul 12  2017 conf.d</span><br><span class="line">-rw-r--r-- 1 root   root   1077 Feb 11  2017 fastcgi.conf</span><br><span class="line">-rw-r--r-- 1 root   root   1007 Feb 11  2017 fastcgi_params</span><br><span class="line">-rw-r--r-- 1 root   root   2837 Feb 11  2017 koi-utf</span><br><span class="line">-rw-r--r-- 1 root   root   2223 Feb 11  2017 koi-win</span><br><span class="line">-rw-r--r-- 1 root   root   3957 Feb 11  2017 mime.types</span><br><span class="line">-rw-r--r-- 1 root   root   1501 Aug 31 07:42 nginx.conf    ## 配置文件</span><br><span class="line">-rw-r--r-- 1 root   root    180 Feb 11  2017 proxy_params</span><br><span class="line">-rw-r--r-- 1 root   root    636 Feb 11  2017 scgi_params</span><br><span class="line">drwxr-xr-x 2 root   root   4096 Aug 31 09:42 sites-available  ## 虚拟主机配置代理目录</span><br><span class="line">drwxr-xr-x 2 root   root   4096 Jun 15 06:39 sites-enabled    ## 启动配置代理目录</span><br><span class="line">drwxr-xr-x 2 root   root   4096 Jun  4 06:03 snippets</span><br><span class="line">-rw-r--r-- 1 root   root    664 Feb 11  2017 uwsgi_params</span><br><span class="line">-rw-r--r-- 1 root   root   3071 Feb 11  2017 win-utf</span><br></pre></td></tr></table></figure>
+
+<a id="more"></a>
+
+<p>nginx 配置文件的关系：</p>
+<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/075040-1.jpg"></p>
+<h2 id="常用命令"><a href="#常用命令" class="headerlink" title="常用命令"></a>常用命令</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># 查看 Nginx 程序文件目录:/usr/sbin/nginx</span></span></span><br><span class="line"><span class="meta">$</span><span class="bash"> ps  -ef | grep nginx</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># 查看 nginx.conf 配置文件目录:/etc/nginx/nginx.conf</span></span></span><br><span class="line"><span class="meta">$</span><span class="bash"> nginx -t                 </span></span><br><span class="line"><span class="meta">$</span><span class="bash"> vim /etc/nginx/nginx.conf</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># 配置文件目录：/etc/nginx</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># 虚拟主机配置文件目录：/etc/nginx/sites-available/</span></span></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># 虚拟主机文件夹目录：/var/www/，详情可在 /etc/nginx/sites-available/ 中配置</span></span></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># 默认网页文件目录：/usr/share/nginx/html</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># 测试配置文件，只检查配置文件是否存在语法错误</span></span></span><br><span class="line"><span class="meta">$</span><span class="bash"> nginx -t -c &lt;path-to-nginx.conf&gt;</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo nginx -t -c /etc/nginx/nginx.conf</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># 启动 Nginx 服务</span></span></span><br><span class="line"><span class="meta">$</span><span class="bash"> nginx 安装目录 -c &lt;path-to-nginx.conf&gt;</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo /etc/init.d/nginx start</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># 停止 Nginx 服务</span></span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo /usr/sbin/nginx -s stop </span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># 重启 Nginx </span></span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo /usr/sbin/nginx -s reload  <span class="comment"># 0.8 版本之后的方法</span></span></span><br><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">kill</span> -HUP pid     <span class="comment"># 向 master 进程发送信号从容地重启 Nginx，即服务不中断</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo service nginx start</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo service nginx stop</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo service nginx restart</span></span><br></pre></td></tr></table></figure>
+
+<p>官方配置说明：</p>
+<ul>
+<li><span class="exturl" data-url="aHR0cDovL3dpa2kubmdpbngub3JnL1BpdGZhbGxz">http://wiki.nginx.org/Pitfalls<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cDovL3dpa2kubmdpbngub3JnL1F1aWNrU3RhcnQ=">http://wiki.nginx.org/QuickStart<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cDovL3dpa2kubmdpbngub3JnL0NvbmZpZ3VyYXRpb24=">http://wiki.nginx.org/Configuration<i class="fa fa-external-link-alt"></i></span></li>
+</ul>
+<blockquote>
+<p>💡 推荐一个 HTTPS 自动化配置工具：<span class="exturl" data-url="aHR0cHM6Ly9tb3ppbGxhLmdpdGh1Yi5pby9zZXJ2ZXItc2lkZS10bHMvc3NsLWNvbmZpZy1nZW5lcmF0b3Iv">Mozilla SSL Configuration Generator<i class="fa fa-external-link-alt"></i></span></p>
+</blockquote>
+<h2 id="Nginx-配置文件：-etc-nginx-nginx-conf"><a href="#Nginx-配置文件：-etc-nginx-nginx-conf" class="headerlink" title="Nginx 配置文件：/etc/nginx/nginx.conf"></a>Nginx 配置文件：/etc/nginx/nginx.conf</h2><ul>
+<li><p>参考 <span class="exturl" data-url="aHR0cDovL3d3dy5uZ2lueC5jbi83Ni5odG1s">Nginx 基本配置与参数说明<i class="fa fa-external-link-alt"></i></span> | <span class="exturl" data-url="aHR0cHM6Ly93d3cubmdpbnguY29tL3Jlc291cmNlcy93aWtpL3N0YXJ0L3RvcGljcy9leGFtcGxlcy9mdWxsLw==">Full Example Configuration<i class="fa fa-external-link-alt"></i></span></p>
+</li>
+<li><p><code>/etc/nginx/nginx.conf</code> 配置文件，在虚拟主机部分包含了这两个文件：</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">##</span></span><br><span class="line"><span class="comment"># Virtual Host Configs</span></span><br><span class="line"><span class="comment">##</span></span><br><span class="line"></span><br><span class="line"><span class="attribute">include</span> /etc/nginx/conf.d/<span class="regexp">*.conf</span>;  </span><br><span class="line"><span class="attribute">include</span> /etc/nginx/sites-enabled/*; </span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<h2 id="配置代理目录：-etc-nginx-sites-available"><a href="#配置代理目录：-etc-nginx-sites-available" class="headerlink" title="配置代理目录： /etc/nginx/sites-available/"></a>配置代理目录： /etc/nginx/sites-available/</h2><ul>
+<li><strong>sites-available</strong> 目录中存放着具体的 Server 配置文件。</li>
+<li>默认配置文件：<code>/etc/nginx/sites-available/default</code> 文件详细配置了默认的虚拟主机目录<code>root /var/www/html</code>，监听的端口是80。</li>
+</ul>
+<h2 id="启动配置代理目录：-etc-nginx-sites-enabled"><a href="#启动配置代理目录：-etc-nginx-sites-enabled" class="headerlink" title="启动配置代理目录：/etc/nginx/sites-enabled/"></a>启动配置代理目录：/etc/nginx/sites-enabled/</h2><ul>
+<li><p><strong>sites-enabled</strong> 目录中存放的是链接文件，每个链接文件都指向 <strong>sites-available</strong> 目录中的配置文件，表示需要让 Nginx 启用哪些配置代理文件。</p>
+</li>
+<li><p>在 <strong>sites-enabled</strong> 下创建 symbol link 链接 <strong>sites-available</strong> 下的配置文件就可以启用代理配置。</p>
+<p><code>$ sudo ln -s /etc/nginx/sites-available/availableFileName linkFileName </code></p>
+</li>
+<li><p>默认启用的服务：<code>/etc/nginx/sites-enabled/</code> 中的 default 软链接指向  <code>/etc/nginx/sites-available/default</code>，删除该链接文件，就会关闭该配置代理。</p>
+</li>
+</ul>
+<h2 id="nginx-conf-配置文件详解"><a href="#nginx-conf-配置文件详解" class="headerlink" title="nginx.conf 配置文件详解"></a>nginx.conf 配置文件详解</h2><ul>
+<li><span class="exturl" data-url="aHR0cDovL3d3dy5uZ2lueC5jbi83Ni5odG1s">Nginx 基本配置与参数说明<i class="fa fa-external-link-alt"></i></span> </li>
+<li><span class="exturl" data-url="aHR0cHM6Ly93d3cubmdpbnguY29tL3Jlc291cmNlcy93aWtpL3N0YXJ0L3RvcGljcy9leGFtcGxlcy9mdWxsLw==">Full Example Configuration<i class="fa fa-external-link-alt"></i></span></li>
+</ul>
+<p>Nginx 配置文件路径：**/etc/nginx/nginx.conf**</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">##</span></span><br><span class="line"><span class="comment"># 全局配置</span></span><br><span class="line"><span class="comment">##</span></span><br><span class="line"></span><br><span class="line"><span class="attribute">user</span> www-data;             <span class="comment">## 配置 worker 进程的用户和组</span></span><br><span class="line"><span class="attribute">worker_processes</span> auto;     <span class="comment">## 配置 worker 进程启动的数量，建议配置为 CPU 核心数</span></span><br><span class="line"><span class="attribute">error_log</span> logs/error.log;  <span class="comment">## 全局错误日志</span></span><br><span class="line"><span class="attribute">pid</span> /run/nginx.pid;        <span class="comment">## 设置记录主进程 ID 的文件</span></span><br><span class="line"><span class="attribute">worker_rlimit_nofile</span> <span class="number">8192</span>; <span class="comment">## 配置一个工作进程能够接受并发连接的最大数</span></span><br><span class="line"></span><br><span class="line"><span class="comment">##</span></span><br><span class="line"><span class="comment"># 工作模式及连接数上限</span></span><br><span class="line"><span class="comment">##</span></span><br><span class="line"><span class="section">events</span> &#123;</span><br><span class="line">    <span class="comment"># epoll 是多路复用 IO（I/O Multiplexing）中的一种方式，</span></span><br><span class="line">    <span class="comment"># 仅用于 Linux 2.6 以上内核，可以大大提高 Nginx 性能</span></span><br><span class="line">    <span class="attribute">use</span> <span class="literal">epoll</span></span><br><span class="line">        </span><br><span class="line">    <span class="comment"># 单个后台 worker process 进程的最大并发链接数</span></span><br><span class="line">    <span class="comment"># 并发总数 max_clients = worker_professes * worker_connections</span></span><br><span class="line">    worker_connections <span class="number">4096</span>;  <span class="comment">## Defaule: 1024</span></span><br><span class="line">    <span class="comment"># multi_accept on;  ## 指明 worker 进程立刻接受新的连接</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">##</span></span><br><span class="line"><span class="comment"># http 模块</span></span><br><span class="line"><span class="comment">##</span></span><br><span class="line"></span><br><span class="line"><span class="section">http</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">##</span></span><br><span class="line">    <span class="comment"># Basic Settings</span></span><br><span class="line">    <span class="comment">##</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">#sendfile 指令指定 nginx 是否调用 sendfile 函数（zero copy 方式）来输出文件，</span></span><br><span class="line">    <span class="comment">#对于普通应用，必须设为 on,</span></span><br><span class="line">    <span class="comment">#如果用来进行下载等应用磁盘 IO 重负载应用，可设置为 off，</span></span><br><span class="line">    <span class="comment">#以平衡磁盘与网络 I/O 处理速度，降低系统的 uptime.</span></span><br><span class="line">    <span class="attribute">sendfile</span> <span class="literal">on</span>;</span><br><span class="line">    <span class="attribute">tcp_nopush</span> <span class="literal">on</span>;</span><br><span class="line">    <span class="attribute">tcp_nodelay</span> <span class="literal">on</span>;</span><br><span class="line">    <span class="attribute">keepalive_timeout</span> <span class="number">65</span>;      <span class="comment">## 连接超时时间</span></span><br><span class="line">    <span class="attribute">types_hash_max_size</span> <span class="number">2048</span>;  <span class="comment">## 指定散列类型表的最大大小</span></span><br><span class="line">    <span class="comment"># server_tokens off;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># server_names_hash_bucket_size 64;  # this seems to be required for some vhosts</span></span><br><span class="line">    <span class="comment"># server_name_in_redirect off;</span></span><br><span class="line">    </span><br><span class="line">    <span class="attribute">include</span> /etc/nginx/mime.types;  <span class="comment">## 设定 mine 类型</span></span><br><span class="line">    <span class="attribute">default_type</span> application/octet-stream;</span><br><span class="line">   </span><br><span class="line">    <span class="comment"># 设定请求缓冲</span></span><br><span class="line">    <span class="attribute">client_header_buffer_size</span>    <span class="number">128k</span>; <span class="comment"># 指定客户端请求头缓存大小，当请求头大于 1KB 时会用到该项</span></span><br><span class="line">    <span class="attribute">large_client_header_buffers</span>  <span class="number">4</span> <span class="number">128k</span>; <span class="comment"># 最大数量和最大客户端请求头的大小</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">##</span></span><br><span class="line">    <span class="comment"># SSL Settings</span></span><br><span class="line">    <span class="comment">##</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 启用所有协议，禁用已废弃的不安全的SSL 2 和SSL 3</span></span><br><span class="line">    <span class="attribute">ssl_protocols</span> TLSv1 TLSv1.<span class="number">1</span> TLSv1.<span class="number">2</span>; <span class="comment"># Dropping SSLv3, ref: POODLE</span></span><br><span class="line">    <span class="comment"># 让服务器选择要使用的算法套件</span></span><br><span class="line">    <span class="attribute">ssl_prefer_server_ciphers</span> <span class="literal">on</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">##</span></span><br><span class="line">    <span class="comment"># Logging Settings</span></span><br><span class="line">    <span class="comment">##</span></span><br><span class="line"></span><br><span class="line">    <span class="attribute">access_log</span> /var/log/nginx/access.log;  <span class="comment">## 访问日志</span></span><br><span class="line">    <span class="attribute">error_log</span> /var/log/nginx/error.log;    <span class="comment">## 错误日志</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">##</span></span><br><span class="line">    <span class="comment"># Gzip Settings</span></span><br><span class="line">    <span class="comment">##</span></span><br><span class="line"></span><br><span class="line">    <span class="attribute">gzip</span> <span class="literal">on</span>;</span><br><span class="line">    <span class="attribute">gzip_disable</span> <span class="string">&quot;msie6&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment"># gzip_vary on;</span></span><br><span class="line">    <span class="comment"># gzip_proxied any;</span></span><br><span class="line">    <span class="comment"># gzip_comp_level 6;</span></span><br><span class="line">    <span class="comment"># gzip_buffers 16 8k;</span></span><br><span class="line">    <span class="comment"># gzip_http_version 1.1;</span></span><br><span class="line">    <span class="comment"># gzip_types text/plain text/css application/json application/javascript text/xml application/xml application/xml+rss text/javascript;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">##</span></span><br><span class="line">    <span class="comment"># Virtual Host Configs</span></span><br><span class="line">    <span class="comment">##</span></span><br><span class="line"></span><br><span class="line">    <span class="attribute">include</span> /etc/nginx/conf.d/<span class="regexp">*.conf</span>;   <span class="comment"># 这个文件夹默认是空的</span></span><br><span class="line">    <span class="attribute">include</span> /etc/nginx/sites-enabled/*; <span class="comment"># 开启的 Server 服务配置</span></span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">##</span></span><br><span class="line"><span class="comment"># mail 模块</span></span><br><span class="line"><span class="comment">##</span></span><br><span class="line">        </span><br><span class="line"><span class="section">mail</span> &#123;</span><br><span class="line">    <span class="comment"># See sample authentication script at:</span></span><br><span class="line">    <span class="comment"># http://wiki.nginx.org/ImapAuthenticateWithApachePhpScript</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># auth_http localhost/auth.php;</span></span><br><span class="line">    <span class="comment"># pop3_capabilities &quot;TOP&quot; &quot;USER&quot;;</span></span><br><span class="line">    <span class="comment"># imap_capabilities &quot;IMAP4rev1&quot; &quot;UIDPLUS&quot;;</span></span><br><span class="line"></span><br><span class="line">    <span class="section">server</span> &#123;</span><br><span class="line">        <span class="attribute">listen</span>     localhost:<span class="number">110</span>;</span><br><span class="line">        <span class="attribute">protocol</span>   pop3;</span><br><span class="line">        <span class="attribute">proxy</span>      <span class="literal">on</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="section">server</span> &#123;</span><br><span class="line">        <span class="attribute">listen</span>     localhost:<span class="number">143</span>;</span><br><span class="line">        <span class="attribute">protocol</span>   imap;</span><br><span class="line">        <span class="attribute">proxy</span>      <span class="literal">on</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="虚拟服务器配置"><a href="#虚拟服务器配置" class="headerlink" title="虚拟服务器配置"></a>虚拟服务器配置</h2><p>虚拟服务器配置文件目录： <strong>/etc/nginx/sites-available/</strong> </p>
+<p>自定义配置文件：<code>sudo vim /etc/nginx/sites-available/arlingbc</code></p>
+<h3 id="配置-HTTP-服务（80端口）"><a href="#配置-HTTP-服务（80端口）" class="headerlink" title="配置 HTTP 服务（80端口）"></a>配置 HTTP 服务（80端口）</h3><figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Virtual Host configuration for arlingbc.com</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># You can move that to a different file under sites-available/ and symlink that</span></span><br><span class="line"><span class="comment"># to sites-enabled/ to enable it.</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 丢弃缺乏 Host 头的请求</span></span><br><span class="line"><span class="section">server</span> &#123;</span><br><span class="line">        <span class="attribute">listen</span> <span class="number">80</span>;</span><br><span class="line">       <span class="attribute">return</span> <span class="number">444</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="section">server</span> &#123;</span><br><span class="line">       <span class="attribute">listen</span> <span class="number">80</span>;</span><br><span class="line">       <span class="attribute">listen</span> [::]:<span class="number">80</span>;</span><br><span class="line">       <span class="attribute">server_name</span> example.com www.example.com;</span><br><span class="line"></span><br><span class="line">       <span class="comment"># 定义服务器的默认网站根目录位置</span></span><br><span class="line">       <span class="attribute">root</span> /var/www/example/;</span><br><span class="line">       </span><br><span class="line">       <span class="comment"># Add index.php to the list if you are using PHP</span></span><br><span class="line">       <span class="attribute">index</span> index.html index.htm index.nginx-debian.html;</span><br><span class="line"></span><br><span class="line">       <span class="comment"># access log file 访问日志</span></span><br><span class="line">       <span class="attribute">access_log</span> logs/nginx.access.log main;</span><br><span class="line">       </span><br><span class="line">       <span class="comment"># 禁止访问隐藏文件</span></span><br><span class="line">       <span class="comment"># Deny all attempts to access hidden files such as .htaccess, .htpasswd, .DS_Store (Mac).</span></span><br><span class="line">       <span class="attribute">location</span> <span class="regexp">~ /\.</span> &#123;</span><br><span class="line">                <span class="attribute">deny</span> all;</span><br><span class="line">                <span class="attribute">access_log</span> <span class="literal">off</span>;</span><br><span class="line">                <span class="attribute">log_not_found</span> <span class="literal">off</span>;</span><br><span class="line">       &#125;</span><br><span class="line">    </span><br><span class="line">       <span class="comment"># 默认请求</span></span><br><span class="line">       <span class="attribute">location</span> / &#123;</span><br><span class="line">                <span class="comment"># 首先尝试将请求作为文件提供，然后作为目录，然后回退到显示 404。</span></span><br><span class="line">                <span class="comment"># try_files 指令将会按照给定它的参数列出顺序进行尝试，第一个被匹配的将会被使用。</span></span><br><span class="line">                <span class="comment"># try_files $uri $uri/ =404;</span></span><br><span class="line">      </span><br><span class="line">                <span class="attribute">try_files</span> <span class="variable">$uri</span> <span class="variable">$uri</span>/ /index.php?path_info=<span class="variable">$uri</span>&amp;<span class="variable">$args</span> =<span class="number">404</span>;</span><br><span class="line">                <span class="attribute">access_log</span> <span class="literal">off</span>;</span><br><span class="line">                <span class="attribute">expires</span> max;</span><br><span class="line">       &#125;</span><br><span class="line">    </span><br><span class="line">       <span class="comment"># 静态文件，nginx 自己处理</span></span><br><span class="line">       <span class="attribute">location</span> <span class="regexp">~ ^/(images|javascript|js|css|flash|media|static)/</span> &#123;</span><br><span class="line">            </span><br><span class="line">           <span class="comment">#过期 30 天，静态文件不怎么更新，过期可以设大一点，</span></span><br><span class="line">           <span class="comment">#如果频繁更新，则可以设置得小一点。</span></span><br><span class="line">           <span class="attribute">expires</span> <span class="number">30d</span>;</span><br><span class="line">       &#125;</span><br><span class="line">    </span><br><span class="line">       <span class="comment"># .php 请求</span></span><br><span class="line">       <span class="attribute">location</span> <span class="regexp">~ \.php$</span> &#123;</span><br><span class="line">                <span class="attribute">try_files</span> <span class="variable">$uri</span> =<span class="number">404</span>;</span><br><span class="line">                <span class="attribute">include</span> /etc/nginx/fastcgi_params;</span><br><span class="line">                <span class="attribute">fastcgi_pass</span> unix:/var/run/php5-fpm.sock;</span><br><span class="line">                <span class="attribute">fastcgi_index</span> index.php;</span><br><span class="line">                <span class="attribute">fastcgi_param</span> SCRIPT_FILENAME <span class="variable">$document_root</span><span class="variable">$fastcgi_script_name</span>;</span><br><span class="line">                <span class="attribute">fastcgi_intercept_errors</span> <span class="literal">on</span>;</span><br><span class="line">       &#125;</span><br><span class="line">    </span><br><span class="line">      <span class="comment"># PHP 脚本请求全部转发到 FastCGI 处理. 使用 FastCGI 默认配置.</span></span><br><span class="line">      <span class="comment"># pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000</span></span><br><span class="line">      <span class="comment">#</span></span><br><span class="line">      <span class="comment">#location ~ \.php$ &#123;</span></span><br><span class="line">      <span class="comment">#       include snippets/fastcgi-php.conf;</span></span><br><span class="line">      <span class="comment">#</span></span><br><span class="line">      <span class="comment">#       # With php7.0-cgi alone:</span></span><br><span class="line">      <span class="comment">#       fastcgi_pass 127.0.0.1:9000;</span></span><br><span class="line">      <span class="comment">#       # With php7.0-fpm:</span></span><br><span class="line">      <span class="comment">#       fastcgi_pass unix:/run/php/php7.0-fpm.sock;</span></span><br><span class="line">      <span class="comment">#&#125;</span></span><br><span class="line">      </span><br><span class="line">      <span class="comment"># 拒绝访问. htaccess 文件，如果 Apache 的文档根与 nginx 的一致</span></span><br><span class="line">      <span class="comment"># deny access to .htaccess files, if Apache&#x27;s document root</span></span><br><span class="line">      <span class="comment"># concurs with nginx&#x27;s one</span></span><br><span class="line">      <span class="comment">#</span></span><br><span class="line">      <span class="comment">#location ~ /\.ht &#123;</span></span><br><span class="line">      <span class="comment">#       deny all;</span></span><br><span class="line">      <span class="comment">#&#125;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="配置-HTTPS-服务（443端口）"><a href="#配置-HTTPS-服务（443端口）" class="headerlink" title="配置 HTTPS 服务（443端口）"></a>配置 HTTPS 服务（443端口）</h3><figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">##</span></span><br><span class="line"><span class="comment"># 80 port</span></span><br><span class="line"><span class="comment">##</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 默认服务器，丢弃缺乏 Host 头的请求</span></span><br><span class="line"><span class="section">server</span> &#123;</span><br><span class="line">        <span class="attribute">listen</span> <span class="number">80</span>;</span><br><span class="line">       <span class="attribute">return</span> <span class="number">444</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="section">server</span> &#123;</span><br><span class="line">        <span class="attribute">listen</span> <span class="number">80</span>;</span><br><span class="line">        <span class="attribute">listen</span> [::]:<span class="number">80</span>;</span><br><span class="line">        <span class="attribute">sever_name</span> example.com www.example.com;</span><br><span class="line"></span><br><span class="line">        <span class="attribute">rewrite</span><span class="regexp"> ^(.*)$</span> https://<span class="variable">$host</span><span class="variable">$1</span> <span class="literal">permanent</span>;  <span class="comment">## 端口转发，301 重定向</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">##</span></span><br><span class="line"><span class="comment"># 443 port</span></span><br><span class="line"><span class="comment">##</span></span><br><span class="line"><span class="section">server</span> &#123;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">##</span></span><br><span class="line">    <span class="comment"># 阿里云参考配置</span></span><br><span class="line">    <span class="comment">##</span></span><br><span class="line">    </span><br><span class="line">    <span class="attribute">listen</span> <span class="number">443</span>;</span><br><span class="line">    <span class="attribute">listen</span> [::]:<span class="number">443</span>;</span><br><span class="line">    <span class="attribute">server_name</span> example.com www.example.com;</span><br><span class="line">    </span><br><span class="line">    <span class="attribute">root</span> /var/www/example/;    <span class="comment"># 为虚拟服务器指明文档的根目录</span></span><br><span class="line">    <span class="attribute">index</span> index.html index.htm; <span class="comment"># 给定URL文件</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">##</span></span><br><span class="line">    <span class="comment"># 部署 HTTP 严格传输安全（HSTS）</span></span><br><span class="line">    <span class="comment">##</span></span><br><span class="line">    <span class="attribute">add_header</span> Strict-Transport-Security <span class="string">&quot;max-age=31536000; includeSubDomains; preload;&quot;</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># Note: You should disable gzip for SSL traffic.</span></span><br><span class="line">    <span class="comment"># See: https://bugs.debian.org/773332</span></span><br><span class="line">    gzip <span class="literal">off</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">##</span></span><br><span class="line">    <span class="comment"># SSL configuration</span></span><br><span class="line">    <span class="comment">##</span></span><br><span class="line">    </span><br><span class="line">    <span class="attribute">ssl</span> <span class="literal">on</span>;</span><br><span class="line">    <span class="attribute">ssl_certificate</span>   cert/certfile.pem;    <span class="comment"># 证书</span></span><br><span class="line">    <span class="attribute">ssl_certificate_key</span>  cert/certfile.key; <span class="comment"># 私钥</span></span><br><span class="line">    <span class="attribute">ssl_session_timeout</span> <span class="number">5m</span>; <span class="comment"># 设置超时时间</span></span><br><span class="line">    <span class="comment"># 密码套件配置</span></span><br><span class="line">    <span class="comment"># 密码套件名称构成：密钥交换-身份验证-加密算法（算法-强度-模式）-MAC或PRF</span></span><br><span class="line">    <span class="attribute">ssl_ciphers</span> ECDHE-RSA-AES128-GCM- SHA256:ECDHE:ECDH:AES:HIGH:!NULL:!aNULL:!MD5:!ADH:!RC4; </span><br><span class="line">    <span class="attribute">ssl_protocols</span> TLSv1.<span class="number">2</span>; <span class="comment"># 设置 SSL/TSL 协议版本号</span></span><br><span class="line">    <span class="attribute">ssl_prefer_server_ciphers</span> <span class="literal">on</span>; <span class="comment"># 控制密码套件优先级，让服务器选择要使用的算法套件</span></span><br><span class="line">    <span class="attribute">ssl_buffer_size</span> <span class="number">1400</span>; <span class="comment"># 减少TLS缓冲区大小，可以显著减少首字节时间（《HTTPS权威指南》P416）</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">##</span></span><br><span class="line">    <span class="comment"># location configuration</span></span><br><span class="line">    <span class="comment">##</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>HSTS HTTP 头部标准：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Strict-Transport-Security: max-age&#x3D;31536000; includeSubDomains; preload;</span><br></pre></td></tr></table></figure>
+
+<p>参数：</p>
+<ul>
+<li>max-age，服务器告诉某个客户端，在 31536000 秒内，应该实施 HSTS 标准，这段时间内如果客户端重新访问了 HTTPS 网站，max-age 时间就会被重新刷新。</li>
+<li>includeSubDomains，服务器告诉客户端域名下的所有子域名都实施 HSTS 标准，不仅仅是发出 HSTS HTTP 头部的主机才遵循该标准。</li>
+<li>preload，浏览器预存了需要实施 HSTS 标准的网站。</li>
+</ul>
+<h2 id="ngx-http-limit-conn-module-模块"><a href="#ngx-http-limit-conn-module-模块" class="headerlink" title="ngx_http_limit_conn_module 模块"></a>ngx_http_limit_conn_module 模块</h2><figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">http</span> &#123;</span><br><span class="line">    <span class="comment"># 最大连接数</span></span><br><span class="line">    <span class="comment"># 分配一个共享内存区域，大小为 10M，用于限制IP</span></span><br><span class="line">    <span class="comment"># 使用 $binary_remote_addr 变量， 可以将每条状态记录的大小减少到 64 个字节，这样 1M 的内存可以保存大约 1 万 6 千个 64 字节的记录。</span></span><br><span class="line">    <span class="attribute">limit_conn_zone</span> <span class="variable">$binary_remote_addr</span> zone=ips:<span class="number">10m</span>;</span><br><span class="line">    <span class="comment"># 分配一个共享内存区域，大小为 10M，用于限制服务器连接数</span></span><br><span class="line">    <span class="attribute">limit_conn_zone</span> <span class="variable">$server_name</span> zone=servers:<span class="number">10m</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 设置日志记录级别</span></span><br><span class="line">    <span class="comment"># 当服务器因为频率过高拒绝或者延迟处理请求时可以记下相应级别的日志。</span></span><br><span class="line">    <span class="attribute">limit_conn_log_level</span> <span class="literal">notice</span>;</span><br><span class="line"></span><br><span class="line">    <span class="section">server</span> &#123;</span><br><span class="line">        <span class="comment"># 限制每一个IP地址访问限制10个连接</span></span><br><span class="line">        <span class="attribute">limit_conn</span> ips <span class="number">10</span>;</span><br><span class="line">        </span><br><span class="line">        <span class="comment"># 服务器提供的最大连接数 1000</span></span><br><span class="line">        <span class="attribute">limit_conn</span> servers <span class="number">1000</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="ngx-http-limit-req-module-模块"><a href="#ngx-http-limit-req-module-模块" class="headerlink" title="ngx_http_limit_req_module 模块"></a>ngx_http_limit_req_module 模块</h2><ul>
+<li><span class="exturl" data-url="aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2xvb3Bob21lL2FydGljbGUvZGV0YWlscy81MDc2NzkwNw==">Nginx 模块 ngx_http_limit_req_module 限制请求速率<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cDovL3d3dy50dGxzYS5jb20vbmdpbngvbmdpbngtbGltaXRpbmctdGhlLW51bWJlci1vZi1yZXF1ZXN0cy1uZ3hfaHR0cF9saW1pdF9yZXFfbW9kdWxlLW1vZHVsZS8=">nginx 限制请求数 ngx_http_limit_req_module 模块<i class="fa fa-external-link-alt"></i></span></li>
+</ul>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">http</span> &#123;</span><br><span class="line">    <span class="comment"># 最大连接数</span></span><br><span class="line">    <span class="comment"># 分配一个共享内存区域，大小为 10M，限制下载连接数为1</span></span><br><span class="line">    <span class="attribute">limit_conn_zone</span> <span class="variable">$binary_remote_addr</span> zone=connections:<span class="number">10m</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 最大并发数，每秒请求数（r/s），每分钟请求数（r/m）</span></span><br><span class="line">    <span class="comment"># 分配一个设置最大并发数的内存区域，大小 10M，limit_req 限制之前的请求速率 1次/s。</span></span><br><span class="line">    <span class="comment"># 使用 $binary_remote_addr 变量， 可以将每条状态记录的大小减少到 64 个字节，这样 1M 的内存可以保存大约 1 万 6 千个 64 字节的记录。</span></span><br><span class="line">    <span class="attribute">limit_req_zone</span> <span class="variable">$binary_remote_addr</span> zone=requests:<span class="number">10m</span> rate=1r/s;</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 设置日志记录级别</span></span><br><span class="line">    <span class="comment"># 当服务器因为频率过高拒绝或者延迟处理请求时可以记下相应级别的日志。</span></span><br><span class="line">    <span class="attribute">limit_req_log_level</span> <span class="literal">warn</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment"># immediately release socket buffer memory on timeout</span></span><br><span class="line">    <span class="attribute">reset_timedout_connection</span> <span class="literal">on</span>;</span><br><span class="line"></span><br><span class="line">    <span class="section">server</span> &#123;</span><br><span class="line">    </span><br><span class="line">        <span class="comment"># 仅对 search URL 有效</span></span><br><span class="line">        <span class="attribute">location</span> /search &#123;</span><br><span class="line">            </span><br><span class="line">            <span class="comment"># 限制速率</span></span><br><span class="line">            <span class="comment"># 最大延迟请求数量 10 个，超过则返回状态码 503</span></span><br><span class="line">            <span class="attribute">limit_req</span> zone=requests burst=<span class="number">3</span> nodelay;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="comment"># 限制客户端带宽，</span></span><br><span class="line">        <span class="comment"># 策略：允许小文件自由下载，但对于大文件则启用这种限制</span></span><br><span class="line">        <span class="attribute">location</span> /downloads &#123;</span><br><span class="line">            <span class="comment"># 首先限制客户端的下载连接数为1 </span></span><br><span class="line">            <span class="attribute">limit_conn</span> connections <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">            <span class="comment"># 下载完 1M 内容之后，启用 limit_rate 限制。</span></span><br><span class="line">            <span class="attribute">limit_rate_after</span> <span class="number">1m</span>;</span><br><span class="line">            </span><br><span class="line">            <span class="comment"># 限制客户端下载下载内容的速率为 500k/s</span></span><br><span class="line">            <span class="attribute">limit_rate</span> <span class="number">500k</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL3Rhb2Jhby9uZ2lueC1ib29r">阿里出品：Nginx 开发从入门到精通<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cDovL3dpa2kuamlrZXh1ZXl1YW4uY29tL3Byb2plY3Qvbmdpbngv">Nginx 入门指南<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cDovL3d3dy5uZ2lueC5jbi9kb2Mv">Nginx 中文文档<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cHM6Ly93d3cubmdpbnguY29tL3Jlc291cmNlcy93aWtpL21vZHVsZXMvaW5kZXguaHRtbA==">NGINX 3rd Party Modules<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cHM6Ly9ibG9nLmJpdHpvLmNuLzIwMTcvMDcvMjgvbmdpbngv">Nginx 反向代理（端口转发）<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cHM6Ly93d3cuamlhbnNodS5jb20vcC9iMWYyNDdmZTJjYjY/dXRtX2NhbXBhaWduPW1hbGVza2luZSZ1dG1fY29udGVudD1ub3RlJnV0bV9tZWRpdW09cmVhZGVyX3NoYXJlJnV0bV9zb3VyY2U9d2VpeGlu">5 个提高 Node.js 应用性能的技巧<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cHM6Ly93d3cueWQ2MzEuY29tL25naW54LW5vZGVqcy8=">基于 Debian 系统配置 Nginx 环境的 Node.js 应用教程<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cHM6Ly9qdWVqaW4uaW0vcG9zdC81N2I1NGYxNTE1MzJiYzAwNjNlYmZlMzE=">为什么要使用 Node.js<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cHM6Ly93d3cub3NjaGluYS5uZXQvbmV3cy83OTU2Ny9hcGFjaGUtdnMtbmdpbngtdnMtbm9kZS1qcw==">巨头终极对决，Apache、Nginx 与 Node.js 之争<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cHM6Ly93d3cuamlhbnNodS5jb20vcC8zNTUxYTExOGRlZWI/dXRtX2NhbXBhaWduPWhhcnVraSZ1dG1fY29udGVudD1ub3RlJnV0bV9tZWRpdW09cmVhZGVyX3NoYXJlJnV0bV9zb3VyY2U9d2VpeGlu">图解 HTTPS<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3d6eV8xOTg4L2FydGljbGUvZGV0YWlscy84NTQ5Mjkw">nginx 强制使用 https 访问 (http 跳转到 https)<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cHM6Ly93d3cuamI1MS5uZXQvYXJ0aWNsZS8xMzcyMDguaHRt">Nginx 启用 OCSP Stapling 的配置<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cHM6Ly9xdWNoYW8uY29tL2VudHJ5L2hvdy10by1jb25maWd1cmUtb2NzcC1zdGFwbGluZy1vbi1uZ2lueC1mb3ItdGhlLWNlcnRpZmljYXRlcy1pc3N1ZWQtYnktbGV0cy1lbmNyeXB0Lw==">在 NginX 上为证书配置 OCSP Stapling<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cHM6Ly93d3cubGludXhpZGMuY29tL0xpbnV4LzIwMTctMDYvMTQ0NDkzLmh0bQ==">Linux 公社：Nginx 配置项优化详解<i class="fa fa-external-link-alt"></i></span></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>独木舟的木
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://andy0570.com/2018/06/24/Nginx%20%E4%BD%BF%E7%94%A8%E5%8F%8A%E9%85%8D%E7%BD%AE/" title="Nginx 使用及配置">https://andy0570.com/2018/06/24/Nginx 使用及配置/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <span class="exturl" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpo"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</span> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Nginx/" rel="tag"># Nginx</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2018/06/12/%E4%B8%BA%20VMware%20%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%86%85%E5%AE%89%E8%A3%85%E7%9A%84%20Ubuntu%2016.0.4%20%E8%AE%BE%E7%BD%AE%E9%9D%99%E6%80%81IP/" rel="prev" title="为 VMware 虚拟机内安装的 Ubuntu 16.0.4 设置静态IP">
+      <i class="fa fa-chevron-left"></i> 为 VMware 虚拟机内安装的 Ubuntu 16.0.4 设置静态IP
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2018/07/03/iOS%20%E7%BC%96%E7%A8%8B%EF%BC%9A%E5%8D%8A%E9%80%8F%E6%98%8E%E5%BC%B9%E7%AA%97/" rel="next" title="iOS 编程：半透明弹窗">
+      iOS 编程：半透明弹窗 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+        </div>
+        
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">独木舟的木</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">2.1m</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">31:21</span>
+</div>
+  <div class="powered-by">由 <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZw==">NexT.Gemini</span> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

@@ -1,23 +1,567 @@
-{% extends '_layout.swig' %}
-{% import '_macro/post.swig' as post_template %}
-{% import '_macro/sidebar.swig' as sidebar_template %}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.0.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+  <meta name="google-site-verification" content="wioXOS3Gv2wXUpJ3sLtfZ4ft6YJYKNLLWSw6QoZTFYM">
+  <meta name="msvalidate.01" content="C96491A81239C517A50597C54EE53CD1">
+  <meta name="baidu-site-verification" content="h8asiToN1b">
 
-{% block title %}{{ page.title }} | {{ title }}{% endblock %}
+<link rel="stylesheet" href="/css/main.css">
 
-{% block page_class %}page-post-detail{% endblock %}
 
-{% block content %}
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  
+  <link rel="stylesheet" href="/lib/animate-css/animate.min.css">
 
-  <div id="posts" class="posts-expand">
-    {{ post_template.render(page) }}
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"andy0570.com","root":"/","scheme":"Gemini","version":"8.0.0-rc.5","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":"mac","bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false};
+  </script>
+
+  <meta name="description" content="视图控制器导航栏  参考 GitHub 源码：shinobicontrols&#x2F;iOS7-day-by-day 天天品尝iOS7甜点 :: Day 20 :: View controller content and navigation bars">
+<meta property="og:type" content="article">
+<meta property="og:title" content="天天品尝iOS7甜点 Day20：View controller content and navigation bars">
+<meta property="og:url" content="https://andy0570.com/2017/09/21/%E5%A4%A9%E5%A4%A9%E5%93%81%E5%B0%9DiOS7%E7%94%9C%E7%82%B9%20Day20%EF%BC%9AView%20controller%20content%20and%20navigation%20bars/index.html">
+<meta property="og:site_name" content="独木舟的木">
+<meta property="og:description" content="视图控制器导航栏  参考 GitHub 源码：shinobicontrols&#x2F;iOS7-day-by-day 天天品尝iOS7甜点 :: Day 20 :: View controller content and navigation bars">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072556.jpg">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072556-1.jpg">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072557.jpg">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072559.jpg">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072559-1.jpg">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072607.gif">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072608.jpg">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072609.gif">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072610.gif">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072611.gif">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072611.jpg">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072612.jpg">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072614.jpg">
+<meta property="article:published_time" content="2017-09-21T03:00:00.000Z">
+<meta property="article:modified_time" content="2019-05-01T13:32:23.000Z">
+<meta property="article:author" content="独木舟的木">
+<meta property="article:tag" content="iOS">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072556.jpg">
+
+<link rel="canonical" href="https://andy0570.com/2017/09/21/%E5%A4%A9%E5%A4%A9%E5%93%81%E5%B0%9DiOS7%E7%94%9C%E7%82%B9%20Day20%EF%BC%9AView%20controller%20content%20and%20navigation%20bars/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>天天品尝iOS7甜点 Day20：View controller content and navigation bars | 独木舟的木</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="独木舟的木" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <main class="main">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+        <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
   </div>
 
-{% endblock %}
+  <div class="site-meta">
 
-{% block sidebar %}
-  {{ sidebar_template.render(true) }}
-{% endblock %}
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">独木舟的木</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">iOS Developer</p>
+  </div>
 
-{% block script_extra %}
-  {% include '_scripts/pages/post-details.swig' %}
-{% endblock %}
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">14</span></a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">36</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">310</span></a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <section class="post-toc-wrap sidebar-panel">
+          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">1.</span> <span class="nav-text">参考</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A7%86%E5%9B%BE%E6%8E%A7%E5%88%B6%E5%99%A8%E5%9C%A8%E5%AF%BC%E8%88%AA%E6%8E%A7%E5%88%B6%E5%99%A8%E4%B8%AD"><span class="nav-number"></span> <span class="nav-text">视图控制器在导航控制器中</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#edgesForExtendedLayout-%E5%B1%9E%E6%80%A7%EF%BC%9A"><span class="nav-number">1.</span> <span class="nav-text">edgesForExtendedLayout 属性：</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-%E9%BB%98%E8%AE%A4%E5%80%BC-UIRectEdgeAll"><span class="nav-number">1.1.</span> <span class="nav-text">1. 默认值 UIRectEdgeAll</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-%E6%AD%A3%E7%A1%AE%E8%AE%BE%E7%BD%AE-UIRectEdgeNone"><span class="nav-number">1.2.</span> <span class="nav-text">2. 正确设置 UIRectEdgeNone</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%BB%9A%E5%8A%A8%E8%A7%86%E5%9B%BE%E5%9C%A8%E5%AF%BC%E8%88%AA%E6%8E%A7%E5%88%B6%E5%99%A8%E4%B8%AD"><span class="nav-number"></span> <span class="nav-text">滚动视图在导航控制器中</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#automaticallyAdjustsScrollViewInset-%E5%B1%9E%E6%80%A7%EF%BC%88iOS-11-deprecate-%F0%9F%98%B1%EF%BC%89%EF%BC%9A"><span class="nav-number">1.</span> <span class="nav-text">automaticallyAdjustsScrollViewInset 属性（iOS 11 deprecate 😱）：</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AE%E4%B8%BA-NO%EF%BC%9A"><span class="nav-number">1.1.</span> <span class="nav-text">设置为 NO：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AE%E4%B8%BA-YES%EF%BC%88%E9%BB%98%E8%AE%A4%EF%BC%89"><span class="nav-number">1.2.</span> <span class="nav-text">设置为 YES（默认）</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A1%A8%E6%A0%BC%E8%A7%86%E5%9B%BE%E5%9C%A8%E5%AF%BC%E8%88%AA%E6%8E%A7%E5%88%B6%E5%99%A8%E4%B8%AD"><span class="nav-number"></span> <span class="nav-text">表格视图在导航控制器中</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#automaticallyAdjustsScrollViewInsets"><span class="nav-number">1.</span> <span class="nav-text">automaticallyAdjustsScrollViewInsets</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%A6%E5%A4%96%E7%9A%84%E4%B8%80%E4%BA%9B%E6%83%85%E5%BD%A2%EF%BC%9A%E6%BB%9A%E5%8A%A8%E8%A7%86%E5%9B%BE%E6%88%96%E8%80%85%E5%88%97%E8%A1%A8%E8%A7%86%E5%9B%BE%E5%B5%8C%E5%85%A5%E5%9C%A8-UITabBarController-%E4%B8%AD"><span class="nav-number"></span> <span class="nav-text">另外的一些情形：滚动视图或者列表视图嵌入在 UITabBarController 中</span></a></div>
+      </section>
+      <!--/noindex-->
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="独木舟的木"
+      src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+  <p class="site-author-name" itemprop="name">独木舟的木</p>
+  <div class="site-description" itemprop="description">生若直木，不语斧凿。</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">310</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">36</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL0FuZHkwNTcw" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Andy0570"><i class="fab fa-github fa-fw"></i>GitHub</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9zdGFja292ZXJmbG93LmNvbS91c2Vycy83MjY1NDAwL2FuZHkwNTcw" title="StackOverflow → https:&#x2F;&#x2F;stackoverflow.com&#x2F;users&#x2F;7265400&#x2F;andy0570"><i class="fab fa-stack-overflow fa-fw"></i>StackOverflow</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuamlhbnNodS5jb20vdS84NGM1ZmFkYzdjMTg=" title="简书 → https:&#x2F;&#x2F;www.jianshu.com&#x2F;u&#x2F;84c5fadc7c18"><i class="heartbeat fa-fw"></i>简书</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="bWFpbHRvOmFuZHl3aG1AMTYzLmNvbQ==" title="E-Mail → mailto:andywhm@163.com"><i class="fa fa-envelope fa-fw"></i>E-Mail</span>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <span class="exturl cc-opacity" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpo"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></span>
+  </div>
+
+
+
+      </section>
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </header>
+
+      
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div id="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+      <div class="main-inner">
+        
+
+        <div class="content post posts-expand">
+          
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://andy0570.com/2017/09/21/%E5%A4%A9%E5%A4%A9%E5%93%81%E5%B0%9DiOS7%E7%94%9C%E7%82%B9%20Day20%EF%BC%9AView%20controller%20content%20and%20navigation%20bars/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+      <meta itemprop="name" content="独木舟的木">
+      <meta itemprop="description" content="生若直木，不语斧凿。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="独木舟的木">
+    </span>
+
+    
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          天天品尝iOS7甜点 Day20：View controller content and navigation bars
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2017-09-21 11:00:00" itemprop="dateCreated datePublished" datetime="2017-09-21T11:00:00+08:00">2017-09-21</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-05-01 21:32:23" itemprop="dateModified" datetime="2019-05-01T21:32:23+08:00">2019-05-01</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS/" itemprop="url" rel="index"><span itemprop="name">iOS</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>1.2k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>1 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <blockquote>
+<p>视图控制器导航栏</p>
+</blockquote>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><ul>
+<li><span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL1NoaW5vYmlDb250cm9scy9pT1M3LWRheS1ieS1kYXk=">GitHub 源码：shinobicontrols/iOS7-day-by-day<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cDovL2Jsb2cua2luZ2lvbC5jb20vMjAxNC8wMS8yNS9pb3M3LWRheS1ieS1kYXktZGF5MjAtdmlldy1jb250cm9sbGVyLWNvbnRlbnQtYW5kLW5hdmlnYXRpb24tYmFycy8=">天天品尝iOS7甜点 :: Day 20 :: View controller content and navigation bars<i class="fa fa-external-link-alt"></i></span></li>
+</ul>
+<a id="more"></a>
+
+<h2 id="视图控制器在导航控制器中"><a href="#视图控制器在导航控制器中" class="headerlink" title="视图控制器在导航控制器中"></a>视图控制器在导航控制器中</h2><h3 id="edgesForExtendedLayout-属性："><a href="#edgesForExtendedLayout-属性：" class="headerlink" title="edgesForExtendedLayout 属性："></a>edgesForExtendedLayout 属性：</h3><p>扩展的边缘布局。该属性仅适用于嵌入到容器中（例如 <code>UINavigationController</code>）的视图控制器。窗口的根视图控制器不对此属性做出反应。默认值为 <code>UIRectEdgeAll</code>。</p>
+<h4 id="1-默认值-UIRectEdgeAll"><a href="#1-默认值-UIRectEdgeAll" class="headerlink" title="1. 默认值 UIRectEdgeAll"></a>1. 默认值 UIRectEdgeAll</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">UIRectEdgeAll &#x3D; UIRectEdgeTop | UIRectEdgeLeft | UIRectEdgeBottom | UIRectEdgeRight</span><br></pre></td></tr></table></figure>
+
+<p>默认值 <code>UIRectEdgeAll</code> 在 Interface Builder 中的设置：</p>
+<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072556.jpg"></p>
+<p>在视图控制器中添加子视图：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">UIView *box &#x3D; [[UIView alloc] initWithFrame:CGRectMake(0, 0, 200, 200)];</span><br><span class="line">box.backgroundColor &#x3D; [UIColor blueColor];</span><br><span class="line">[self.view addSubview:box];</span><br></pre></td></tr></table></figure>
+
+<p>显示效果：</p>
+<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072556-1.jpg"></p>
+<h4 id="2-正确设置-UIRectEdgeNone"><a href="#2-正确设置-UIRectEdgeNone" class="headerlink" title="2. 正确设置 UIRectEdgeNone"></a>2. 正确设置 UIRectEdgeNone</h4><p>代码设置：<code>self.edgesForExtendedLayout = UIRectEdgeNone;</code></p>
+<p>Interface Builder 设置：</p>
+<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072557.jpg"></p>
+<p>显示效果：</p>
+<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072559.jpg"></p>
+<h2 id="滚动视图在导航控制器中"><a href="#滚动视图在导航控制器中" class="headerlink" title="滚动视图在导航控制器中"></a>滚动视图在导航控制器中</h2><h3 id="automaticallyAdjustsScrollViewInset-属性（iOS-11-deprecate-😱）："><a href="#automaticallyAdjustsScrollViewInset-属性（iOS-11-deprecate-😱）：" class="headerlink" title="automaticallyAdjustsScrollViewInset 属性（iOS 11 deprecate 😱）："></a>automaticallyAdjustsScrollViewInset 属性（iOS 11 deprecate 😱）：</h3><p>一个布尔值，指示视图控制器是否自动调整其滚动视图的插入内容。</p>
+<p>此属性的默认值为YES，这使容器视图控制器知道他们应该调整此视图控制器视图的滚动视图插入，以解决状态栏，搜索栏，导航栏，工具栏或选项卡栏所占用的屏幕区域。 如果您的视图控制器实现管理其自己的滚动视图插入调整，请将此属性设置为NO。</p>
+<h4 id="设置为-NO："><a href="#设置为-NO：" class="headerlink" title="设置为 NO："></a>设置为 NO：</h4><p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072559-1.jpg"></p>
+<p>效果： 滚动视图会嵌入到导航栏下方，顶部第一个 cell 被遮挡，无法正常显示。</p>
+<p>当然，现在很多 App 的页面顶部的图片有这种效果。</p>
+<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072607.gif"></p>
+<h4 id="设置为-YES（默认）"><a href="#设置为-YES（默认）" class="headerlink" title="设置为 YES（默认）"></a>设置为 YES（默认）</h4><p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072608.jpg"></p>
+<p>效果，正常显示 cell：</p>
+<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072609.gif"></p>
+<h2 id="表格视图在导航控制器中"><a href="#表格视图在导航控制器中" class="headerlink" title="表格视图在导航控制器中"></a>表格视图在导航控制器中</h2><p><code>UITableView</code>是<code>UIScrollView</code>的子类，所以我们期望和上一个滚动视图相同的效果，用到了同样的属性：</p>
+<h3 id="automaticallyAdjustsScrollViewInsets"><a href="#automaticallyAdjustsScrollViewInsets" class="headerlink" title="automaticallyAdjustsScrollViewInsets"></a>automaticallyAdjustsScrollViewInsets</h3><p>同样，如果设置为 <strong>NO</strong>，TableView 的上下都会被遮挡：</p>
+<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072610.gif"></p>
+<p>而如果设置为 <strong>YES</strong>，则上下都能正常显示：</p>
+<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072611.gif"></p>
+<h2 id="另外的一些情形：滚动视图或者列表视图嵌入在-UITabBarController-中"><a href="#另外的一些情形：滚动视图或者列表视图嵌入在-UITabBarController-中" class="headerlink" title="另外的一些情形：滚动视图或者列表视图嵌入在 UITabBarController 中"></a>另外的一些情形：滚动视图或者列表视图嵌入在 UITabBarController 中</h2><p>这种情况就算设置 <code>automaticallyAdjustsScrollViewInset = YES</code> 也于事无补，底部那一块还是会被遮住。</p>
+<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072611.jpg"></p>
+<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072612.jpg"></p>
+<p>只需要取消勾选 <code>Under Bottom Bars</code> 这个属性就好：</p>
+<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072614.jpg"></p>
+<blockquote>
+<p>The End.</p>
+</blockquote>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>独木舟的木
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://andy0570.com/2017/09/21/%E5%A4%A9%E5%A4%A9%E5%93%81%E5%B0%9DiOS7%E7%94%9C%E7%82%B9%20Day20%EF%BC%9AView%20controller%20content%20and%20navigation%20bars/" title="天天品尝iOS7甜点 Day20：View controller content and navigation bars">https://andy0570.com/2017/09/21/天天品尝iOS7甜点 Day20：View controller content and navigation bars/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <span class="exturl" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpo"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</span> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/iOS/" rel="tag"># iOS</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2017/09/19/%E5%A4%A9%E5%A4%A9%E5%93%81%E5%B0%9DiOS7%E7%94%9C%E7%82%B9%20Day16%EF%BC%9ADecoding%20QR%20Codes%20with%20AVFoundation/" rel="prev" title="天天品尝iOS7甜点 Day16：Decoding QR Codes with AVFoundation">
+      <i class="fa fa-chevron-left"></i> 天天品尝iOS7甜点 Day16：Decoding QR Codes with AVFoundation
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2017/09/22/%E5%A4%A9%E5%A4%A9%E5%93%81%E5%B0%9DiOS7%E7%94%9C%E7%82%B9%20Day21%EF%BC%9AMulti%20column%20TextKit%20text%20rendering/" rel="next" title="天天品尝iOS7甜点 Day21：Multi column TextKit text rendering">
+      天天品尝iOS7甜点 Day21：Multi column TextKit text rendering <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+        </div>
+        
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">独木舟的木</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">2.1m</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">31:21</span>
+</div>
+  <div class="powered-by">由 <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZw==">NexT.Gemini</span> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

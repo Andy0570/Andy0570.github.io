@@ -1,23 +1,627 @@
-{% extends '_layout.swig' %}
-{% import '_macro/post.swig' as post_template %}
-{% import '_macro/sidebar.swig' as sidebar_template %}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.0.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+  <meta name="google-site-verification" content="wioXOS3Gv2wXUpJ3sLtfZ4ft6YJYKNLLWSw6QoZTFYM">
+  <meta name="msvalidate.01" content="C96491A81239C517A50597C54EE53CD1">
+  <meta name="baidu-site-verification" content="h8asiToN1b">
 
-{% block title %}{{ page.title }} | {{ title }}{% endblock %}
+<link rel="stylesheet" href="/css/main.css">
 
-{% block page_class %}page-post-detail{% endblock %}
 
-{% block content %}
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  
+  <link rel="stylesheet" href="/lib/animate-css/animate.min.css">
 
-  <div id="posts" class="posts-expand">
-    {{ post_template.render(page) }}
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"andy0570.com","root":"/","scheme":"Gemini","version":"8.0.0-rc.5","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":"mac","bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false};
+  </script>
+
+  <meta name="description" content="一、基础架构即代码思想：使用高级编程语言来控制 IT 系统。 「基础架构即代码」描述了编写程序来创建与修改基础架构（包括虚拟服务器、网络、存储等）的方法。 自动化和 DevOps 运作DevOps（Development operations）的目标：快速发布开发好的软件，并且没有损失质量。 自动化部署、自动化构建、自动化测试（集成测试）、产品。 自动化基础架构的3种方式：  命令行接口（CLI）">
+<meta property="og:type" content="article">
+<meta property="og:title" content="《AWS云计算实战》4.编写基础架构：命令行、SDK 和 CloudFormation">
+<meta property="og:url" content="https://andy0570.com/2019/01/03/%E3%80%8AAWS%E4%BA%91%E8%AE%A1%E7%AE%97%E5%AE%9E%E6%88%98%E3%80%8B4.%E7%BC%96%E5%86%99%E5%9F%BA%E7%A1%80%E6%9E%B6%E6%9E%84%EF%BC%9A%E5%91%BD%E4%BB%A4%E8%A1%8C%E3%80%81SDK%20%E5%92%8C%20CloudFormation/index.html">
+<meta property="og:site_name" content="独木舟的木">
+<meta property="og:description" content="一、基础架构即代码思想：使用高级编程语言来控制 IT 系统。 「基础架构即代码」描述了编写程序来创建与修改基础架构（包括虚拟服务器、网络、存储等）的方法。 自动化和 DevOps 运作DevOps（Development operations）的目标：快速发布开发好的软件，并且没有损失质量。 自动化部署、自动化构建、自动化测试（集成测试）、产品。 自动化基础架构的3种方式：  命令行接口（CLI）">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/080053-1.jpg">
+<meta property="article:published_time" content="2019-01-03T09:43:00.000Z">
+<meta property="article:modified_time" content="2019-05-01T12:36:58.000Z">
+<meta property="article:author" content="独木舟的木">
+<meta property="article:tag" content="AWS">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/080053-1.jpg">
+
+<link rel="canonical" href="https://andy0570.com/2019/01/03/%E3%80%8AAWS%E4%BA%91%E8%AE%A1%E7%AE%97%E5%AE%9E%E6%88%98%E3%80%8B4.%E7%BC%96%E5%86%99%E5%9F%BA%E7%A1%80%E6%9E%B6%E6%9E%84%EF%BC%9A%E5%91%BD%E4%BB%A4%E8%A1%8C%E3%80%81SDK%20%E5%92%8C%20CloudFormation/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>《AWS云计算实战》4.编写基础架构：命令行、SDK 和 CloudFormation | 独木舟的木</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="独木舟的木" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <main class="main">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+        <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
   </div>
 
-{% endblock %}
+  <div class="site-meta">
 
-{% block sidebar %}
-  {{ sidebar_template.render(true) }}
-{% endblock %}
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">独木舟的木</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">iOS Developer</p>
+  </div>
 
-{% block script_extra %}
-  {% include '_scripts/pages/post-details.swig' %}
-{% endblock %}
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">14</span></a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">36</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">310</span></a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <section class="post-toc-wrap sidebar-panel">
+          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E5%9F%BA%E7%A1%80%E6%9E%B6%E6%9E%84%E5%8D%B3%E4%BB%A3%E7%A0%81"><span class="nav-number">1.</span> <span class="nav-text">一、基础架构即代码</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%87%AA%E5%8A%A8%E5%8C%96%E5%92%8C-DevOps-%E8%BF%90%E4%BD%9C"><span class="nav-number">1.1.</span> <span class="nav-text">自动化和 DevOps 运作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E7%A1%80%E6%9E%B6%E6%9E%84%E8%AF%AD%E8%A8%80%EF%BC%9AJIML"><span class="nav-number">1.2.</span> <span class="nav-text">基础架构语言：JIML</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E4%BD%BF%E7%94%A8%E5%91%BD%E4%BB%A4%E8%A1%8C%E6%8E%A5%E5%8F%A3"><span class="nav-number">2.</span> <span class="nav-text">二、使用命令行接口</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85-AWS-%E5%91%BD%E4%BB%A4%E8%A1%8C%E6%8E%A5%E5%8F%A3%EF%BC%88CLI%EF%BC%89"><span class="nav-number">2.1.</span> <span class="nav-text">安装 AWS 命令行接口（CLI）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%82%E8%80%83%EF%BC%9A"><span class="nav-number">2.1.1.</span> <span class="nav-text">参考：</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE-CLI"><span class="nav-number">2.2.</span> <span class="nav-text">配置 CLI</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA-IAM-%E7%94%A8%E6%88%B7"><span class="nav-number">2.2.1.</span> <span class="nav-text">创建 IAM 用户</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8-aws-configure-%E5%91%BD%E4%BB%A4%E8%AE%BE%E7%BD%AE-AWS-CLI%EF%BC%9A"><span class="nav-number">2.2.2.</span> <span class="nav-text">使用 aws configure 命令设置 AWS CLI：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96%E6%89%80%E6%9C%89%E5%8F%AF%E7%94%A8%E7%9A%84%E5%8C%BA%E5%9F%9F%E5%88%97%E8%A1%A8%EF%BC%9A"><span class="nav-number">2.2.3.</span> <span class="nav-text">获取所有可用的区域列表：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%8E%B7%E5%BE%97%E6%89%80%E6%9C%89%E7%B1%BB%E5%9E%8B%E4%B8%BA-t2-micro-%E7%9A%84-EC2-%E5%AE%9E%E4%BE%8B%E7%9A%84%E5%88%97%E8%A1%A8%EF%BC%9A"><span class="nav-number">2.2.4.</span> <span class="nav-text">获得所有类型为 t2.micro 的 EC2 实例的列表：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#help-%E5%85%B3%E9%94%AE%E5%AD%97"><span class="nav-number">2.2.5.</span> <span class="nav-text">help 关键字</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%9E%E4%BE%8B%E8%84%9A%E6%9C%AC%EF%BC%9Aserver-sh"><span class="nav-number">2.2.6.</span> <span class="nav-text">实例脚本：server.sh</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E5%86%99%E8%84%9A%E6%9C%AC%EF%BC%9F"><span class="nav-number">2.2.7.</span> <span class="nav-text">为什么要写脚本？</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%89%E3%80%81%E4%BD%BF%E7%94%A8-SDK-%E7%BC%96%E7%A8%8B"><span class="nav-number">3.</span> <span class="nav-text">三、使用 SDK 编程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%9B%E3%80%81%E4%BD%BF%E7%94%A8%E8%93%9D%E5%9B%BE%E6%9D%A5%E5%90%AF%E5%8A%A8%E4%B8%80%E5%8F%B0%E8%99%9A%E6%8B%9F%E6%9C%8D%E5%8A%A1%E5%99%A8"><span class="nav-number">4.</span> <span class="nav-text">四、使用蓝图来启动一台虚拟服务器</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8-CloudFormation-%E7%9A%84%E5%A5%BD%E5%A4%84"><span class="nav-number">4.1.</span> <span class="nav-text">使用 CloudFormation 的好处</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CloudFormation-%E6%A8%A1%E7%89%88%E8%A7%A3%E6%9E%90"><span class="nav-number">4.2.</span> <span class="nav-text">CloudFormation 模版解析</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%82%E6%95%B0"><span class="nav-number">4.2.1.</span> <span class="nav-text">参数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%B5%84%E6%BA%90"><span class="nav-number">4.2.2.</span> <span class="nav-text">资源</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BE%93%E5%87%BA"><span class="nav-number">4.2.3.</span> <span class="nav-text">输出</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%8C%E6%95%B4%E7%9A%84%E7%A4%BA%E4%BE%8B%E6%A8%A1%E7%89%88"><span class="nav-number">4.2.4.</span> <span class="nav-text">完整的示例模版</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#CloudFormation-%E6%9B%BF%E4%BB%A3%E6%96%B9%E6%A1%88"><span class="nav-number">4.2.5.</span> <span class="nav-text">CloudFormation 替代方案</span></a></li></ol></li></ol></li></ol></div>
+      </section>
+      <!--/noindex-->
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="独木舟的木"
+      src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+  <p class="site-author-name" itemprop="name">独木舟的木</p>
+  <div class="site-description" itemprop="description">生若直木，不语斧凿。</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">310</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">36</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL0FuZHkwNTcw" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Andy0570"><i class="fab fa-github fa-fw"></i>GitHub</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9zdGFja292ZXJmbG93LmNvbS91c2Vycy83MjY1NDAwL2FuZHkwNTcw" title="StackOverflow → https:&#x2F;&#x2F;stackoverflow.com&#x2F;users&#x2F;7265400&#x2F;andy0570"><i class="fab fa-stack-overflow fa-fw"></i>StackOverflow</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuamlhbnNodS5jb20vdS84NGM1ZmFkYzdjMTg=" title="简书 → https:&#x2F;&#x2F;www.jianshu.com&#x2F;u&#x2F;84c5fadc7c18"><i class="heartbeat fa-fw"></i>简书</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="bWFpbHRvOmFuZHl3aG1AMTYzLmNvbQ==" title="E-Mail → mailto:andywhm@163.com"><i class="fa fa-envelope fa-fw"></i>E-Mail</span>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <span class="exturl cc-opacity" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpo"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></span>
+  </div>
+
+
+
+      </section>
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </header>
+
+      
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div id="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+      <div class="main-inner">
+        
+
+        <div class="content post posts-expand">
+          
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://andy0570.com/2019/01/03/%E3%80%8AAWS%E4%BA%91%E8%AE%A1%E7%AE%97%E5%AE%9E%E6%88%98%E3%80%8B4.%E7%BC%96%E5%86%99%E5%9F%BA%E7%A1%80%E6%9E%B6%E6%9E%84%EF%BC%9A%E5%91%BD%E4%BB%A4%E8%A1%8C%E3%80%81SDK%20%E5%92%8C%20CloudFormation/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+      <meta itemprop="name" content="独木舟的木">
+      <meta itemprop="description" content="生若直木，不语斧凿。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="独木舟的木">
+    </span>
+
+    
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          《AWS云计算实战》4.编写基础架构：命令行、SDK 和 CloudFormation
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-01-03 17:43:00" itemprop="dateCreated datePublished" datetime="2019-01-03T17:43:00+08:00">2019-01-03</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-05-01 20:36:58" itemprop="dateModified" datetime="2019-05-01T20:36:58+08:00">2019-05-01</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E4%BA%91%E8%AE%A1%E7%AE%97/" itemprop="url" rel="index"><span itemprop="name">云计算</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>11k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>10 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="一、基础架构即代码"><a href="#一、基础架构即代码" class="headerlink" title="一、基础架构即代码"></a>一、基础架构即代码</h2><p>思想：使用高级编程语言来控制 IT 系统。</p>
+<p>「基础架构即代码」描述了编写程序来创建与修改基础架构（包括虚拟服务器、网络、存储等）的方法。</p>
+<h3 id="自动化和-DevOps-运作"><a href="#自动化和-DevOps-运作" class="headerlink" title="自动化和 DevOps 运作"></a>自动化和 DevOps 运作</h3><p>DevOps（Development operations）的目标：快速发布开发好的软件，并且没有损失质量。</p>
+<p>自动化部署、自动化构建、自动化测试（集成测试）、产品。</p>
+<p>自动化基础架构的3种方式：</p>
+<ol>
+<li><span class="exturl" data-url="aHR0cHM6Ly9kb2NzLmF3cy5hbWF6b24uY29tL3poX2NuL2NsaS9sYXRlc3QvdXNlcmd1aWRlL2NsaS1jaGFwLXdlbGNvbWUuaHRtbA==">命令行接口（CLI）<i class="fa fa-external-link-alt"></i></span>；</li>
+<li><span class="exturl" data-url="aHR0cHM6Ly9hbWF6b25hd3MtY2hpbmEuY29tL2NuL2dldHRpbmctc3RhcnRlZC90b29scy1zZGtzLz9ocD10aWxlJnNvLWV4cD1iZWxvdw==">开发工具套件（SDK）<i class="fa fa-external-link-alt"></i></span>；</li>
+<li><span class="exturl" data-url="aHR0cHM6Ly9kb2NzLmF3cy5hbWF6b24uY29tL3poX2NuL0FXU0Nsb3VkRm9ybWF0aW9uL2xhdGVzdC9Vc2VyR3VpZGUvV2VsY29tZS5odG1s">CloudFormation<i class="fa fa-external-link-alt"></i></span>；</li>
+</ol>
+<a id="more"></a>
+
+<h3 id="基础架构语言：JIML"><a href="#基础架构语言：JIML" class="headerlink" title="基础架构语言：JIML"></a>基础架构语言：JIML</h3><p>描述基础架构：JSON基础架构标记语言（JSON Infrastructure Markup Language，JIML）。</p>
+<p>转换步骤： JSON 输入 ➡️ JIML 解释器 ➡️ AWS API 调用。</p>
+<h2 id="二、使用命令行接口"><a href="#二、使用命令行接口" class="headerlink" title="二、使用命令行接口"></a>二、使用命令行接口</h2><h3 id="安装-AWS-命令行接口（CLI）"><a href="#安装-AWS-命令行接口（CLI）" class="headerlink" title="安装 AWS 命令行接口（CLI）"></a>安装 AWS 命令行接口（CLI）</h3><p>AWS 命令行界面 (CLI) 是用于管理 AWS 服务的统一工具。只通过一个工具进行下载和配置，您可以使用命令行控制多个 AWS 服务并利用脚本来自动执行这些服务。</p>
+<h4 id="参考："><a href="#参考：" class="headerlink" title="参考："></a>参考：</h4><ul>
+<li><p><span class="exturl" data-url="aHR0cHM6Ly9hbWF6b25hd3MtY2hpbmEuY29tL2NuL2NsaS8/aHA9dGlsZSZzby1leHA9YmVsb3c=">官方文档：AWS 命令行界面<i class="fa fa-external-link-alt"></i></span></p>
+</li>
+<li><p><span class="exturl" data-url="aHR0cHM6Ly9kb2NzLmF3cy5hbWF6b24uY29tL3poX2NuL2NsaS9sYXRlc3QvdXNlcmd1aWRlL2NsaS1jaGFwLXdlbGNvbWUuaHRtbA==">官方文档：AWS Command Line Interface<i class="fa fa-external-link-alt"></i></span></p>
+</li>
+</ul>
+<p>在 Mac 上安装 Python 3：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line">--------------------------------------------</span><br><span class="line"><span class="meta">#</span><span class="bash"> 查看 Python 版本，系统自带的 Python 版本是 2.x</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> python --version</span></span><br><span class="line">Python 2.7.15</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 使用 Homebrew 安装 Python3</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> brew install python3</span></span><br><span class="line">...</span><br><span class="line">==&gt; python</span><br><span class="line">Python has been installed as</span><br><span class="line">  /usr/local/bin/python3  # Python3 的安装目录</span><br><span class="line">...</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 查看 python3 版本</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> python3 --version </span></span><br><span class="line">Python 3.6.4</span><br><span class="line"></span><br><span class="line">--------------------------------------------</span><br><span class="line"><span class="meta">#</span><span class="bash"> 查看 pip 版本</span></span><br><span class="line"><span class="meta">$</span><span class="bash">  pip --version <span class="comment"># 默认 python 2.7 的 pip 版本</span></span></span><br><span class="line">pip 18.0 from /usr/local/lib/python2.7/site-packages/pip (python 2.7)</span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash">  pip3 --version <span class="comment"># python 3.6 的 pip 版本</span></span></span><br><span class="line">pip 9.0.1 from /Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/site-packages (python 3.6)</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 升级 pip3 版本</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> pip3 install --upgrade pip</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> pip3 --version</span></span><br><span class="line">pip 18.1 from /Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/site-packages/pip (python 3.6)</span><br><span class="line"></span><br><span class="line">--------------------------------------------</span><br><span class="line"><span class="meta">#</span><span class="bash"> 安装 AWS CLI</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo pip3 install awscli</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 验证 AWS CLI 的安装</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> aws --version</span></span><br><span class="line">aws-cli/1.16.81 Python/3.6.4 Darwin/18.2.0 botocore/1.12.71</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 升级 AWS CLI</span></span><br><span class="line">pip3 install awscli --upgrade --user</span><br></pre></td></tr></table></figure>
+
+<p>参考：<span class="exturl" data-url="aHR0cHM6Ly93d3cuemhpaHUuY29tL3F1ZXN0aW9uLzMwOTQxMzI5L2Fuc3dlci81MTQ4OTUxNw==">知乎：Mac OS X 上如何切换默认的 Python 版本？<i class="fa fa-external-link-alt"></i></span></p>
+<h3 id="配置-CLI"><a href="#配置-CLI" class="headerlink" title="配置 CLI"></a>配置 CLI</h3><h4 id="创建-IAM-用户"><a href="#创建-IAM-用户" class="headerlink" title="创建 IAM 用户"></a>创建 IAM 用户</h4><p>示例：</p>
+<table>
+<thead>
+<tr>
+<th>IAM 用户信息</th>
+<th>值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>登录URL</td>
+<td><span class="exturl" data-url="aHR0cHM6Ly84MTI2Nzc3NzM3NTcuc2lnbmluLmF3cy5hbWF6b24uY29tL2NvbnNvbGU=">https://812677773757.signin.aws.amazon.com/console<i class="fa fa-external-link-alt"></i></span></td>
+</tr>
+<tr>
+<td>IAM 用户名</td>
+<td>mycli</td>
+</tr>
+<tr>
+<td>访问类型</td>
+<td>编程访问</td>
+</tr>
+<tr>
+<td>权限</td>
+<td>AdministratorAccess</td>
+</tr>
+<tr>
+<td>访问密钥 ID</td>
+<td>AKIAJMJA54KW6HSPM2XA</td>
+</tr>
+<tr>
+<td>私有访问密钥</td>
+<td>Nyd1u5NBglomjj5X+Mu7L9cM0ZiBKXv5swj2TJ6D</td>
+</tr>
+</tbody></table>
+<h4 id="使用-aws-configure-命令设置-AWS-CLI："><a href="#使用-aws-configure-命令设置-AWS-CLI：" class="headerlink" title="使用 aws configure 命令设置 AWS CLI："></a>使用 <code>aws configure</code> 命令设置 AWS CLI：</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> default 的单个配置文件</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> aws configure </span></span><br><span class="line">AWS Access Key ID [None]: AKIAJMJA54KW6HSPM2XA # AWS 访问密钥 ID</span><br><span class="line">AWS Secret Access Key [None]: Nyd1u5NBglomjj5X+Mu7L9cM0ZiBKXv5swj2TJ6D # AWS 私有访问密钥</span><br><span class="line">Default region name [None]: us-east-1 # 默认区域名称，弗吉尼亚北部数据中心（us-east-1）</span><br><span class="line">Default output format [None]: json # 默认输出格式</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 使用 --profile 选项指定配置文件的名称</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> aws configure --profile user2</span></span><br><span class="line">AWS Access Key ID [None]: AKIAI44QH8DHBEXAMPLE</span><br><span class="line">AWS Secret Access Key [None]: je7MtGbClwBF/2Zp9Utk/h3yCo8nvbEXAMPLEKEY</span><br><span class="line">Default region name [None]: us-east-1</span><br><span class="line">Default output format [None]: json</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 省略 --profile 选项，这样会使用 default 配置文件中存储的设置：</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> aws s3 ls</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 指定 --profile profilename 来使用该名称下存储的设置：</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> aws s3 ls --profile myuser</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="获取所有可用的区域列表："><a href="#获取所有可用的区域列表：" class="headerlink" title="获取所有可用的区域列表："></a>获取所有可用的区域列表：</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> aws ec2 describe-regions</span></span><br><span class="line">...</span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> aws ec2 describe-regions --output table</span></span><br><span class="line">----------------------------------------------------------</span><br><span class="line">|                     DescribeRegions                    |</span><br><span class="line">+--------------------------------------------------------+</span><br><span class="line">||                        Regions                       ||</span><br><span class="line">|+-----------------------------------+------------------+|</span><br><span class="line">||             Endpoint              |   RegionName     ||</span><br><span class="line">|+-----------------------------------+------------------+|</span><br><span class="line">||  ec2.ap-south-1.amazonaws.com     |  ap-south-1      ||</span><br><span class="line">||  ec2.eu-west-3.amazonaws.com      |  eu-west-3       ||</span><br><span class="line">||  ec2.eu-north-1.amazonaws.com     |  eu-north-1      ||</span><br><span class="line">||  ec2.eu-west-2.amazonaws.com      |  eu-west-2       ||</span><br><span class="line">||  ec2.eu-west-1.amazonaws.com      |  eu-west-1       ||</span><br><span class="line">||  ec2.ap-northeast-2.amazonaws.com |  ap-northeast-2  ||</span><br><span class="line">||  ec2.ap-northeast-1.amazonaws.com |  ap-northeast-1  ||</span><br><span class="line">||  ec2.sa-east-1.amazonaws.com      |  sa-east-1       ||</span><br><span class="line">||  ec2.ca-central-1.amazonaws.com   |  ca-central-1    ||</span><br><span class="line">||  ec2.ap-southeast-1.amazonaws.com |  ap-southeast-1  ||</span><br><span class="line">||  ec2.ap-southeast-2.amazonaws.com |  ap-southeast-2  ||</span><br><span class="line">||  ec2.eu-central-1.amazonaws.com   |  eu-central-1    ||</span><br><span class="line">||  ec2.us-east-1.amazonaws.com      |  us-east-1       ||</span><br><span class="line">||  ec2.us-east-2.amazonaws.com      |  us-east-2       ||</span><br><span class="line">||  ec2.us-west-1.amazonaws.com      |  us-west-1       ||</span><br><span class="line">||  ec2.us-west-2.amazonaws.com      |  us-west-2       ||</span><br><span class="line">|+-----------------------------------+------------------+|</span><br></pre></td></tr></table></figure>
+
+<h4 id="获得所有类型为-t2-micro-的-EC2-实例的列表："><a href="#获得所有类型为-t2-micro-的-EC2-实例的列表：" class="headerlink" title="获得所有类型为 t2.micro 的 EC2 实例的列表："></a>获得所有类型为 t2.micro 的 EC2 实例的列表：</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">aws ec2 describe-instances --filters &quot;Name=instance-type,Values=t2.micro&quot;</span><br><span class="line">&#123;</span><br><span class="line">    &quot;Reservations&quot;: []</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>格式：<code>aws &lt;service&gt; &lt;action&gt; [--key value]</code>：</p>
+<h4 id="help-关键字"><a href="#help-关键字" class="headerlink" title="help 关键字"></a>help 关键字</h4><ul>
+<li><code>aws help</code>——显示所有可用的服务；</li>
+<li><code>aws &lt;service&gt; help</code>——显示某一服务所有可用的操作；</li>
+<li><code>aws &lt;service&gt; &lt;action&gt; help</code>——显示特定服务操作可用的所有选项；</li>
+</ul>
+<h4 id="实例脚本：server-sh"><a href="#实例脚本：server-sh" class="headerlink" title="实例脚本：server.sh"></a>实例脚本：server.sh</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">!/bin/bash -e <span class="comment"># 1⃣️ 当命令出错时终止</span></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> You need to install the AWS Command Line Interface from http://aws.amazon.com/cli/</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 2⃣️ 获取 Amazon Linux AMI 的 ID</span></span><br><span class="line">AMIID=$(aws ec2 describe-images --filters &quot;Name=description, Values=Amazon Linux AMI 2015.03.? x86_64 HVM GP2&quot; --query &quot;Images[0].ImageId&quot; --output text)</span><br><span class="line"><span class="meta">#</span><span class="bash"> 3⃣️ 获取默认 VPC 的 ID</span></span><br><span class="line">VPCID=$(aws ec2 describe-vpcs --filter &quot;Name=isDefault, Values=true&quot; --query &quot;Vpcs[0].VpcId&quot; --output text)</span><br><span class="line"><span class="meta">#</span><span class="bash"> 4⃣️ 获取默认子网的 ID</span></span><br><span class="line">SUBNETID=$(aws ec2 describe-subnets --filters &quot;Name=vpc-id, Values=$VPCID&quot; --query &quot;Subnets[0].SubnetId&quot; --output text)</span><br><span class="line"><span class="meta">#</span><span class="bash"> 5⃣️ 创建安全组</span></span><br><span class="line">SGID=$(aws ec2 create-security-group --group-name mysecuritygroup --description &quot;My security group&quot; --vpc-id $VPCID --output text)</span><br><span class="line"><span class="meta">#</span><span class="bash"> 6⃣️ 允许入站 SH 连接</span></span><br><span class="line">aws ec2 authorize-security-group-ingress --group-id $SGID --protocol tcp --port 22 --cidr 0.0.0.0/0</span><br><span class="line"><span class="meta">#</span><span class="bash"> 7⃣️ 创建并启动服务器</span></span><br><span class="line">INSTANCEID=$(aws ec2 run-instances --image-id $AMIID --key-name mykey --instance-type t2.micro --security-group-ids $SGID --subnet-id $SUBNETID --query &quot;Instances[0].InstanceId&quot; --output text)</span><br><span class="line">echo &quot;waiting for $INSTANCEID ...&quot;</span><br><span class="line"><span class="meta">#</span><span class="bash"> 8⃣️ 等到服务器启动</span></span><br><span class="line">aws ec2 wait instance-running --instance-ids $INSTANCEID</span><br><span class="line"><span class="meta">#</span><span class="bash"> 9⃣️ 获取服务器的公有域名</span></span><br><span class="line">PUBLICNAME=$(aws ec2 describe-instances --instance-ids $INSTANCEID --query &quot;Reservations[0].Instances[0].PublicDnsName&quot; --output text)</span><br><span class="line">echo &quot;$INSTANCEID is accepting SSH connections under $PUBLICNAME&quot;</span><br><span class="line">echo &quot;ssh -i mykey.pem ec2-user@$PUBLICNAME&quot;</span><br><span class="line">read -p &quot;Press [Enter] key to terminate $INSTANCEID ...&quot;</span><br><span class="line"><span class="meta">#</span><span class="bash"> 🔟 终止服务器</span></span><br><span class="line">aws ec2 terminate-instances --instance-ids $INSTANCEID</span><br><span class="line">echo &quot;terminating $INSTANCEID ...&quot;</span><br><span class="line"><span class="meta">#</span><span class="bash"> 1⃣️1⃣️ 等到服务器终止</span></span><br><span class="line">aws ec2 wait instance-terminated --instance-ids $INSTANCEID</span><br><span class="line"><span class="meta">#</span><span class="bash"> 1⃣️2⃣️ 删除安全组</span></span><br><span class="line">aws ec2 delete-security-group --group-id $SGID</span><br><span class="line">echo &quot;done.&quot;</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="为什么要写脚本？"><a href="#为什么要写脚本？" class="headerlink" title="为什么要写脚本？"></a>为什么要写脚本？</h4><p>为什么要写脚本，而不是使用图形化的AWS管理控制台？<strong>脚本可以复用，并且在长时间操作时节省时间。</strong>用户能够使用自己之前的项目中已经可用的模块来快速创建新的架构。通过使自己的基础架构创建自动化，用户也能够加强自己的部署流水线的自动化。<br>另一个好处是，<strong>脚本将是能想象的最准确的文档（甚至计算机能理解它）</strong>。如果你想在周一重复上周五自己做的事，脚本就是无价之宝。如果你病了，而你的同事需要处理好你的任务，他们会感激你留下的脚本。</p>
+<h2 id="三、使用-SDK-编程"><a href="#三、使用-SDK-编程" class="headerlink" title="三、使用 SDK 编程"></a>三、使用 SDK 编程</h2><p>参考：<span class="exturl" data-url="aHR0cHM6Ly9hbWF6b25hd3MtY2hpbmEuY29tL2NuL2dldHRpbmctc3RhcnRlZC90b29scy1zZGtzLz9ocD10aWxlJnNvLWV4cD1iZWxvdw==">官方文档：使用软件开发工具包和工具开始进行构建<i class="fa fa-external-link-alt"></i></span></p>
+<h2 id="四、使用蓝图来启动一台虚拟服务器"><a href="#四、使用蓝图来启动一台虚拟服务器" class="headerlink" title="四、使用蓝图来启动一台虚拟服务器"></a>四、使用蓝图来启动一台虚拟服务器</h2><p>参考：<span class="exturl" data-url="aHR0cHM6Ly9kb2NzLmF3cy5hbWF6b24uY29tL3poX2NuL0FXU0Nsb3VkRm9ybWF0aW9uL2xhdGVzdC9Vc2VyR3VpZGUvV2VsY29tZS5odG1s">官方文档：AWS CloudFormation<i class="fa fa-external-link-alt"></i></span> ⭐️⭐️⭐️</p>
+<p>参考：<span class="exturl" data-url="aHR0cHM6Ly9kb2NzLmF3cy5hbWF6b24uY29tL3poX2NuL0FXU0Nsb3VkRm9ybWF0aW9uL2xhdGVzdC9Vc2VyR3VpZGUvd29ya2luZy13aXRoLXRlbXBsYXRlcy1jZm4tZGVzaWduZXIuaHRtbA==">什么是 AWS CloudFormation Designer？<i class="fa fa-external-link-alt"></i></span></p>
+<p>早些时候，我们谈到 JIML 来引入基础架构即代码的概念。幸运的是，AWS 已经提供了一个比 JIML更好的工具: <strong>AWS CloudFormation</strong>。<strong>CloudFormation 基于模板来创建基础架构</strong>，也就是我们称作蓝图（模版）的东西。</p>
+<ul>
+<li>模版使用 JSON 描述了用户的基础架构的最终状态，CloudFormation 能对其进行解析并自动实现它。</li>
+<li>描述方法：告诉 CloudFormation 需要的基础架构以及组件之间的连接。</li>
+<li>用户不需要告诉 CloudFormation 应用的创建过程和操作的执行顺序，最重要的是：<strong>组件之间的依赖。</strong></li>
+</ul>
+<h3 id="使用-CloudFormation-的好处"><a href="#使用-CloudFormation-的好处" class="headerlink" title="使用 CloudFormation 的好处"></a>使用 CloudFormation 的好处</h3><ul>
+<li>用统一的方式描述基础架构；</li>
+<li>它能处理依赖关系；</li>
+<li>可复制；</li>
+<li>可自定义；</li>
+<li>可测试；</li>
+<li>可更新；（也就是说，更新实例类型时，无需先停止实例-更新-重启balabala…只要更新模版就行了！）</li>
+<li>最小化人为的误操作；</li>
+<li>把基础架构文档化；</li>
+<li>免费；</li>
+</ul>
+<h3 id="CloudFormation-模版解析"><a href="#CloudFormation-模版解析" class="headerlink" title="CloudFormation 模版解析"></a>CloudFormation 模版解析</h3><p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/080053-1.jpg" alt="CloudFormation 模版结构"></p>
+<p>CloudFormation 让你可以使用模版来创建和启动资源：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;AWSTemplateFormatVersion&quot;: &quot;2010-09-09&quot;,    ## 1⃣️ 唯一合法版本</span><br><span class="line">    &quot;Description&quot;: &quot;CloudFormation Description&quot;, ## 2⃣️ 描述模版的用途</span><br><span class="line">    &quot;Parameters&quot;: &#123;</span><br><span class="line">        [...] ## 3⃣️ 定义参数，如：域名、客户ID和数据库密码。</span><br><span class="line">    &#125;,</span><br><span class="line">    &quot;Resources&quot;: &#123;</span><br><span class="line">        [...] ## 4⃣️ 定义资源，如：虚拟服务器、负载均衡器、弹性IP地址。</span><br><span class="line">    &#125;,</span><br><span class="line">    &quot;Outputs&quot;: &#123;</span><br><span class="line">        [...] ## 5⃣️ 定义输出。从模版返回一些信息。</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>附：<span class="exturl" data-url="aHR0cHM6Ly9kb2NzLmF3cy5hbWF6b24uY29tL3poX2NuL0FXU0Nsb3VkRm9ybWF0aW9uL2xhdGVzdC9Vc2VyR3VpZGUvYXdzLXRlbXBsYXRlLXJlc291cmNlLXR5cGUtcmVmLmh0bWw=">AWS 资源和属性类型参考<i class="fa fa-external-link-alt"></i></span></p>
+<h4 id="参数"><a href="#参数" class="headerlink" title="参数"></a>参数</h4><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&quot;Parameters&quot;: &#123;</span><br><span class="line">    &quot;KeyName&quot;: &#123; ## 参数名</span><br><span class="line">        &quot;Description&quot;: &quot;Key Pair name&quot;,</span><br><span class="line">        &quot;Type&quot;: &quot;AWS::EC2::KeyPair::KeyName&quot;, ## 参数类型</span><br><span class="line">        &quot;Default&quot;: &quot;mykey&quot;</span><br><span class="line">    &#125;,</span><br></pre></td></tr></table></figure>
+
+<h4 id="资源"><a href="#资源" class="headerlink" title="资源"></a>资源</h4><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&quot;Resources&quot;: &#123;</span><br><span class="line">    &quot;Server&quot;: &#123; ## 资源名</span><br><span class="line">        &quot;Type&quot;: &quot;AWS::EC2::Instance&quot;, ## 资源类型</span><br><span class="line">        &quot;Properties&quot;: &#123;</span><br><span class="line">            &quot;ImageId&quot;: &#123;&quot;Fn::FindInMap&quot;: [&quot;EC2RegionMap&quot;, &#123;&quot;Ref&quot;: &quot;AWS::Region&quot;&#125;, &quot;AmazonLinuxAMIHVMEBSBacked64bit&quot;]&#125;, ## 一些硬编码设置</span><br><span class="line">            &quot;InstanceType&quot;: &#123;&quot;Ref&quot;: &quot;InstanceType&quot;&#125;,</span><br><span class="line">            &quot;KeyName&quot;: &#123;&quot;Ref&quot;: &quot;KeyName&quot;&#125;,</span><br><span class="line">            &quot;SecurityGroupIds&quot;: [&#123;&quot;Ref&quot;: &quot;SecurityGroup&quot;&#125;],</span><br><span class="line">            &quot;SubnetId&quot;: &#123;&quot;Ref&quot;: &quot;Subnet&quot;&#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure>
+
+<h4 id="输出"><a href="#输出" class="headerlink" title="输出"></a>输出</h4><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&quot;Outputs&quot;: &#123;</span><br><span class="line">    &quot;PublicName&quot;: &#123; ## 输出的名字</span><br><span class="line">        &quot;Value&quot;: &#123;&quot;Fn::GetAtt&quot;: [&quot;Server&quot;, &quot;PublicDnsName&quot;]&#125;, ## 输出的值：EC2 服务器的公有DNS名</span><br><span class="line">        &quot;Description&quot;: &quot;Public name (connect via SSH as user ec2-user)&quot;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="完整的示例模版"><a href="#完整的示例模版" class="headerlink" title="完整的示例模版"></a>完整的示例模版</h4><p>如果从模板创建一个基础架构，则 CloudFormation 称之为<strong>堆栈</strong>。可以认为模板对应堆栈，就像是类对应对象。模板只存在一次，而许多堆栈可以从同一个模板中被创建。</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">&quot;AWSTemplateFormatVersion&quot;</span>: <span class="string">&quot;2010-09-09&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;Description&quot;</span>: <span class="string">&quot;AWS in Action: chapter 4&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;Parameters&quot;</span>: &#123;</span><br><span class="line">        <span class="attr">&quot;KeyName&quot;</span>: &#123;</span><br><span class="line">            <span class="attr">&quot;Description&quot;</span>: <span class="string">&quot;Key Pair name&quot;</span>,</span><br><span class="line">            <span class="attr">&quot;Type&quot;</span>: <span class="string">&quot;AWS::EC2::KeyPair::KeyName&quot;</span>,</span><br><span class="line">            <span class="attr">&quot;Default&quot;</span>: <span class="string">&quot;mykey&quot;</span></span><br><span class="line">        &#125;,</span><br><span class="line">        <span class="attr">&quot;VPC&quot;</span>: &#123;</span><br><span class="line">            <span class="attr">&quot;Description&quot;</span>: <span class="string">&quot;Just select the one and only default VPC&quot;</span>,</span><br><span class="line">            <span class="attr">&quot;Type&quot;</span>: <span class="string">&quot;AWS::EC2::VPC::Id&quot;</span></span><br><span class="line">        &#125;,</span><br><span class="line">        <span class="attr">&quot;Subnet&quot;</span>: &#123;</span><br><span class="line">            <span class="attr">&quot;Description&quot;</span>: <span class="string">&quot;Just select one of the available subnets&quot;</span>,</span><br><span class="line">            <span class="attr">&quot;Type&quot;</span>: <span class="string">&quot;AWS::EC2::Subnet::Id&quot;</span></span><br><span class="line">        &#125;,</span><br><span class="line">        <span class="attr">&quot;InstanceType&quot;</span>: &#123;</span><br><span class="line">            <span class="attr">&quot;Description&quot;</span>: <span class="string">&quot;Select one of the possible instance types&quot;</span>,</span><br><span class="line">            <span class="attr">&quot;Type&quot;</span>: <span class="string">&quot;String&quot;</span>,</span><br><span class="line">            <span class="attr">&quot;Default&quot;</span>: <span class="string">&quot;t2.micro&quot;</span>,</span><br><span class="line">            <span class="attr">&quot;AllowedValues&quot;</span>: [<span class="string">&quot;t2.micro&quot;</span>, <span class="string">&quot;t2.small&quot;</span>, <span class="string">&quot;t2.medium&quot;</span>]</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="attr">&quot;Mappings&quot;</span>: &#123;</span><br><span class="line">        <span class="attr">&quot;EC2RegionMap&quot;</span>: &#123;</span><br><span class="line">            <span class="attr">&quot;ap-northeast-1&quot;</span>: &#123;<span class="attr">&quot;AmazonLinuxAMIHVMEBSBacked64bit&quot;</span>: <span class="string">&quot;ami-cbf90ecb&quot;</span>&#125;,</span><br><span class="line">            <span class="attr">&quot;ap-southeast-1&quot;</span>: &#123;<span class="attr">&quot;AmazonLinuxAMIHVMEBSBacked64bit&quot;</span>: <span class="string">&quot;ami-68d8e93a&quot;</span>&#125;,</span><br><span class="line">            <span class="attr">&quot;ap-southeast-2&quot;</span>: &#123;<span class="attr">&quot;AmazonLinuxAMIHVMEBSBacked64bit&quot;</span>: <span class="string">&quot;ami-fd9cecc7&quot;</span>&#125;,</span><br><span class="line">            <span class="attr">&quot;eu-central-1&quot;</span>: &#123;<span class="attr">&quot;AmazonLinuxAMIHVMEBSBacked64bit&quot;</span>: <span class="string">&quot;ami-a8221fb5&quot;</span>&#125;,</span><br><span class="line">            <span class="attr">&quot;eu-west-1&quot;</span>: &#123;<span class="attr">&quot;AmazonLinuxAMIHVMEBSBacked64bit&quot;</span>: <span class="string">&quot;ami-a10897d6&quot;</span>&#125;,</span><br><span class="line">            <span class="attr">&quot;sa-east-1&quot;</span>: &#123;<span class="attr">&quot;AmazonLinuxAMIHVMEBSBacked64bit&quot;</span>: <span class="string">&quot;ami-b52890a8&quot;</span>&#125;,</span><br><span class="line">            <span class="attr">&quot;us-east-1&quot;</span>: &#123;<span class="attr">&quot;AmazonLinuxAMIHVMEBSBacked64bit&quot;</span>: <span class="string">&quot;ami-1ecae776&quot;</span>&#125;,</span><br><span class="line">            <span class="attr">&quot;us-west-1&quot;</span>: &#123;<span class="attr">&quot;AmazonLinuxAMIHVMEBSBacked64bit&quot;</span>: <span class="string">&quot;ami-d114f295&quot;</span>&#125;,</span><br><span class="line">            <span class="attr">&quot;us-west-2&quot;</span>: &#123;<span class="attr">&quot;AmazonLinuxAMIHVMEBSBacked64bit&quot;</span>: <span class="string">&quot;ami-e7527ed7&quot;</span>&#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="attr">&quot;Resources&quot;</span>: &#123;</span><br><span class="line">        <span class="attr">&quot;SecurityGroup&quot;</span>: &#123;</span><br><span class="line">            <span class="attr">&quot;Type&quot;</span>: <span class="string">&quot;AWS::EC2::SecurityGroup&quot;</span>,</span><br><span class="line">            <span class="attr">&quot;Properties&quot;</span>: &#123;</span><br><span class="line">                <span class="attr">&quot;GroupDescription&quot;</span>: <span class="string">&quot;My security group&quot;</span>,</span><br><span class="line">                <span class="attr">&quot;VpcId&quot;</span>: &#123;<span class="attr">&quot;Ref&quot;</span>: <span class="string">&quot;VPC&quot;</span>&#125;,</span><br><span class="line">                <span class="attr">&quot;SecurityGroupIngress&quot;</span>: [&#123;</span><br><span class="line">                    <span class="attr">&quot;CidrIp&quot;</span>: <span class="string">&quot;0.0.0.0/0&quot;</span>,</span><br><span class="line">                    <span class="attr">&quot;FromPort&quot;</span>: <span class="number">22</span>,</span><br><span class="line">                    <span class="attr">&quot;IpProtocol&quot;</span>: <span class="string">&quot;tcp&quot;</span>,</span><br><span class="line">                    <span class="attr">&quot;ToPort&quot;</span>: <span class="number">22</span></span><br><span class="line">                &#125;]</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;,</span><br><span class="line">        <span class="attr">&quot;Server&quot;</span>: &#123;</span><br><span class="line">            <span class="attr">&quot;Type&quot;</span>: <span class="string">&quot;AWS::EC2::Instance&quot;</span>,</span><br><span class="line">            <span class="attr">&quot;Properties&quot;</span>: &#123;</span><br><span class="line">                <span class="attr">&quot;ImageId&quot;</span>: &#123;<span class="attr">&quot;Fn::FindInMap&quot;</span>: [<span class="string">&quot;EC2RegionMap&quot;</span>, &#123;<span class="attr">&quot;Ref&quot;</span>: <span class="string">&quot;AWS::Region&quot;</span>&#125;, <span class="string">&quot;AmazonLinuxAMIHVMEBSBacked64bit&quot;</span>]&#125;,</span><br><span class="line">                <span class="attr">&quot;InstanceType&quot;</span>: &#123;<span class="attr">&quot;Ref&quot;</span>: <span class="string">&quot;InstanceType&quot;</span>&#125;,</span><br><span class="line">                <span class="attr">&quot;KeyName&quot;</span>: &#123;<span class="attr">&quot;Ref&quot;</span>: <span class="string">&quot;KeyName&quot;</span>&#125;,</span><br><span class="line">                <span class="attr">&quot;SecurityGroupIds&quot;</span>: [&#123;<span class="attr">&quot;Ref&quot;</span>: <span class="string">&quot;SecurityGroup&quot;</span>&#125;],</span><br><span class="line">                <span class="attr">&quot;SubnetId&quot;</span>: &#123;<span class="attr">&quot;Ref&quot;</span>: <span class="string">&quot;Subnet&quot;</span>&#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="attr">&quot;Outputs&quot;</span>: &#123;</span><br><span class="line">        <span class="attr">&quot;PublicName&quot;</span>: &#123;</span><br><span class="line">            <span class="attr">&quot;Value&quot;</span>: &#123;<span class="attr">&quot;Fn::GetAtt&quot;</span>: [<span class="string">&quot;Server&quot;</span>, <span class="string">&quot;PublicDnsName&quot;</span>]&#125;,</span><br><span class="line">            <span class="attr">&quot;Description&quot;</span>: <span class="string">&quot;Public name (connect via SSH as user ec2-user)&quot;</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="CloudFormation-替代方案"><a href="#CloudFormation-替代方案" class="headerlink" title="CloudFormation 替代方案"></a>CloudFormation 替代方案</h4><ul>
+<li>Terraform</li>
+<li>Ansible</li>
+<li>…</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>独木舟的木
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://andy0570.com/2019/01/03/%E3%80%8AAWS%E4%BA%91%E8%AE%A1%E7%AE%97%E5%AE%9E%E6%88%98%E3%80%8B4.%E7%BC%96%E5%86%99%E5%9F%BA%E7%A1%80%E6%9E%B6%E6%9E%84%EF%BC%9A%E5%91%BD%E4%BB%A4%E8%A1%8C%E3%80%81SDK%20%E5%92%8C%20CloudFormation/" title="《AWS云计算实战》4.编写基础架构：命令行、SDK 和 CloudFormation">https://andy0570.com/2019/01/03/《AWS云计算实战》4.编写基础架构：命令行、SDK 和 CloudFormation/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <span class="exturl" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpo"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</span> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/AWS/" rel="tag"># AWS</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/01/02/%E3%80%8AAWS%E4%BA%91%E8%AE%A1%E7%AE%97%E5%AE%9E%E6%88%98%E3%80%8B3.%E4%BD%BF%E7%94%A8%E8%99%9A%E6%8B%9F%E6%9C%8D%E5%8A%A1%E5%99%A8%EF%BC%9AEC2/" rel="prev" title="《AWS云计算实战》3.使用虚拟服务器：EC2">
+      <i class="fa fa-chevron-left"></i> 《AWS云计算实战》3.使用虚拟服务器：EC2
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/01/04/%E3%80%8AAWS%E4%BA%91%E8%AE%A1%E7%AE%97%E5%AE%9E%E6%88%98%E3%80%8B5.%E8%87%AA%E5%8A%A8%E5%8C%96%E9%83%A8%E7%BD%B2/" rel="next" title="《AWS云计算实战》5.自动化部署">
+      《AWS云计算实战》5.自动化部署 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+        </div>
+        
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">独木舟的木</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">2.1m</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">31:21</span>
+</div>
+  <div class="powered-by">由 <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZw==">NexT.Gemini</span> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

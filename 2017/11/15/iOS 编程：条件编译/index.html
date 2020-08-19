@@ -1,23 +1,558 @@
-{% extends '_layout.swig' %}
-{% import '_macro/post.swig' as post_template %}
-{% import '_macro/sidebar.swig' as sidebar_template %}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.0.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+  <meta name="google-site-verification" content="wioXOS3Gv2wXUpJ3sLtfZ4ft6YJYKNLLWSw6QoZTFYM">
+  <meta name="msvalidate.01" content="C96491A81239C517A50597C54EE53CD1">
+  <meta name="baidu-site-verification" content="h8asiToN1b">
 
-{% block title %}{{ page.title }} | {{ title }}{% endblock %}
+<link rel="stylesheet" href="/css/main.css">
 
-{% block page_class %}page-post-detail{% endblock %}
 
-{% block content %}
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  
+  <link rel="stylesheet" href="/lib/animate-css/animate.min.css">
 
-  <div id="posts" class="posts-expand">
-    {{ post_template.render(page) }}
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"andy0570.com","root":"/","scheme":"Gemini","version":"8.0.0-rc.5","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":"mac","bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false};
+  </script>
+
+  <meta name="description" content="条件编译预处理程序是 Objective-C 编译过程的一部分，它可以识别散布在程序中的特定语句。顾名思义，预处理程序实际上是在分析 Objective-C 程序之前处理这些语句。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS 编程：条件编译">
+<meta property="og:url" content="https://andy0570.com/2017/11/15/iOS%20%E7%BC%96%E7%A8%8B%EF%BC%9A%E6%9D%A1%E4%BB%B6%E7%BC%96%E8%AF%91/index.html">
+<meta property="og:site_name" content="独木舟的木">
+<meta property="og:description" content="条件编译预处理程序是 Objective-C 编译过程的一部分，它可以识别散布在程序中的特定语句。顾名思义，预处理程序实际上是在分析 Objective-C 程序之前处理这些语句。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072656-1.jpg">
+<meta property="article:published_time" content="2017-11-15T05:54:00.000Z">
+<meta property="article:modified_time" content="2019-05-01T13:51:01.000Z">
+<meta property="article:author" content="独木舟的木">
+<meta property="article:tag" content="iOS">
+<meta property="article:tag" content="Objective-C">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072656-1.jpg">
+
+<link rel="canonical" href="https://andy0570.com/2017/11/15/iOS%20%E7%BC%96%E7%A8%8B%EF%BC%9A%E6%9D%A1%E4%BB%B6%E7%BC%96%E8%AF%91/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>iOS 编程：条件编译 | 独木舟的木</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="独木舟的木" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <main class="main">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+        <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
   </div>
 
-{% endblock %}
+  <div class="site-meta">
 
-{% block sidebar %}
-  {{ sidebar_template.render(true) }}
-{% endblock %}
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">独木舟的木</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">iOS Developer</p>
+  </div>
 
-{% block script_extra %}
-  {% include '_scripts/pages/post-details.swig' %}
-{% endblock %}
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">14</span></a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">36</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">310</span></a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <section class="post-toc-wrap sidebar-panel">
+          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9D%A1%E4%BB%B6%E7%BC%96%E8%AF%91"><span class="nav-number">1.</span> <span class="nav-text">条件编译</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ifdef%E3%80%81-endif%E3%80%81-else-%E5%92%8C-ifndef-%E8%AF%AD%E5%8F%A5"><span class="nav-number">1.0.1.</span> <span class="nav-text">ifdef、#endif、#else 和 #ifndef 语句</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%A4%E6%96%AD-iOS-%E7%B3%BB%E7%BB%9F%E7%89%88%E6%9C%AC"><span class="nav-number">1.0.1.1.</span> <span class="nav-text">判断 iOS 系统版本</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%A4%E6%96%AD-iOS-%E7%B3%BB%E7%BB%9F%E7%89%88%E6%9C%AC-1"><span class="nav-number">1.0.1.2.</span> <span class="nav-text">判断 iOS 系统版本</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%A4%E6%96%AD%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80"><span class="nav-number">1.0.1.3.</span> <span class="nav-text">判断编程语言</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%A4%E6%96%AD%E5%BC%80%E5%8F%91%E6%A8%A1%E5%BC%8F%EF%BC%9A-debug-%E6%A8%A1%E5%BC%8F-release-%E6%A8%A1%E5%BC%8F"><span class="nav-number">1.0.1.4.</span> <span class="nav-text">判断开发模式： debug 模式&#x2F;release 模式</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#if-%E3%80%81-elif-%E5%92%8C-endif-%E9%A2%84%E5%A4%84%E7%90%86%E7%A8%8B%E5%BA%8F%E8%AF%AD%E5%8F%A5"><span class="nav-number">1.0.2.</span> <span class="nav-text">#if 、 #elif 和 #endif 预处理程序语句</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%A4%E6%96%AD%E5%BA%94%E7%94%A8%E8%BF%90%E8%A1%8C%E7%8E%AF%E5%A2%83"><span class="nav-number">1.0.2.1.</span> <span class="nav-text">判断应用运行环境</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#undef-%E8%AF%AD%E5%8F%A5"><span class="nav-number">1.0.2.2.</span> <span class="nav-text">#undef 语句</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#NS-DEPRECATED-IOS-%E4%B8%8E-NS-AVAILABLE-IOS"><span class="nav-number">2.</span> <span class="nav-text">NS_DEPRECATED_IOS 与 NS_AVAILABLE_IOS</span></a></li></ol></div>
+      </section>
+      <!--/noindex-->
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="独木舟的木"
+      src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+  <p class="site-author-name" itemprop="name">独木舟的木</p>
+  <div class="site-description" itemprop="description">生若直木，不语斧凿。</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">310</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">36</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL0FuZHkwNTcw" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Andy0570"><i class="fab fa-github fa-fw"></i>GitHub</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9zdGFja292ZXJmbG93LmNvbS91c2Vycy83MjY1NDAwL2FuZHkwNTcw" title="StackOverflow → https:&#x2F;&#x2F;stackoverflow.com&#x2F;users&#x2F;7265400&#x2F;andy0570"><i class="fab fa-stack-overflow fa-fw"></i>StackOverflow</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuamlhbnNodS5jb20vdS84NGM1ZmFkYzdjMTg=" title="简书 → https:&#x2F;&#x2F;www.jianshu.com&#x2F;u&#x2F;84c5fadc7c18"><i class="heartbeat fa-fw"></i>简书</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="bWFpbHRvOmFuZHl3aG1AMTYzLmNvbQ==" title="E-Mail → mailto:andywhm@163.com"><i class="fa fa-envelope fa-fw"></i>E-Mail</span>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <span class="exturl cc-opacity" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpo"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></span>
+  </div>
+
+
+
+      </section>
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </header>
+
+      
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div id="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+      <div class="main-inner">
+        
+
+        <div class="content post posts-expand">
+          
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://andy0570.com/2017/11/15/iOS%20%E7%BC%96%E7%A8%8B%EF%BC%9A%E6%9D%A1%E4%BB%B6%E7%BC%96%E8%AF%91/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+      <meta itemprop="name" content="独木舟的木">
+      <meta itemprop="description" content="生若直木，不语斧凿。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="独木舟的木">
+    </span>
+
+    
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          iOS 编程：条件编译
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2017-11-15 13:54:00" itemprop="dateCreated datePublished" datetime="2017-11-15T13:54:00+08:00">2017-11-15</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-05-01 21:51:01" itemprop="dateModified" datetime="2019-05-01T21:51:01+08:00">2019-05-01</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Objective-C-%E7%BC%96%E7%A8%8B/" itemprop="url" rel="index"><span itemprop="name">Objective-C 编程</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>2.7k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>2 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="条件编译"><a href="#条件编译" class="headerlink" title="条件编译"></a>条件编译</h1><p>预处理程序是 Objective-C 编译过程的一部分，它可以识别散布在程序中的特定语句。顾名思义，预处理程序实际上是在分析 Objective-C 程序之前处理这些语句。</p>
+<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072656-1.jpg" alt="image"></p>
+<a id="more"></a>
+
+<p>条件编译的作用：</p>
+<ul>
+<li>创建可以在不同计算机系统上编译运行的程序；</li>
+<li>开关程序中的各种语句。</li>
+</ul>
+<h3 id="ifdef、-endif、-else-和-ifndef-语句"><a href="#ifdef、-endif、-else-和-ifndef-语句" class="headerlink" title="ifdef、#endif、#else 和 #ifndef 语句"></a>ifdef、#endif、#else 和 #ifndef 语句</h3><p>如果程序编译时，<code>#ifdef</code> 行中所指定的符号已经通过 <code>#define</code> 语句或命令行定义了，那么编译器将处理从此处开始到 <code>#else</code>、<code>#elif</code> 或 <code>#endif</code> 的程序段，否则就忽略这个程序段。</p>
+<p> <code>#ifndef</code> 语句的含义与 <code>#ifdef</code> 相反，如果指定的符号没有定义，它将导致程序处理后续行。</p>
+<p>示例代码：</p>
+<h4 id="判断-iOS-系统版本"><a href="#判断-iOS-系统版本" class="headerlink" title="判断 iOS 系统版本"></a>判断 iOS 系统版本</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;* 如果是 iOS 11 系统，使用 barnHD.png 图片。否则，使用 barn.png 图片。*&#x2F;</span><br><span class="line">#ifdef __iPhone_11_0 </span><br><span class="line">  #define KImageFile @&quot;barnHD.png&quot;</span><br><span class="line">#else</span><br><span class="line">  #define KImageFile @&quot;barn.png&quot;</span><br><span class="line">#endif</span><br></pre></td></tr></table></figure>
+
+<h4 id="判断-iOS-系统版本-1"><a href="#判断-iOS-系统版本-1" class="headerlink" title="判断 iOS 系统版本"></a>判断 iOS 系统版本</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">#ifndef __iPhone_3_0</span><br><span class="line">#warning &quot;This project uses features only available in iOS SDK 3.0 and later.&quot;</span><br><span class="line">#endif</span><br></pre></td></tr></table></figure>
+
+<h4 id="判断编程语言"><a href="#判断编程语言" class="headerlink" title="判断编程语言"></a>判断编程语言</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 保证在#ifdef中的宏定义只会在OC的代码中被引用，</span><br><span class="line">&#x2F;&#x2F; 否则，一旦引入C&#x2F;C++的代码或者框架，就会出错！</span><br><span class="line">#ifdef __Objective-C__</span><br><span class="line">    #import &lt;UIKit&#x2F;UIKit.h&gt;</span><br><span class="line">    #import &lt;Foundation&#x2F;Foundation.h&gt;</span><br><span class="line">    #import &lt;QuartzCore&#x2F;QuartzCore.h&gt;</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F;define this constant if you want to use Masonry without the &#39;mas_&#39; prefix</span><br><span class="line">    #define MAS_SHORTHAND</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F;define this constant if you want to enable auto-boxing for default syntax</span><br><span class="line">    #define MAS_SHORTHAND_GLOBALS</span><br><span class="line"></span><br><span class="line">    #import &quot;Masonry.h&quot;</span><br><span class="line">#endif</span><br></pre></td></tr></table></figure>
+
+<h4 id="判断开发模式：-debug-模式-release-模式"><a href="#判断开发模式：-debug-模式-release-模式" class="headerlink" title="判断开发模式： debug 模式/release 模式"></a>判断开发模式： debug 模式/release 模式</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">#ifdef __Objective-C__</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 开发模式下打印日志，否则不打印</span><br><span class="line">#ifdef DEBUG</span><br><span class="line">  #define NSLog(fmt, ...) NSLog((@&quot;%s [Line %d] &quot; fmt), __PRETTY_FUNCTION__, __LINE__, ##__VA_ARGS__)</span><br><span class="line">#else</span><br><span class="line">  #define NSLog(...)</span><br><span class="line">#endif</span><br><span class="line"></span><br><span class="line">#endif</span><br></pre></td></tr></table></figure>
+
+<p>参数含义：</p>
+<ol>
+<li><code>__VA_ARGS__</code> 是一个可变参数的宏，很少人知道这个宏，这个可变参数的宏是新的C99规范中新增的，目前似乎只有gcc支持（VC6.0的编译器不支持）。宏前面加上##的作用在于，当可变参数的个数为0时，这里的##起到把前面多余的”,”去掉的作用,否则会编译出错, 你可以试试。</li>
+<li><code>__FILE__</code> 宏在预编译时会替换成当前的源文件名</li>
+<li><code>__LINE__</code> 宏在预编译时会替换成当前的行号</li>
+<li><code>__FUNCTION__</code> 宏在预编译时会替换成当前的函数名称</li>
+</ol>
+<h3 id="if-、-elif-和-endif-预处理程序语句"><a href="#if-、-elif-和-endif-预处理程序语句" class="headerlink" title="#if 、 #elif 和 #endif 预处理程序语句"></a>#if 、 #elif 和 #endif 预处理程序语句</h3><ul>
+<li><code>#if</code> 预处理程序语句为控制条件编译提供了更通用的方法。</li>
+<li>如果满足<code>#if</code>后面的条件，就编译<code>#if</code>和<code>#endif</code>之间的程序段，否则不编译。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">#if defined (DEBUG)</span><br><span class="line">  &#x2F;&#x2F;...</span><br><span class="line">#endif</span><br></pre></td></tr></table></figure>
+
+<p>效果同下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">#ifdef DEBUG</span><br><span class="line">  &#x2F;&#x2F;...</span><br><span class="line">#endif</span><br></pre></td></tr></table></figure>
+
+<h4 id="判断应用运行环境"><a href="#判断应用运行环境" class="headerlink" title="判断应用运行环境"></a>判断应用运行环境</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">#if !TARGET_IPHONE_SIMULATOR</span><br><span class="line">    &#x2F;&#x2F; 如果当前环境不是模拟器，则执行这里的代码或者方法。</span><br><span class="line">    &#x2F;&#x2F; 一般用于需要打开手机硬件的场景，如相机、GPS、陀螺仪等。</span><br><span class="line">#endif</span><br></pre></td></tr></table></figure>
+
+
+<h4 id="undef-语句"><a href="#undef-语句" class="headerlink" title="#undef 语句"></a>#undef 语句</h4><ul>
+<li>使已经定义的名称成为未定义的，来消除特点名称的定义</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#undef name &#x2F;&#x2F; 取消定义</span><br></pre></td></tr></table></figure>
+
+<h1 id="NS-DEPRECATED-IOS-与-NS-AVAILABLE-IOS"><a href="#NS-DEPRECATED-IOS-与-NS-AVAILABLE-IOS" class="headerlink" title="NS_DEPRECATED_IOS 与 NS_AVAILABLE_IOS"></a>NS_DEPRECATED_IOS 与 NS_AVAILABLE_IOS</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; NS_DEPRECATED_IOS(2_0, 10_0）表示该函数只能在 iOS 2.0 和 iOS 10.0 之间使用，是已被废弃的函数，</span><br><span class="line">&#x2F;&#x2F; 但并不是说在 iOS 10.0 之后不能使用该函数了，是可以使用，但也需要考虑找其他替代方法了。</span><br><span class="line">- (BOOL)openURL:(NSURL*)url NS_DEPRECATED_IOS(2_0, 10_0, &quot;Please use openURL:options:completionHandler: instead&quot;) NS_EXTENSION_UNAVAILABLE_IOS(&quot;&quot;);</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; NS_AVAILABLE_IOS(10_0)：表示自 iOS 10.0 开始支持该方法，若在 iOS 10.0 之前的版本使用该函数，则会导致 Crash。</span><br><span class="line">- (void)openURL:(NSURL*)url options:(NSDictionary&lt;NSString *, id&gt; *)options completionHandler:(void (^ __nullable)(BOOL success))completion NS_AVAILABLE_IOS(10_0) NS_EXTENSION_UNAVAILABLE_IOS(&quot;&quot;);</span><br></pre></td></tr></table></figure>
+<p>解决某些方法失效导致的版本兼容性问题：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">if (@available(iOS 10.0, *)) &#123;</span><br><span class="line">    [[UIApplication sharedApplication] openURL:url options:@&#123;UIApplicationOpenURLOptionUniversalLinksOnly: @YES&#125; completionHandler:nil];</span><br><span class="line">&#125; else &#123;</span><br><span class="line">    [[UIApplication sharedApplication] openURL:url];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>独木舟的木
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://andy0570.com/2017/11/15/iOS%20%E7%BC%96%E7%A8%8B%EF%BC%9A%E6%9D%A1%E4%BB%B6%E7%BC%96%E8%AF%91/" title="iOS 编程：条件编译">https://andy0570.com/2017/11/15/iOS 编程：条件编译/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <span class="exturl" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpo"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</span> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/iOS/" rel="tag"># iOS</a>
+              <a href="/tags/Objective-C/" rel="tag"># Objective-C</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2017/11/15/iOS%20%E9%9B%86%E6%88%90%20Bugly%20%E4%BA%8C%E4%B8%89%E4%BA%8B/" rel="prev" title="iOS 集成 Bugly 二三事">
+      <i class="fa fa-chevron-left"></i> iOS 集成 Bugly 二三事
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2017/11/16/iOS%20%E7%BC%96%E7%A8%8B%EF%BC%9ANSNumber/" rel="next" title="iOS 编程：NSNumber">
+      iOS 编程：NSNumber <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+        </div>
+        
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">独木舟的木</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">2.1m</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">31:21</span>
+</div>
+  <div class="powered-by">由 <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZw==">NexT.Gemini</span> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

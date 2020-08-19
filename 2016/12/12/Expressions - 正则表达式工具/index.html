@@ -1,23 +1,1192 @@
-{% extends '_layout.swig' %}
-{% import '_macro/post.swig' as post_template %}
-{% import '_macro/sidebar.swig' as sidebar_template %}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.0.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+  <meta name="google-site-verification" content="wioXOS3Gv2wXUpJ3sLtfZ4ft6YJYKNLLWSw6QoZTFYM">
+  <meta name="msvalidate.01" content="C96491A81239C517A50597C54EE53CD1">
+  <meta name="baidu-site-verification" content="h8asiToN1b">
 
-{% block title %}{{ page.title }} | {{ title }}{% endblock %}
+<link rel="stylesheet" href="/css/main.css">
 
-{% block page_class %}page-post-detail{% endblock %}
 
-{% block content %}
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  
+  <link rel="stylesheet" href="/lib/animate-css/animate.min.css">
 
-  <div id="posts" class="posts-expand">
-    {{ post_template.render(page) }}
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"andy0570.com","root":"/","scheme":"Gemini","version":"8.0.0-rc.5","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":"mac","bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false};
+  </script>
+
+  <meta property="og:type" content="article">
+<meta property="og:title" content="Expressions - 正则表达式工具">
+<meta property="og:url" content="https://andy0570.com/2016/12/12/Expressions%20-%20%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F%E5%B7%A5%E5%85%B7/index.html">
+<meta property="og:site_name" content="独木舟的木">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071159.png">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071200.jpg">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071201.jpg">
+<meta property="article:published_time" content="2016-12-11T16:20:00.000Z">
+<meta property="article:modified_time" content="2019-05-01T14:47:51.000Z">
+<meta property="article:author" content="独木舟的木">
+<meta property="article:tag" content="Mac">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071159.png">
+
+<link rel="canonical" href="https://andy0570.com/2016/12/12/Expressions%20-%20%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F%E5%B7%A5%E5%85%B7/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Expressions - 正则表达式工具 | 独木舟的木</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="独木舟的木" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <main class="main">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+        <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
   </div>
 
-{% endblock %}
+  <div class="site-meta">
 
-{% block sidebar %}
-  {{ sidebar_template.render(true) }}
-{% endblock %}
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">独木舟的木</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">iOS Developer</p>
+  </div>
 
-{% block script_extra %}
-  {% include '_scripts/pages/post-details.swig' %}
-{% endblock %}
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">14</span></a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">36</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">310</span></a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <section class="post-toc-wrap sidebar-panel">
+          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%89%B9%E6%80%A7"><span class="nav-number">1.</span> <span class="nav-text">特性</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F"><span class="nav-number"></span> <span class="nav-text">正则表达式</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%AF%AD%E6%B3%95%E5%BA%93"><span class="nav-number"></span> <span class="nav-text">语法库</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Basic-%E5%9F%BA%E6%9C%AC%E8%AF%AD%E6%B3%95"><span class="nav-number"></span> <span class="nav-text">Basic - 基本语法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Metacharacters-%E5%85%83%E5%AD%97%E7%AC%A6"><span class="nav-number">1.</span> <span class="nav-text">Metacharacters - 元字符</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Operators-%E8%BF%90%E7%AE%97%E7%AC%A6"><span class="nav-number">2.</span> <span class="nav-text">Operators - 运算符</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Non-capturing-operators-%E9%9D%9E%E6%8D%95%E8%8E%B7%E8%BF%90%E7%AE%97%E7%AC%A6"><span class="nav-number">3.</span> <span class="nav-text">Non-capturing operators -非捕获运算符</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Advanced-%E9%AB%98%E7%BA%A7%E7%94%A8%E6%B3%95"><span class="nav-number"></span> <span class="nav-text">Advanced - 高级用法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Metacharacters-%E5%85%83%E6%95%B0%E6%8D%AE"><span class="nav-number">1.</span> <span class="nav-text">Metacharacters - 元数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Operators-%E8%BF%90%E7%AE%97%E7%AC%A6-1"><span class="nav-number">2.</span> <span class="nav-text">Operators - 运算符</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Set-Expressions-%E8%AE%BE%E7%BD%AE%E8%A1%A8%E8%BE%BE%E5%BC%8F"><span class="nav-number">3.</span> <span class="nav-text">Set Expressions - 设置表达式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Flags"><span class="nav-number">4.</span> <span class="nav-text">Flags</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#More-%E6%9B%B4%E5%A4%9A"><span class="nav-number">5.</span> <span class="nav-text">More - 更多</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%B4%AA%E5%A9%AA%E5%8C%B9%E9%85%8D-amp-%E9%9D%9E%E8%B4%AA%E5%A9%AA%E5%8C%B9%E9%85%8D"><span class="nav-number">5.1.</span> <span class="nav-text">贪婪匹配&amp;非贪婪匹配</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B8%B8%E7%94%A8%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F"><span class="nav-number">6.</span> <span class="nav-text">常用正则表达式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E6%A0%A1%E9%AA%8C%E6%95%B0%E5%AD%97%E7%9A%84%E8%A1%A8%E8%BE%BE%E5%BC%8F"><span class="nav-number">6.1.</span> <span class="nav-text">一、校验数字的表达式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E6%A0%A1%E9%AA%8C%E5%AD%97%E7%AC%A6%E7%9A%84%E8%A1%A8%E8%BE%BE%E5%BC%8F"><span class="nav-number">6.2.</span> <span class="nav-text">二、校验字符的表达式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%89%E3%80%81%E7%89%B9%E6%AE%8A%E9%9C%80%E6%B1%82%E8%A1%A8%E8%BE%BE%E5%BC%8F"><span class="nav-number">6.3.</span> <span class="nav-text">三、特殊需求表达式</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">7.</span> <span class="nav-text">参考</span></a></li></ol></div>
+      </section>
+      <!--/noindex-->
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="独木舟的木"
+      src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+  <p class="site-author-name" itemprop="name">独木舟的木</p>
+  <div class="site-description" itemprop="description">生若直木，不语斧凿。</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">310</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">36</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL0FuZHkwNTcw" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Andy0570"><i class="fab fa-github fa-fw"></i>GitHub</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9zdGFja292ZXJmbG93LmNvbS91c2Vycy83MjY1NDAwL2FuZHkwNTcw" title="StackOverflow → https:&#x2F;&#x2F;stackoverflow.com&#x2F;users&#x2F;7265400&#x2F;andy0570"><i class="fab fa-stack-overflow fa-fw"></i>StackOverflow</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuamlhbnNodS5jb20vdS84NGM1ZmFkYzdjMTg=" title="简书 → https:&#x2F;&#x2F;www.jianshu.com&#x2F;u&#x2F;84c5fadc7c18"><i class="heartbeat fa-fw"></i>简书</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="bWFpbHRvOmFuZHl3aG1AMTYzLmNvbQ==" title="E-Mail → mailto:andywhm@163.com"><i class="fa fa-envelope fa-fw"></i>E-Mail</span>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <span class="exturl cc-opacity" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpo"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></span>
+  </div>
+
+
+
+      </section>
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </header>
+
+      
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div id="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+      <div class="main-inner">
+        
+
+        <div class="content post posts-expand">
+          
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://andy0570.com/2016/12/12/Expressions%20-%20%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F%E5%B7%A5%E5%85%B7/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+      <meta itemprop="name" content="独木舟的木">
+      <meta itemprop="description" content="生若直木，不语斧凿。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="独木舟的木">
+    </span>
+
+    
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Expressions - 正则表达式工具
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2016-12-12 00:20:00" itemprop="dateCreated datePublished" datetime="2016-12-12T00:20:00+08:00">2016-12-12</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-05-01 22:47:51" itemprop="dateModified" datetime="2019-05-01T22:47:51+08:00">2019-05-01</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7-Mac%E5%BA%94%E7%94%A8/" itemprop="url" rel="index"><span itemprop="name">开发工具&Mac应用</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>13k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>12 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071159.png"></p>
+<a id="more"></a>
+
+<ul>
+<li><span class="exturl" data-url="aHR0cHM6Ly9pdHVuZXMuYXBwbGUuY29tL2NuL2FwcC9leHByZXNzaW9ucy9pZDkxMzE1ODA4NT9tdD0xMg==">App Store购买链接（¥30 价格其实还可以接受，请支持正版）<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cDovL3d3dy5hcHB0b3JpdW0uY29tL2V4cHJlc3Npb25z">Expressions 官网<i class="fa fa-external-link-alt"></i></span></li>
+</ul>
+<h3 id="特性"><a href="#特性" class="headerlink" title="特性"></a>特性</h3><ul>
+<li>极简化的UI界面；</li>
+<li>语法高亮显示；</li>
+<li>参考表；</li>
+<li>实时预览；</li>
+<li>正则表达式语法库提示；</li>
+<li>组突出显示；</li>
+<li>组之间轻松切换（快捷键：<code>cmd+shift+&#125;</code> or <code>cmd+shift+&#123;</code>）;</li>
+<li>漂亮的全屏视图；</li>
+<li>多行模式和注释；</li>
+<li>支持亮暗两种主题；</li>
+</ul>
+<h2 id="正则表达式"><a href="#正则表达式" class="headerlink" title="正则表达式"></a>正则表达式</h2><p>定义：<strong>正则表达式</strong>，又称规则表达式。（英语：Regular Expression，在代码中常简写为regex、regexp或RE），计算机科学的一个概念。正则表通常被用来检索、替换那些符合某个模式(规则)的文本。<br> <span class="exturl" data-url="aHR0cHM6Ly96aC53aWtpcGVkaWEub3JnL3dpa2kvJUU2JUFEJUEzJUU1JTg4JTk5JUU4JUExJUE4JUU4JUJFJUJFJUU1JUJDJThG">维基百科<i class="fa fa-external-link-alt"></i></span>、<span class="exturl" data-url="aHR0cDovL2JhaWtlLmJhaWR1LmNvbS9saW5rP3VybD1UMG1yZTR2ZTlJQjZrOUJHSG1NbTlOMV94VjZKLVZYV0tpdHZqWld4dDRlazJlNWgwQUpDTkJtY1gxczVRbG9KeDFCYlFiUnFwcEZOREtFbW8zMzlqT3JZdW05d2dKR1lVcnM4RkFzNy14TG1lMm1Mc3BiWVFwc2xqa3FCWDUtMmFUdzRiakMtRDl2NzhJa2VCZXFLaV8=">百度百科<i class="fa fa-external-link-alt"></i></span></p>
+<h1 id="语法库"><a href="#语法库" class="headerlink" title="语法库"></a>语法库</h1><h2 id="Basic-基本语法"><a href="#Basic-基本语法" class="headerlink" title="Basic - 基本语法"></a>Basic - 基本语法</h2><h3 id="Metacharacters-元字符"><a href="#Metacharacters-元字符" class="headerlink" title="Metacharacters - 元字符"></a>Metacharacters - 元字符</h3><p>表示字符集或特殊字符。</p>
+<table>
+<thead>
+<tr>
+<th>正则表达式</th>
+<th>说明</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>.</td>
+<td>any character</td>
+<td>任意字符</td>
+</tr>
+<tr>
+<td>^</td>
+<td>beginning of a line</td>
+<td>一行的开始字符</td>
+</tr>
+<tr>
+<td>$</td>
+<td>end of a line</td>
+<td>一行的末尾字符</td>
+</tr>
+<tr>
+<td>\</td>
+<td>quotes special characters (* ? + [ ] ( ) { } ^ $ | \ . / )</td>
+<td>特殊字符（(* ? + [ ] ( ) { } ^ $ | \ . / )），和括号中的特殊字符配合使用，如 ? 、\\</td>
+</tr>
+<tr>
+<td>\w</td>
+<td>word</td>
+<td>所有的文字数字式字符：大小写字母、数字和下划线 (同 [a-zA-Z0-9_])</td>
+</tr>
+<tr>
+<td>\t</td>
+<td>horizontal tabulation</td>
+<td>水平制表符</td>
+</tr>
+<tr>
+<td>\n</td>
+<td>new line</td>
+<td>换行符</td>
+</tr>
+<tr>
+<td>\d</td>
+<td>any digit</td>
+<td>任何数字，同[0-9]</td>
+</tr>
+<tr>
+<td>\s</td>
+<td>white space character (\t \n \f \r \p{Z})</td>
+<td>所有空白字符(\t 制表符  \n 换行 \f 换页符 \r 回车 \p{Z})</td>
+</tr>
+<tr>
+<td>[…]</td>
+<td>match any character (or range of characters) inside the brackets. Range may be e.g. [a-z], [A-Z], [3…5], etc.</td>
+<td>括号内的任何字符（或字符范围）。 范围可以是例如。 [a-z]，[A-Z]，[3 … 5]，等</td>
+</tr>
+<tr>
+<td>\D</td>
+<td>any character that is not a decimal digit</td>
+<td>任何非数字，同 [^0-9]</td>
+</tr>
+<tr>
+<td>\S</td>
+<td>non-white space character</td>
+<td>非空白字符</td>
+</tr>
+<tr>
+<td>\W</td>
+<td>non-word character</td>
+<td>非文字数字式字符， 同 [^a-zA-Z0-9_]</td>
+</tr>
+</tbody></table>
+<h3 id="Operators-运算符"><a href="#Operators-运算符" class="headerlink" title="Operators - 运算符"></a>Operators - 运算符</h3><p>运算符允许描述一个表达式（或子表达式）应如何匹配。</p>
+<table>
+<thead>
+<tr>
+<th>正则表达式</th>
+<th>说明</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>(…)</td>
+<td>groups expression into subexpressions</td>
+<td>将表达式分组成子表达式</td>
+</tr>
+<tr>
+<td>A|B</td>
+<td>alternation. Matches A or B</td>
+<td>交替。 匹配A或B</td>
+</tr>
+<tr>
+<td>^</td>
+<td>negation</td>
+<td>否定表达式，如[^0-9],表示匹配非数字</td>
+</tr>
+<tr>
+<td>*</td>
+<td>match 0 or more times</td>
+<td>匹配零次或者多次</td>
+</tr>
+<tr>
+<td>+</td>
+<td>match 1 or more times</td>
+<td>匹配一次或者多次</td>
+</tr>
+<tr>
+<td>?</td>
+<td>match zero or one times</td>
+<td>匹配零次或者一次</td>
+</tr>
+<tr>
+<td>{n}</td>
+<td>match exactly n times</td>
+<td>精确匹配n次</td>
+</tr>
+<tr>
+<td>{n,}</td>
+<td></td>
+<td>至少匹配n次</td>
+</tr>
+<tr>
+<td>{n,m}</td>
+<td>match at least n time and not more than m</td>
+<td>次数匹配区间，至少n次，至多m次</td>
+</tr>
+</tbody></table>
+<h3 id="Non-capturing-operators-非捕获运算符"><a href="#Non-capturing-operators-非捕获运算符" class="headerlink" title="Non-capturing operators -非捕获运算符"></a>Non-capturing operators -非捕获运算符</h3><table>
+<thead>
+<tr>
+<th>正则表达式</th>
+<th>说明</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>(?#…)</td>
+<td>Comment</td>
+<td>注释</td>
+</tr>
+<tr>
+<td>(? : …)</td>
+<td>Subexpression must occur but it’s not captured in group.</td>
+<td>子表达式必须发生，但不会在组中捕获。</td>
+</tr>
+<tr>
+<td>(? ! …)</td>
+<td>Makes sure that the subexpression does not occur at current position. It’s useful to exclude part of expression.</td>
+<td>确保在当前位置不会发生子表达式。 排除部分表达式很有用。</td>
+</tr>
+</tbody></table>
+<h1 id="Advanced-高级用法"><a href="#Advanced-高级用法" class="headerlink" title="Advanced - 高级用法"></a>Advanced - 高级用法</h1><h3 id="Metacharacters-元数据"><a href="#Metacharacters-元数据" class="headerlink" title="Metacharacters - 元数据"></a>Metacharacters - 元数据</h3><table>
+<thead>
+<tr>
+<th>正则表达式</th>
+<th>说明</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>\a</td>
+<td>Match a BELL, \u0007</td>
+<td>匹配响铃符号，\u0007</td>
+</tr>
+<tr>
+<td>\A</td>
+<td>Match at the beginning of the input.Differs from ^ in that \A will not match after a new line within the input.</td>
+<td>输入开始时匹配，与^符号不同，\A不会匹配输入后的新行</td>
+</tr>
+<tr>
+<td>\b</td>
+<td>Match if the current position is a word boundary.Boundaries occur at the transitions between word (\w) and non-word (\W) characters, with combining marks ignored.</td>
+<td>如果当前位置是字边界则匹配。边界出现在文字数字式字符（\ w）和非文字数字式字符（\ W）字符之间的转换处，组合标记被忽略。</td>
+</tr>
+<tr>
+<td>\B</td>
+<td>Match if the current position is not a word boundary.</td>
+<td>如果当前位置不是文字数字式字符边界则匹配。</td>
+</tr>
+<tr>
+<td>\cX</td>
+<td>Match a control-X character.</td>
+<td>匹配一个control-X字符。</td>
+</tr>
+<tr>
+<td>\d</td>
+<td>Match any character with the Unicode General Category of Nd (Number, Decimal Digit.)</td>
+<td>匹配任何字符与Unicode通用类别的Nd（数字，十进制数字）。</td>
+</tr>
+<tr>
+<td>\D</td>
+<td>Match any character that is not a decimal digit.</td>
+<td>匹配任何不是十进制数字的字符。</td>
+</tr>
+<tr>
+<td>\e</td>
+<td>Match an ESCAPE, \u001B.</td>
+<td>匹配ESCAPE，\ u001B。</td>
+</tr>
+<tr>
+<td>\E</td>
+<td>Terminates a \Q…\Equoted sequence.</td>
+<td>终止\ Q … \ E引用的序列。</td>
+</tr>
+<tr>
+<td>\f</td>
+<td>Match a FORM FEED, \u000C.</td>
+<td>匹配FORM FEED，\ u000C。</td>
+</tr>
+<tr>
+<td>\G</td>
+<td>Match if the current position is at the end of the previous match.</td>
+<td>如果当前位置在上一个匹配结束时匹配。</td>
+</tr>
+<tr>
+<td>\h</td>
+<td>Match a Horizontal White Space character. They are characters with Unicode General Category of Space_Separator plus the ASCII tab (\u0009).</td>
+<td>匹配水平白色空格字符。 它们是具有Unicode通用类别Space_Separator和ASCII选项卡（\ u0009）的字符。</td>
+</tr>
+<tr>
+<td>\H</td>
+<td>Match a non-Horizontal White Space character.</td>
+<td>匹配非水平白色空格字符。</td>
+</tr>
+<tr>
+<td>\k</td>
+<td>Named Capture Back Reference.</td>
+<td>命名捕获返回参考。</td>
+</tr>
+<tr>
+<td>\n</td>
+<td>Match a line feed, \u000A.</td>
+<td>匹配换行符\ u000A。</td>
+</tr>
+<tr>
+<td>\N{unicode}</td>
+<td>Match the named character.</td>
+<td>匹配命名的字符。</td>
+</tr>
+<tr>
+<td>\p{unicode}</td>
+<td>Match any character with the specified Unicode Property.</td>
+<td>与指定的Unicode属性匹配任何字符。</td>
+</tr>
+<tr>
+<td>\P{unicode}</td>
+<td>Match any character not having the specified Unicode Property.</td>
+<td>匹配任何不具有指定Unicode属性的字符。</td>
+</tr>
+<tr>
+<td>\Q</td>
+<td>Quotes all following characters until \E.</td>
+<td>引用所有以下字符直到\ E。</td>
+</tr>
+<tr>
+<td>\r</td>
+<td>Match a carriage return, \u000D.</td>
+<td>匹配回车，\ u000D。</td>
+</tr>
+<tr>
+<td>\R</td>
+<td>Match a new line character, or the sequence CR LF.</td>
+<td>匹配新的行字符或序列CR LF。</td>
+</tr>
+<tr>
+<td>\s</td>
+<td>Match a white space character. White space is defined as [\t\n\f\r\p{Z}].</td>
+<td>匹配一个空白字符。 空格被定义为[\ t \ n \ f \ r \ p {Z}]。</td>
+</tr>
+<tr>
+<td>\S</td>
+<td>Match a non-white space character.</td>
+<td></td>
+</tr>
+<tr>
+<td>\t</td>
+<td>Match a horizontal tabulation, \u0009.</td>
+<td>匹配水平制表符，\ u0009。</td>
+</tr>
+<tr>
+<td>\uhhhh</td>
+<td>Match the character with the hex value hhhh.</td>
+<td>匹配十六进制字符hhhh。</td>
+</tr>
+<tr>
+<td>\uhhhhhhh</td>
+<td>Match the character with the hex value hhhhhhhh.Exactly eight hex digits must be provided, even though the largest Unicode code point is \U0010ffff.</td>
+<td>匹配十六进制字符hhhhhhhh。必须提供8位十六进制数字，即使最大的Unicode代码点是\ U0010ffff。</td>
+</tr>
+<tr>
+<td>\v</td>
+<td>Match a new line character.</td>
+<td>匹配一个新的行字符。</td>
+</tr>
+<tr>
+<td>\V</td>
+<td>Match a non-new line character.</td>
+<td></td>
+</tr>
+<tr>
+<td>\w</td>
+<td>Match a word character.</td>
+<td>匹配一个字符</td>
+</tr>
+<tr>
+<td>\W</td>
+<td>Match a non-word character.</td>
+<td></td>
+</tr>
+<tr>
+<td>\x{hhhh}</td>
+<td>Match the character with hex value hhhh.From one to six hex digits may be supplied.</td>
+<td>匹配十六进制字符hhhh。可提供1到6个十六进制数字。</td>
+</tr>
+<tr>
+<td>\xhh</td>
+<td>Match the character with two digit hex value hh</td>
+<td>匹配两位十六进制字符hh</td>
+</tr>
+<tr>
+<td>\X</td>
+<td>Match a Grapheme Cluster .</td>
+<td>匹配一个大写字母集</td>
+</tr>
+<tr>
+<td>\Z</td>
+<td>Match if the current position is at the end of input, but before the final line terminator, if one exists.</td>
+<td>如果当前位置在输入结尾，但在最后一行终止符之前，如果存在，则进行匹配。</td>
+</tr>
+<tr>
+<td>\z</td>
+<td>Match if the current position is at the end of input.</td>
+<td>如果当前位置在输入结束时匹配。</td>
+</tr>
+<tr>
+<td>\n</td>
+<td>Back Reference. Match whatever the nth capturing group matched. n must be a number &gt; 1 and &lt; total number of capture groups in the pattern.</td>
+<td>返回参考。 匹配任何第n个捕获组匹配。 n必须是数字&gt; 1和&lt;模式中捕获组的总数。</td>
+</tr>
+<tr>
+<td>\0ooo</td>
+<td>Match an Octal character. ‘ooo’ is from one to three octal digits. 0377 is the largest allowed Octal character. The leading zero is required; it distinguishes Octal constants from back references.</td>
+<td>匹配八进制字符 “ooo”是从一到三个八进制数字。 0377是允许的最大八进制字符。 领先的零是必需的; 它将八进制常量与反向引用区分开来。</td>
+</tr>
+<tr>
+<td>[…]</td>
+<td>Match any one character from the set.</td>
+<td>匹配集合中的任何一个字符。</td>
+</tr>
+<tr>
+<td>.</td>
+<td>Match any character.</td>
+<td></td>
+</tr>
+<tr>
+<td>^</td>
+<td>Match at the beginning of a line.</td>
+<td></td>
+</tr>
+<tr>
+<td>$</td>
+<td>Match at the end of a line.</td>
+<td></td>
+</tr>
+<tr>
+<td>\</td>
+<td>Quotes the following character. Characters that must be quoted to be treated as literals are * ? + [ ( ) { } ^ $ | \ .</td>
+<td>引用以下字符 必须引用被视为文字的字符是*？ + [（）{} ^ $ | \。</td>
+</tr>
+<tr>
+<td>\</td>
+<td>Quotes the following character. Characters that must be quoted to be treated as literals are [ ] \</td>
+<td>引用以下字符 ,必须引用被视为文字的字符是[] \</td>
+</tr>
+</tbody></table>
+<h3 id="Operators-运算符-1"><a href="#Operators-运算符-1" class="headerlink" title="Operators - 运算符"></a>Operators - 运算符</h3><table>
+<thead>
+<tr>
+<th>|</th>
+<th>Alternation. A|B matches either A or B.</th>
+<th>或者</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>*</td>
+<td>Match 0 or more times. Match as many times as possible.</td>
+<td>匹配0次以上。 匹配尽可能多的次数。</td>
+</tr>
+<tr>
+<td>+</td>
+<td>Match 1 or more times. Match as many times as possible.</td>
+<td>匹配1次以上。 匹配尽可能多的次数。</td>
+</tr>
+<tr>
+<td>？</td>
+<td>Match zero or one times. Prefer one.</td>
+<td>匹配零次或一次。 偏向于一次</td>
+</tr>
+<tr>
+<td>{n}</td>
+<td>Match exactly n times</td>
+<td>匹配n次</td>
+</tr>
+<tr>
+<td>{n,}</td>
+<td>Match at least n times. Match as many times as possible.</td>
+<td>匹配至少n次</td>
+</tr>
+<tr>
+<td>{n,m}</td>
+<td>Match between n and m times. Match as many times as possible, but not more than m.</td>
+<td>匹配n~m次</td>
+</tr>
+<tr>
+<td>*?</td>
+<td>Match 0 or more times. Match as few times as possible.</td>
+<td>加后缀 ？表示非贪婪匹配（匹配尽可能少的字符）</td>
+</tr>
+<tr>
+<td>+?</td>
+<td>Match 1 or more times.Match as few times as possible.</td>
+<td></td>
+</tr>
+<tr>
+<td>??</td>
+<td>Match zero or one times. Prefer zero.</td>
+<td></td>
+</tr>
+<tr>
+<td>{n}?</td>
+<td>Match exactly n times</td>
+<td></td>
+</tr>
+<tr>
+<td>{n,}?</td>
+<td>Match at least n time§s, but no more than required for an overall pattern match</td>
+<td></td>
+</tr>
+<tr>
+<td>{n,m}?</td>
+<td>Match between n and m times. Match as few times as possible, but not less than n.</td>
+<td></td>
+</tr>
+<tr>
+<td>*+</td>
+<td>Match 0 or more times. Match as many times as possible when first encountered, do not retry with fewer even if overall match fails (Possessive Match)</td>
+<td>匹配0次以上。 在第一次遇到时，尽可能多地匹配，即使整体匹配失败（Possessive Match）也不要重试，</td>
+</tr>
+<tr>
+<td>++</td>
+<td>Match 1 or more times. Possessive match.</td>
+<td></td>
+</tr>
+<tr>
+<td>?+</td>
+<td>Match zero or one times.  Possessive match.</td>
+<td></td>
+</tr>
+<tr>
+<td>{n}+</td>
+<td>Match exactly n times</td>
+<td></td>
+</tr>
+<tr>
+<td>{n,}+</td>
+<td>Match at least n times.  Possessive Match.</td>
+<td></td>
+</tr>
+<tr>
+<td>{n,m}+</td>
+<td>Match between n and m times. Possessive Match.</td>
+<td></td>
+</tr>
+<tr>
+<td>(…)</td>
+<td>Capturing parentheses. Range of input that matched the parenthesized subexpression is available after the match.</td>
+<td></td>
+</tr>
+<tr>
+<td>(? : …)</td>
+<td>Non-capturing parentheses. Groups the included pattern, but does not provide capturing of matching text. Somewhat more efficient than capturing parentheses.</td>
+<td>非捕获括号。 对包含的模式进行分组，但不提供匹配文本的捕获。 比捕捉括号更有效率。</td>
+</tr>
+<tr>
+<td>(? &gt; …)</td>
+<td>Atomic-match parentheses. First match of the parenthesized subexpression is the only one tried; if it does not lead to an overall pattern match, back up the search for a match to a position before the “(?&gt;”</td>
+<td></td>
+</tr>
+<tr>
+<td>(?#…)</td>
+<td>Free-format comment (?# comment ).</td>
+<td></td>
+</tr>
+<tr>
+<td>(?=…)</td>
+<td>Look-ahead assertion. True if the parenthesized pattern matches at the current input position, but does not advance the input position.</td>
+<td></td>
+</tr>
+<tr>
+<td>(?!…)</td>
+<td>Negative look-ahead assertion. True if the parenthesized pattern does not match at the current input position. Does not advance the input position.</td>
+<td></td>
+</tr>
+<tr>
+<td>(?&lt;=…)</td>
+<td>Look-behind assertion. True if the parenthesized pattern matches text preceding the current input position, with the last character of the match being the input character just before the current position. Does not alter the input position. The length of possible strings matched by the look-behind pattern must not be unbounded (no * or + operators.)</td>
+<td></td>
+</tr>
+<tr>
+<td>(?…)</td>
+<td>Negative Look-behind assertion. True if the parenthesized pattern does not match text preceding the current input position, with the last character of the match being the input character just before the current position. Does not alter the input position. The length of possible strings matched by the look-behind pattern must not be unbounded (no * or + operators.)</td>
+<td></td>
+</tr>
+<tr>
+<td>(?…)</td>
+<td>Named capture group. The are literal - they appear in the pattern.</td>
+<td></td>
+</tr>
+<tr>
+<td>(?ismwx-ismwx:…)</td>
+<td>Flag settings. Evaluate the parenthesized expression with the specified flags enabled or -disabled.</td>
+<td></td>
+</tr>
+<tr>
+<td>(?ismwx-ismwx)</td>
+<td>Flag settings. Change the flag settings. Changes apply to the portion of the pattern following the setting. For example, (?i) changes to a case insensitive match.</td>
+<td></td>
+</tr>
+</tbody></table>
+<h3 id="Set-Expressions-设置表达式"><a href="#Set-Expressions-设置表达式" class="headerlink" title="Set Expressions - 设置表达式"></a>Set Expressions - 设置表达式</h3><table>
+<thead>
+<tr>
+<th>正则表达式</th>
+<th>说明</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>[abc]</td>
+<td>Match any of the characters a, b or c</td>
+<td></td>
+</tr>
+<tr>
+<td>[^abc]</td>
+<td>Negation - match any character except a, b or c</td>
+<td></td>
+</tr>
+<tr>
+<td>[A-M]</td>
+<td>Range - match any character from A to M.  The characters to include are determined by Unicode code point ordering.</td>
+<td></td>
+</tr>
+<tr>
+<td>[\u0000-\U0010ffff]</td>
+<td>Range - match all characters.</td>
+<td></td>
+</tr>
+</tbody></table>
+<h3 id="Flags"><a href="#Flags" class="headerlink" title="Flags"></a>Flags</h3><table>
+<thead>
+<tr>
+<th>正则表达式</th>
+<th>说明</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>i</td>
+<td>If set, matching will take place in a case-insensitive manner.</td>
+<td></td>
+</tr>
+<tr>
+<td>x</td>
+<td>If set, allow use of white space and #comments within patterns</td>
+<td></td>
+</tr>
+<tr>
+<td>s</td>
+<td>If set, a “.” in a pattern will match a line terminator in the input text. By default, it will not. Note that a carriage-return / line-feed pair in text behave as a single line terminator, and will match a single “.” in a RE pattern.</td>
+<td></td>
+</tr>
+<tr>
+<td>m</td>
+<td>Control the behavior of ^and $ in a pattern. By default these will only match at the start and end, respectively, of the input text. If this flag is set, ^ and $</td>
+<td></td>
+</tr>
+<tr>
+<td>will also match at the start and end of each line within the input text.</td>
+<td>Controls the behavior of \b in a pattern. If set, word boundaries are found according to the definitions of word found in Unicode UAX 29, Text Boundaries. By default, word boundaries are identified by means of a simple classification of characters as either “word” or “non-word”, which approximates traditional regular expression behavior. The results obtained with the two options can be quite different in runs of spaces and other non-word characters.</td>
+<td></td>
+</tr>
+</tbody></table>
+<h3 id="More-更多"><a href="#More-更多" class="headerlink" title="More - 更多"></a>More - 更多</h3><p>完整的正则表达式文档参考：<a target="_blank" rel="noopener" href="http://userguide.icu-project.org/strings/regexp"><strong>ICU User Guide</strong></a></p>
+<h4 id="贪婪匹配-amp-非贪婪匹配"><a href="#贪婪匹配-amp-非贪婪匹配" class="headerlink" title="贪婪匹配&amp;非贪婪匹配"></a>贪婪匹配&amp;非贪婪匹配</h4><ul>
+<li>贪婪匹配：匹配尽可能多的字符；</li>
+<li>非贪婪匹配：匹配尽可能少的字符</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>贪婪量词</th>
+<th>非贪婪量词</th>
+<th></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>*</td>
+<td>*?</td>
+<td></td>
+</tr>
+<tr>
+<td>+</td>
+<td>+?</td>
+<td></td>
+</tr>
+<tr>
+<td>?</td>
+<td>??</td>
+<td></td>
+</tr>
+<tr>
+<td>{n}</td>
+<td>{n}?</td>
+<td></td>
+</tr>
+<tr>
+<td>{n,}</td>
+<td>{n,}?</td>
+<td></td>
+</tr>
+<tr>
+<td>{n,m}</td>
+<td>{n,m}?</td>
+<td></td>
+</tr>
+</tbody></table>
+<p>示例</p>
+<blockquote>
+<p>正则表达式：a.*z</p>
+</blockquote>
+<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071200.jpg"></p>
+<blockquote>
+<p>正则表达式：a.*?z</p>
+</blockquote>
+<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071201.jpg"></p>
+<h3 id="常用正则表达式"><a href="#常用正则表达式" class="headerlink" title="常用正则表达式"></a>常用正则表达式</h3><h4 id="一、校验数字的表达式"><a href="#一、校验数字的表达式" class="headerlink" title="一、校验数字的表达式"></a>一、校验数字的表达式</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"> 1 数字：^[0-9]*$</span><br><span class="line"> 2 n位的数字：^\d&#123;n&#125;$</span><br><span class="line"> 3 至少n位的数字：^\d&#123;n,&#125;$</span><br><span class="line"> 4 m-n位的数字：^\d&#123;m,n&#125;$</span><br><span class="line"> 5 零和非零开头的数字：^(0|[1-9][0-9]*)$</span><br><span class="line"> 6 非零开头的最多带两位小数的数字：^([1-9][0-9]*)+(.[0-9]&#123;1,2&#125;)?$</span><br><span class="line"> 7 带1-2位小数的正数或负数：^(\-)?\d+(\.\d&#123;1,2&#125;)?$</span><br><span class="line"> 8 正数、负数、和小数：^(\-|\+)?\d+(\.\d+)?$</span><br><span class="line"> 9 有两位小数的正实数：^[0-9]+(.[0-9]&#123;2&#125;)?$</span><br><span class="line">10 有1~3位小数的正实数：^[0-9]+(.[0-9]&#123;1,3&#125;)?$</span><br><span class="line">11 非零的正整数：^[1-9]\d*$ 或 ^([1-9][0-9]*)&#123;1,3&#125;$ 或 ^\+?[1-9][0-9]*$</span><br><span class="line">12 非零的负整数：^\-[1-9][]0-9&quot;*$ 或 ^-[1-9]\d*$</span><br><span class="line">13 非负整数：^\d+$ 或 ^[1-9]\d*|0$</span><br><span class="line">14 非正整数：^-[1-9]\d*|0$ 或 ^((-\d+)|(0+))$</span><br><span class="line">15 非负浮点数：^\d+(\.\d+)?$ 或 ^[1-9]\d*\.\d*|0\.\d*[1-9]\d*|0?\.0+|0$</span><br><span class="line">16 非正浮点数：^((-\d+(\.\d+)?)|(0+(\.0+)?))$ 或 ^(-([1-9]\d*\.\d*|0\.\d*[1-9]\d*))|0?\.0+|0$</span><br><span class="line">17 正浮点数：^[1-9]\d*\.\d*|0\.\d*[1-9]\d*$ 或 ^(([0-9]+\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\.[0-9]+)|([0-9]*[1-9][0-9]*))$</span><br><span class="line">18 负浮点数：^-([1-9]\d*\.\d*|0\.\d*[1-9]\d*)$ 或 ^(-(([0-9]+\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\.[0-9]+)|([0-9]*[1-9][0-9]*)))$</span><br><span class="line">19 浮点数：^(-?\d+)(\.\d+)?$ 或 ^-?([1-9]\d*\.\d*|0\.\d*[1-9]\d*|0?\.0+|0)$</span><br></pre></td></tr></table></figure>
+<h4 id="二、校验字符的表达式"><a href="#二、校验字符的表达式" class="headerlink" title="二、校验字符的表达式"></a>二、校验字符的表达式</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"> 1 汉字：^[\u4e00-\u9fa5]&#123;0,&#125;$</span><br><span class="line"> 2 英文和数字：^[A-Za-z0-9]+$ 或 ^[A-Za-z0-9]&#123;4,40&#125;$</span><br><span class="line"> 3 长度为3-20的所有字符：^.&#123;3,20&#125;$</span><br><span class="line"> 4 由26个英文字母组成的字符串：^[A-Za-z]+$</span><br><span class="line"> 5 由26个大写英文字母组成的字符串：^[A-Z]+$</span><br><span class="line"> 6 由26个小写英文字母组成的字符串：^[a-z]+$</span><br><span class="line"> 7 由数字和26个英文字母组成的字符串：^[A-Za-z0-9]+$</span><br><span class="line"> 8 由数字、26个英文字母或者下划线组成的字符串：^\w+$ 或 ^\w&#123;3,20&#125;$</span><br><span class="line"> 9 中文、英文、数字包括下划线：^[\u4E00-\u9FA5A-Za-z0-9_]+$</span><br><span class="line">10 中文、英文、数字但不包括下划线等符号：^[\u4E00-\u9FA5A-Za-z0-9]+$ 或 ^[\u4E00-\u9FA5A-Za-z0-9]&#123;2,20&#125;$</span><br><span class="line">11 可以输入含有^%&amp;&#39;,;&#x3D;?$\&quot;等字符：[^%&amp;&#39;,;&#x3D;?$\x22]+</span><br><span class="line">12 禁止输入含有~的字符：[^~\x22]+</span><br></pre></td></tr></table></figure>
+
+<h4 id="三、特殊需求表达式"><a href="#三、特殊需求表达式" class="headerlink" title="三、特殊需求表达式"></a>三、特殊需求表达式</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"> 1 Email地址：^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$</span><br><span class="line"> 2 域名：[a-zA-Z0-9][-a-zA-Z0-9]&#123;0,62&#125;(&#x2F;.[a-zA-Z0-9][-a-zA-Z0-9]&#123;0,62&#125;)+&#x2F;.?</span><br><span class="line"> 3 InternetURL：[a-zA-z]+:&#x2F;&#x2F;[^\s]* 或 ^http:&#x2F;&#x2F;([\w-]+\.)+[\w-]+(&#x2F;[\w-.&#x2F;?%&amp;&#x3D;]*)?$</span><br><span class="line"> 4 手机号码：^(13[0-9]|14[0-9]|15[0-9]|166|17[0-9]|18[0-9]|19[8|9])\d&#123;8&#125;$</span><br><span class="line"> 5 电话号码(&quot;XXX-XXXXXXX&quot;、&quot;XXXX-XXXXXXXX&quot;、&quot;XXX-XXXXXXX&quot;、&quot;XXX-XXXXXXXX&quot;、&quot;XXXXXXX&quot;和&quot;XXXXXXXX)：^(\(\d&#123;3,4&#125;-)|\d&#123;3.4&#125;-)?\d&#123;7,8&#125;$ </span><br><span class="line"> 6 国内电话号码(0511-4405222、021-87888822)：\d&#123;3&#125;-\d&#123;8&#125;|\d&#123;4&#125;-\d&#123;7&#125; </span><br><span class="line"> 7 18位身份证号码(数字、字母x结尾)：^((\d&#123;18&#125;)|([0-9x]&#123;18&#125;)|([0-9X]&#123;18&#125;))$</span><br><span class="line"> 8 帐号是否合法(字母开头，允许5-16字节，允许字母数字下划线)：^[a-zA-Z][a-zA-Z0-9_]&#123;4,15&#125;$</span><br><span class="line"> 9 密码(以字母开头，长度在6~18之间，只能包含字母、数字和下划线)：^[a-zA-Z]\w&#123;5,17&#125;$</span><br><span class="line">10 强密码(必须包含大小写字母和数字的组合，不能使用特殊字符，长度在8-10之间)：^(?&#x3D;.*\d)(?&#x3D;.*[a-z])(?&#x3D;.*[A-Z]).&#123;8,10&#125;$  </span><br><span class="line">11 日期格式：^\d&#123;4&#125;-\d&#123;1,2&#125;-\d&#123;1,2&#125;</span><br><span class="line">12 一年的12个月(01～09和1～12)：^(0?[1-9]|1[0-2])$</span><br><span class="line">13 一个月的31天(01～09和1～31)：^((0?[1-9])|((1|2)[0-9])|30|31)$ </span><br><span class="line">14 钱的输入格式：</span><br><span class="line">15    1.有四种钱的表示形式我们可以接受:&quot;10000.00&quot; 和 &quot;10,000.00&quot;, 和没有 &quot;分&quot; 的 &quot;10000&quot; 和 &quot;10,000&quot;：^[1-9][0-9]*$ </span><br><span class="line">16    2.这表示任意一个不以0开头的数字,但是,这也意味着一个字符&quot;0&quot;不通过,所以我们采用下面的形式：^(0|[1-9][0-9]*)$ </span><br><span class="line">17    3.一个0或者一个不以0开头的数字.我们还可以允许开头有一个负号：^(0|-?[1-9][0-9]*)$ </span><br><span class="line">18    4.这表示一个0或者一个可能为负的开头不为0的数字.让用户以0开头好了.把负号的也去掉,因为钱总不能是负的吧.下面我们要加的是说明可能的小数部分：^[0-9]+(.[0-9]+)?$ </span><br><span class="line">19    5.必须说明的是,小数点后面至少应该有1位数,所以&quot;10.&quot;是不通过的,但是 &quot;10&quot; 和 &quot;10.2&quot; 是通过的：^[0-9]+(.[0-9]&#123;2&#125;)?$ </span><br><span class="line">20    6.这样我们规定小数点后面必须有两位,如果你认为太苛刻了,可以这样：^[0-9]+(.[0-9]&#123;1,2&#125;)?$ </span><br><span class="line">21    7.这样就允许用户只写一位小数.下面我们该考虑数字中的逗号了,我们可以这样：^[0-9]&#123;1,3&#125;(,[0-9]&#123;3&#125;)*(.[0-9]&#123;1,2&#125;)?$ </span><br><span class="line">22    8.1到3个数字,后面跟着任意个 逗号+3个数字,逗号成为可选,而不是必须：^([0-9]+|[0-9]&#123;1,3&#125;(,[0-9]&#123;3&#125;)*)(.[0-9]&#123;1,2&#125;)?$ </span><br><span class="line">23    备注：这就是最终结果了,别忘了&quot;+&quot;可以用&quot;*&quot;替代如果你觉得空字符串也可以接受的话(奇怪,为什么?)最后,别忘了在用函数时去掉去掉那个反斜杠,一般的错误都在这里</span><br><span class="line">24 xml文件：^([a-zA-Z]+-?)+[a-zA-Z0-9]+\\.[x|X][m|M][l|L]$</span><br><span class="line">25 中文字符的正则表达式：[\u4e00-\u9fa5]</span><br><span class="line">26 双字节字符：[^\x00-\xff]    (包括汉字在内，可以用来计算字符串的长度(一个双字节字符长度计2，ASCII字符计1))</span><br><span class="line">27 空白行的正则表达式：\n\s*\r    (可以用来删除空白行)</span><br><span class="line">28 HTML标记的正则表达式：&lt;(\S*?)[^&gt;]*&gt;.*?&lt;&#x2F;\1&gt;|&lt;.*? &#x2F;&gt;    (网上流传的版本太糟糕，上面这个也仅仅能部分，对于复杂的嵌套标记依旧无能为力)</span><br><span class="line">29 首尾空白字符的正则表达式：^\s*|\s*$或(^\s*)|(\s*$)    (可以用来删除行首行尾的空白字符(包括空格、制表符、换页符等等)，非常有用的表达式)</span><br><span class="line">30 腾讯QQ号：[1-9][0-9]&#123;4,&#125;    (腾讯QQ号从10000开始)</span><br><span class="line">31 中国邮政编码：[1-9]\d&#123;5&#125;(?!\d)    (中国邮政编码为6位数字)</span><br><span class="line">32 IP地址：\d+\.\d+\.\d+\.\d+    (提取IP地址时有用)</span><br><span class="line">33 IP地址：((?:(?:25[0-5]|2[0-4]\\d|[01]?\\d?\\d)\\.)&#123;3&#125;(?:25[0-5]|2[0-4]\\d|[01]?\\d?\\d))    (由@飞龙三少 提供,感谢共享)</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><ul>
+<li><span class="exturl" data-url="aHR0cDovL3d3dy5qaWFuc2h1LmNvbS9wL2FjMjU5NmJlOTYwNg==">《系统地学习正则表达式(一)：基础篇》 @iOS_小松哥<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cDovL3d3dy5qaWFuc2h1LmNvbS9wLzU1NWY4NTAyM2E3Zg==">《系统地学习正则表达式(二)：进阶篇》  @iOS_小松哥<i class="fa fa-external-link-alt"></i></span></li>
+<li>PDF下载：<span class="exturl" data-url="aHR0cDovL3NpbmFzdG9yYWdlLmNvbS9pc2hhcmUuZG93bi5zaW5hLmNvbS5jbi8yMTA1NjAwMS5wZGY/c3NpZz10aW9EdHd0Sk8rJkV4cGlyZXM9MTQ4NjY1NjQ1OCZLSUQ9c2luYSxpc2hhcmUmaXA9JmZuPSVFNyVCMiVCRSVFOSU4MCU5QSVFNiVBRCVBMyVFNSU4OCU5OSVFOCVBMSVBOCVFOCVCRSVCRSVFNSVCQyU4Ri5wZGY=">精通正则表达式 （第三版）简体中文版By Jeffrey E. F. Friedl <i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cDovL3d3dy5jbmJsb2dzLmNvbS96eGluL2FyY2hpdmUvMjAxMy8wMS8yNi8yODc3NzY1Lmh0bWw=">最全的常用正则表达式大全——包括校验数字、字符、一些特殊的需求等等<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cDovL3d3dy5jcjE3My5jb20vaHRtbC8xOTEwOV9hbGwuaHRtbA==">最全的常用正则表达式大全分享<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cDovL3d3dy5qaWFuc2h1LmNvbS9wL2U3YmI5NzIxODk0Ng==">知道这20个正则表达式，能让你少写1,000行代码<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cDovL3Nvbm5ld2lsbGluZy5jb20vYmxvZy8yMDEyLzAxLzE1L2NoYW5nLXlvbmctemhlbmctemUtYmlhby1kYS1zaGktemh1YW4v">常用正则表达式(转)<i class="fa fa-external-link-alt"></i></span></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>独木舟的木
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://andy0570.com/2016/12/12/Expressions%20-%20%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F%E5%B7%A5%E5%85%B7/" title="Expressions - 正则表达式工具">https://andy0570.com/2016/12/12/Expressions - 正则表达式工具/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <span class="exturl" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpo"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</span> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Mac/" rel="tag"># Mac</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2016/12/09/SDCycleScrollView%E2%80%94%E2%80%94%E6%97%A0%E9%99%90%E5%BE%AA%E7%8E%AF%E5%9B%BE%E7%89%87%E3%80%81%E6%96%87%E5%AD%97%E8%BD%AE%E6%92%AD%E5%99%A8/" rel="prev" title="SDCycleScrollView——无限循环图片、文字轮播器">
+      <i class="fa fa-chevron-left"></i> SDCycleScrollView——无限循环图片、文字轮播器
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2016/12/14/AFNetworking%20%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/" rel="next" title="AFNetworking 源码阅读">
+      AFNetworking 源码阅读 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+        </div>
+        
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">独木舟的木</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">2.1m</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">31:21</span>
+</div>
+  <div class="powered-by">由 <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZw==">NexT.Gemini</span> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

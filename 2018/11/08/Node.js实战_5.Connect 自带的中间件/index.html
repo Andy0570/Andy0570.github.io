@@ -1,23 +1,570 @@
-{% extends '_layout.swig' %}
-{% import '_macro/post.swig' as post_template %}
-{% import '_macro/sidebar.swig' as sidebar_template %}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.0.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+  <meta name="google-site-verification" content="wioXOS3Gv2wXUpJ3sLtfZ4ft6YJYKNLLWSw6QoZTFYM">
+  <meta name="msvalidate.01" content="C96491A81239C517A50597C54EE53CD1">
+  <meta name="baidu-site-verification" content="h8asiToN1b">
 
-{% block title %}{{ page.title }} | {{ title }}{% endblock %}
+<link rel="stylesheet" href="/css/main.css">
 
-{% block page_class %}page-post-detail{% endblock %}
 
-{% block content %}
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  
+  <link rel="stylesheet" href="/lib/animate-css/animate.min.css">
 
-  <div id="posts" class="posts-expand">
-    {{ post_template.render(page) }}
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"andy0570.com","root":"/","scheme":"Gemini","version":"8.0.0-rc.5","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":"mac","bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false};
+  </script>
+
+  <meta name="description" content="💡这一章是《Node.js 实战》笔记，但是书中的源码实现与官方文档有出入，Connect “自带”的中间件好像是需要单个独立导入才能使用。以下仅作为记录，实际项目使用待研究验证。  Connect 自带的中间件Connect 自带的中间件可以满足常见的Web程序开发需求：  会话管理； cookie 解析； 请求主体解析 请求日志 …">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Node.js实战_5.Connect 自带的中间件">
+<meta property="og:url" content="https://andy0570.com/2018/11/08/Node.js%E5%AE%9E%E6%88%98_5.Connect%20%E8%87%AA%E5%B8%A6%E7%9A%84%E4%B8%AD%E9%97%B4%E4%BB%B6/index.html">
+<meta property="og:site_name" content="独木舟的木">
+<meta property="og:description" content="💡这一章是《Node.js 实战》笔记，但是书中的源码实现与官方文档有出入，Connect “自带”的中间件好像是需要单个独立导入才能使用。以下仅作为记录，实际项目使用待研究验证。  Connect 自带的中间件Connect 自带的中间件可以满足常见的Web程序开发需求：  会话管理； cookie 解析； 请求主体解析 请求日志 …">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/075908.jpg">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/075908-1.jpg">
+<meta property="article:published_time" content="2018-11-08T10:42:00.000Z">
+<meta property="article:modified_time" content="2019-05-01T13:02:03.000Z">
+<meta property="article:author" content="独木舟的木">
+<meta property="article:tag" content="Node.js">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/075908.jpg">
+
+<link rel="canonical" href="https://andy0570.com/2018/11/08/Node.js%E5%AE%9E%E6%88%98_5.Connect%20%E8%87%AA%E5%B8%A6%E7%9A%84%E4%B8%AD%E9%97%B4%E4%BB%B6/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Node.js实战_5.Connect 自带的中间件 | 独木舟的木</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="独木舟的木" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <main class="main">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+        <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
   </div>
 
-{% endblock %}
+  <div class="site-meta">
 
-{% block sidebar %}
-  {{ sidebar_template.render(true) }}
-{% endblock %}
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">独木舟的木</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">iOS Developer</p>
+  </div>
 
-{% block script_extra %}
-  {% include '_scripts/pages/post-details.swig' %}
-{% endblock %}
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">14</span></a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">36</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">310</span></a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <section class="post-toc-wrap sidebar-panel">
+          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Connect-%E8%87%AA%E5%B8%A6%E7%9A%84%E4%B8%AD%E9%97%B4%E4%BB%B6"><span class="nav-number">1.</span> <span class="nav-text">Connect 自带的中间件</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A7%A3%E6%9E%90-cookie%E3%80%81%E8%AF%B7%E6%B1%82%E4%B8%BB%E4%BD%93%E5%92%8C%E6%9F%A5%E8%AF%A2%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%9A%84%E4%B8%AD%E9%97%B4%E4%BB%B6"><span class="nav-number">1.1.</span> <span class="nav-text">解析 cookie、请求主体和查询字符串的中间件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#cookieParser-%EF%BC%9A%E8%A7%A3%E6%9E%90HTTP-cookie"><span class="nav-number">1.1.1.</span> <span class="nav-text">cookieParser()：解析HTTP cookie</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AD%BE%E5%90%8Dcookie"><span class="nav-number">1.1.1.1.</span> <span class="nav-text">签名cookie</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#JSON-cookie"><span class="nav-number">1.1.1.2.</span> <span class="nav-text">JSON cookie</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%AE%BE%E5%AE%9A%E5%87%BA%E7%AB%99cookie"><span class="nav-number">1.1.1.3.</span> <span class="nav-text">设定出站cookie</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#bodyParser-%EF%BC%9A%E8%A7%A3%E6%9E%90%E8%AF%B7%E6%B1%82%E4%B8%BB%E4%BD%93"><span class="nav-number">1.1.2.</span> <span class="nav-text">bodyParser()：解析请求主体</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#limit-%EF%BC%9A%E8%AF%B7%E6%B1%82%E4%B8%BB%E4%BD%93%E7%9A%84%E9%99%90%E5%88%B6"><span class="nav-number">1.1.3.</span> <span class="nav-text">limit()：请求主体的限制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#query-%EF%BC%9A%E6%9F%A5%E8%AF%A2%E5%AD%97%E7%AC%A6%E4%B8%B2%E8%A7%A3%E6%9E%90"><span class="nav-number">1.1.4.</span> <span class="nav-text">query()：查询字符串解析</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0-Web-%E7%A8%8B%E5%BA%8F%E6%A0%B8%E5%BF%83%E5%8A%9F%E8%83%BD%E7%9A%84%E4%B8%AD%E9%97%B4%E4%BB%B6"><span class="nav-number">1.2.</span> <span class="nav-text">实现 Web 程序核心功能的中间件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%84%E7%90%86-Web-%E7%A8%8B%E5%BA%8F%E5%AE%89%E5%85%A8%E7%9A%84%E4%B8%AD%E9%97%B4%E4%BB%B6"><span class="nav-number">1.3.</span> <span class="nav-text">处理 Web 程序安全的中间件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8F%90%E4%BE%9B%E9%9D%99%E6%80%81%E6%96%87%E4%BB%B6%E6%9C%8D%E5%8A%A1%E7%9A%84%E4%B8%AD%E9%97%B4%E4%BB%B6"><span class="nav-number">1.4.</span> <span class="nav-text">提供静态文件服务的中间件</span></a></li></ol></li></ol></div>
+      </section>
+      <!--/noindex-->
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="独木舟的木"
+      src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+  <p class="site-author-name" itemprop="name">独木舟的木</p>
+  <div class="site-description" itemprop="description">生若直木，不语斧凿。</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">310</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">36</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL0FuZHkwNTcw" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Andy0570"><i class="fab fa-github fa-fw"></i>GitHub</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9zdGFja292ZXJmbG93LmNvbS91c2Vycy83MjY1NDAwL2FuZHkwNTcw" title="StackOverflow → https:&#x2F;&#x2F;stackoverflow.com&#x2F;users&#x2F;7265400&#x2F;andy0570"><i class="fab fa-stack-overflow fa-fw"></i>StackOverflow</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuamlhbnNodS5jb20vdS84NGM1ZmFkYzdjMTg=" title="简书 → https:&#x2F;&#x2F;www.jianshu.com&#x2F;u&#x2F;84c5fadc7c18"><i class="heartbeat fa-fw"></i>简书</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="bWFpbHRvOmFuZHl3aG1AMTYzLmNvbQ==" title="E-Mail → mailto:andywhm@163.com"><i class="fa fa-envelope fa-fw"></i>E-Mail</span>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <span class="exturl cc-opacity" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpo"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></span>
+  </div>
+
+
+
+      </section>
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </header>
+
+      
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div id="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+      <div class="main-inner">
+        
+
+        <div class="content post posts-expand">
+          
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://andy0570.com/2018/11/08/Node.js%E5%AE%9E%E6%88%98_5.Connect%20%E8%87%AA%E5%B8%A6%E7%9A%84%E4%B8%AD%E9%97%B4%E4%BB%B6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+      <meta itemprop="name" content="独木舟的木">
+      <meta itemprop="description" content="生若直木，不语斧凿。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="独木舟的木">
+    </span>
+
+    
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Node.js实战_5.Connect 自带的中间件
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-11-08 18:42:00" itemprop="dateCreated datePublished" datetime="2018-11-08T18:42:00+08:00">2018-11-08</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-05-01 21:02:03" itemprop="dateModified" datetime="2019-05-01T21:02:03+08:00">2019-05-01</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Node-js/" itemprop="url" rel="index"><span itemprop="name">Node.js</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>2.6k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>2 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <blockquote>
+<p>💡<br>这一章是《Node.js 实战》笔记，但是书中的源码实现与官方文档有出入，Connect “自带”的中间件好像是需要单个独立导入才能使用。<br>以下仅作为记录，实际项目使用待研究验证。</p>
+</blockquote>
+<h1 id="Connect-自带的中间件"><a href="#Connect-自带的中间件" class="headerlink" title="Connect 自带的中间件"></a>Connect 自带的中间件</h1><p>Connect 自带的中间件可以满足常见的Web程序开发需求：</p>
+<ul>
+<li>会话管理；</li>
+<li>cookie 解析；</li>
+<li>请求主体解析</li>
+<li>请求日志</li>
+<li>…</li>
+</ul>
+<a id="more"></a>
+
+<p>下面的这些中间件是独立呈现的，需要npm单独导入</p>
+<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/075908.jpg" alt="Connect 中间件"></p>
+<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/075908-1.jpg" alt="image"></p>
+<h2 id="解析-cookie、请求主体和查询字符串的中间件"><a href="#解析-cookie、请求主体和查询字符串的中间件" class="headerlink" title="解析 cookie、请求主体和查询字符串的中间件"></a>解析 cookie、请求主体和查询字符串的中间件</h2><h3 id="cookieParser-：解析HTTP-cookie"><a href="#cookieParser-：解析HTTP-cookie" class="headerlink" title="cookieParser()：解析HTTP cookie"></a>cookieParser()：解析HTTP cookie</h3><p>Connect 的 cookie 解析器支持常规cookie、签名cookie和特殊的JSON cookie。<br>req.cookies默认是用常规未签名cookie组装而成的。如果你想支持session()中间件要求的签名cookie，在创建cookieParser()实例时要传入一个加密用的字符串。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> connect = <span class="built_in">require</span>(<span class="string">&#x27;connect&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 作为参数传给cookieParser()的秘钥用来对cookie签名和解签</span></span><br><span class="line"><span class="keyword">var</span> app = connect()</span><br><span class="line">    .use(connect.cookieParser(<span class="string">&#x27;tobi is a cook ferret&#x27;</span>)) </span><br><span class="line">    .use(<span class="function"><span class="keyword">function</span> (<span class="params">req, res</span>) </span>&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(req.cookies);</span><br><span class="line">        <span class="built_in">console</span>.log(req.signedCookies);</span><br><span class="line">        res.end(<span class="string">&#x27;hello\n&#x27;</span>);</span><br><span class="line">    &#125;)</span><br><span class="line">    .listen(<span class="number">3000</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 不带cookie</span></span><br><span class="line"><span class="comment">// curl http://localhost:3000/</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 常规cookie</span></span><br><span class="line"><span class="comment">// curl http://localhost:3000/ -H &quot;Cookie: foo=bar, bar=baz&quot;</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="签名cookie"><a href="#签名cookie" class="headerlink" title="签名cookie"></a>签名cookie</h4><p>签名cookie更适合敏感数据，因为用它可以验证cookie数据的完整性，有助于防止中间人攻击。有效的签名cookie放在req.signedCookies对象中。</p>
+<p>假设你设定了一个键为name，值为luna的签名cookie。cookieParser会将cookie编码为luna.PQLM0wNvqOQEObZXUkWbS5m6Wlg。每个请求中的哈希值都会检查，如果cookie完好无损地传上来，它会被解析为req.signedCookies.name:</p>
+<h4 id="JSON-cookie"><a href="#JSON-cookie" class="headerlink" title="JSON cookie"></a>JSON cookie</h4><p>特别的JSON cookie带有前缀j:，告诉Connect它是一个串行化的JSON。 JSON cookie既可以是签名的，也可以是未签名的。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl http://localhost:3000/ -H &#x27;Cookie: foo=bar, bar=j:&#123;&quot;foo&quot;:&quot;bar&quot;&#125;&#x27;</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="设定出站cookie"><a href="#设定出站cookie" class="headerlink" title="设定出站cookie"></a>设定出站cookie</h4><p>cookieParser() 中间件没有提供任何通过 Set-Cookie 响应头向HTTP客户端写出站cookie的功能。但Connect可以通过 res.setHeader()函数写入多个Set-Cookie响应头。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> connect = <span class="built_in">require</span>(<span class="string">&#x27;connect&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> app = connect()</span><br><span class="line">    .use(<span class="function"><span class="keyword">function</span> (<span class="params">req, res</span>) </span>&#123;</span><br><span class="line">        res.setHeader(<span class="string">&#x27;Set-Cookie&#x27;</span>, <span class="string">&#x27;foo=bar&#x27;</span>); <span class="comment">// 设定cookie：foo=bar</span></span><br><span class="line">        res.setHeader(<span class="string">&#x27;Set-Cookie&#x27;</span>, <span class="string">&#x27;tobi=ferret; Expires=Tue, 08 Jun 2021 10:18:14 GMT&#x27;</span>); <span class="comment">// 设定cookie有效期</span></span><br><span class="line">        res.end();</span><br><span class="line">    &#125;).listen(<span class="number">3000</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// curl http://localhost:3000/ --head</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="bodyParser-：解析请求主体"><a href="#bodyParser-：解析请求主体" class="headerlink" title="bodyParser()：解析请求主体"></a>bodyParser()：解析请求主体</h3><p>bodyParser() 组件为你提供了req.body 属性，可以用来解析 JSON、x-www-form-urlencoded 和multipart/form-data请求。如果是 multipart/form-data 请求，比如文件上传，则还有req.files 对象。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> app = connect()</span><br><span class="line">    .use(connect.bodyParser())</span><br><span class="line">    .use(<span class="function"><span class="keyword">function</span>(<span class="params">req, res</span>) </span>&#123;</span><br><span class="line">        <span class="comment">// ...注册用户</span></span><br><span class="line">        res.end(<span class="string">&#x27;Registered new user: &#x27;</span> + req.body.username);</span><br><span class="line">    &#125;).listen(<span class="number">3000</span>);</span><br></pre></td></tr></table></figure>
+
+<p>因为 bodyParser() 是根据 Content-Type 解析数据的，输入形式是抽象的，所以你的程序中只需要关心req.body数据对象的结果。</p>
+<h3 id="limit-：请求主体的限制"><a href="#limit-：请求主体的限制" class="headerlink" title="limit()：请求主体的限制"></a>limit()：请求主体的限制</h3><p>目的：帮助过滤巨型的请求。</p>
+<h3 id="query-：查询字符串解析"><a href="#query-：查询字符串解析" class="headerlink" title="query()：查询字符串解析"></a>query()：查询字符串解析</h3><ul>
+<li>bodyParser()：解析 POST 请求</li>
+<li>query()：解析 GET 请求。</li>
+</ul>
+<p>query中间件可以将请求发送过来的查询字符串以JSON格式作为响应返回去。</p>
+<h2 id="实现-Web-程序核心功能的中间件"><a href="#实现-Web-程序核心功能的中间件" class="headerlink" title="实现 Web 程序核心功能的中间件"></a>实现 Web 程序核心功能的中间件</h2><ul>
+<li>logger()：提供灵活的请求日志;</li>
+<li>favicon()：帮你处理/favicon.ico请求（favicon 是网站的小图标）;</li>
+<li>methodOverride()：让没有能力的客户端透明地重写req.method;</li>
+<li>vhost()：在一个服务器上设置多个网站(虚拟主机);</li>
+<li>session()：管理会话数据。</li>
+</ul>
+<h2 id="处理-Web-程序安全的中间件"><a href="#处理-Web-程序安全的中间件" class="headerlink" title="处理 Web 程序安全的中间件"></a>处理 Web 程序安全的中间件</h2><ul>
+<li>basicAuth()：为保护数据提供了HTTP基本认证;</li>
+<li>csrf()：实现对跨站请求伪造(CSRF)攻击的防护;</li>
+<li>errorhandler()：帮你在开发过程中进行调试。</li>
+</ul>
+<h2 id="提供静态文件服务的中间件"><a href="#提供静态文件服务的中间件" class="headerlink" title="提供静态文件服务的中间件"></a>提供静态文件服务的中间件</h2><ul>
+<li>static()：将文件系统中给定根目录下的文件返回给客户端;</li>
+<li>compress()：压缩响应，很适合跟static()一起使用;</li>
+<li>directory()：当请求的是目录时，返回那个目录的列表。</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>独木舟的木
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://andy0570.com/2018/11/08/Node.js%E5%AE%9E%E6%88%98_5.Connect%20%E8%87%AA%E5%B8%A6%E7%9A%84%E4%B8%AD%E9%97%B4%E4%BB%B6/" title="Node.js实战_5.Connect 自带的中间件">https://andy0570.com/2018/11/08/Node.js实战_5.Connect 自带的中间件/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <span class="exturl" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpo"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</span> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Node-js/" rel="tag"># Node.js</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2018/11/08/Node.js%E5%AE%9E%E6%88%98_4.Connect%20%E6%A1%86%E6%9E%B6/" rel="prev" title="Node.js实战_4.Connect 框架">
+      <i class="fa fa-chevron-left"></i> Node.js实战_4.Connect 框架
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2018/11/13/Node.js%E7%A4%BA%E4%BE%8B_CNode%20RESTful%20API/" rel="next" title="Node.js示例_CNode RESTful API">
+      Node.js示例_CNode RESTful API <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+        </div>
+        
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">独木舟的木</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">2.1m</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">31:21</span>
+</div>
+  <div class="powered-by">由 <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZw==">NexT.Gemini</span> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

@@ -1,23 +1,570 @@
-{% extends '_layout.swig' %}
-{% import '_macro/post.swig' as post_template %}
-{% import '_macro/sidebar.swig' as sidebar_template %}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.0.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+  <meta name="google-site-verification" content="wioXOS3Gv2wXUpJ3sLtfZ4ft6YJYKNLLWSw6QoZTFYM">
+  <meta name="msvalidate.01" content="C96491A81239C517A50597C54EE53CD1">
+  <meta name="baidu-site-verification" content="h8asiToN1b">
 
-{% block title %}{{ page.title }} | {{ title }}{% endblock %}
+<link rel="stylesheet" href="/css/main.css">
 
-{% block page_class %}page-post-detail{% endblock %}
 
-{% block content %}
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  
+  <link rel="stylesheet" href="/lib/animate-css/animate.min.css">
 
-  <div id="posts" class="posts-expand">
-    {{ post_template.render(page) }}
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"andy0570.com","root":"/","scheme":"Gemini","version":"8.0.0-rc.5","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":"mac","bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false};
+  </script>
+
+  <meta name="description" content="Demo 示例">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Egg.js_搭建爬虫系统显示新闻页面">
+<meta property="og:url" content="https://andy0570.com/2019/04/25/Egg.js_%E6%90%AD%E5%BB%BA%E7%88%AC%E8%99%AB%E7%B3%BB%E7%BB%9F%E6%98%BE%E7%A4%BA%E6%96%B0%E9%97%BB%E9%A1%B5%E9%9D%A2/index.html">
+<meta property="og:site_name" content="独木舟的木">
+<meta property="og:description" content="Demo 示例">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/080040.jpg">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/080044.jpg">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/080047.jpg">
+<meta property="article:published_time" content="2019-04-24T17:37:11.000Z">
+<meta property="article:modified_time" content="2019-05-10T19:16:00.000Z">
+<meta property="article:author" content="独木舟的木">
+<meta property="article:tag" content="Node.js">
+<meta property="article:tag" content="Egg.js">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/080040.jpg">
+
+<link rel="canonical" href="https://andy0570.com/2019/04/25/Egg.js_%E6%90%AD%E5%BB%BA%E7%88%AC%E8%99%AB%E7%B3%BB%E7%BB%9F%E6%98%BE%E7%A4%BA%E6%96%B0%E9%97%BB%E9%A1%B5%E9%9D%A2/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Egg.js_搭建爬虫系统显示新闻页面 | 独木舟的木</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="独木舟的木" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <main class="main">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+        <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
   </div>
 
-{% endblock %}
+  <div class="site-meta">
 
-{% block sidebar %}
-  {{ sidebar_template.render(true) }}
-{% endblock %}
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">独木舟的木</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">iOS Developer</p>
+  </div>
 
-{% block script_extra %}
-  {% include '_scripts/pages/post-details.swig' %}
-{% endblock %}
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">14</span></a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">36</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">310</span></a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <section class="post-toc-wrap sidebar-panel">
+          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Demo-%E7%A4%BA%E4%BE%8B"><span class="nav-number">1.</span> <span class="nav-text">Demo 示例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E9%A1%B9%E7%9B%AE"><span class="nav-number">2.</span> <span class="nav-text">创建项目</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6%E5%99%A8"><span class="nav-number">3.</span> <span class="nav-text">配置路由控制器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E6%A8%A1%E7%89%88%E5%BC%95%E6%93%8E"><span class="nav-number">4.</span> <span class="nav-text">配置模版引擎</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E6%A8%A1%E7%89%88%E5%BC%95%E6%93%8E"><span class="nav-number">4.1.</span> <span class="nav-text">安装模版引擎</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E6%A8%A1%E7%89%88%E5%BC%95%E6%93%8E-1"><span class="nav-number">4.2.</span> <span class="nav-text">配置模版引擎</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE-config-%E5%85%AC%E5%85%B1URL%E5%9C%B0%E5%9D%80"><span class="nav-number">5.</span> <span class="nav-text">配置 config 公共URL地址</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BC%96%E5%86%99%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0%E6%96%B0%E9%97%BB%E9%A1%B5%E9%9D%A2"><span class="nav-number">6.</span> <span class="nav-text">编写代码实现新闻页面</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8E%A7%E5%88%B6%E5%99%A8%E9%A1%B5%E9%9D%A2"><span class="nav-number">6.1.</span> <span class="nav-text">控制器页面</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%8D%E5%8A%A1%E5%B1%82%E9%A1%B5%E9%9D%A2"><span class="nav-number">6.2.</span> <span class="nav-text">服务层页面</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A7%86%E5%9B%BE%E9%A1%B5%E9%9D%A2"><span class="nav-number">6.3.</span> <span class="nav-text">视图页面</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Egg-js-%E6%A1%86%E6%9E%B6%E6%89%A9%E5%B1%95"><span class="nav-number">7.</span> <span class="nav-text">Egg.js 框架扩展</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BC%96%E5%86%99-extend-%E4%B8%AD%E7%9A%84-helper-js-%E6%96%87%E4%BB%B6"><span class="nav-number">7.1.</span> <span class="nav-text">编写 extend 中的 helper.js 文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9HTML%E6%A8%A1%E7%89%88%E6%96%87%E4%BB%B6"><span class="nav-number">7.2.</span> <span class="nav-text">修改HTML模版文件</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Egg-js-%E4%B8%AD%E9%97%B4%E4%BB%B6"><span class="nav-number">8.</span> <span class="nav-text">Egg.js 中间件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BC%96%E5%86%99%E4%B8%AD%E9%97%B4%E4%BB%B6"><span class="nav-number">8.1.</span> <span class="nav-text">编写中间件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E6%B7%BB%E5%8A%A0%E4%B8%AD%E9%97%B4%E4%BB%B6"><span class="nav-number">8.2.</span> <span class="nav-text">配置添加中间件</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">9.</span> <span class="nav-text">参考</span></a></li></ol></div>
+      </section>
+      <!--/noindex-->
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="独木舟的木"
+      src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+  <p class="site-author-name" itemprop="name">独木舟的木</p>
+  <div class="site-description" itemprop="description">生若直木，不语斧凿。</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">310</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">36</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL0FuZHkwNTcw" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Andy0570"><i class="fab fa-github fa-fw"></i>GitHub</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9zdGFja292ZXJmbG93LmNvbS91c2Vycy83MjY1NDAwL2FuZHkwNTcw" title="StackOverflow → https:&#x2F;&#x2F;stackoverflow.com&#x2F;users&#x2F;7265400&#x2F;andy0570"><i class="fab fa-stack-overflow fa-fw"></i>StackOverflow</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuamlhbnNodS5jb20vdS84NGM1ZmFkYzdjMTg=" title="简书 → https:&#x2F;&#x2F;www.jianshu.com&#x2F;u&#x2F;84c5fadc7c18"><i class="heartbeat fa-fw"></i>简书</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="bWFpbHRvOmFuZHl3aG1AMTYzLmNvbQ==" title="E-Mail → mailto:andywhm@163.com"><i class="fa fa-envelope fa-fw"></i>E-Mail</span>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <span class="exturl cc-opacity" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpo"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></span>
+  </div>
+
+
+
+      </section>
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </header>
+
+      
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div id="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+      <div class="main-inner">
+        
+
+        <div class="content post posts-expand">
+          
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://andy0570.com/2019/04/25/Egg.js_%E6%90%AD%E5%BB%BA%E7%88%AC%E8%99%AB%E7%B3%BB%E7%BB%9F%E6%98%BE%E7%A4%BA%E6%96%B0%E9%97%BB%E9%A1%B5%E9%9D%A2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+      <meta itemprop="name" content="独木舟的木">
+      <meta itemprop="description" content="生若直木，不语斧凿。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="独木舟的木">
+    </span>
+
+    
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Egg.js_搭建爬虫系统显示新闻页面
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-04-25 01:37:11" itemprop="dateCreated datePublished" datetime="2019-04-25T01:37:11+08:00">2019-04-25</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-05-11 03:16:00" itemprop="dateModified" datetime="2019-05-11T03:16:00+08:00">2019-05-11</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Node-js/" itemprop="url" rel="index"><span itemprop="name">Node.js</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>5.7k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>5 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="Demo-示例"><a href="#Demo-示例" class="headerlink" title="Demo 示例"></a>Demo 示例</h2><p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/080040.jpg" alt="新闻列表页面"></p>
+<a id="more"></a>
+
+
+
+<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/080044.jpg" alt="新闻详情页面"></p>
+<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/080047.jpg" alt="程序执行流程图"></p>
+<h2 id="创建项目"><a href="#创建项目" class="headerlink" title="创建项目"></a>创建项目</h2><p>初始化 Egg.js 项目，控制台中输入如下命令：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ mkdir spider &amp;&amp; <span class="built_in">cd</span> spider</span><br><span class="line">$ npm init egg --<span class="built_in">type</span>=simple</span><br><span class="line">$ npm i</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="配置路由控制器"><a href="#配置路由控制器" class="headerlink" title="配置路由控制器"></a>配置路由控制器</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// &#123;app_root&#125;/app/router.js</span></span><br><span class="line"><span class="built_in">module</span>.exports = <span class="function"><span class="params">app</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">const</span> &#123; router, controller &#125; = app;</span><br><span class="line">  router.get(<span class="string">&#x27;/news&#x27;</span>, controller.news.index);</span><br><span class="line">  router.get(<span class="string">&#x27;/newscontent&#x27;</span>, controller.news.content);</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// &#123;app_root&#125;/app/controller/news.js</span></span><br><span class="line"><span class="keyword">const</span> Controller = <span class="built_in">require</span>(<span class="string">&#x27;egg&#x27;</span>).Controller;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">NewsController</span> <span class="keyword">extends</span> <span class="title">Controller</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 获取数据显示到新闻页面</span></span><br><span class="line">  <span class="keyword">async</span> index() &#123;</span><br><span class="line">    <span class="comment">// ToDo</span></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 显示新闻详情</span></span><br><span class="line">  <span class="keyword">async</span> content() &#123;</span><br><span class="line">    <span class="comment">// ToDo</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = NewsController;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="配置模版引擎"><a href="#配置模版引擎" class="headerlink" title="配置模版引擎"></a>配置模版引擎</h2><p>配置并使用 ejs 模版引擎：<span class="exturl" data-url="aHR0cHM6Ly93d3cubnBtanMuY29tL3BhY2thZ2UvZWdnLXZpZXctZWpz">egg-view-egs<i class="fa fa-external-link-alt"></i></span></p>
+<h3 id="安装模版引擎"><a href="#安装模版引擎" class="headerlink" title="安装模版引擎"></a>安装模版引擎</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> npm i egg-view-ejs --save</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="配置模版引擎-1"><a href="#配置模版引擎-1" class="headerlink" title="配置模版引擎"></a>配置模版引擎</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// &#123;app_root&#125;/config/plugin.js</span></span><br><span class="line"><span class="built_in">exports</span>.ejs = &#123;</span><br><span class="line">  enable: <span class="literal">true</span>,</span><br><span class="line">  package: <span class="string">&#x27;egg-view-ejs&#x27;</span>,</span><br><span class="line">&#125;;</span><br><span class="line"> </span><br><span class="line"><span class="comment">// &#123;app_root&#125;/config/config.default.js</span></span><br><span class="line"><span class="comment">// 配置模版引擎</span></span><br><span class="line">config.view = &#123;</span><br><span class="line">  mapping: &#123;</span><br><span class="line">    <span class="string">&#x27;.ejs&#x27;</span>: <span class="string">&#x27;ejs&#x27;</span>,</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="配置-config-公共URL地址"><a href="#配置-config-公共URL地址" class="headerlink" title="配置 config 公共URL地址"></a>配置 config 公共URL地址</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// &#123;app_root&#125;/config/config.default.js</span></span><br><span class="line"><span class="comment">// 配置公共 API 地址</span></span><br><span class="line">config.api = <span class="string">&#x27;http://www.phonegap100.com&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="编写代码实现新闻页面"><a href="#编写代码实现新闻页面" class="headerlink" title="编写代码实现新闻页面"></a>编写代码实现新闻页面</h2><h3 id="控制器页面"><a href="#控制器页面" class="headerlink" title="控制器页面"></a>控制器页面</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// &#123;app_root&#125;/app/controller/news.js</span></span><br><span class="line"><span class="keyword">const</span> Controller = <span class="built_in">require</span>(<span class="string">&#x27;egg&#x27;</span>).Controller;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">NewsController</span> <span class="keyword">extends</span> <span class="title">Controller</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 获取数据显示到新闻页面</span></span><br><span class="line">  <span class="keyword">async</span> index() &#123;</span><br><span class="line">    <span class="comment">// 调用 Service 层方法</span></span><br><span class="line">    <span class="keyword">const</span> listInfo = <span class="keyword">await</span> <span class="built_in">this</span>.service.news.getNewsList();</span><br><span class="line">    <span class="comment">// 渲染模版引擎</span></span><br><span class="line">    <span class="keyword">await</span> <span class="built_in">this</span>.ctx.render(<span class="string">&#x27;news&#x27;</span>, &#123; <span class="attr">list</span>: listInfo &#125;);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 显示新闻详情</span></span><br><span class="line">  <span class="keyword">async</span> content() &#123;</span><br><span class="line">    <span class="comment">// 获取get传值，即点击页面 a 标签返回的 aid 值。</span></span><br><span class="line">    <span class="keyword">const</span> aid = <span class="built_in">this</span>.ctx.query.aid;</span><br><span class="line">    <span class="keyword">const</span> result = <span class="keyword">await</span> <span class="built_in">this</span>.service.news.getNewsContent(aid);</span><br><span class="line">    <span class="comment">// 渲染模版引擎</span></span><br><span class="line">    <span class="keyword">await</span> <span class="built_in">this</span>.ctx.render(<span class="string">&#x27;newscontent&#x27;</span>, &#123; <span class="attr">list</span>: result &#125;);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = NewsController;</span><br></pre></td></tr></table></figure>
+
+<h3 id="服务层页面"><a href="#服务层页面" class="headerlink" title="服务层页面"></a>服务层页面</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// &#123;app_root&#125;/app/service/news.js</span></span><br><span class="line"><span class="keyword">const</span> Service = <span class="built_in">require</span>(<span class="string">&#x27;egg&#x27;</span>).Service;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">NewsService</span> <span class="keyword">extends</span> <span class="title">Service</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 通过抓取接口返回数据</span></span><br><span class="line">  <span class="keyword">async</span> getNewsList() &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// curl 的方法可以获取远程数据。</span></span><br><span class="line">    <span class="keyword">const</span> api = <span class="built_in">this</span>.config.api + <span class="string">&#x27;appapi.php?a=getPortalList&amp;catid=20&amp;page=1&#x27;</span>;</span><br><span class="line">    <span class="keyword">const</span> response = <span class="keyword">await</span> <span class="built_in">this</span>.ctx.curl(api);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// response.data 返回的是&lt;Buffer&gt;类型，需要将其转化为对象。</span></span><br><span class="line">    <span class="keyword">const</span> data = <span class="built_in">JSON</span>.parse(response.data);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> data.result;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 获取新闻详情</span></span><br><span class="line">  <span class="keyword">async</span> getNewsContent(aid) &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 拼接 URL 路径</span></span><br><span class="line">    <span class="keyword">const</span> api = <span class="built_in">this</span>.config.api + <span class="string">&#x27;appapi.php?a=getPortalArticle&amp;aid=&#x27;</span> + aid;</span><br><span class="line">    <span class="keyword">const</span> response = <span class="keyword">await</span> <span class="built_in">this</span>.ctx.curl(api);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// response.data 返回的是&lt;Buffer&gt;类型，需要将其转化为对象。</span></span><br><span class="line">    <span class="keyword">const</span> data = <span class="built_in">JSON</span>.parse(response.data);</span><br><span class="line">    <span class="keyword">return</span> data.result[<span class="number">0</span>];</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = NewsService;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="视图页面"><a href="#视图页面" class="headerlink" title="视图页面"></a>视图页面</h3><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line">// &#123;app_root&#125;/app/view/news.html</span><br><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">&quot;en&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">&quot;UTF-8&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">&quot;viewport&quot;</span> <span class="attr">content</span>=<span class="string">&quot;width=device-width, initial-scale=1.0&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">meta</span> <span class="attr">http-equiv</span>=<span class="string">&quot;X-UA-Compatible&quot;</span> <span class="attr">content</span>=<span class="string">&quot;ie=edge&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">title</span>&gt;</span>Document<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">h2</span>&gt;</span>新闻列表数据<span class="tag">&lt;/<span class="name">h2</span>&gt;</span></span><br><span class="line"></span><br><span class="line">  <span class="tag">&lt;<span class="name">ul</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- for 循环遍历输出数组数据 --&gt;</span></span><br><span class="line">    &lt;%for(var i=0;i&lt;list.length;i++)&#123;%&gt;</span><br><span class="line">      <span class="comment">&lt;!-- href=&quot;/newscontent?aid=&lt;%=list[i].aid%&gt;&quot; 表示点击 a 标签跳转到相对URL页面 --&gt;</span></span><br><span class="line">      <span class="comment">&lt;!-- &lt;%=list[i].title%&gt; 表示 a 标签显示的内容：标题文字 --&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">li</span>&gt;</span><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">&quot;/newscontent?aid=&lt;%=list[i].aid%&gt;&quot;</span>&gt;</span><span class="tag">&lt;<span class="name">%=list[i].title%</span>&gt;</span><span class="tag">&lt;/<span class="name">a</span>&gt;</span> <span class="tag">&lt;<span class="name">span</span>&gt;</span>——<span class="tag">&lt;<span class="name">%=list[i].dateline%</span>&gt;</span><span class="tag">&lt;/<span class="name">span</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">%&#125;%</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">ul</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">// &#123;app_root&#125;/app/view/newscontent.html</span><br><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">&quot;en&quot;</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">&quot;UTF-8&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">&quot;viewport&quot;</span> <span class="attr">content</span>=<span class="string">&quot;width=device-width, initial-scale=1.0&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">meta</span> <span class="attr">http-equiv</span>=<span class="string">&quot;X-UA-Compatible&quot;</span> <span class="attr">content</span>=<span class="string">&quot;ie=edge&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">title</span>&gt;</span>Document<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">  <span class="comment">&lt;!-- 引入自定义 css 样式--&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">&quot;stylesheet&quot;</span> <span class="attr">href</span>=<span class="string">&quot;/public/css/basic.css&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line"></span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;content&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">h2</span>&gt;</span><span class="tag">&lt;<span class="name">%=list.title%</span>&gt;</span><span class="tag">&lt;/<span class="name">h2</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span>&gt;</span></span><br><span class="line">      <span class="comment">&lt;!-- 以下渲染的是 html 数据，=号改为 --&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">%-list.content%</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="Egg-js-框架扩展"><a href="#Egg-js-框架扩展" class="headerlink" title="Egg.js 框架扩展"></a>Egg.js 框架扩展</h2><p>实现需求：格式化显示日期。</p>
+<p>需要安装第三方模块：<span class="exturl" data-url="aHR0cHM6Ly93d3cubnBtanMuY29tL3BhY2thZ2Uvc2lsbHktZGF0ZXRpbWU=">silly-datetime<i class="fa fa-external-link-alt"></i></span></p>
+<h3 id="编写-extend-中的-helper-js-文件"><a href="#编写-extend-中的-helper-js-文件" class="headerlink" title="编写 extend 中的 helper.js 文件"></a>编写 extend 中的 helper.js 文件</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// &#123;app_root&#125;/app/extend/helper.js</span></span><br><span class="line"><span class="keyword">const</span> sd = <span class="built_in">require</span>(<span class="string">&#x27;silly-datetime&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">  formatTime(param) &#123;</span><br><span class="line">    <span class="comment">// this 就是 app 对象，在其中可以调用 app 上的其他方法，或访问属性</span></span><br><span class="line">    <span class="comment">// 格式化日期</span></span><br><span class="line">    <span class="keyword">return</span> sd.format(<span class="keyword">new</span> <span class="built_in">Date</span>(param*<span class="number">1000</span>), <span class="string">&#x27;YYYY-MM-DD HH:mm&#x27;</span>);</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="修改HTML模版文件"><a href="#修改HTML模版文件" class="headerlink" title="修改HTML模版文件"></a>修改HTML模版文件</h3><p>直接在模版文件中使用扩展方法，直接格式化日期：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">li</span>&gt;</span><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">&quot;/newscontent?aid=&lt;%=list[i].aid%&gt;&quot;</span>&gt;</span><span class="tag">&lt;<span class="name">%=list[i].title%</span>&gt;</span><span class="tag">&lt;/<span class="name">a</span>&gt;</span> <span class="tag">&lt;<span class="name">span</span>&gt;</span>——<span class="tag">&lt;<span class="name">%=helper.formatTime(list[i].dateline)%</span>&gt;</span><span class="tag">&lt;/<span class="name">span</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="Egg-js-中间件"><a href="#Egg-js-中间件" class="headerlink" title="Egg.js 中间件"></a>Egg.js 中间件</h2><h3 id="编写中间件"><a href="#编写中间件" class="headerlink" title="编写中间件"></a>编写中间件</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// &#123;app_root&#125;/app/middleware/forbidip.js</span></span><br><span class="line"><span class="meta">&#x27;use strict&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">options: 中间件的配置项，框架会将 app.config[$(middlewareName)] 传递进来</span></span><br><span class="line"><span class="comment">app: 当前应用 Application 的实例</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="built_in">module</span>.exports = <span class="function">(<span class="params">options, app</span>) =&gt;</span> &#123;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 返回一个异步的方法</span></span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">async</span> <span class="function"><span class="keyword">function</span> <span class="title">forbidIp</span>(<span class="params">ctx, next</span>) </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 要屏蔽的 ID：1. 从数据库获取，2.从参数传入</span></span><br><span class="line">    <span class="keyword">const</span> forbidip = <span class="string">&#x27;192.168.0.1&#x27;</span>;</span><br><span class="line">    <span class="comment">// 获取客户端 IP：ctx.request.ip</span></span><br><span class="line">    <span class="keyword">if</span> (ctx.request.ip === forbidip) &#123;</span><br><span class="line">      ctx.status = <span class="number">403</span>; <span class="comment">// 返回拒绝连接状态码</span></span><br><span class="line">      ctx.body = <span class="string">&#x27;您的IP已经被屏蔽&#x27;</span>;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="keyword">await</span> next();</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h3 id="配置添加中间件"><a href="#配置添加中间件" class="headerlink" title="配置添加中间件"></a>配置添加中间件</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// &#123;app_root&#125;/config/config.default.js</span></span><br><span class="line"><span class="comment">// ...</span></span><br><span class="line"><span class="comment">// use for cookie sign key, should change to your own and keep security</span></span><br><span class="line">  config.keys = appInfo.name + <span class="string">&#x27;_1556127582848_8657&#x27;</span>;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 配置添加中间件</span></span><br><span class="line">  config.middleware = [ <span class="string">&#x27;printdate&#x27;</span>, <span class="string">&#x27;forbidip&#x27;</span> ];</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 配置中间件时，可以传入参数</span></span><br><span class="line">  config.printdate = &#123;</span><br><span class="line">    aaa: <span class="string">&#x27;value&#x27;</span>,</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 配置模版引擎</span></span><br><span class="line">  config.view = &#123;</span><br><span class="line">    mapping: &#123;</span><br><span class="line">      <span class="string">&#x27;.html&#x27;</span>: <span class="string">&#x27;ejs&#x27;</span>,</span><br><span class="line">    &#125;,</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 配置公共 API 地址</span></span><br><span class="line">  config.api = <span class="string">&#x27;http://www.phonegap100.com/&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><span class="exturl" data-url="aHR0cHM6Ly93d3cuYmlsaWJpbGkuY29tL3ZpZGVvL2F2MzQyOTQ2NDMvP3A9NA==">Egg.js 视频教程<i class="fa fa-external-link-alt"></i></span></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>独木舟的木
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://andy0570.com/2019/04/25/Egg.js_%E6%90%AD%E5%BB%BA%E7%88%AC%E8%99%AB%E7%B3%BB%E7%BB%9F%E6%98%BE%E7%A4%BA%E6%96%B0%E9%97%BB%E9%A1%B5%E9%9D%A2/" title="Egg.js_搭建爬虫系统显示新闻页面">https://andy0570.com/2019/04/25/Egg.js_搭建爬虫系统显示新闻页面/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <span class="exturl" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpo"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</span> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Node-js/" rel="tag"># Node.js</a>
+              <a href="/tags/Egg-js/" rel="tag"># Egg.js</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/04/22/Egg.js_GET%20%E4%BC%A0%E5%80%BC%E5%92%8C%E5%8A%A8%E6%80%81%E8%B7%AF%E7%94%B1/" rel="prev" title="Egg.js_GET 传值和动态路由">
+      <i class="fa fa-chevron-left"></i> Egg.js_GET 传值和动态路由
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/04/26/Egg.js_Cookie%20%E4%B8%8E%20Session/" rel="next" title="Egg.js_Cookie 与 Session">
+      Egg.js_Cookie 与 Session <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+        </div>
+        
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">独木舟的木</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">2.1m</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">31:21</span>
+</div>
+  <div class="powered-by">由 <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZw==">NexT.Gemini</span> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

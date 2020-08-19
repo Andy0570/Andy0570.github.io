@@ -1,23 +1,599 @@
-{% extends '_layout.swig' %}
-{% import '_macro/post.swig' as post_template %}
-{% import '_macro/sidebar.swig' as sidebar_template %}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.0.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+  <meta name="google-site-verification" content="wioXOS3Gv2wXUpJ3sLtfZ4ft6YJYKNLLWSw6QoZTFYM">
+  <meta name="msvalidate.01" content="C96491A81239C517A50597C54EE53CD1">
+  <meta name="baidu-site-verification" content="h8asiToN1b">
 
-{% block title %}{{ page.title }} | {{ title }}{% endblock %}
+<link rel="stylesheet" href="/css/main.css">
 
-{% block page_class %}page-post-detail{% endblock %}
 
-{% block content %}
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  
+  <link rel="stylesheet" href="/lib/animate-css/animate.min.css">
 
-  <div id="posts" class="posts-expand">
-    {{ post_template.render(page) }}
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"andy0570.com","root":"/","scheme":"Gemini","version":"8.0.0-rc.5","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":"mac","bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false};
+  </script>
+
+  <meta name="description" content="自动化部署部署：安装、更新和配置应用程序及其依赖的组件。 在 AWS 上部署应用的3个工具：  AWS CloudFormation； 在引导流程结束时运行一个脚本来部署应用。   AWS Elastic Beanstalk； 适合部署普通 Web 站点应用。   AWS OpsWorks； 支持部署互相依赖的多层架构应用。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="《AWS云计算实战》5.自动化部署">
+<meta property="og:url" content="https://andy0570.com/2019/01/04/%E3%80%8AAWS%E4%BA%91%E8%AE%A1%E7%AE%97%E5%AE%9E%E6%88%98%E3%80%8B5.%E8%87%AA%E5%8A%A8%E5%8C%96%E9%83%A8%E7%BD%B2/index.html">
+<meta property="og:site_name" content="独木舟的木">
+<meta property="og:description" content="自动化部署部署：安装、更新和配置应用程序及其依赖的组件。 在 AWS 上部署应用的3个工具：  AWS CloudFormation； 在引导流程结束时运行一个脚本来部署应用。   AWS Elastic Beanstalk； 适合部署普通 Web 站点应用。   AWS OpsWorks； 支持部署互相依赖的多层架构应用。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2019-01-04T09:06:00.000Z">
+<meta property="article:modified_time" content="2019-05-01T12:37:07.000Z">
+<meta property="article:author" content="独木舟的木">
+<meta property="article:tag" content="AWS">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://andy0570.com/2019/01/04/%E3%80%8AAWS%E4%BA%91%E8%AE%A1%E7%AE%97%E5%AE%9E%E6%88%98%E3%80%8B5.%E8%87%AA%E5%8A%A8%E5%8C%96%E9%83%A8%E7%BD%B2/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>《AWS云计算实战》5.自动化部署 | 独木舟的木</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="独木舟的木" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <main class="main">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+        <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
   </div>
 
-{% endblock %}
+  <div class="site-meta">
 
-{% block sidebar %}
-  {{ sidebar_template.render(true) }}
-{% endblock %}
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">独木舟的木</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">iOS Developer</p>
+  </div>
 
-{% block script_extra %}
-  {% include '_scripts/pages/post-details.swig' %}
-{% endblock %}
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">14</span></a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">36</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">310</span></a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <section class="post-toc-wrap sidebar-panel">
+          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%87%AA%E5%8A%A8%E5%8C%96%E9%83%A8%E7%BD%B2"><span class="nav-number">1.</span> <span class="nav-text">自动化部署</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E4%BD%BF%E7%94%A8-CloudFormation-%E5%9C%A8%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%90%AF%E5%8A%A8%E6%97%B6%E8%BF%90%E8%A1%8C%E8%84%9A%E6%9C%AC"><span class="nav-number">1.1.</span> <span class="nav-text">一、使用 CloudFormation 在服务器启动时运行脚本</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9C%A8%E8%99%9A%E6%8B%9F%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8A%E9%83%A8%E7%BD%B2-OpenSwan-%E4%BD%9C%E4%B8%BA-VPN-%E6%9C%8D%E5%8A%A1%E5%99%A8"><span class="nav-number">1.1.1.</span> <span class="nav-text">在虚拟服务器上部署 OpenSwan 作为 VPN 服务器</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#vpn-create-cloudformation-stack-sh-%E6%96%87%E4%BB%B6"><span class="nav-number">1.1.1.1.</span> <span class="nav-text">vpn-create-cloudformation-stack.sh 文件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#vpn-cloudformation-json-%E2%80%94%E2%80%94%E4%BD%BF%E7%94%A8%E7%94%A8%E6%88%B7%E6%95%B0%E6%8D%AE%E6%9D%A5%E5%88%9D%E5%A7%8B%E5%8C%96%E4%B8%80%E5%8F%B0%E8%99%9A%E6%8B%9F%E6%9C%8D%E5%8A%A1%E5%99%A8"><span class="nav-number">1.1.1.2.</span> <span class="nav-text">vpn-cloudformation.json  ——使用用户数据来初始化一台虚拟服务器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#vpn-setup-sh-%E4%BD%BF%E7%94%A8%E8%84%9A%E6%9C%AC%E5%AE%89%E8%A3%85%E5%B9%B6%E9%85%8D%E7%BD%AE%E4%B8%80%E4%B8%AA-VPN-%E6%9C%8D%E5%8A%A1%E5%99%A8"><span class="nav-number">1.1.1.3.</span> <span class="nav-text">vpn-setup.sh - 使用脚本安装并配置一个 VPN 服务器</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E4%BD%BF%E7%94%A8-Elastic-Beanstalk-%E9%83%A8%E7%BD%B2%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84%E7%BD%91%E7%AB%99%E5%BA%94%E7%94%A8"><span class="nav-number">1.2.</span> <span class="nav-text">二、使用 Elastic Beanstalk 部署一个简单的网站应用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Elastic-Beanstalk-%E7%9A%84%E7%BB%84%E6%88%90%E9%83%A8%E5%88%86"><span class="nav-number">1.2.1.</span> <span class="nav-text">Elastic Beanstalk 的组成部分</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8-Elastic-Beanstalk-%E9%83%A8%E7%BD%B2%E4%B8%80%E4%B8%AA-Node-js-%E5%BA%94%E7%94%A8%EF%BC%9AEtherpad"><span class="nav-number">1.2.2.</span> <span class="nav-text">使用 Elastic Beanstalk 部署一个 Node.js 应用：Etherpad</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%89%E3%80%81%E4%BD%BF%E7%94%A8-OpsWorks-%E9%83%A8%E7%BD%B2%E5%A4%9A%E5%B1%82%E6%9E%B6%E6%9E%84%E7%9A%84%E5%BA%94%E7%94%A8"><span class="nav-number">1.3.</span> <span class="nav-text">三、使用 OpsWorks 部署多层架构的应用</span></a></li></ol></li></ol></div>
+      </section>
+      <!--/noindex-->
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="独木舟的木"
+      src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+  <p class="site-author-name" itemprop="name">独木舟的木</p>
+  <div class="site-description" itemprop="description">生若直木，不语斧凿。</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">310</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">36</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL0FuZHkwNTcw" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Andy0570"><i class="fab fa-github fa-fw"></i>GitHub</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9zdGFja292ZXJmbG93LmNvbS91c2Vycy83MjY1NDAwL2FuZHkwNTcw" title="StackOverflow → https:&#x2F;&#x2F;stackoverflow.com&#x2F;users&#x2F;7265400&#x2F;andy0570"><i class="fab fa-stack-overflow fa-fw"></i>StackOverflow</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuamlhbnNodS5jb20vdS84NGM1ZmFkYzdjMTg=" title="简书 → https:&#x2F;&#x2F;www.jianshu.com&#x2F;u&#x2F;84c5fadc7c18"><i class="heartbeat fa-fw"></i>简书</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="bWFpbHRvOmFuZHl3aG1AMTYzLmNvbQ==" title="E-Mail → mailto:andywhm@163.com"><i class="fa fa-envelope fa-fw"></i>E-Mail</span>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <span class="exturl cc-opacity" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpo"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></span>
+  </div>
+
+
+
+      </section>
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </header>
+
+      
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div id="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+      <div class="main-inner">
+        
+
+        <div class="content post posts-expand">
+          
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://andy0570.com/2019/01/04/%E3%80%8AAWS%E4%BA%91%E8%AE%A1%E7%AE%97%E5%AE%9E%E6%88%98%E3%80%8B5.%E8%87%AA%E5%8A%A8%E5%8C%96%E9%83%A8%E7%BD%B2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+      <meta itemprop="name" content="独木舟的木">
+      <meta itemprop="description" content="生若直木，不语斧凿。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="独木舟的木">
+    </span>
+
+    
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          《AWS云计算实战》5.自动化部署
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-01-04 17:06:00" itemprop="dateCreated datePublished" datetime="2019-01-04T17:06:00+08:00">2019-01-04</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-05-01 20:37:07" itemprop="dateModified" datetime="2019-05-01T20:37:07+08:00">2019-05-01</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E4%BA%91%E8%AE%A1%E7%AE%97/" itemprop="url" rel="index"><span itemprop="name">云计算</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>11k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>10 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="自动化部署"><a href="#自动化部署" class="headerlink" title="自动化部署"></a>自动化部署</h1><p>部署：安装、更新和配置应用程序及其依赖的组件。</p>
+<p>在 AWS 上部署应用的3个工具：</p>
+<ol>
+<li>AWS CloudFormation；<ul>
+<li>在引导流程结束时运行一个脚本来部署应用。</li>
+</ul>
+</li>
+<li><span class="exturl" data-url="aHR0cHM6Ly9hbWF6b25hd3MtY2hpbmEuY29tL2NuL2VsYXN0aWNiZWFuc3RhbGsvP2M9NyZwdD04">AWS Elastic Beanstalk<i class="fa fa-external-link-alt"></i></span>；<ul>
+<li>适合部署普通 Web 站点应用。</li>
+</ul>
+</li>
+<li>AWS OpsWorks；<ul>
+<li>支持部署互相依赖的多层架构应用。</li>
+</ul>
+</li>
+</ol>
+<a id="more"></a>
+
+<h2 id="一、使用-CloudFormation-在服务器启动时运行脚本"><a href="#一、使用-CloudFormation-在服务器启动时运行脚本" class="headerlink" title="一、使用 CloudFormation 在服务器启动时运行脚本"></a>一、使用 CloudFormation 在服务器启动时运行脚本</h2><blockquote>
+<p>AWS CloudFormation 为您提供了一种通用语言来描述和预配置您的云环境中的所有基础设施资源。CloudFormation 使您可以跨所有地区和账户使用简单的文本文件以自动化的安全方式为您的应用程序需要的所有资源建模并对其进行预配置。该文件是您的云环境的单一信任源。 </p>
+</blockquote>
+<p>在服务器启动时运行一个脚本是简单、有用并且灵活地进行自动化部署的方法。</p>
+<p>三个步骤：</p>
+<ol>
+<li>启动一台仅有操作系统的虚拟服务器；</li>
+<li>在引导程序完成后执行一个脚本；</li>
+<li>使用脚本安装并配置应用程序；</li>
+</ol>
+<h3 id="在虚拟服务器上部署-OpenSwan-作为-VPN-服务器"><a href="#在虚拟服务器上部署-OpenSwan-作为-VPN-服务器" class="headerlink" title="在虚拟服务器上部署 OpenSwan 作为 VPN 服务器"></a>在虚拟服务器上部署 OpenSwan 作为 VPN 服务器</h3><h4 id="vpn-create-cloudformation-stack-sh-文件"><a href="#vpn-create-cloudformation-stack-sh-文件" class="headerlink" title="vpn-create-cloudformation-stack.sh 文件"></a>vpn-create-cloudformation-stack.sh 文件</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash -ex</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 获取默认 VPC</span></span><br><span class="line">vpc=$(aws ec2 describe-vpcs --filter <span class="string">&quot;Name=isDefault, Values=true&quot;</span> --query <span class="string">&quot;Vpcs[0].VpcId&quot;</span> --output text)</span><br><span class="line"><span class="comment"># 获取默认子网</span></span><br><span class="line">subnet=$(aws ec2 describe-subnets --filters Name=vpc-id,Values=<span class="variable">$vpc</span> --query Subnets[0].SubnetId --output text)</span><br><span class="line"><span class="comment"># 创建一个随机密码</span></span><br><span class="line">sharedsecret=$(openssl rand -base64 30)</span><br><span class="line">user=vpn</span><br><span class="line"><span class="comment"># 创建一个随机共享密钥</span></span><br><span class="line">password=$(openssl rand -base64 30)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 创建一个 CloudFormation 堆栈</span></span><br><span class="line">aws cloudformation create-stack --stack-name vpn --template-url \</span><br><span class="line">https://s3.amazonaws.com/awsinaction/chapter5/vpn-cloudformation.json \ <span class="comment"># 1⃣️ CloudFormation 模版文件</span></span><br><span class="line">--parameters ParameterKey=KeyName,ParameterValue=mykey \</span><br><span class="line">ParameterKey=VPC,ParameterValue=<span class="variable">$vpc</span> \</span><br><span class="line">ParameterKey=Subnet,ParameterValue=<span class="variable">$subnet</span> \</span><br><span class="line">ParameterKey=IPSecSharedSecret,ParameterValue=<span class="variable">$sharedsecret</span> \</span><br><span class="line">ParameterKey=VPNUser,ParameterValue=<span class="variable">$user</span> \</span><br><span class="line">ParameterKey=VPNPassword,ParameterValue=<span class="variable">$password</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 如果状态不是 COMPLETE，请在 1 min后重试</span></span><br><span class="line"><span class="keyword">while</span> [[ `aws cloudformation describe-stacks --stack-name vpn --query Stacks[0].StackStatus` != *<span class="string">&quot;COMPLETE&quot;</span>* ]]</span><br><span class="line"><span class="keyword">do</span></span><br><span class="line">    sleep 10</span><br><span class="line"><span class="keyword">done</span></span><br><span class="line">aws cloudformation describe-stacks --stack-name vpn --query Stacks[0].Outputs</span><br></pre></td></tr></table></figure>
+
+<h4 id="vpn-cloudformation-json-——使用用户数据来初始化一台虚拟服务器"><a href="#vpn-cloudformation-json-——使用用户数据来初始化一台虚拟服务器" class="headerlink" title="vpn-cloudformation.json  ——使用用户数据来初始化一台虚拟服务器"></a>vpn-cloudformation.json  ——使用用户数据来初始化一台虚拟服务器</h4><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br></pre></td><td class="code"><pre><span class="line"># 使用用户数据来初始化一台虚拟服务器</span><br><span class="line">&#123;</span><br><span class="line">    <span class="attr">&quot;AWSTemplateFormatVersion&quot;</span>: <span class="string">&quot;2010-09-09&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;Description&quot;</span>: <span class="string">&quot;AWS in Action: chapter 5 (OpenSwan acting as VPN IPSec endpoint)&quot;</span>,</span><br><span class="line">    &quot;Parameters&quot;: &#123; # 参数，使模版复用成为可能</span><br><span class="line">        &quot;KeyName&quot;: &#123; </span><br><span class="line">            &quot;Description&quot;: &quot;key for SSH access&quot;,</span><br><span class="line">            &quot;Type&quot;: &quot;AWS::EC2::KeyPair::KeyName&quot;,</span><br><span class="line">            &quot;ConstraintDescription&quot;: &quot;Must be the name of an existing key pair.&quot;</span><br><span class="line">        &#125;,</span><br><span class="line">        &quot;VPC&quot;: &#123;</span><br><span class="line">            &quot;Description&quot;: &quot;Just select the one and only default VPC.&quot;,</span><br><span class="line">            &quot;Type&quot;: &quot;AWS::EC2::VPC::Id&quot;</span><br><span class="line">        &#125;,</span><br><span class="line">        &quot;Subnet&quot;: &#123;</span><br><span class="line">            &quot;Description&quot;: &quot;Just select one of the available subnets.&quot;,</span><br><span class="line">            &quot;Type&quot;: &quot;AWS::EC2::Subnet::Id&quot;</span><br><span class="line">        &#125;,</span><br><span class="line">        &quot;IPSecSharedSecret&quot;: &#123;</span><br><span class="line">            &quot;Description&quot;: &quot;The shared secret key for IPSec.&quot;,</span><br><span class="line">            &quot;Type&quot;: &quot;String&quot;</span><br><span class="line">        &#125;,</span><br><span class="line">        &quot;VPNUser&quot;: &#123;</span><br><span class="line">            &quot;Description&quot;: &quot;The VPN user.&quot;,</span><br><span class="line">            &quot;Type&quot;: &quot;String&quot;</span><br><span class="line">        &#125;,</span><br><span class="line">        &quot;VPNPassword&quot;: &#123;</span><br><span class="line">            &quot;Description&quot;: &quot;The VPN password.&quot;,</span><br><span class="line">            &quot;Type&quot;: &quot;String&quot;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    &quot;Mappings&quot;: &#123;</span><br><span class="line">        &quot;EC2RegionMap&quot;: &#123;</span><br><span class="line">            &quot;ap-northeast-1&quot;: &#123;&quot;AmazonLinuxAMIHVMEBSBacked64bit&quot;: &quot;ami-cbf90ecb&quot;&#125;,</span><br><span class="line">            &quot;ap-southeast-1&quot;: &#123;&quot;AmazonLinuxAMIHVMEBSBacked64bit&quot;: &quot;ami-68d8e93a&quot;&#125;,</span><br><span class="line">            &quot;ap-southeast-2&quot;: &#123;&quot;AmazonLinuxAMIHVMEBSBacked64bit&quot;: &quot;ami-fd9cecc7&quot;&#125;,</span><br><span class="line">            &quot;eu-central-1&quot;: &#123;&quot;AmazonLinuxAMIHVMEBSBacked64bit&quot;: &quot;ami-a8221fb5&quot;&#125;,</span><br><span class="line">            &quot;eu-west-1&quot;: &#123;&quot;AmazonLinuxAMIHVMEBSBacked64bit&quot;: &quot;ami-a10897d6&quot;&#125;,</span><br><span class="line">            &quot;sa-east-1&quot;: &#123;&quot;AmazonLinuxAMIHVMEBSBacked64bit&quot;: &quot;ami-b52890a8&quot;&#125;,</span><br><span class="line">            &quot;us-east-1&quot;: &#123;&quot;AmazonLinuxAMIHVMEBSBacked64bit&quot;: &quot;ami-1ecae776&quot;&#125;,</span><br><span class="line">            &quot;us-west-1&quot;: &#123;&quot;AmazonLinuxAMIHVMEBSBacked64bit&quot;: &quot;ami-d114f295&quot;&#125;,</span><br><span class="line">            &quot;us-west-2&quot;: &#123;&quot;AmazonLinuxAMIHVMEBSBacked64bit&quot;: &quot;ami-e7527ed7&quot;&#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    &quot;Resources&quot;: &#123;</span><br><span class="line">        &quot;EC2Instance&quot;: &#123; # 描述虚拟服务器</span><br><span class="line">            &quot;Type&quot;: &quot;AWS::EC2::Instance&quot;,</span><br><span class="line">            &quot;Properties&quot;: &#123;</span><br><span class="line">                &quot;InstanceType&quot;: &quot;t2.micro&quot;,</span><br><span class="line">                &quot;SecurityGroupIds&quot;: [&#123;&quot;Ref&quot;: &quot;InstanceSecurityGroup&quot;&#125;],</span><br><span class="line">                &quot;KeyName&quot;: &#123;&quot;Ref&quot;: &quot;KeyName&quot;&#125;,</span><br><span class="line">                &quot;ImageId&quot;: &#123;&quot;Fn::FindInMap&quot;: [&quot;EC2RegionMap&quot;, &#123;&quot;Ref&quot;: &quot;AWS::Region&quot;&#125;, &quot;AmazonLinuxAMIHVMEBSBacked64bit&quot;]&#125;,</span><br><span class="line">                &quot;SubnetId&quot;: &#123;&quot;Ref&quot;: &quot;Subnet&quot;&#125;,</span><br><span class="line">                &quot;UserData&quot;: &#123;&quot;Fn::Base64&quot;: &#123;&quot;Fn::Join&quot;: [&quot;&quot;, [ # 为虚拟服务器定义一个 shell 脚本作为用户数据</span><br><span class="line">                    &quot;#!/bin/bash -ex\n&quot;,</span><br><span class="line">                    &quot;export IPSEC_PSK=&quot;, &#123;&quot;Ref&quot;: &quot;IPSecSharedSecret&quot;&#125;, &quot;\n&quot;,</span><br><span class="line">                    &quot;export VPN_USER=&quot;, &#123;&quot;Ref&quot;: &quot;VPNUser&quot;&#125;, &quot;\n&quot;,</span><br><span class="line">                    &quot;export VPN_PASSWORD=&quot;, &#123;&quot;Ref&quot;: &quot;VPNPassword&quot;&#125;, &quot;\n&quot;,</span><br><span class="line">                    &quot;export STACK_NAME=&quot;, &#123;&quot;Ref&quot;: &quot;AWS::StackName&quot;&#125;, &quot;\n&quot;,</span><br><span class="line">                    &quot;export REGION=&quot;, &#123;&quot;Ref&quot;: &quot;AWS::Region&quot;&#125;, &quot;\n&quot;,</span><br><span class="line">                    &quot;curl -s https://raw.githubusercontent.com/AWSinAction/code/master/chapter5/vpn-setup.sh | bash -ex\n&quot; # 2⃣️ 通过http获取shell脚本并执行</span><br><span class="line">                ]]&#125;&#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;,</span><br><span class="line">        &quot;InstanceSecurityGroup&quot;: &#123;</span><br><span class="line">            &quot;Type&quot;: &quot;AWS::EC2::SecurityGroup&quot;,</span><br><span class="line">            &quot;Properties&quot;: &#123;</span><br><span class="line">                &quot;GroupDescription&quot;: &quot;Enable access to VPN server&quot;,</span><br><span class="line">                &quot;VpcId&quot;: &#123;&quot;Ref&quot;: &quot;VPC&quot;&#125;,</span><br><span class="line">                &quot;SecurityGroupIngress&quot;: [</span><br><span class="line">                    &#123;</span><br><span class="line">                        <span class="attr">&quot;IpProtocol&quot;</span>: <span class="string">&quot;tcp&quot;</span>,</span><br><span class="line">                        <span class="attr">&quot;FromPort&quot;</span>: <span class="string">&quot;22&quot;</span>,</span><br><span class="line">                        <span class="attr">&quot;ToPort&quot;</span>: <span class="string">&quot;22&quot;</span>,</span><br><span class="line">                        <span class="attr">&quot;CidrIp&quot;</span>: <span class="string">&quot;0.0.0.0/0&quot;</span></span><br><span class="line">                    &#125;,</span><br><span class="line">                    &#123;</span><br><span class="line">                        <span class="attr">&quot;IpProtocol&quot;</span>: <span class="string">&quot;udp&quot;</span>,</span><br><span class="line">                        <span class="attr">&quot;FromPort&quot;</span>: <span class="string">&quot;500&quot;</span>,</span><br><span class="line">                        <span class="attr">&quot;ToPort&quot;</span>: <span class="string">&quot;500&quot;</span>,</span><br><span class="line">                        <span class="attr">&quot;CidrIp&quot;</span>: <span class="string">&quot;0.0.0.0/0&quot;</span></span><br><span class="line">                    &#125;,</span><br><span class="line">                    &#123;</span><br><span class="line">                        <span class="attr">&quot;IpProtocol&quot;</span>: <span class="string">&quot;udp&quot;</span>,</span><br><span class="line">                        <span class="attr">&quot;FromPort&quot;</span>: <span class="string">&quot;1701&quot;</span>,</span><br><span class="line">                        <span class="attr">&quot;ToPort&quot;</span>: <span class="string">&quot;1701&quot;</span>,</span><br><span class="line">                        <span class="attr">&quot;CidrIp&quot;</span>: <span class="string">&quot;0.0.0.0/0&quot;</span></span><br><span class="line">                    &#125;,</span><br><span class="line">                    &#123;</span><br><span class="line">                        <span class="attr">&quot;IpProtocol&quot;</span>: <span class="string">&quot;udp&quot;</span>,</span><br><span class="line">                        <span class="attr">&quot;FromPort&quot;</span>: <span class="string">&quot;4500&quot;</span>,</span><br><span class="line">                        <span class="attr">&quot;ToPort&quot;</span>: <span class="string">&quot;4500&quot;</span>,</span><br><span class="line">                        <span class="attr">&quot;CidrIp&quot;</span>: <span class="string">&quot;0.0.0.0/0&quot;</span></span><br><span class="line">                    &#125;</span><br><span class="line">                ]</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    &quot;Outputs&quot;: &#123;</span><br><span class="line">        &quot;ServerIP&quot;: &#123;</span><br><span class="line">            &quot;Description&quot;: &quot;Public IP address of the vpn server&quot;,</span><br><span class="line">            &quot;Value&quot;: &#123;&quot;Fn::GetAtt&quot;: [&quot;EC2Instance&quot;, &quot;PublicIp&quot;]&#125;</span><br><span class="line">        &#125;,</span><br><span class="line">        &quot;IPSecSharedSecret&quot;: &#123;</span><br><span class="line">            &quot;Description&quot;: &quot;The shared key for the VPN connection (IPSec)&quot;,</span><br><span class="line">            &quot;Value&quot;: &#123;&quot;Ref&quot;: &quot;IPSecSharedSecret&quot;&#125;</span><br><span class="line">        &#125;,</span><br><span class="line">        &quot;VPNUser&quot;: &#123;</span><br><span class="line">            &quot;Description&quot;: &quot;The username for the vpn connection&quot;,</span><br><span class="line">            &quot;Value&quot;: &#123;&quot;Ref&quot;: &quot;VPNUser&quot;&#125;</span><br><span class="line">        &#125;,</span><br><span class="line">        &quot;VPNPassword&quot;: &#123;</span><br><span class="line">            &quot;Description&quot;: &quot;The password for the vpn connection&quot;,</span><br><span class="line">            &quot;Value&quot;: &#123;&quot;Ref&quot;: &quot;VPNPassword&quot;&#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="vpn-setup-sh-使用脚本安装并配置一个-VPN-服务器"><a href="#vpn-setup-sh-使用脚本安装并配置一个-VPN-服务器" class="headerlink" title="vpn-setup.sh - 使用脚本安装并配置一个 VPN 服务器"></a>vpn-setup.sh - 使用脚本安装并配置一个 VPN 服务器</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash -ex</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#param IPSEC_PSK the shared secret</span></span><br><span class="line"><span class="comment">#param VPN_USER the vpn username</span></span><br><span class="line"><span class="comment">#param VPN_PASSWORD the vpn password</span></span><br><span class="line"><span class="comment">#param STACK_NAME</span></span><br><span class="line"><span class="comment">#param REGION</span></span><br><span class="line"> </span><br><span class="line"><span class="comment"># 获取虚拟服务器私有 IP 地址</span></span><br><span class="line">PRIVATE_IP=`curl -s http://169.254.169.254/latest/meta-data/<span class="built_in">local</span>-ipv4`</span><br><span class="line"> <span class="comment"># 获取虚拟服务器公有 IP 地址</span></span><br><span class="line">PUBLIC_IP=`curl -s http://169.254.169.254/latest/meta-data/public-ipv4`</span><br><span class="line"></span><br><span class="line"><span class="comment"># 向包管理器 yum 添加额外程序包</span></span><br><span class="line">yum-config-manager --<span class="built_in">enable</span> epel &amp;&amp; yum clean all</span><br><span class="line"><span class="comment"># 安装软件程序包</span></span><br><span class="line">yum install -y openswan xl2tpd</span><br><span class="line"></span><br><span class="line"><span class="comment"># 为 IPSec 写一个包含共享密钥的文件</span></span><br><span class="line">cat &gt; /etc/ipsec.conf &lt;&lt;EOF</span><br><span class="line">version 2.0</span><br><span class="line"> </span><br><span class="line">config setup</span><br><span class="line">    nat_traversal=yes</span><br><span class="line">    virtual_private=%v4:10.0.0.0/8,%v4:192.168.0.0/16,%v4:172.16.0.0/12,%v4:25.0.0.0/8,%v6:fd00::/8,%v6:fe80::/10</span><br><span class="line">    oe=off</span><br><span class="line">    protostack=netkey</span><br><span class="line">    nhelpers=0</span><br><span class="line">    interfaces=%defaultroute</span><br><span class="line"></span><br><span class="line">conn vpnpsk</span><br><span class="line">    auto=add</span><br><span class="line">    left=<span class="variable">$PRIVATE_IP</span></span><br><span class="line">    leftid=<span class="variable">$PUBLIC_IP</span></span><br><span class="line">    leftsubnet=<span class="variable">$PRIVATE_IP</span>/32</span><br><span class="line">    leftnexthop=%defaultroute</span><br><span class="line">    leftprotoport=17/1701</span><br><span class="line">    rightprotoport=17/%any</span><br><span class="line">    right=%any</span><br><span class="line">    rightsubnetwithin=0.0.0.0/0</span><br><span class="line">    forceencaps=yes</span><br><span class="line">    authby=secret</span><br><span class="line">    pfs=no</span><br><span class="line">    <span class="built_in">type</span>=transport</span><br><span class="line">    auth=esp</span><br><span class="line">    ike=3des-sha1</span><br><span class="line">    phase2alg=3des-sha1</span><br><span class="line">    dpddelay=30</span><br><span class="line">    dpdtimeout=120</span><br><span class="line">    dpdaction=clear</span><br><span class="line">EOF</span><br><span class="line"> </span><br><span class="line"> <span class="comment"># 为 IPSec 写配置文件</span></span><br><span class="line">cat &gt; /etc/ipsec.secrets &lt;&lt;EOF</span><br><span class="line"><span class="variable">$PUBLIC_IP</span> %any : PSK <span class="string">&quot;<span class="variable">$&#123;IPSEC_PSK&#125;</span>&quot;</span></span><br><span class="line">EOF</span><br><span class="line"> </span><br><span class="line"> <span class="comment"># 为 L2TP 管道写配置文件</span></span><br><span class="line">cat &gt; /etc/xl2tpd/xl2tpd.conf &lt;&lt;EOF</span><br><span class="line">[global]</span><br><span class="line">port = 1701</span><br><span class="line"></span><br><span class="line">[lns default]</span><br><span class="line">ip range = 192.168.42.10-192.168.42.250</span><br><span class="line"><span class="built_in">local</span> ip = 192.168.42.1</span><br><span class="line">require chap = yes</span><br><span class="line">refuse pap = yes</span><br><span class="line">require authentication = yes</span><br><span class="line">name = l2tpd</span><br><span class="line">pppoptfile = /etc/ppp/options.xl2tpd</span><br><span class="line">length bit = yes</span><br><span class="line">EOF</span><br><span class="line"></span><br><span class="line"> <span class="comment"># 为 PPP 服务写配置文件</span></span><br><span class="line">cat &gt; /etc/ppp/chap-secrets &lt;&lt;EOF</span><br><span class="line"><span class="variable">$&#123;VPN_USER&#125;</span> l2tpd <span class="variable">$&#123;VPN_PASSWORD&#125;</span> *</span><br><span class="line">EOF</span><br><span class="line"></span><br><span class="line">cat &gt; /etc/ppp/options.xl2tpd &lt;&lt;EOF</span><br><span class="line">ipcp-accept-local</span><br><span class="line">ipcp-accept-remote</span><br><span class="line">ms-dns 8.8.8.8</span><br><span class="line">ms-dns 8.8.4.4</span><br><span class="line">noccp</span><br><span class="line">auth</span><br><span class="line">crtscts</span><br><span class="line">idle 1800</span><br><span class="line">mtu 1280</span><br><span class="line">mru 1280</span><br><span class="line">lock</span><br><span class="line">connect-delay 5000</span><br><span class="line">EOF</span><br><span class="line"> </span><br><span class="line">iptables -t nat -A POSTROUTING -s 192.168.42.0/24 -o eth0 -j MASQUERADE</span><br><span class="line"><span class="built_in">echo</span> 1 &gt; /proc/sys/net/ipv4/ip_forward</span><br><span class="line">iptables-save &gt; /etc/iptables.rules</span><br><span class="line"></span><br><span class="line">mkdir -p /etc/network/<span class="keyword">if</span>-pre-up.d</span><br><span class="line">cat &gt; /etc/network/<span class="keyword">if</span>-pre-up.d/iptablesload &lt;&lt;EOF</span><br><span class="line"><span class="meta">#!/bin/sh</span></span><br><span class="line">iptables-restore &lt; /etc/iptables.rules</span><br><span class="line"><span class="built_in">echo</span> 1 &gt; /proc/sys/net/ipv4/ip_forward</span><br><span class="line"><span class="built_in">exit</span> 0</span><br><span class="line">EOF</span><br><span class="line"></span><br><span class="line"><span class="comment"># 启动 VPN 服务器需要的服务</span></span><br><span class="line">service ipsec start &amp;&amp; service xl2tpd start</span><br><span class="line"><span class="comment"># 配置 VPN 服务器的运行等级</span></span><br><span class="line">chkconfig ipsec on &amp;&amp; chkconfig xl2tpd on</span><br><span class="line"></span><br><span class="line">/opt/aws/bin/cfn-signal --stack <span class="variable">$STACK_NAME</span> --resource EC2Instance --region <span class="variable">$REGION</span></span><br></pre></td></tr></table></figure>
+
+<p>终止虚拟服务器并清理环境：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">aws cloudformation delete-stack --slack-name vpn</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="二、使用-Elastic-Beanstalk-部署一个简单的网站应用"><a href="#二、使用-Elastic-Beanstalk-部署一个简单的网站应用" class="headerlink" title="二、使用 Elastic Beanstalk 部署一个简单的网站应用"></a>二、使用 Elastic Beanstalk 部署一个简单的网站应用</h2><blockquote>
+<p>AWS <span class="exturl" data-url="aHR0cHM6Ly9hbWF6b25hd3MtY2hpbmEuY29tL2NuL2VsYXN0aWNiZWFuc3RhbGsvP2M9NyZwdD04">Elastic Beanstalk<i class="fa fa-external-link-alt"></i></span> 是一项易于使用的服务，用于在熟悉的服务器（例如 Apache 、Nginx、Passenger 和 IIS ）上部署和扩展使用 Java、.NET、PHP、Node.js、Python、Ruby、GO 和 Docker 开发的 Web 应用程序和服务。</p>
+<p>您只需上传代码，Elastic Beanstalk 即可自动处理包括容量预配置、负载均衡、自动扩展和应用程序运行状况监控在内的部署工作。同时，您能够完全控制为应用程序提供支持的 AWS 资源，并可以随时访问底层资源。</p>
+<p>Elastic Beanstalk 不额外收费 – 您只需为存储和运行应用程序所需的 AWS 资源付费。</p>
+<p>参考：<a target="_blank" rel="noopener" href="https://docs.aws.amazon.com/zh_cn/elasticbeanstalk/latest/dg/Welcome.html"><strong>AWS Elastic Beanstalk</strong></a></p>
+</blockquote>
+<h3 id="Elastic-Beanstalk-的组成部分"><a href="#Elastic-Beanstalk-的组成部分" class="headerlink" title="Elastic Beanstalk 的组成部分"></a>Elastic Beanstalk 的组成部分</h3><ul>
+<li>应用；</li>
+<li>版本；</li>
+<li>配置模版；</li>
+<li>环境；</li>
+</ul>
+<h3 id="使用-Elastic-Beanstalk-部署一个-Node-js-应用：Etherpad"><a href="#使用-Elastic-Beanstalk-部署一个-Node-js-应用：Etherpad" class="headerlink" title="使用 Elastic Beanstalk 部署一个 Node.js 应用：Etherpad"></a>使用 Elastic Beanstalk 部署一个 Node.js 应用：Etherpad</h3><blockquote>
+<p>Etherpad 是一个开源的在线编辑器，支持多人协同编辑。</p>
+</blockquote>
+<p>创建步骤：</p>
+<ol>
+<li>创建应用：逻辑上的容器；</li>
+<li>创建版本：指向特定 Etherpad 版本的指针；</li>
+<li>创建环境：Etherpad 运行的地方；</li>
+</ol>
+<p>使用 Elastic Beanstalk 和 AWS CLI 创建应用、版本和环境，并部署一个 Etherpad 服务：</p>
+<p>1⃣️ 为 Elastic Beanstalk 服务创建一个应用：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">aws elasticbeanstalk create-application --application-name etherpad</span><br></pre></td></tr></table></figure>
+
+
+
+<p>2⃣️ 为 AWS Elastic Beanstalk 创建版本</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">aws elasticbeanstalk create-application-version \</span><br><span class="line">--application-name etherpad --version-label 1.5.2 \</span><br><span class="line">--<span class="built_in">source</span>-bundle S3Bucket=awsincation,S3Key=chapter5/etherpad.zip</span><br></pre></td></tr></table></figure>
+
+
+
+<p>3⃣️ 用 Elastic Beanstalk 创建一个环境来执行 Etherpad</p>
+<p>获取最新的 Node.js 环境脚本：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">aws elasticbeanstalk list-available-solution-stacks --output text \</span><br><span class="line">--query <span class="string">&quot;SolutionStacks[?contains(@, &#x27;running Node.js&#x27;)] | [0]&quot;</span> \</span><br><span class="line"></span><br><span class="line">64bit Amazon Linux 2015.03 v1.4.6 running Node.js</span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">aws elasticbeanstalk create-environment --environment-name etherpad \</span><br><span class="line">--application-name etherpad \</span><br><span class="line">--option-settings Namespace=aws:elasticbeanstalk:environment,\</span><br><span class="line">OptionName=EnvironmentType,Value=SingleInstance \ <span class="comment">## 启动一个不可变规模且无负载均衡的单台虚拟服务器</span></span><br><span class="line">--solution-stalk-name <span class="string">&quot;<span class="variable">$SolutionStackName</span>&quot;</span> \</span><br><span class="line">--version-label 1.5.2</span><br></pre></td></tr></table></figure>
+
+<p>4⃣️ 检查 Etherpad 环境的状态</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">aws elasticbeanstalk describe-environments --environment-names etherpad</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="三、使用-OpsWorks-部署多层架构的应用"><a href="#三、使用-OpsWorks-部署多层架构的应用" class="headerlink" title="三、使用 OpsWorks 部署多层架构的应用"></a>三、使用 OpsWorks 部署多层架构的应用</h2><blockquote>
+<p>AWS OpsWorks 是一款配置管理服务，提供 Chef 和 Puppet 的托管实例。Chef 和 Puppet 是自动化平台，允许您使用代码来自动配置服务器。借助 OpsWorks，您可以使用 Chef 和 Puppet 自动完成所有 <span class="exturl" data-url="aHR0cHM6Ly9hd3MuYW1hem9uLmNvbS9jbi9lYzIv">Amazon EC2<i class="fa fa-external-link-alt"></i></span> 实例或本地计算环境中的服务器配置、部署和管理。OpsWorks 提供三种产品：<span class="exturl" data-url="aHR0cHM6Ly9hd3MuYW1hem9uLmNvbS9jbi9vcHN3b3Jrcy9jaGVmYXV0b21hdGUv">AWS Opsworks for Chef Automate<i class="fa fa-external-link-alt"></i></span>、<span class="exturl" data-url="aHR0cHM6Ly9hd3MuYW1hem9uLmNvbS9jbi9vcHN3b3Jrcy9wdXBwZXRlbnRlcnByaXNlLw==">AWS OpsWorks for Puppet Enterprise<i class="fa fa-external-link-alt"></i></span> 和 <span class="exturl" data-url="aHR0cHM6Ly9hd3MuYW1hem9uLmNvbS9jbi9vcHN3b3Jrcy9zdGFja3Mv">AWS OpsWorks Stacks<i class="fa fa-external-link-alt"></i></span>。</p>
+</blockquote>
+<p><strong>AWS OpsWorks</strong>——一个帮助用户部署多层架构应用的服务</p>
+<p>部署是在 <strong>Chef</strong> 的帮助下进行控制的，Chef 是一个配置管理工具。Chef 使用在 cookbook 中组织的 recipe 来部署应用到任意系统中。用户可以使用标准 recipe 或自行创建。</p>
+<p>示例：使用 OpsWorks 部署一个 IRC 聊天应用。。。</p>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>独木舟的木
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://andy0570.com/2019/01/04/%E3%80%8AAWS%E4%BA%91%E8%AE%A1%E7%AE%97%E5%AE%9E%E6%88%98%E3%80%8B5.%E8%87%AA%E5%8A%A8%E5%8C%96%E9%83%A8%E7%BD%B2/" title="《AWS云计算实战》5.自动化部署">https://andy0570.com/2019/01/04/《AWS云计算实战》5.自动化部署/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <span class="exturl" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpo"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</span> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/AWS/" rel="tag"># AWS</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/01/03/%E3%80%8AAWS%E4%BA%91%E8%AE%A1%E7%AE%97%E5%AE%9E%E6%88%98%E3%80%8B4.%E7%BC%96%E5%86%99%E5%9F%BA%E7%A1%80%E6%9E%B6%E6%9E%84%EF%BC%9A%E5%91%BD%E4%BB%A4%E8%A1%8C%E3%80%81SDK%20%E5%92%8C%20CloudFormation/" rel="prev" title="《AWS云计算实战》4.编写基础架构：命令行、SDK 和 CloudFormation">
+      <i class="fa fa-chevron-left"></i> 《AWS云计算实战》4.编写基础架构：命令行、SDK 和 CloudFormation
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/01/07/%E3%80%8AAWS%E4%BA%91%E8%AE%A1%E7%AE%97%E5%AE%9E%E6%88%98%E3%80%8B6.%E4%BF%9D%E6%8A%A4%E7%B3%BB%E7%BB%9F%E5%AE%89%E5%85%A8%EF%BC%9AIAM%E3%80%81%E5%AE%89%E5%85%A8%E7%BB%84%E5%92%8CVPC/" rel="next" title="《AWS云计算实战》6.保护系统安全：IAM、安全组和VPC">
+      《AWS云计算实战》6.保护系统安全：IAM、安全组和VPC <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+        </div>
+        
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">独木舟的木</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">2.1m</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">31:21</span>
+</div>
+  <div class="powered-by">由 <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZw==">NexT.Gemini</span> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

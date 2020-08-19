@@ -1,23 +1,563 @@
-{% extends '_layout.swig' %}
-{% import '_macro/post.swig' as post_template %}
-{% import '_macro/sidebar.swig' as sidebar_template %}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.0.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+  <meta name="google-site-verification" content="wioXOS3Gv2wXUpJ3sLtfZ4ft6YJYKNLLWSw6QoZTFYM">
+  <meta name="msvalidate.01" content="C96491A81239C517A50597C54EE53CD1">
+  <meta name="baidu-site-verification" content="h8asiToN1b">
 
-{% block title %}{{ page.title }} | {{ title }}{% endblock %}
+<link rel="stylesheet" href="/css/main.css">
 
-{% block page_class %}page-post-detail{% endblock %}
 
-{% block content %}
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  
+  <link rel="stylesheet" href="/lib/animate-css/animate.min.css">
 
-  <div id="posts" class="posts-expand">
-    {{ post_template.render(page) }}
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"andy0570.com","root":"/","scheme":"Gemini","version":"8.0.0-rc.5","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":"mac","bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false};
+  </script>
+
+  <meta name="description" content="GitHub: MGSwipeTableCell Star: 6500+  MGSwipeTableCellMGSwipeTableCell 是一个易于使用的 UITableViewCell 子类，允许显示具有各种过渡效果的可滑动按钮。 该库与创建 UITableViewCell 的所有不同方法兼容：系统预定义样式，以编程方式创建的 cell，从 xib 加载的单元格以及故事板中的原型cell。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MGSwipeTableCell——为 cell 添加带过渡动画的工具按钮">
+<meta property="og:url" content="https://andy0570.com/2018/12/26/MGSwipeTableCell%E2%80%94%E2%80%94%E4%B8%BA%20cell%20%E6%B7%BB%E5%8A%A0%E5%B8%A6%E8%BF%87%E6%B8%A1%E5%8A%A8%E7%94%BB%E7%9A%84%E5%B7%A5%E5%85%B7%E6%8C%89%E9%92%AE/index.html">
+<meta property="og:site_name" content="独木舟的木">
+<meta property="og:description" content="GitHub: MGSwipeTableCell Star: 6500+  MGSwipeTableCellMGSwipeTableCell 是一个易于使用的 UITableViewCell 子类，允许显示具有各种过渡效果的可滑动按钮。 该库与创建 UITableViewCell 的所有不同方法兼容：系统预定义样式，以编程方式创建的 cell，从 xib 加载的单元格以及故事板中的原型cell。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/075044.gif">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/075045.gif">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/075046.gif">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/075048.gif">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/075050.gif">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/075051.jpg">
+<meta property="article:published_time" content="2018-12-26T10:00:00.000Z">
+<meta property="article:modified_time" content="2019-05-01T12:58:26.000Z">
+<meta property="article:author" content="独木舟的木">
+<meta property="article:tag" content="iOS">
+<meta property="article:tag" content="GitHub">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/075044.gif">
+
+<link rel="canonical" href="https://andy0570.com/2018/12/26/MGSwipeTableCell%E2%80%94%E2%80%94%E4%B8%BA%20cell%20%E6%B7%BB%E5%8A%A0%E5%B8%A6%E8%BF%87%E6%B8%A1%E5%8A%A8%E7%94%BB%E7%9A%84%E5%B7%A5%E5%85%B7%E6%8C%89%E9%92%AE/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>MGSwipeTableCell——为 cell 添加带过渡动画的工具按钮 | 独木舟的木</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="独木舟的木" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <main class="main">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+        <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
   </div>
 
-{% endblock %}
+  <div class="site-meta">
 
-{% block sidebar %}
-  {{ sidebar_template.render(true) }}
-{% endblock %}
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">独木舟的木</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">iOS Developer</p>
+  </div>
 
-{% block script_extra %}
-  {% include '_scripts/pages/post-details.swig' %}
-{% endblock %}
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">14</span></a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">36</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">310</span></a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <section class="post-toc-wrap sidebar-panel">
+          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#MGSwipeTableCell"><span class="nav-number">1.</span> <span class="nav-text">MGSwipeTableCell</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%87%E6%B8%A1%E5%8A%A8%E7%94%BB%E6%BC%94%E7%A4%BA"><span class="nav-number">1.1.</span> <span class="nav-text">过渡动画演示</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Border-transition-%E8%BE%B9%E7%BC%98%E8%BF%87%E6%B8%A1"><span class="nav-number">1.1.1.</span> <span class="nav-text">Border transition - 边缘过渡</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Clip-transition-%E5%89%AA%E8%BE%91%E8%BF%87%E6%B8%A1"><span class="nav-number">1.1.2.</span> <span class="nav-text">Clip transition - 剪辑过渡</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3D-transition-3D-%E8%BF%87%E6%B8%A1"><span class="nav-number">1.1.3.</span> <span class="nav-text">3D transition - 3D 过渡</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Static-transition-%E9%9D%99%E6%80%81%E8%BF%87%E6%B8%A1"><span class="nav-number">1.1.4.</span> <span class="nav-text">Static transition - 静态过渡</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Drag-transition-%E6%8B%96%E5%8A%A8%E8%BF%87%E6%B8%A1"><span class="nav-number">1.1.5.</span> <span class="nav-text">Drag transition - 拖动过渡</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#API-%E5%8F%82%E8%80%83"><span class="nav-number">1.2.</span> <span class="nav-text">API 参考</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A1%B9%E7%9B%AE%E8%AE%BE%E7%BD%AE"><span class="nav-number">1.3.</span> <span class="nav-text">项目设置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%94%A8%E6%B3%95"><span class="nav-number">1.4.</span> <span class="nav-text">用法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A6%82%E8%BF%B0"><span class="nav-number">1.4.1.</span> <span class="nav-text">概述</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Objective-C"><span class="nav-number">1.4.1.0.1.</span> <span class="nav-text">Objective-C</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Swift"><span class="nav-number">1.4.1.0.2.</span> <span class="nav-text">Swift</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Objective-c"><span class="nav-number">1.4.1.0.3.</span> <span class="nav-text">Objective-c</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Swift-1"><span class="nav-number">1.4.1.0.4.</span> <span class="nav-text">Swift</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Delegate-%E4%BB%A3%E7%90%86%E5%8D%8F%E8%AE%AE"><span class="nav-number">1.4.2.</span> <span class="nav-text">Delegate - 代理协议</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Expandable-buttons-%E5%8F%AF%E6%89%A9%E5%B1%95%E6%8C%89%E9%92%AE"><span class="nav-number">1.4.3.</span> <span class="nav-text">Expandable buttons - 可扩展按钮</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Rounded-corners-and-swipe-buttons-%E5%9C%86%E8%A7%92%E5%92%8C%E6%BB%91%E5%8A%A8%E6%8C%89%E9%92%AE"><span class="nav-number">1.4.4.</span> <span class="nav-text">Rounded corners and swipe buttons - 圆角和滑动按钮</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#License-%E8%AE%B8%E5%8F%AF%E8%AF%81"><span class="nav-number">1.5.</span> <span class="nav-text">License - 许可证</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A4%BA%E4%BE%8B%E4%BB%A3%E7%A0%81"><span class="nav-number">1.5.1.</span> <span class="nav-text">示例代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">1.5.2.</span> <span class="nav-text">参考</span></a></li></ol></li></ol></li></ol></div>
+      </section>
+      <!--/noindex-->
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="独木舟的木"
+      src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+  <p class="site-author-name" itemprop="name">独木舟的木</p>
+  <div class="site-description" itemprop="description">生若直木，不语斧凿。</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">310</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">36</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL0FuZHkwNTcw" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Andy0570"><i class="fab fa-github fa-fw"></i>GitHub</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9zdGFja292ZXJmbG93LmNvbS91c2Vycy83MjY1NDAwL2FuZHkwNTcw" title="StackOverflow → https:&#x2F;&#x2F;stackoverflow.com&#x2F;users&#x2F;7265400&#x2F;andy0570"><i class="fab fa-stack-overflow fa-fw"></i>StackOverflow</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuamlhbnNodS5jb20vdS84NGM1ZmFkYzdjMTg=" title="简书 → https:&#x2F;&#x2F;www.jianshu.com&#x2F;u&#x2F;84c5fadc7c18"><i class="heartbeat fa-fw"></i>简书</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="bWFpbHRvOmFuZHl3aG1AMTYzLmNvbQ==" title="E-Mail → mailto:andywhm@163.com"><i class="fa fa-envelope fa-fw"></i>E-Mail</span>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <span class="exturl cc-opacity" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpo"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></span>
+  </div>
+
+
+
+      </section>
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </header>
+
+      
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div id="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+      <div class="main-inner">
+        
+
+        <div class="content post posts-expand">
+          
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://andy0570.com/2018/12/26/MGSwipeTableCell%E2%80%94%E2%80%94%E4%B8%BA%20cell%20%E6%B7%BB%E5%8A%A0%E5%B8%A6%E8%BF%87%E6%B8%A1%E5%8A%A8%E7%94%BB%E7%9A%84%E5%B7%A5%E5%85%B7%E6%8C%89%E9%92%AE/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+      <meta itemprop="name" content="独木舟的木">
+      <meta itemprop="description" content="生若直木，不语斧凿。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="独木舟的木">
+    </span>
+
+    
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          MGSwipeTableCell——为 cell 添加带过渡动画的工具按钮
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-12-26 18:00:00" itemprop="dateCreated datePublished" datetime="2018-12-26T18:00:00+08:00">2018-12-26</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-05-01 20:58:26" itemprop="dateModified" datetime="2019-05-01T20:58:26+08:00">2019-05-01</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS-%E5%BC%80%E6%BA%90%E6%A1%86%E6%9E%B6/" itemprop="url" rel="index"><span itemprop="name">iOS 开源框架</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>10k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>9 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <ul>
+<li>GitHub: <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL01vcnRpbWVyR29yby9NR1N3aXBlVGFibGVDZWxs">MGSwipeTableCell<i class="fa fa-external-link-alt"></i></span></li>
+<li>Star: 6500+</li>
+</ul>
+<h1 id="MGSwipeTableCell"><a href="#MGSwipeTableCell" class="headerlink" title="MGSwipeTableCell"></a>MGSwipeTableCell</h1><p>MGSwipeTableCell 是一个易于使用的 UITableViewCell 子类，允许显示具有各种过渡效果的可滑动按钮。</p>
+<p>该库与创建 UITableViewCell 的所有不同方法兼容：系统预定义样式，以编程方式创建的 cell，从 xib 加载的单元格以及故事板中的原型cell。 如果需要，您也可以使用 autolayout。</p>
+<p>适用于 iOS&gt; = 5.0 版本。 在 iPhone 和 iPad 上的所有 iOS 版本上进行测试：iOS 7，iOS 8，iOS 9，iOS 10，iOS 11。</p>
+<h2 id="过渡动画演示"><a href="#过渡动画演示" class="headerlink" title="过渡动画演示"></a>过渡动画演示</h2><h3 id="Border-transition-边缘过渡"><a href="#Border-transition-边缘过渡" class="headerlink" title="Border transition - 边缘过渡"></a>Border transition - 边缘过渡</h3><p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/075044.gif" alt="1.gif"></p>
+<h3 id="Clip-transition-剪辑过渡"><a href="#Clip-transition-剪辑过渡" class="headerlink" title="Clip transition - 剪辑过渡"></a>Clip transition - 剪辑过渡</h3><p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/075045.gif" alt="2.gif"></p>
+<h3 id="3D-transition-3D-过渡"><a href="#3D-transition-3D-过渡" class="headerlink" title="3D transition - 3D 过渡"></a>3D transition - 3D 过渡</h3><p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/075046.gif" alt="3.gif"></p>
+<h3 id="Static-transition-静态过渡"><a href="#Static-transition-静态过渡" class="headerlink" title="Static transition - 静态过渡"></a>Static transition - 静态过渡</h3><p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/075048.gif" alt="4.gif"></p>
+<h3 id="Drag-transition-拖动过渡"><a href="#Drag-transition-拖动过渡" class="headerlink" title="Drag transition - 拖动过渡"></a>Drag transition - 拖动过渡</h3><p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/075050.gif" alt="5.gif"></p>
+<a id="more"></a>
+
+<h2 id="API-参考"><a href="#API-参考" class="headerlink" title="API 参考"></a>API 参考</h2><p>参见 <a href="MGSwipeTableCell/MGSwipeTableCell.h"><code>MGSwipeTableCell.h</code></a> 头文件查看有关该类功能的完整概述。<br>参见 <a href="demo/MailAppDemo"><code>MailAppDemo</code></a> 查看一个模仿 Apple 的邮件应用程序的完整项目（用 Objective-C 编写）。<br>参见 <a href="demo/MailAppDemoSwift"><code>MailAppDemoSwift</code></a> 查看一个模仿 Apple 的邮件应用程序的完整项目（用 Swift 编写）。<br>参见 <a href="demo/SpotifyDemo"><code>SpotifyDemo</code></a> 查看一个模仿 Spotify App 滑动样式的完整项目。<br>参见 <a href="demo/MGSwipeDemo"><code>MGSwipeDemo</code></a> 查看一个完整的项目示例，您可以在真实设备 / 模拟器上测试各种过渡。</p>
+<h2 id="项目设置"><a href="#项目设置" class="headerlink" title="项目设置"></a>项目设置</h2><p>You can use CocoaPods to include MGSwipeTableCell into you project:</p>
+<pre><code>pod &#39;MGSwipeTableCell&#39;</code></pre>
+<p>You can use Carthage to include MGSwipeTableCell into your project. Just add this dependency to your Cartfile:<br>​<br>​    github “MortimerGoro/MGSwipeTableCell”</p>
+<h2 id="用法"><a href="#用法" class="headerlink" title="用法"></a>用法</h2><h3 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h3><p>在项目中集成 MGSwipeTableCell 非常简单。 基本上，你只需继承 MGSwipeTableCell 而不是 UITableViewCell，或直接使用 iOS 预定义单元格样式实例化 MGSwipeTableCell 实例。 你可以按照以前的方式布置单元格内容，MGSwipeTableCell 不会强制您更改布局。</p>
+<p>以下是使用 iOS 预定义样式的 MGSwipeTableCell 的示例。 您可以将按钮数组设置为 cell.leftButtons 和 / 或 cell.rightButtons 属性。 MGSwipeButton 是一个便利类，你不必被迫使用它。 你可以使用自己的 UIButtons 或 UIViews。 你也可以使用 leftSwipeSettings 和 / 或 rightSwipeSettings 属性配置转场（和滑动阈值）</p>
+<h5 id="Objective-C"><a href="#Objective-C" class="headerlink" title="Objective-C"></a>Objective-C</h5><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="built_in">UITableViewCell</span> *)tableView:(<span class="built_in">UITableView</span> *)tableView cellForRowAtIndexPath:(<span class="built_in">NSIndexPath</span> *)indexPath</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">static</span> <span class="built_in">NSString</span> * reuseIdentifier = <span class="string">@&quot;programmaticCell&quot;</span>;</span><br><span class="line">    MGSwipeTableCell * cell = [<span class="keyword">self</span>.tableView dequeueReusableCellWithIdentifier:reuseIdentifier];</span><br><span class="line">    <span class="keyword">if</span> (!cell) &#123;</span><br><span class="line">        cell = [[MGSwipeTableCell alloc] initWithStyle:<span class="built_in">UITableViewCellStyleSubtitle</span> reuseIdentifier:reuseIdentifier];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    cell.textLabel.text = <span class="string">@&quot;Title&quot;</span>;</span><br><span class="line">    cell.detailTextLabel.text = <span class="string">@&quot;Detail text&quot;</span>;</span><br><span class="line">    cell.delegate = <span class="keyword">self</span>; <span class="comment">//optional</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">//配置左边按钮</span></span><br><span class="line">    cell.leftButtons = @[[MGSwipeButton buttonWithTitle:<span class="string">@&quot;&quot;</span> icon:[<span class="built_in">UIImage</span> imageNamed:<span class="string">@&quot;check.png&quot;</span>] backgroundColor:[<span class="built_in">UIColor</span> greenColor]],</span><br><span class="line">                          [MGSwipeButton buttonWithTitle:<span class="string">@&quot;&quot;</span> icon:[<span class="built_in">UIImage</span> imageNamed:<span class="string">@&quot;fav.png&quot;</span>] backgroundColor:[<span class="built_in">UIColor</span> blueColor]]];</span><br><span class="line">    <span class="comment">// 按钮过渡样式,3D转换</span></span><br><span class="line">    cell.leftSwipeSettings.transition = MGSwipeTransition3D;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//配置右边按钮</span></span><br><span class="line">    cell.rightButtons = @[[MGSwipeButton buttonWithTitle:<span class="string">@&quot;Delete&quot;</span> backgroundColor:[<span class="built_in">UIColor</span> redColor]],</span><br><span class="line">                           [MGSwipeButton buttonWithTitle:<span class="string">@&quot;More&quot;</span> backgroundColor:[<span class="built_in">UIColor</span> lightGrayColor]]];</span><br><span class="line">    cell.rightSwipeSettings.transition = MGSwipeTransition3D;</span><br><span class="line">    <span class="keyword">return</span> cell;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h5 id="Swift"><a href="#Swift" class="headerlink" title="Swift"></a>Swift</h5><figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">tableView</span><span class="params">(<span class="number">_</span> tableView: UITableView, cellForRowAt indexPath: IndexPath)</span></span> -&gt; <span class="type">UITableViewCell</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">let</span> reuseIdentifier = <span class="string">&quot;programmaticCell&quot;</span></span><br><span class="line">    <span class="keyword">var</span> cell = tableView.dequeueReusableCell(withIdentifier: reuseIdentifier, <span class="keyword">for</span>: indexPath) <span class="keyword">as</span>! <span class="type">MGSwipeTableCell</span></span><br><span class="line"></span><br><span class="line">    cell.textLabel!.text = <span class="string">&quot;Title&quot;</span></span><br><span class="line">    cell.detailTextLabel!.text = <span class="string">&quot;Detail text&quot;</span></span><br><span class="line">    cell.delegate = <span class="keyword">self</span> <span class="comment">//optional</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">//configure left buttons</span></span><br><span class="line">    cell.leftButtons = [<span class="type">MGSwipeButton</span>(title: <span class="string">&quot;&quot;</span>, icon: <span class="type">UIImage</span>(named:<span class="string">&quot;check.png&quot;</span>), backgroundColor: .green),</span><br><span class="line">                        <span class="type">MGSwipeButton</span>(title: <span class="string">&quot;&quot;</span>, icon: <span class="type">UIImage</span>(named:<span class="string">&quot;fav.png&quot;</span>), backgroundColor: .blue)]</span><br><span class="line">    cell.leftSwipeSettings.transition = .rotate3D</span><br><span class="line"></span><br><span class="line">    <span class="comment">//configure right buttons</span></span><br><span class="line">    cell.rightButtons = [<span class="type">MGSwipeButton</span>(title: <span class="string">&quot;Delete&quot;</span>, backgroundColor: .red),</span><br><span class="line">                         <span class="type">MGSwipeButton</span>(title: <span class="string">&quot;More&quot;</span>,backgroundColor: .lightGray)]</span><br><span class="line">    cell.rightSwipeSettings.transition = .rotate3D</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> cell</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>为了监听按钮点击事件，你可以实现可选的 MGSwipeTableCellDelegate 协议，或者如果您懒得这样做，MGSwipeButton 类也附带一个便捷 block 回调;）</p>
+<h5 id="Objective-c"><a href="#Objective-c" class="headerlink" title="Objective-c"></a>Objective-c</h5><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 创建按钮时，同时设置 block 回调</span></span><br><span class="line">[MGSwipeButton buttonWithTitle:<span class="string">@&quot;More&quot;</span> backgroundColor:[<span class="built_in">UIColor</span> lightGrayColor] callback:^<span class="built_in">BOOL</span>(MGSwipeTableCell *sender) &#123;</span><br><span class="line">      <span class="built_in">NSLog</span>(<span class="string">@&quot;Convenience callback for swipe buttons!&quot;</span>);</span><br><span class="line">&#125;]</span><br></pre></td></tr></table></figure>
+<h5 id="Swift-1"><a href="#Swift-1" class="headerlink" title="Swift"></a>Swift</h5><figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">MGSwipeButton</span>(title: <span class="string">&quot;Delete&quot;</span>, backgroundColor: .red) &#123;</span><br><span class="line">      (sender: <span class="type">MGSwipeTableCell!</span>) -&gt; <span class="type">Bool</span> <span class="keyword">in</span></span><br><span class="line">      <span class="built_in">print</span>(<span class="string">&quot;Convenience callback for swipe buttons!&quot;</span>)</span><br><span class="line">      <span class="keyword">return</span> <span class="literal">true</span></span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="Delegate-代理协议"><a href="#Delegate-代理协议" class="headerlink" title="Delegate - 代理协议"></a>Delegate - 代理协议</h3><p>MGSwipeTableCellDelegate 是一个可选的委托协议，用于配置滑动按钮或接收触发的操作或其他事件。 按钮可以在cell 被创建时内联配置，如果你不想使用此委托方法。但是使用委托可以提高内存使用率，因为按钮仅按需创建。</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">@protocol</span> <span class="title">MGSwipeTableCellDelegate</span> &lt;<span class="title">NSObject</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">@optional</span></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Delegate method to enable/disable swipe gestures</span></span><br><span class="line"><span class="comment"> * 开关</span></span><br><span class="line"><span class="comment"> * @return YES if swipe is allowed</span></span><br><span class="line"><span class="comment"> **/</span></span><br><span class="line">-(<span class="built_in">BOOL</span>) swipeTableCell:(MGSwipeTableCell*) cell canSwipe:(MGSwipeDirection) direction;</span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Delegate method invoked when the current swipe state changes</span></span><br><span class="line"><span class="comment"> * 当前滑动状态更改时调用的 Delegate 方法</span></span><br><span class="line"><span class="comment"> @param state the current Swipe State</span></span><br><span class="line"><span class="comment"> @param gestureIsActive YES if the user swipe gesture is active. No if the uses has already ended the gesture</span></span><br><span class="line"><span class="comment"> **/</span></span><br><span class="line">-(<span class="keyword">void</span>) swipeTableCell:(MGSwipeTableCell*) cell didChangeSwipeState:(MGSwipeState) state gestureIsActive:(<span class="built_in">BOOL</span>) gestureIsActive;</span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Called when the user clicks a swipe button or when a expandable button is automatically triggered</span></span><br><span class="line"><span class="comment"> * 当用户单击滑动按钮或自动触发可展开按钮时调用</span></span><br><span class="line"><span class="comment"> * @return YES to autohide the current swipe buttons</span></span><br><span class="line"><span class="comment"> **/</span></span><br><span class="line">-(<span class="built_in">BOOL</span>) swipeTableCell:(MGSwipeTableCell*) cell tappedButtonAtIndex:(<span class="built_in">NSInteger</span>) index direction:(MGSwipeDirection)direction fromExpansion:(<span class="built_in">BOOL</span>) fromExpansion;</span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Delegate method to setup the swipe buttons and swipe/expansion settings</span></span><br><span class="line"><span class="comment"> * 配置按钮协议方法</span></span><br><span class="line"><span class="comment"> * Buttons can be any kind of UIView but it&#x27;s recommended to use the convenience MGSwipeButton class</span></span><br><span class="line"><span class="comment"> * Setting up buttons with this delegate instead of using cell properties improves memory usage because buttons are only created in demand</span></span><br><span class="line"><span class="comment"> * @param swipeTableCell the UITableViewCell to configure. You can get the indexPath using [tableView indexPathForCell:cell]</span></span><br><span class="line"><span class="comment"> * @param direction The swipe direction (left to right or right to left)</span></span><br><span class="line"><span class="comment"> * @param swipeSettings instance to configure the swipe transition and setting (optional)</span></span><br><span class="line"><span class="comment"> * @param expansionSettings instance to configure button expansions (optional)</span></span><br><span class="line"><span class="comment"> * @return Buttons array</span></span><br><span class="line"><span class="comment"> **/</span></span><br><span class="line">-(<span class="built_in">NSArray</span>*) swipeTableCell:(MGSwipeTableCell*) cell swipeButtonsForDirection:(MGSwipeDirection)direction</span><br><span class="line">             swipeSettings:(MGSwipeSettings*) swipeSettings expansionSettings:(MGSwipeExpansionSettings*) expansionSettings;</span><br><span class="line"></span><br><span class="line"><span class="keyword">@end</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="Expandable-buttons-可扩展按钮"><a href="#Expandable-buttons-可扩展按钮" class="headerlink" title="Expandable buttons - 可扩展按钮"></a>Expandable buttons - 可扩展按钮</h3><p>默认情况下，按钮不可扩展。 你可以使用 cell.leftExpansion 和 cell.rightExpansion 属性设置可扩展按钮</p>
+<p>当用户结束滑动手势并且扩展处于活动状态时（可通过阈值配置），将自动触发可扩展按钮事件。 触发的可扩展按钮可以弹回到其初始位置或填充整个 UITableViewCell，您可以使用 fillOnTrigger 属性选择所需的动画。</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">MGSwipeExpansionSettings</span>: <span class="title">NSObject</span></span></span><br><span class="line"><span class="comment">/** index of the expandable button (in the left or right buttons arrays) */</span></span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">assign</span>) <span class="built_in">NSInteger</span> buttonIndex;</span><br><span class="line"><span class="comment">/** if true the button fills the cell on trigger, else it bounces back to its initial position */</span></span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">assign</span>) <span class="built_in">BOOL</span> fillOnTrigger;</span><br><span class="line"><span class="comment">/** Size proportional threshold to trigger the expansion button. Default value 1.5 */</span></span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">assign</span>) <span class="built_in">CGFloat</span> threshold;</span><br><span class="line"><span class="keyword">@end</span></span><br></pre></td></tr></table></figure>
+<h3 id="Rounded-corners-and-swipe-buttons-圆角和滑动按钮"><a href="#Rounded-corners-and-swipe-buttons-圆角和滑动按钮" class="headerlink" title="Rounded corners and swipe buttons - 圆角和滑动按钮"></a>Rounded corners and swipe buttons - 圆角和滑动按钮</h3><p>MGSwipeTableCell 支持圆角。 例：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">cell.layer.cornerRadius = <span class="number">50</span></span><br><span class="line">cell.backgroundColor = <span class="built_in">UIColor</span>.gray</span><br><span class="line">cell.clipsToBounds = <span class="literal">true</span></span><br><span class="line">cell.swipeBackgroundColor = <span class="built_in">UIColor</span>.gray</span><br></pre></td></tr></table></figure>
+<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/075051.jpg" alt="RoundTableViewCell"></p>
+<h2 id="License-许可证"><a href="#License-许可证" class="headerlink" title="License - 许可证"></a>License - 许可证</h2><p>The MIT License (MIT)</p>
+<p>Copyright (c) 2014 Imanol Fernandez @MortimerGoro</p>
+<p>Permission is hereby granted, free of charge, to any person obtaining a copy<br>of this software and associated documentation files (the “Software”), to deal<br>in the Software without restriction, including without limitation the rights<br>to use, copy, modify, merge, publish, distribute, sublicense, and/or sell<br>copies of the Software, and to permit persons to whom the Software is<br>furnished to do so, subject to the following conditions:</p>
+<p>The above copyright notice and this permission notice shall be included in all<br>copies or substantial portions of the Software.</p>
+<p>THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR<br>IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,<br>FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE<br>AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER<br>LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,<br>OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE<br>SOFTWARE.</p>
+<h3 id="示例代码"><a href="#示例代码" class="headerlink" title="示例代码"></a>示例代码</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line">#pragma mark - MGSwipeTableCellDelegate</span><br><span class="line"></span><br><span class="line">&#x2F;**</span><br><span class="line"> * Delegate method to setup the swipe buttons and swipe&#x2F;expansion settings</span><br><span class="line"> * Buttons can be any kind of UIView but it&#39;s recommended to use the convenience MGSwipeButton class</span><br><span class="line"> * Setting up buttons with this delegate instead of using cell properties improves memory usage because buttons are only created in demand</span><br><span class="line"> * @param cell the UITableViewCell to configure. You can get the indexPath using [tableView indexPathForCell:cell]</span><br><span class="line"> * @param direction The swipe direction (left to right or right to left)</span><br><span class="line"> * @param swipeSettings instance to configure the swipe transition and setting (optional)</span><br><span class="line"> * @param expansionSettings instance to configure button expansions (optional)</span><br><span class="line"> * @return Buttons array</span><br><span class="line"> **&#x2F;</span><br><span class="line">-(nullable NSArray&lt;UIView*&gt;*) swipeTableCell:(nonnull MGSwipeTableCell*) cell swipeButtonsForDirection:(MGSwipeDirection)direction</span><br><span class="line">                               swipeSettings:(nonnull MGSwipeSettings*) swipeSettings expansionSettings:(nonnull MGSwipeExpansionSettings*) expansionSettings &#123;</span><br><span class="line">    </span><br><span class="line">    if (direction &#x3D;&#x3D; MGSwipeDirectionRightToLeft) &#123;</span><br><span class="line">        &#x2F;&#x2F; MGSwipeSettings 按钮设置</span><br><span class="line">        swipeSettings.transition &#x3D; MGSwipeTransitionBorder;</span><br><span class="line">        swipeSettings.threshold &#x3D; 1.5; &#x2F;&#x2F; 工具按钮被显示出来的阈值 （手势拉伸的长度&#x2F;按钮自身宽度）</span><br><span class="line">        swipeSettings.keepButtonsSwiped &#x3D; YES; &#x2F;&#x2F; 手势停止时，按钮是否自动隐藏</span><br><span class="line">        </span><br><span class="line">        &#x2F;&#x2F; MGSwipeExpansionSettings 拉伸设置</span><br><span class="line">        expansionSettings.buttonIndex &#x3D; 0; &#x2F;&#x2F; 被拉伸的按钮索引</span><br><span class="line">        expansionSettings.fillOnTrigger &#x3D; NO; &#x2F;&#x2F; 拉伸时是否填充整个 cell</span><br><span class="line">        expansionSettings.threshold &#x3D; 2.0; &#x2F;&#x2F; 拉伸动作被触发的阈值（与按钮的宽度相关）</span><br><span class="line">        </span><br><span class="line">        &#x2F;&#x2F; 删除按钮</span><br><span class="line">        CGFloat padding &#x3D; 20; &#x2F;&#x2F; 按钮右侧 - contentView 右侧边距</span><br><span class="line">        MGSwipeButton *trashButton &#x3D; [MGSwipeButton buttonWithTitle:@&quot;&quot; icon:[UIImage imageNamed:@&quot;trash&quot;] backgroundColor:[UIColor clearColor] padding:padding];</span><br><span class="line">        return @[trashButton];</span><br><span class="line">    &#125;</span><br><span class="line">    return nil;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;**</span><br><span class="line"> * 当用户单击滑动按钮或可展开按钮被自动自动触发时调用</span><br><span class="line"> * Called when the user clicks a swipe button or when a expandable button is automatically triggered</span><br><span class="line"> * @return YES to autohide the current swipe buttons</span><br><span class="line"> **&#x2F;</span><br><span class="line">-(BOOL) swipeTableCell:(nonnull MGSwipeTableCell*) cell tappedButtonAtIndex:(NSInteger) index direction:(MGSwipeDirection)direction fromExpansion:(BOOL) fromExpansion &#123;</span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F; 删除按钮触发事件</span><br><span class="line">    if (direction &#x3D;&#x3D; MGSwipeDirectionRightToLeft &amp;&amp; index &#x3D;&#x3D; 0) &#123;</span><br><span class="line">        &#x2F;&#x2F; 这里直接删除，业务层还需要做删除前的提示和判断的！！！</span><br><span class="line">        NSIndexPath *indexPath &#x3D; [self.tableView indexPathForCell:cell];</span><br><span class="line">        [self.dataSourceArray removeObjectAtIndex:indexPath.row];</span><br><span class="line">        [self.tableView deleteRowAtIndexPath:indexPath withRowAnimation:UITableViewRowAnimationLeft];</span><br><span class="line">        return NO;</span><br><span class="line">    &#125;</span><br><span class="line">    return YES;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><ul>
+<li><span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL0NFV2VuZGVsL1NXVGFibGVWaWV3Q2VsbA==">GitHub：SWTableViewCell<i class="fa fa-external-link-alt"></i></span> ⭐️ 7000+，但是这个库好像很久没有更新了（最后更新是4年前。。。）</li>
+<li><span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL01vcnRpbWVyR29yby9NR1N3aXBlVGFibGVDZWxs">GitHub：MGSwipeTableCell<i class="fa fa-external-link-alt"></i></span> ⭐️6500+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>独木舟的木
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://andy0570.com/2018/12/26/MGSwipeTableCell%E2%80%94%E2%80%94%E4%B8%BA%20cell%20%E6%B7%BB%E5%8A%A0%E5%B8%A6%E8%BF%87%E6%B8%A1%E5%8A%A8%E7%94%BB%E7%9A%84%E5%B7%A5%E5%85%B7%E6%8C%89%E9%92%AE/" title="MGSwipeTableCell——为 cell 添加带过渡动画的工具按钮">https://andy0570.com/2018/12/26/MGSwipeTableCell——为 cell 添加带过渡动画的工具按钮/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <span class="exturl" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpo"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</span> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/iOS/" rel="tag"># iOS</a>
+              <a href="/tags/GitHub/" rel="tag"># GitHub</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2018/12/25/iOS%20%E9%9B%86%E6%88%90%E5%BE%AE%E4%BF%A1%E6%94%AF%E4%BB%98SDK/" rel="prev" title="iOS 集成微信支付SDK">
+      <i class="fa fa-chevron-left"></i> iOS 集成微信支付SDK
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2018/12/28/iOS%20%E7%BC%96%E7%A8%8B%EF%BC%9AUIRefreshControl/" rel="next" title="iOS 编程：UIRefreshControl">
+      iOS 编程：UIRefreshControl <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+        </div>
+        
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">独木舟的木</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">2.1m</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">31:21</span>
+</div>
+  <div class="powered-by">由 <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZw==">NexT.Gemini</span> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

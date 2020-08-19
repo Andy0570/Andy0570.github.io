@@ -1,23 +1,556 @@
-{% extends '_layout.swig' %}
-{% import '_macro/post.swig' as post_template %}
-{% import '_macro/sidebar.swig' as sidebar_template %}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.0.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+  <meta name="google-site-verification" content="wioXOS3Gv2wXUpJ3sLtfZ4ft6YJYKNLLWSw6QoZTFYM">
+  <meta name="msvalidate.01" content="C96491A81239C517A50597C54EE53CD1">
+  <meta name="baidu-site-verification" content="h8asiToN1b">
 
-{% block title %}{{ page.title }} | {{ title }}{% endblock %}
+<link rel="stylesheet" href="/css/main.css">
 
-{% block page_class %}page-post-detail{% endblock %}
 
-{% block content %}
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  
+  <link rel="stylesheet" href="/lib/animate-css/animate.min.css">
 
-  <div id="posts" class="posts-expand">
-    {{ post_template.render(page) }}
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"andy0570.com","root":"/","scheme":"Gemini","version":"8.0.0-rc.5","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":"mac","bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false};
+  </script>
+
+  <meta name="description" content="原文 Building iOS Interfaces: A Primer Building iOS Interfaces: Views Building iOS Interfaces: A Custom Button  本文是构建 iOS 界面系列的第1部分，它解决了如何在没有原生编程经验的情况下实现iOS设计的方法和原因，这对Web设计人员和开发人员来说是完美的。  为Web设计教会了我们设计师">
+<meta property="og:type" content="article">
+<meta property="og:title" content="构建iOS界面：入门">
+<meta property="og:url" content="https://andy0570.com/2018/06/09/%E6%9E%84%E5%BB%BAiOS%E7%95%8C%E9%9D%A2%EF%BC%9A%E5%85%A5%E9%97%A8/index.html">
+<meta property="og:site_name" content="独木舟的木">
+<meta property="og:description" content="原文 Building iOS Interfaces: A Primer Building iOS Interfaces: Views Building iOS Interfaces: A Custom Button  本文是构建 iOS 界面系列的第1部分，它解决了如何在没有原生编程经验的情况下实现iOS设计的方法和原因，这对Web设计人员和开发人员来说是完美的。  为Web设计教会了我们设计师">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/075610.jpg">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/075611.jpg">
+<meta property="article:published_time" content="2018-06-09T07:15:00.000Z">
+<meta property="article:modified_time" content="2019-05-01T12:44:02.000Z">
+<meta property="article:author" content="独木舟的木">
+<meta property="article:tag" content="iOS">
+<meta property="article:tag" content="翻译">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/075610.jpg">
+
+<link rel="canonical" href="https://andy0570.com/2018/06/09/%E6%9E%84%E5%BB%BAiOS%E7%95%8C%E9%9D%A2%EF%BC%9A%E5%85%A5%E9%97%A8/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>构建iOS界面：入门 | 独木舟的木</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="独木舟的木" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <main class="main">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+        <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
   </div>
 
-{% endblock %}
+  <div class="site-meta">
 
-{% block sidebar %}
-  {{ sidebar_template.render(true) }}
-{% endblock %}
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">独木舟的木</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">iOS Developer</p>
+  </div>
 
-{% block script_extra %}
-  {% include '_scripts/pages/post-details.swig' %}
-{% endblock %}
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">14</span></a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">36</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">310</span></a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <section class="post-toc-wrap sidebar-panel">
+          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8E%9F%E6%96%87"><span class="nav-number">1.</span> <span class="nav-text">原文</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Xcode-Swift-UIKit-Oh-My"><span class="nav-number"></span> <span class="nav-text">Xcode? Swift? UIKit? Oh My!</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Frameworks"><span class="nav-number">1.</span> <span class="nav-text">Frameworks</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Languages"><span class="nav-number">2.</span> <span class="nav-text">Languages</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Software-Tools"><span class="nav-number">3.</span> <span class="nav-text">Software Tools</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Recap"><span class="nav-number">4.</span> <span class="nav-text">Recap</span></a></li></ol></div>
+      </section>
+      <!--/noindex-->
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="独木舟的木"
+      src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+  <p class="site-author-name" itemprop="name">独木舟的木</p>
+  <div class="site-description" itemprop="description">生若直木，不语斧凿。</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">310</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">36</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL0FuZHkwNTcw" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Andy0570"><i class="fab fa-github fa-fw"></i>GitHub</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9zdGFja292ZXJmbG93LmNvbS91c2Vycy83MjY1NDAwL2FuZHkwNTcw" title="StackOverflow → https:&#x2F;&#x2F;stackoverflow.com&#x2F;users&#x2F;7265400&#x2F;andy0570"><i class="fab fa-stack-overflow fa-fw"></i>StackOverflow</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuamlhbnNodS5jb20vdS84NGM1ZmFkYzdjMTg=" title="简书 → https:&#x2F;&#x2F;www.jianshu.com&#x2F;u&#x2F;84c5fadc7c18"><i class="heartbeat fa-fw"></i>简书</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="bWFpbHRvOmFuZHl3aG1AMTYzLmNvbQ==" title="E-Mail → mailto:andywhm@163.com"><i class="fa fa-envelope fa-fw"></i>E-Mail</span>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <span class="exturl cc-opacity" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpo"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></span>
+  </div>
+
+
+
+      </section>
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </header>
+
+      
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div id="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+      <div class="main-inner">
+        
+
+        <div class="content post posts-expand">
+          
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://andy0570.com/2018/06/09/%E6%9E%84%E5%BB%BAiOS%E7%95%8C%E9%9D%A2%EF%BC%9A%E5%85%A5%E9%97%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+      <meta itemprop="name" content="独木舟的木">
+      <meta itemprop="description" content="生若直木，不语斧凿。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="独木舟的木">
+    </span>
+
+    
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          构建iOS界面：入门
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-06-09 15:15:00" itemprop="dateCreated datePublished" datetime="2018-06-09T15:15:00+08:00">2018-06-09</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-05-01 20:44:02" itemprop="dateModified" datetime="2019-05-01T20:44:02+08:00">2019-05-01</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%BF%BB%E8%AF%91%E6%96%87%E6%A1%A3/" itemprop="url" rel="index"><span itemprop="name">翻译文档</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>2.2k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>2 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h3 id="原文"><a href="#原文" class="headerlink" title="原文"></a>原文</h3><ul>
+<li><span class="exturl" data-url="aHR0cHM6Ly9yb2JvdHMudGhvdWdodGJvdC5jb20vYnVpbGRpbmctaW9zLWludGVyZmFjZXMtc3dpZnQtcHJpbWVy">Building iOS Interfaces: A Primer<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cHM6Ly9yb2JvdHMudGhvdWdodGJvdC5jb20vYnVpbGRpbmctaW9zLWludGVyZmFjZXMtdmlld3M=">Building iOS Interfaces: Views<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cHM6Ly9yb2JvdHMudGhvdWdodGJvdC5jb20vYnVpbGRpbmctaW9zLWludGVyZmFjZXMtY3VzdG9tLWJ1dHRvbg==">Building iOS Interfaces: A Custom Button<i class="fa fa-external-link-alt"></i></span></li>
+</ul>
+<p>本文是构建 iOS 界面系列的第1部分，它解决了如何在没有原生编程经验的情况下实现iOS设计的方法和原因，这对Web设计人员和开发人员来说是完美的。 </p>
+<p>为Web设计教会了我们设计师编写HTML / CSS的价值，以及它在提高整体工作质量方面的作用。 在现代网页设计过程中，涉及静态模型和数百兆分片资产的瀑布工作流程早已不复存在。</p>
+<p>不幸的是，对于移动设计来说也是一样。 大量的设计者发现Xcode令人望而生畏，他们更倾向于使用其他工具来设计原型，然后交给开发者来实现。 平台制造商和开发商没有把这个任务变得更容易。 文档和工具都是以开发人员为中心的，而社区普遍认为UI编程是开发人员工作的一部分。 现在是时候改变这一点。</p>
+<a id="more"></a>
+
+<h2 id="Xcode-Swift-UIKit-Oh-My"><a href="#Xcode-Swift-UIKit-Oh-My" class="headerlink" title="Xcode? Swift? UIKit? Oh My!"></a>Xcode? Swift? UIKit? Oh My!</h2><p>当我和设计师学习iOS的时候，我听到的最常见的问题是“我从哪里开始？”。 考虑到这个过程涉及的概念相对较多，这是一个有效的问题。 无法得到这个问题的明确答案往往导致在开始之前放弃。 在学习方面，没有比处理未知的未知物更令人沮丧的事情 - 我们不知道我们不知道的事情。 这个介绍旨在解决这个问题，然后再讨论更具体的话题。</p>
+<h3 id="Frameworks"><a href="#Frameworks" class="headerlink" title="Frameworks"></a>Frameworks</h3><p>让我们从基础开始。 iOS操作系统是由苹果公司建立的一个封闭的系统，为每个iPhone，iPad和iPod Touch提供电源。 它从曾在Mac电脑上运行十多年的祖父OS X大量借用。 反过来，手机操作系统严重影响了苹果公司开发工具带的最新成员watchOS（苹果手表）和tvOS（苹果电视）。</p>
+<p>iOS最基本的构建块之一就是框架。 框架是一个独立的API集合，旨在解决诸如控件，音频，视频，动画等特定问题。 框架可以驻留在其他框架中，导致一个层次结构，如果一个人不注意，可能很容易混淆。</p>
+<p>iOS中的顶级框架称为Cocoa Touch，与Cocoa for OS X相反.Cocoa Touch托管您将作为UI设计者处理的所有框架，包括Foundation，UIKit和Core Animation。</p>
+<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/075610.jpg" alt="image"></p>
+<p><strong>How will this affect my day-to-day work?</strong></p>
+<p>您需要将这些框架中的一些导入到您的文件中才能访问某些API。 对于iOS，UIKit将是最常见的导入。</p>
+<h3 id="Languages"><a href="#Languages" class="headerlink" title="Languages"></a>Languages</h3><p>现在我们已经确定了我们要使用的框架，我们需要一种方法来与他们沟通。 这就是编程语言的地方。多年来，开发人员已经能够使用诸如C，Objective-C甚至C ++等语言来调用内置的API。</p>
+<p>在2014年，苹果公司将Swift作为一种现代化的官方编程语言，大部分框架都进行了更新以利用它。</p>
+<p><strong>How will this affect my day-to-day work?</strong></p>
+<p>你需要熟悉Swift，并且对于面向对象的编程如何工作有一些基本的了解。 这些听起来可能听起来令人望而生畏，但实际上并非如此。 不是如果你已经处理了 CSS 和 JavaScript。 这是一个Swift文件的例子：</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> UIKit</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyButton</span>: <span class="title">UIButton</span> </span>&#123;</span><br><span class="line">  <span class="keyword">override</span> <span class="function"><span class="keyword">func</span> <span class="title">awakeFromNib</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="keyword">super</span>.awakeFromNib()</span><br><span class="line">    backgroundColor = <span class="type">UIColor</span>.yellowColor()</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上面的代码片段定义了一个新的按钮子类，并使其默认背景颜色为黄色。 这里介绍的概念包括类和继承，超出了这篇介绍性文章的范围，但仍然是充分利用框架API的基础。</p>
+<h3 id="Software-Tools"><a href="#Software-Tools" class="headerlink" title="Software Tools"></a>Software Tools</h3><p>到目前为止，我们已经有框架和语言与他们沟通。 我们现在需要的是将这些成分结合在一起来构建我们的用户界面。 输入Xcode。</p>
+<p>不论好坏，Xcode是唯一官方支持的用于构建iOS应用程序的编辑器。 它是功能丰富的，包括您需要开始的所有第一方框架。 这个名字实际上是误导性的，因为你花费大部分时间的部分甚至不需要编写代码：Interface Builder。</p>
+<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/075611.jpg" alt="image"></p>
+<p>Interface Builder允许您以可视化的方式构建界面，包括将不同的控件放入画布中，并在某种程度上对其进行造型，而无需编写任何代码。 不是所有的东西都像你最喜欢的图形编辑器一样工作，但是相似之处在那里。</p>
+<p>我们在设计界面时所做的很大一部分是布局。 为此，苹果已经构建了自动布局，一个基于约束的系统，描述视图之间的关系，而不是绝对的框架。</p>
+<p>这将如何影响我的日常工作？</p>
+<p>您将花费大部分时间在图形编辑器和Xcode之间。 此外，自动布局将成为您可能触及的一切的重要组成部分。</p>
+<h3 id="Recap"><a href="#Recap" class="headerlink" title="Recap"></a>Recap</h3><p>我们已经了解了您需要熟悉的工具和技术，以便更好地实施您的iOS设计。你可能仍然想知道你应该如何处理这些问题 - 一个合理的问题，如果没有答案，可能会阻碍学习过程，或者更糟的是阻止它。先让我们看看坏消息：</p>
+<ul>
+<li>熟悉上面介绍的所有概念和工具，才能充分发挥平台的潜力。</li>
+<li>除Swift之外，很难在学习过程中将这些技术相互分离。</li>
+</ul>
+<p>现在好消息是：</p>
+<ul>
+<li>Basic Swift is a low-hanging fruit to go for.</li>
+<li>了解框架的最好方法就是使用它们。</li>
+<li>当你有一个明确的目标时，学习顺序就会减少。</li>
+<li>你将要使用的框架是有据可查的。</li>
+<li>所有考虑的事情，学习中最根本的事情之一就是理解为什么。唉，那里的大部分资源都是完全侧重于如何做的饼干食谱。希望本系列能够为您解决这个问题找到正确的道路。</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>独木舟的木
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://andy0570.com/2018/06/09/%E6%9E%84%E5%BB%BAiOS%E7%95%8C%E9%9D%A2%EF%BC%9A%E5%85%A5%E9%97%A8/" title="构建iOS界面：入门">https://andy0570.com/2018/06/09/构建iOS界面：入门/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <span class="exturl" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpo"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</span> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/iOS/" rel="tag"># iOS</a>
+              <a href="/tags/%E7%BF%BB%E8%AF%91/" rel="tag"># 翻译</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2018/06/08/iOS%20%E6%97%A5%E5%B8%B8%E5%BC%80%E5%8F%91%E9%97%AE%E9%A2%98%E5%8F%8A%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95%E6%B1%87%E6%80%BB/" rel="prev" title="iOS 日常开发问题及解决方法汇总">
+      <i class="fa fa-chevron-left"></i> iOS 日常开发问题及解决方法汇总
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2018/06/12/%E4%B8%BA%20VMware%20%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%86%85%E5%AE%89%E8%A3%85%E7%9A%84%20Ubuntu%2016.0.4%20%E8%AE%BE%E7%BD%AE%E9%9D%99%E6%80%81IP/" rel="next" title="为 VMware 虚拟机内安装的 Ubuntu 16.0.4 设置静态IP">
+      为 VMware 虚拟机内安装的 Ubuntu 16.0.4 设置静态IP <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+        </div>
+        
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">独木舟的木</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">2.1m</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">31:21</span>
+</div>
+  <div class="powered-by">由 <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZw==">NexT.Gemini</span> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

@@ -1,23 +1,676 @@
-{% extends '_layout.swig' %}
-{% import '_macro/post.swig' as post_template %}
-{% import '_macro/sidebar.swig' as sidebar_template %}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.0.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+  <meta name="google-site-verification" content="wioXOS3Gv2wXUpJ3sLtfZ4ft6YJYKNLLWSw6QoZTFYM">
+  <meta name="msvalidate.01" content="C96491A81239C517A50597C54EE53CD1">
+  <meta name="baidu-site-verification" content="h8asiToN1b">
 
-{% block title %}{{ page.title }} | {{ title }}{% endblock %}
+<link rel="stylesheet" href="/css/main.css">
 
-{% block page_class %}page-post-detail{% endblock %}
 
-{% block content %}
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  
+  <link rel="stylesheet" href="/lib/animate-css/animate.min.css">
 
-  <div id="posts" class="posts-expand">
-    {{ post_template.render(page) }}
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"andy0570.com","root":"/","scheme":"Gemini","version":"8.0.0-rc.5","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":"mac","bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false};
+  </script>
+
+  <meta name="description" content="GitHub地址：BEMCheckBox star：1800+                                ​    ⭐️⭐️⭐️            以下内容来源于官方源码、 README 文档、测试 Demo或个人使用总结 ！  BEMCheckBox 和普通的UI控件用起来相差无几，本文我是对官方 Read.me 的翻译。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="BEMCheckBox——高雅的iOS复选框">
+<meta property="og:url" content="https://andy0570.com/2017/04/11/BEMCheckBox%E2%80%94%E2%80%94%E9%AB%98%E9%9B%85%E7%9A%84iOS%E5%A4%8D%E9%80%89%E6%A1%86/index.html">
+<meta property="og:site_name" content="独木舟的木">
+<meta property="og:description" content="GitHub地址：BEMCheckBox star：1800+                                ​    ⭐️⭐️⭐️            以下内容来源于官方源码、 README 文档、测试 Demo或个人使用总结 ！  BEMCheckBox 和普通的UI控件用起来相差无几，本文我是对官方 Read.me 的翻译。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072623.jpg">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072625.gif">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072626.jpg">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072627.jpg">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072629.gif">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072631.gif">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072632.gif">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072633.gif">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072635.gif">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072635-1.gif">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/2648731-b2299796508dac39.gif?imageMogr2/auto-orient/strip">
+<meta property="article:published_time" content="2017-04-11T03:49:00.000Z">
+<meta property="article:modified_time" content="2019-05-01T13:34:24.000Z">
+<meta property="article:author" content="独木舟的木">
+<meta property="article:tag" content="iOS">
+<meta property="article:tag" content="GitHub">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072623.jpg">
+
+<link rel="canonical" href="https://andy0570.com/2017/04/11/BEMCheckBox%E2%80%94%E2%80%94%E9%AB%98%E9%9B%85%E7%9A%84iOS%E5%A4%8D%E9%80%89%E6%A1%86/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>BEMCheckBox——高雅的iOS复选框 | 独木舟的木</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="独木舟的木" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <main class="main">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+        <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
   </div>
 
-{% endblock %}
+  <div class="site-meta">
 
-{% block sidebar %}
-  {{ sidebar_template.render(true) }}
-{% endblock %}
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">独木舟的木</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">iOS Developer</p>
+  </div>
 
-{% block script_extra %}
-  {% include '_scripts/pages/post-details.swig' %}
-{% endblock %}
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">14</span></a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">36</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">310</span></a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <section class="post-toc-wrap sidebar-panel">
+          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%A1%B9%E7%9B%AE%E7%BB%86%E8%8A%82"><span class="nav-number">1.</span> <span class="nav-text">项目细节</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A6%81%E6%B1%82"><span class="nav-number">1.1.</span> <span class="nav-text">要求</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%B8%E5%8F%AF%E5%8D%8F%E8%AE%AE"><span class="nav-number">1.2.</span> <span class="nav-text">许可协议</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%94%AF%E6%8C%81"><span class="nav-number">1.3.</span> <span class="nav-text">支持</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#App-%E6%A0%B7%E4%BE%8B"><span class="nav-number">1.4.</span> <span class="nav-text">App 样例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#React-Native-%E6%94%AF%E6%8C%81"><span class="nav-number">1.5.</span> <span class="nav-text">React Native 支持</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%BC%80%E5%A7%8B%E4%BD%BF%E7%94%A8"><span class="nav-number">2.</span> <span class="nav-text">开始使用</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85"><span class="nav-number">2.1.</span> <span class="nav-text">安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA"><span class="nav-number">2.2.</span> <span class="nav-text">创建</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%96%87%E6%A1%A3"><span class="nav-number">3.</span> <span class="nav-text">文档</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%AF%E7%94%A8-%E7%A6%81%E7%94%A8%E5%A4%8D%E9%80%89%E6%A1%86"><span class="nav-number">3.1.</span> <span class="nav-text">启用&#x2F;禁用复选框</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%87%8D%E6%96%B0%E5%8A%A0%E8%BD%BD"><span class="nav-number">3.2.</span> <span class="nav-text">重新加载</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%84-%E5%8D%95%E9%80%89%E6%8C%89%E9%92%AE%E5%8A%9F%E8%83%BD"><span class="nav-number">3.3.</span> <span class="nav-text">组&#x2F;单选按钮功能</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Delegate-%E4%BB%A3%E7%90%86"><span class="nav-number">3.4.</span> <span class="nav-text">Delegate 代理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9A%E5%88%B6"><span class="nav-number">3.5.</span> <span class="nav-text">定制</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8"><span class="nav-number">4.</span> <span class="nav-text">使用</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A4%BA%E4%BE%8B%E4%B8%80%EF%BC%9A"><span class="nav-number">4.1.</span> <span class="nav-text">示例一：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A4%BA%E4%BE%8B%E4%B8%80-2"><span class="nav-number">4.2.</span> <span class="nav-text">示例一(2)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A4%BA%E4%BE%8B%E4%BA%8C%EF%BC%9A"><span class="nav-number">4.3.</span> <span class="nav-text">示例二：</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A4%BA%E4%BE%8B%E4%B8%89%EF%BC%9A"><span class="nav-number">4.3.1.</span> <span class="nav-text">示例三：</span></a></li></ol></li></ol></li></ol></div>
+      </section>
+      <!--/noindex-->
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="独木舟的木"
+      src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+  <p class="site-author-name" itemprop="name">独木舟的木</p>
+  <div class="site-description" itemprop="description">生若直木，不语斧凿。</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">310</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">36</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL0FuZHkwNTcw" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Andy0570"><i class="fab fa-github fa-fw"></i>GitHub</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9zdGFja292ZXJmbG93LmNvbS91c2Vycy83MjY1NDAwL2FuZHkwNTcw" title="StackOverflow → https:&#x2F;&#x2F;stackoverflow.com&#x2F;users&#x2F;7265400&#x2F;andy0570"><i class="fab fa-stack-overflow fa-fw"></i>StackOverflow</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuamlhbnNodS5jb20vdS84NGM1ZmFkYzdjMTg=" title="简书 → https:&#x2F;&#x2F;www.jianshu.com&#x2F;u&#x2F;84c5fadc7c18"><i class="heartbeat fa-fw"></i>简书</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="bWFpbHRvOmFuZHl3aG1AMTYzLmNvbQ==" title="E-Mail → mailto:andywhm@163.com"><i class="fa fa-envelope fa-fw"></i>E-Mail</span>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <span class="exturl cc-opacity" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpo"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></span>
+  </div>
+
+
+
+      </section>
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </header>
+
+      
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div id="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+      <div class="main-inner">
+        
+
+        <div class="content post posts-expand">
+          
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://andy0570.com/2017/04/11/BEMCheckBox%E2%80%94%E2%80%94%E9%AB%98%E9%9B%85%E7%9A%84iOS%E5%A4%8D%E9%80%89%E6%A1%86/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+      <meta itemprop="name" content="独木舟的木">
+      <meta itemprop="description" content="生若直木，不语斧凿。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="独木舟的木">
+    </span>
+
+    
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          BEMCheckBox——高雅的iOS复选框
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2017-04-11 11:49:00" itemprop="dateCreated datePublished" datetime="2017-04-11T11:49:00+08:00">2017-04-11</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-05-01 21:34:24" itemprop="dateModified" datetime="2019-05-01T21:34:24+08:00">2019-05-01</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS-%E5%BC%80%E6%BA%90%E6%A1%86%E6%9E%B6/" itemprop="url" rel="index"><span itemprop="name">iOS 开源框架</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>11k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>10 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <ul>
+<li><strong>GitHub地址</strong>：<span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL0JvcmlzLUVtL0JFTUNoZWNrQm94">BEMCheckBox<i class="fa fa-external-link-alt"></i></span></li>
+<li><strong>star</strong>：1800+</li>
+</ul>
+<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072623.jpg"></p>
+<blockquote>
+<pre><code>                            ​    ⭐️⭐️⭐️ 
+          以下内容来源于官方源码、 README 文档、测试 Demo或个人使用总结 ！</code></pre>
+<p> <strong>BEMCheckBox</strong> 和普通的UI控件用起来相差无几，本文我是对官方 <strong>Read.me</strong> 的翻译。</p>
+</blockquote>
+<a id="more"></a>
+
+<p><strong>BEMCheckBox</strong> 是一个开源库，可以轻松地为iOS创建漂亮，高度可定制的，有动画效果的复选框。</p>
+<h1 id="项目细节"><a href="#项目细节" class="headerlink" title="项目细节"></a>项目细节</h1><p>学习更多关于 <strong>BEMCheckBox</strong> 项目，许可协议，支持等等。</p>
+<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072625.gif"></p>
+<h2 id="要求"><a href="#要求" class="headerlink" title="要求"></a>要求</h2><ul>
+<li><p>需要 iOS 7或更高版本，APP 样例是在 iOS 9  上创建的。</p>
+</li>
+<li><p>需要自动引用计数（ARC）。</p>
+</li>
+<li><p>针对 ARM64 架构进行了优化。</p>
+</li>
+</ul>
+<h2 id="许可协议"><a href="#许可协议" class="headerlink" title="许可协议"></a>许可协议</h2><p>查看<span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL0JvcmlzLUVtL0JFTUNoZWNrQm94L2Jsb2IvbWFzdGVyL0xJQ0VOU0U=">许可协议<i class="fa fa-external-link-alt"></i></span>，你可以自由地进行更改，并将其用于个人或商业项目。 署名不是必要的，但我们高度赞赏（这样的行为）。 些许“谢谢！” （或有效的东西）总是受欢迎的。 如果你在应用程序中使用了 <strong>BEMCheckBox</strong> ，请让我们知道！</p>
+<h2 id="支持"><a href="#支持" class="headerlink" title="支持"></a>支持</h2><p>如果你需要任何帮助或关于这个项目有任何讨论的话题请在  <span class="exturl" data-url="aHR0cHM6Ly9naXR0ZXIuaW0vQm9yaXMtRW0vQkVNQ2hlY2tCb3g=">Gitter<i class="fa fa-external-link-alt"></i></span> 上加入我们。</p>
+<h2 id="App-样例"><a href="#App-样例" class="headerlink" title="App 样例"></a>App 样例</h2><p>该项目附带的iOS APP样例演示了正确设置和使用 <strong>BEMCheckBox</strong> 的方法之一。 它还提供了在应用程序中自定义复选框的可能性。</p>
+<h2 id="React-Native-支持"><a href="#React-Native-支持" class="headerlink" title="React Native 支持"></a>React Native 支持</h2><p><strong>BEMCheckBox</strong> 现在可以被使用于 <strong>React Native</strong> ：<span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL3RvcmlmYXQvcmVhY3QtbmF0aXZlLWJlbS1jaGVjay1ib3g=">React-Native-BEMCheckBox<i class="fa fa-external-link-alt"></i></span></p>
+<h1 id="开始使用"><a href="#开始使用" class="headerlink" title="开始使用"></a>开始使用</h1><p>只需要几步就可以在你的项目中安装和创建 <strong>BEMCheckBox</strong>。</p>
+<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><ul>
+<li><p><strong>CocoaPods</strong></p>
+<p>安装 <strong>BEMCheckBox</strong> 最容易的方式是使用  <span class="exturl" data-url="aHR0cDovL2NvY29hcG9kcy5vcmcv">CocoaPods<i class="fa fa-external-link-alt"></i></span>。为此，只需将以下行添加到您的 <code>Podfile</code> :</p>
+<p><code>pod &#39;BEMCheckBox&#39;</code></p>
+</li>
+</ul>
+<blockquote>
+<p>⚠️如果使用 <strong>CocoaPods</strong> 将 <strong>BEMCheckBox</strong> 作为静态库导入项目，那么在 <strong>Interface Builder</strong> 中创建 <strong>BEMCheckBox</strong> 时会遇到这样的问题：<br><span class="exturl" data-url="aHR0cDovL3N0YWNrb3ZlcmZsb3cuY29tL3F1ZXN0aW9ucy8yODIwNDEwOC9pYi1kZXNpZ25hYmxlcy1mYWlsZWQtdG8tdXBkYXRlLWF1dG8tbGF5b3V0LXN0YXR1cy1mYWlsZWQtdG8tbG9hZC1kZXNpZ25hYmxlcw==">IB Designables: Failed to update auto layout status: Failed to load designables from path (null)<i class="fa fa-external-link-alt"></i></span><br>原因可能是这种方式不支持可视化设计。<br>解决方法：</p>
+</blockquote>
+<ul>
+<li><p>以动态库的方式添加 <strong>BEMCheckBox</strong>, 使用 <strong>CocoaPods</strong> 时在 Podfile 文件中取消注释 <code>use_frameworks!</code>,但是这样一来很多其他的第三方框架同时又会产生莫名其妙的问题。</p>
+</li>
+<li><p>使用 <strong>Carthage</strong>。</p>
+</li>
+<li><p>最简单的解决方法是手动把源文件拖进工程中。</p>
+</li>
+<li><p><strong>Carthage</strong></p>
+<p><span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL0NhcnRoYWdlL0NhcnRoYWdl">Carthage<i class="fa fa-external-link-alt"></i></span> 是一个分散的依赖管理器，用于构建你的依赖关系并为你提供二进制框架。</p>
+<p>在你的 <strong>Cartfile</strong> 中添加 <strong>BEMCheckBox</strong> 以构建框架后运行 <code>carthage update </code>。 将内置的<code>BEMCheckBox.framework</code> 拖到 <strong>Xcode</strong> 项目中。</p>
+</li>
+<li><p>手动导入</p>
+<p>最后，你可以手动添加 <strong>BEMCheckBox</strong>。只需将 Classes 文件夹拖放到 <strong>Xcode</strong> 项目中即可。当这样做时，确保并检查 <strong><em>“Copy items into destination group’s folder”</em></strong> 框被选中。</p>
+</li>
+</ul>
+<h2 id="创建"><a href="#创建" class="headerlink" title="创建"></a>创建</h2><p>在你的项目中创建 <strong>BEMCheckBox</strong> 再简单不过了。它模仿 <code>UISwitch</code>开关。事实上，你可以在项目中用 <strong>BEMCheckBox</strong> 替换 <strong>UISwitch</strong> 的实例！</p>
+<p>以下是完成所有操作的步骤：</p>
+<ol>
+<li><p>导入 <code>&quot;BEMCheckBox.h&quot;</code> 到视图控制器的头文件中：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">import &quot;BEMCheckBox.h&quot;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>BEMCheckBox</strong> 可以通过编程方式（通过代码）或 Interface Builder（Storyboard文件）进行初始化。 你可以使用对项目最有意义的方法。</p>
+</li>
+</ol>
+<p><strong>编程方式初始化</strong></p>
+<p>只需要添加以下几行代码到你的 implementation 文件中（通常是在你视图控制器的  <code>viewDidLoad</code> 方法中）。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">BEMCheckBox *myCheckBox &#x3D; [[BEMCheckBox alloc] initWithFrame:CGRectMake(0, 0, 50, 50)];</span><br><span class="line">[self.view addSubview:myCheckBox];</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>Interface Builder 方式初始化</strong></p>
+<ol>
+<li>拖一个 <code>UIView</code> 到你的<code>UIViewController</code>中。</li>
+<li>将新的添加的<code>UIView</code>的类名改为<code>BEMCheckBox</code>。</li>
+<li>选择<code>BEMCheckBox</code>然后打开属性检视器 （Attributes Inspector）界面。大多数可定制的属性都能在这里被轻易地设置。APP示例应用演示了这个功能。</li>
+</ol>
+<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072626.jpg"></p>
+<h1 id="文档"><a href="#文档" class="headerlink" title="文档"></a>文档</h1><p><strong>BEMCheckBox</strong> 可用的所有方法和属性如下所示。</p>
+<h2 id="启用-禁用复选框"><a href="#启用-禁用复选框" class="headerlink" title="启用/禁用复选框"></a>启用/禁用复选框</h2><p><strong>属性</strong> ：<code>on</code> </p>
+<p>就像<code>UISwitch</code>一样，<strong>BEMCheckBox</strong> 提供了 <strong>BOOL</strong> 属性 <code>on</code> 来允许你检索和设置（无动画）一个值来确定<strong>BEMCheckBox</strong> 对象 <code>on</code> 或 <code>off</code>。 默认为 <code>NO</code>。</p>
+<p>使用示例：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">self.myCheckBox.on &#x3D; YES;</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong><code>setOn:animated:</code></strong></p>
+<p>就像<code>UISwitch</code>一样，<strong>BEMCheckBox</strong> 提供了实例方法 <code>setOn:animated:</code>来设置复选框的状态为打卡或者关闭（可选切换动画）。</p>
+<p>使用示例：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[self.myCheckBox setOn:YES animated:YES];</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="重新加载"><a href="#重新加载" class="headerlink" title="重新加载"></a>重新加载</h2><p>实例方法 <code>reload</code>允许你重绘整个复选框并且保持当前的 <code>on</code> 值。</p>
+<p>使用示例：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[self.myCheckBox reload]</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="组-单选按钮功能"><a href="#组-单选按钮功能" class="headerlink" title="组/单选按钮功能"></a>组/单选按钮功能</h2><p><strong>BEMCheckBoxes</strong> 可以轻松地被组合在一起形成单选按钮功能。 这会自动管理组中的每个复选框的状态，以便一次只选择一个，并且可以选择性地要求组中的按钮始终有一个被选择。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">self.group &#x3D; [BEMCheckBoxGroup groupWithCheckBoxes:@[self.checkBox1, self.checkBox2, self.checkBox3]];</span><br><span class="line">self.group.selectedCheckBox &#x3D; self.checkBox2; &#x2F;&#x2F; 可选择设置哪个复选框被预选</span><br><span class="line">self.group.mustHaveSelection &#x3D; YES;           &#x2F;&#x2F; 定义组中是否必须有一个被选择</span><br></pre></td></tr></table></figure>
+
+<p>要查看当前组按钮中哪一个复选框被选中，只要这样做：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">BEMCheckBox *selection &#x3D; self.group.selectedCheckBox;</span><br></pre></td></tr></table></figure>
+
+<p>要管理更新组按钮的选中状态，设置如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">self.group.selectedCheckBox &#x3D; self.checkBox1;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="Delegate-代理"><a href="#Delegate-代理" class="headerlink" title="Delegate 代理"></a>Delegate 代理</h2><p><strong>BEMCheckBox</strong> 使用一个委托来接收复选框事件。 委托对象必须遵守 <code>BEMCheckBoxDelegate</code> 协议，该协议由两种可选方法组成：</p>
+<ul>
+<li><p><code>didTapCheckBox:</code></p>
+<p>每当复选框被点击时调用。此方法将在属性更新（on）之后，动画完成之前（如果有的话）被触发。</p>
+</li>
+<li><p><code>animationDidStopForCheckBox:</code></p>
+</li>
+</ul>
+<p>  每次复选框完成动画时被调用以更新属性（on），并且动画完成后触发此方法。 如果没有动画启动，则不会被触发。</p>
+<h2 id="定制"><a href="#定制" class="headerlink" title="定制"></a>定制</h2><p><strong>BEMCheckBox</strong> 可通过属性专门定制。</p>
+<p>下图提供了一个很好的概述：</p>
+<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072627.jpg"></p>
+<p><strong>外观属性</strong></p>
+<figure class="highlight plain"><figcaption><span>- CGFloat</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">复选标记和框的线宽。 默认为2.0。</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&#96;&#96;&#96;hideBox&#96;&#96;&#96; - BOOL</span><br><span class="line"></span><br><span class="line">BOOL 值来控制是否隐藏该复选框的盒子外壳。 将此属性设置为 &#96;YES&#96; 会将复选框变为如下的复选标记样式。 默认为 &#96;No&#96;。</span><br><span class="line"></span><br><span class="line">![](http:&#x2F;&#x2F;s30.postimg.org&#x2F;w89156q0x&#x2F;BEMCheck_Box_hide_box.jpg)</span><br><span class="line"></span><br><span class="line">&#96;&#96;&#96;boxType&#96;&#96;&#96; - BEMBoxType</span><br><span class="line"></span><br><span class="line">可用的不同复选框类型。查看 &#96;&#96;&#96;BEMBoxType&#96;&#96;&#96; 获得可用的值。默认为 &#96;&#96;&#96;BEMBoxTypeCircle&#96;&#96;&#96;。</span><br><span class="line"></span><br><span class="line">![](https:&#x2F;&#x2F;blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com&#x2F;site_Images&#x2F;072628.jpg)</span><br><span class="line"></span><br><span class="line">&#96;cornerRadius&#96; - 矩形复选框时可以设置圆角属性。</span><br><span class="line"></span><br><span class="line">&#96;&#96;&#96;objective-c</span><br><span class="line">&#x2F;** The corner radius which is applied to the box when the boxType is BEMBoxTypeSquare. Default to 3.0.</span><br><span class="line"> *&#x2F;</span><br><span class="line">@property (nonatomic) IBInspectable CGFloat cornerRadius;</span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight plain"><figcaption><span>- UIColor</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">复选框处于关闭时，框的颜色。</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&#96;&#96;&#96;onCheckColor&#96;&#96;&#96; - UIColor</span><br><span class="line"></span><br><span class="line">复选框处于打开时，复选标记的颜色。</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&#96;&#96;&#96;onFillColor&#96;&#96;&#96; - UIColor</span><br><span class="line"></span><br><span class="line">复选框处于打开时，框内的填充色。</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&#96;&#96;&#96;onTintColor&#96;&#96;&#96; - UIColor</span><br><span class="line"></span><br><span class="line">复选框处于打开时，框周围线的颜色。</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">**动画**</span><br><span class="line"></span><br><span class="line">&#96;&#96;&#96;animationDuration&#96;&#96;&#96; - CGFloat</span><br><span class="line"></span><br><span class="line">动画持续时间（以秒为单位）。 默认为&#96;&#96;&#96;0.5&#96;&#96;&#96;。</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&#96;onAnimationType&#96; - BEMAnimationType</span><br><span class="line"></span><br><span class="line">当选中复选框时使用的动画类型。 默认为&#96;&#96;&#96;BEMAnimationTypeStroke&#96;&#96;&#96;。 参见&#96;&#96;&#96;BEMAnimationType&#96;&#96;&#96;查看更多可用的类型。</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&#96;offAnimationType&#96; - BEMAnimationType</span><br><span class="line"></span><br><span class="line">当复选框被取消选择时使用的动画类型。 默认为&#96;&#96;&#96;BEMAnimationTypeStroke&#96;&#96;&#96;。 参见&#96;&#96;&#96;BEMAnimationType&#96;&#96;&#96;查看更多可用的类型。</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&#96;minimumTouchSize&#96; - 最小触摸大小</span><br><span class="line"></span><br><span class="line">&#96;&#96;&#96;objective-c</span><br><span class="line">&#x2F;** If the checkbox width or height is smaller than this value, the touch area will be increased. Allows for visually small checkboxes to still be easily tapped. Default: (44, 44)</span><br><span class="line"> *&#x2F;</span><br><span class="line">@property (assign, nonatomic) IBInspectable CGSize minimumTouchSize;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<p><code>BEMAnimationType</code> - <code>onAnimationType</code> 和 <code>offAnimationType</code> 动画可用的值。</p>
+<ul>
+<li><p><code>BEMAnimationTypeStroke</code> - <strong>默认类型</strong></p>
+<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072629.gif"></p>
+</li>
+<li><p><code>BEMAnimationTypeFill</code></p>
+<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072631.gif"></p>
+</li>
+<li><p><code>BEMAnimationTypeBounce</code><br><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072632.gif"></p>
+</li>
+<li><p><code>BEMAnimationTypeFlat</code><br><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072633.gif"></p>
+</li>
+<li><p><code>BEMAnimationTypeOneStroke</code><br><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072635.gif"></p>
+</li>
+<li><p><code>BEMAnimationTypeFade</code><br><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072635-1.gif"></p>
+</li>
+</ul>
+<h1 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h1><h2 id="示例一："><a href="#示例一：" class="headerlink" title="示例一："></a>示例一：</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">- (BEMCheckBox *)checkBox &#123;</span><br><span class="line">    if (!_checkBox) &#123;</span><br><span class="line">        _checkBox &#x3D; [[BEMCheckBox alloc] initWithFrame:CGRectZero];</span><br><span class="line">        &#x2F;&#x2F; 矩形复选框</span><br><span class="line">        _checkBox.boxType &#x3D; BEMBoxTypeSquare;</span><br><span class="line">        &#x2F;&#x2F; 动画样式</span><br><span class="line">        _checkBox.onAnimationType  &#x3D; BEMAnimationTypeStroke;</span><br><span class="line">        _checkBox.offAnimationType &#x3D; BEMAnimationTypeStroke;</span><br><span class="line">        _checkBox.animationDuration &#x3D; 0.3;</span><br><span class="line">        &#x2F;&#x2F; 颜色样式</span><br><span class="line">        _checkBox.tintColor    &#x3D; [UIColor lightGrayColor];</span><br><span class="line">        _checkBox.onTintColor  &#x3D; HexColor(@&quot;#108EE9&quot;);</span><br><span class="line">        _checkBox.onFillColor  &#x3D; [UIColor clearColor];</span><br><span class="line">        _checkBox.onCheckColor &#x3D; HexColor(@&quot;#108EE9&quot;);</span><br><span class="line">        &#x2F;&#x2F; 默认选中</span><br><span class="line">        _checkBox.on &#x3D; YES;</span><br><span class="line">    &#125;</span><br><span class="line">    return _checkBox;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="示例一-2"><a href="#示例一-2" class="headerlink" title="示例一(2)"></a>示例一(2)</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; Frameworks</span><br><span class="line">#import &lt;BEMCheckBox&#x2F;BEMCheckBox.h&gt;</span><br><span class="line"></span><br><span class="line">@property (nonatomic, strong) BEMCheckBox *checkBox; &#x2F;&#x2F; 记住密码按钮</span><br><span class="line">@property (nonatomic, strong) UILabel *checkBoxLabel;</span><br><span class="line"></span><br><span class="line">- (void)viewDidLoad &#123;</span><br><span class="line">    [super viewDidLoad];</span><br><span class="line"></span><br><span class="line">    [self.view addSubview:self.checkBox];</span><br><span class="line">    [self.view addSubview:self.checkBoxLabel];</span><br><span class="line"></span><br><span class="line">    [self.checkBox mas_makeConstraints:^(MASConstraintMaker *make) &#123;</span><br><span class="line">        make.top.equalTo(self.background.mas_bottom).with.offset(padding);</span><br><span class="line">        make.left.equalTo(self.view).with.offset(padding);</span><br><span class="line">        make.size.mas_equalTo(CGSizeMake(21, 21));</span><br><span class="line">    &#125;];</span><br><span class="line">    [self.checkBoxLabel mas_makeConstraints:^(MASConstraintMaker *make) &#123;</span><br><span class="line">        make.centerY.equalTo(self.checkBox.mas_centerY);</span><br><span class="line">        make.left.equalTo(self.checkBox.mas_right).with.offset(8);</span><br><span class="line">    &#125;];</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 记住密码按钮</span><br><span class="line">- (BEMCheckBox *)checkBox &#123;</span><br><span class="line">    if (!_checkBox) &#123;</span><br><span class="line">        _checkBox &#x3D; [[BEMCheckBox alloc] initWithFrame:CGRectZero];</span><br><span class="line">        _checkBox.boxType &#x3D; BEMBoxTypeSquare;</span><br><span class="line">        _checkBox.onAnimationType  &#x3D; BEMAnimationTypeStroke;</span><br><span class="line">        _checkBox.offAnimationType &#x3D; BEMAnimationTypeStroke;</span><br><span class="line">        _checkBox.animationDuration &#x3D; 0.3;</span><br><span class="line">        _checkBox.tintColor    &#x3D; [UIColor lightGrayColor];</span><br><span class="line">        _checkBox.onTintColor  &#x3D; HexColor(@&quot;#108EE9&quot;);</span><br><span class="line">        _checkBox.onFillColor  &#x3D; [UIColor clearColor];</span><br><span class="line">        _checkBox.onCheckColor &#x3D; HexColor(@&quot;#108EE9&quot;);</span><br><span class="line">        _checkBox.on &#x3D; self.user.rememberPasswordState;</span><br><span class="line">    &#125;</span><br><span class="line">    return _checkBox;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (UILabel *)checkBoxLabel &#123;</span><br><span class="line">    if (!_checkBoxLabel) &#123;</span><br><span class="line">        _checkBoxLabel &#x3D; [[UILabel alloc] initWithFrame:CGRectZero];</span><br><span class="line">        NSDictionary *attributes &#x3D; @&#123;</span><br><span class="line">                                     NSFontAttributeName:FONT(17),</span><br><span class="line">                                     NSForegroundColorAttributeName:[UIColor lightGrayColor]</span><br><span class="line">                                     &#125;;</span><br><span class="line">        NSAttributedString *text &#x3D; [[NSAttributedString alloc] initWithString:@&quot;保持登录状态&quot;</span><br><span class="line">                                                                   attributes:attributes];</span><br><span class="line">        [_checkBoxLabel setAttributedText:text];</span><br><span class="line">        [_checkBoxLabel setBackgroundColor:[UIColor clearColor]];</span><br><span class="line">    &#125;</span><br><span class="line">    return _checkBoxLabel;</span><br></pre></td></tr></table></figure>
+
+<h2 id="示例二："><a href="#示例二：" class="headerlink" title="示例二："></a>示例二：</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 使用 Interface Builder 设置复选框时，可能还需要如下设置</span><br><span class="line">self.checkBox21.onAnimationType  &#x3D; BEMAnimationTypeFade;</span><br><span class="line">self.checkBox21.offAnimationType &#x3D; BEMAnimationTypeFade;</span><br><span class="line">self.checkBox22.onAnimationType  &#x3D; BEMAnimationTypeFade;</span><br><span class="line">self.checkBox22.offAnimationType &#x3D; BEMAnimationTypeFade;</span><br><span class="line"></span><br><span class="line">NSArray *checkBoxArray2 &#x3D; @[self.checkBox21,self.checkBox22];</span><br><span class="line">self.checkBoxGroup2 &#x3D; [BEMCheckBoxGroup groupWithCheckBoxes:checkBoxArray2];</span><br><span class="line">self.checkBoxGroup2.selectedCheckBox &#x3D; self.checkBox21;</span><br><span class="line">self.checkBoxGroup2.mustHaveSelection &#x3D; YES;</span><br></pre></td></tr></table></figure>
+<h3 id="示例三："><a href="#示例三：" class="headerlink" title="示例三："></a>示例三：</h3><p>一组单选框按钮完整示例：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; Frameworks</span><br><span class="line">#import &lt;BEMCheckBox&#x2F;BEMCheckBox.h&gt;</span><br><span class="line"></span><br><span class="line">@interface HQLInsurancePaymentViewController () &lt;UITextFieldDelegate, BEMCheckBoxDelegate&gt;</span><br><span class="line">  </span><br><span class="line">@property (nonatomic, strong) BEMCheckBoxGroup *checkBoxGroup;</span><br><span class="line">@property (nonatomic, strong) BEMCheckBox *checkBox1;</span><br><span class="line">@property (nonatomic, strong) BEMCheckBox *checkBox2;</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line">  </span><br><span class="line">@implementation HQLInsurancePaymentViewController</span><br><span class="line"></span><br><span class="line">#pragma mark - Lifecycle</span><br><span class="line"></span><br><span class="line">- (void)viewDidLoad &#123;</span><br><span class="line">    [super viewDidLoad];</span><br><span class="line">    [self addSubviews];</span><br><span class="line">    [self setupBEMCheckBoxGroup];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">#pragma mark - Custom Accessors</span><br><span class="line"></span><br><span class="line">- (BEMCheckBox *)checkBox1 &#123;</span><br><span class="line">    if (!_checkBox1) &#123;</span><br><span class="line">        _checkBox1 &#x3D; [[BEMCheckBox alloc] initWithFrame:CGRectZero];</span><br><span class="line">        _checkBox1.onAnimationType &#x3D; BEMAnimationTypeBounce;</span><br><span class="line">        _checkBox1.offAnimationType &#x3D; BEMAnimationTypeBounce;</span><br><span class="line">        _checkBox1.animationDuration &#x3D; 0.3;</span><br><span class="line">        _checkBox1.delegate &#x3D; self;</span><br><span class="line">    &#125;</span><br><span class="line">    return _checkBox1;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (BEMCheckBox *)checkBox2 &#123;</span><br><span class="line">    if (!_checkBox2) &#123;</span><br><span class="line">        _checkBox2 &#x3D; [[BEMCheckBox alloc] initWithFrame:CGRectZero];</span><br><span class="line">        _checkBox2.onAnimationType &#x3D; BEMAnimationTypeBounce;</span><br><span class="line">        _checkBox2.offAnimationType &#x3D; BEMAnimationTypeBounce;</span><br><span class="line">        _checkBox1.animationDuration &#x3D; 0.3;</span><br><span class="line">        _checkBox2.delegate &#x3D; self;</span><br><span class="line">    &#125;</span><br><span class="line">    return _checkBox2;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">#pragma mark - Private</span><br><span class="line"></span><br><span class="line">- (void)addSubviews &#123;</span><br><span class="line">    self.view.backgroundColor &#x3D; [UIColor whiteColor];</span><br><span class="line">    [self.view addSubview:self.checkBox1];</span><br><span class="line">    [self.view addSubview:self.checkBox2];</span><br><span class="line">  </span><br><span class="line">    UILabel *title &#x3D; [[UILabel alloc] init];</span><br><span class="line">    title.text &#x3D; @&quot;1.请选择支付方式&quot;;</span><br><span class="line">    title.textColor &#x3D; HexColor(@&quot;#3E91FF&quot;);</span><br><span class="line">    title.font &#x3D; [UIFont systemFontOfSize:17 weight:UIFontWeightMedium];</span><br><span class="line">    [self.view addSubview:title];</span><br><span class="line">  </span><br><span class="line">    [self.checkBox1 mas_makeConstraints:^(MASConstraintMaker *make) &#123;</span><br><span class="line">        make.top.equalTo(title.mas_bottom).with.offset(padding);</span><br><span class="line">        make.left.equalTo(title.mas_left).with.offset(16);</span><br><span class="line">        make.size.mas_equalTo(CGSizeMake(21, 21));</span><br><span class="line">    &#125;];</span><br><span class="line">    [self.checkBox2 mas_makeConstraints:^(MASConstraintMaker *make) &#123;</span><br><span class="line">        make.top.equalTo(self.checkBox1.mas_bottom).with.offset(15);</span><br><span class="line">        make.left.equalTo(self.checkBox1);</span><br><span class="line">        make.size.mas_equalTo(CGSizeMake(21, 21));</span><br><span class="line">    &#125;];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)setupBEMCheckBoxGroup &#123;</span><br><span class="line">    NSArray *checkBoxArray &#x3D; @[self.checkBox1,self.checkBox2];</span><br><span class="line">    self.checkBoxGroup &#x3D; [BEMCheckBoxGroup groupWithCheckBoxes:checkBoxArray];</span><br><span class="line">    self.checkBoxGroup.selectedCheckBox &#x3D; self.checkBox1;</span><br><span class="line">    self.checkBoxGroup.mustHaveSelection &#x3D; YES;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">#pragma mark - BEMCheckBoxDelegate</span><br><span class="line"></span><br><span class="line">- (void)didTapCheckBox:(BEMCheckBox *)checkBox &#123;</span><br><span class="line">    [self.view endEditing:YES];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="http://upload-images.jianshu.io/upload_images/2648731-b2299796508dac39.gif?imageMogr2/auto-orient/strip" alt="示例三"></p>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>独木舟的木
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://andy0570.com/2017/04/11/BEMCheckBox%E2%80%94%E2%80%94%E9%AB%98%E9%9B%85%E7%9A%84iOS%E5%A4%8D%E9%80%89%E6%A1%86/" title="BEMCheckBox——高雅的iOS复选框">https://andy0570.com/2017/04/11/BEMCheckBox——高雅的iOS复选框/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <span class="exturl" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpo"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</span> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/iOS/" rel="tag"># iOS</a>
+              <a href="/tags/GitHub/" rel="tag"># GitHub</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2017/04/05/JVFloatLabeledTextField/" rel="prev" title="JVFloatLabeledTextField">
+      <i class="fa fa-chevron-left"></i> JVFloatLabeledTextField
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2017/04/17/iOS%20%E7%BC%96%E7%A8%8B%EF%BC%9AWKWebView/" rel="next" title="iOS 编程：WKWebView">
+      iOS 编程：WKWebView <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+        </div>
+        
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">独木舟的木</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">2.1m</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">31:21</span>
+</div>
+  <div class="powered-by">由 <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZw==">NexT.Gemini</span> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

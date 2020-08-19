@@ -1,23 +1,580 @@
-{% extends '_layout.swig' %}
-{% import '_macro/post.swig' as post_template %}
-{% import '_macro/sidebar.swig' as sidebar_template %}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.0.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+  <meta name="google-site-verification" content="wioXOS3Gv2wXUpJ3sLtfZ4ft6YJYKNLLWSw6QoZTFYM">
+  <meta name="msvalidate.01" content="C96491A81239C517A50597C54EE53CD1">
+  <meta name="baidu-site-verification" content="h8asiToN1b">
 
-{% block title %}{{ page.title }} | {{ title }}{% endblock %}
+<link rel="stylesheet" href="/css/main.css">
 
-{% block page_class %}page-post-detail{% endblock %}
 
-{% block content %}
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  
+  <link rel="stylesheet" href="/lib/animate-css/animate.min.css">
 
-  <div id="posts" class="posts-expand">
-    {{ post_template.render(page) }}
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"andy0570.com","root":"/","scheme":"Gemini","version":"8.0.0-rc.5","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":"mac","bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false};
+  </script>
+
+  <meta name="description" content="Foundation框架 框架是由许多类、方法、函数组成的一个类库。以便于开发者更方便的开发程序。 许多框架的集合构成了SDK（开发工具包）。 Foundation是OC语言的基础类库。此框架中的类都以 “NS” 为前缀,便于与其他类区分开。 UIKit框架是UI界面的基础库Foundation中的大部分类都提供了两种方式创建对象: alloc创建：NSNumber *number1 &#x3D; [[NS">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Objective-C_Foundation框架">
+<meta property="og:url" content="https://andy0570.com/2016/08/08/Objective-C_Foundation%E6%A1%86%E6%9E%B6/index.html">
+<meta property="og:site_name" content="独木舟的木">
+<meta property="og:description" content="Foundation框架 框架是由许多类、方法、函数组成的一个类库。以便于开发者更方便的开发程序。 许多框架的集合构成了SDK（开发工具包）。 Foundation是OC语言的基础类库。此框架中的类都以 “NS” 为前缀,便于与其他类区分开。 UIKit框架是UI界面的基础库Foundation中的大部分类都提供了两种方式创建对象: alloc创建：NSNumber *number1 &#x3D; [[NS">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2016-08-08T02:48:00.000Z">
+<meta property="article:modified_time" content="2019-05-01T15:26:27.000Z">
+<meta property="article:author" content="独木舟的木">
+<meta property="article:tag" content="iOS">
+<meta property="article:tag" content="Objective-C">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://andy0570.com/2016/08/08/Objective-C_Foundation%E6%A1%86%E6%9E%B6/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Objective-C_Foundation框架 | 独木舟的木</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="独木舟的木" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <main class="main">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+        <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
   </div>
 
-{% endblock %}
+  <div class="site-meta">
 
-{% block sidebar %}
-  {{ sidebar_template.render(true) }}
-{% endblock %}
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">独木舟的木</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">iOS Developer</p>
+  </div>
 
-{% block script_extra %}
-  {% include '_scripts/pages/post-details.swig' %}
-{% endblock %}
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">14</span></a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">36</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">310</span></a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <section class="post-toc-wrap sidebar-panel">
+          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Foundation%E6%A1%86%E6%9E%B6"><span class="nav-number">1.</span> <span class="nav-text">Foundation框架</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#NSObject%E7%B1%BB%E3%80%81%E5%BB%B6%E8%BF%9F%E8%B0%83%E7%94%A8"><span class="nav-number">2.</span> <span class="nav-text">NSObject类、延迟调用</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B8%B8%E7%94%A8%E6%96%B9%E6%B3%95"><span class="nav-number">2.1.</span> <span class="nav-text">常用方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#NSString"><span class="nav-number">2.2.</span> <span class="nav-text">NSString</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#NSMutableString"><span class="nav-number">2.3.</span> <span class="nav-text">NSMutableString</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#NSArray"><span class="nav-number">2.4.</span> <span class="nav-text">NSArray</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#NSMutableArray"><span class="nav-number">2.5.</span> <span class="nav-text">NSMutableArray</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Collection-%E7%B1%BB"><span class="nav-number">2.6.</span> <span class="nav-text">Collection 类</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#NSNumber"><span class="nav-number">2.7.</span> <span class="nav-text">NSNumber</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#NSValue"><span class="nav-number">2.8.</span> <span class="nav-text">NSValue</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#NSNull"><span class="nav-number">2.9.</span> <span class="nav-text">NSNull</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%BA%BF%E4%B8%8A%E7%9A%84%E4%B8%80%E4%B8%AA%E5%AE%9E%E9%99%85%E4%BE%8B%E5%AD%90%EF%BC%9A"><span class="nav-number">2.9.1.</span> <span class="nav-text">线上的一个实际例子：</span></a></li></ol></li></ol></li></ol></div>
+      </section>
+      <!--/noindex-->
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="独木舟的木"
+      src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+  <p class="site-author-name" itemprop="name">独木舟的木</p>
+  <div class="site-description" itemprop="description">生若直木，不语斧凿。</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">310</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">36</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL0FuZHkwNTcw" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Andy0570"><i class="fab fa-github fa-fw"></i>GitHub</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9zdGFja292ZXJmbG93LmNvbS91c2Vycy83MjY1NDAwL2FuZHkwNTcw" title="StackOverflow → https:&#x2F;&#x2F;stackoverflow.com&#x2F;users&#x2F;7265400&#x2F;andy0570"><i class="fab fa-stack-overflow fa-fw"></i>StackOverflow</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuamlhbnNodS5jb20vdS84NGM1ZmFkYzdjMTg=" title="简书 → https:&#x2F;&#x2F;www.jianshu.com&#x2F;u&#x2F;84c5fadc7c18"><i class="heartbeat fa-fw"></i>简书</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="bWFpbHRvOmFuZHl3aG1AMTYzLmNvbQ==" title="E-Mail → mailto:andywhm@163.com"><i class="fa fa-envelope fa-fw"></i>E-Mail</span>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <span class="exturl cc-opacity" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpo"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></span>
+  </div>
+
+
+
+      </section>
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </header>
+
+      
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div id="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+      <div class="main-inner">
+        
+
+        <div class="content post posts-expand">
+          
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://andy0570.com/2016/08/08/Objective-C_Foundation%E6%A1%86%E6%9E%B6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+      <meta itemprop="name" content="独木舟的木">
+      <meta itemprop="description" content="生若直木，不语斧凿。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="独木舟的木">
+    </span>
+
+    
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Objective-C_Foundation框架
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2016-08-08 10:48:00" itemprop="dateCreated datePublished" datetime="2016-08-08T10:48:00+08:00">2016-08-08</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-05-01 23:26:27" itemprop="dateModified" datetime="2019-05-01T23:26:27+08:00">2019-05-01</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Objective-C-%E7%BC%96%E7%A8%8B/" itemprop="url" rel="index"><span itemprop="name">Objective-C 编程</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>2.5k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>2 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h3 id="Foundation框架"><a href="#Foundation框架" class="headerlink" title="Foundation框架"></a>Foundation框架</h3><ul>
+<li><strong>框架</strong>是由许多类、方法、函数组成的一个类库。以便于开发者更方便的开发程序。</li>
+<li>许多框架的集合构成了<strong>SDK（开发工具包）</strong>。</li>
+<li><strong>Foundation</strong>是OC语言的基础类库。此框架中的类都以 “NS” 为前缀,便于与其他类区分开。</li>
+<li><strong>UIKit框架</strong>是UI界面的基础库<br>Foundation中的大部分类都提供了两种方式创建对象:<ul>
+<li>alloc创建：<code>NSNumber *number1 = [[NSNumber alloc] initWithInt:100];</code></li>
+<li>类方法创建：<code>NSNumber *number2 = [NSNumber numberWithInt:100];</code> </li>
+</ul>
+</li>
+</ul>
+<a id="more"></a>
+
+<h3 id="NSObject类、延迟调用"><a href="#NSObject类、延迟调用" class="headerlink" title="NSObject类、延迟调用"></a>NSObject类、延迟调用</h3><p><strong>NSObject</strong>类是一切类的根类(基类),它是没有父类,它是所有对象的“生命”方法,也是了对象生终的“终结”。</p>
+<h4 id="常用方法"><a href="#常用方法" class="headerlink" title="常用方法"></a>常用方法</h4><ul>
+<li><p>比较两个指针是否指向同一个对象(指针是否指向同一个内存区域)<br>  <code>- (BOOL)isEqual:(id)object;</code></p>
+</li>
+<li><p>调用一个方法<br>  <code>- (id)performSelector:(SEL)aSelector; </code></p>
+</li>
+<li><p>调用一个方法,并且传递一个参数<br>  <code>- (id)performSelector:(SEL)aSelector withObject:(id)object;</code></p>
+</li>
+<li><p>调用一个方法,并且传递2个参数<br>  <code>- (id)performSelector:(SEL)aSelector withObject:(id)object1 withObject:(id)object2;</code></p>
+</li>
+<li><p>某一个对象是否派生或属于某一类<br>  <code>- (BOOL)isKindOfClass:(Class)aClass;</code></p>
+</li>
+<li><p>某一个对象是否属于某类<br>  <code>- (BOOL)isMemberOfClass:(Class)aClass;</code></p>
+</li>
+<li><p>某对象是否响应指定的方法<br>  <code>- (BOOL)respondsToSelector:(SEL)aSelector;</code></p>
+</li>
+<li><p>返回指定对象的父类和本类<br>  <code>- (Class)superclass;  - (Class)class;</code></p>
+<p>  例：假设 demo1 是一个私有方法（在 .m 文件中实现，但在 .h 文件中没有声明的方法）</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">    &#x2F;&#x2F;创建了一个方法选择器，封装demo1方法   </span><br><span class="line">    SEL selector1 &#x3D; @selector(demo1);</span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F;在performSelector方法中调用selector1方法选择器，也就是demo1</span><br><span class="line">   [super performSelector:selector1];</span><br><span class="line">    [self performSelector:selector1];  &#x2F;&#x2F;同上</span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F;perform调用带1个参数的方法，@&quot;hello&quot;传给了demo2:的形参</span><br><span class="line">    [self performSelector:@selector(demo2:)</span><br><span class="line">               withObject:@&quot;hello&quot;];</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F;调用带2个参数的方法</span><br><span class="line">    [self performSelector:(SEL)</span><br><span class="line">                  withObject:(id)</span><br><span class="line">                   withObject:(id)];</span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F;延迟调用</span><br><span class="line">    [self demo1];  &#x2F;&#x2F;没有延迟，立马调用demo1方法</span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F;延迟调用demo1，但是代码执行到此处时，不会停在此处3秒钟</span><br><span class="line">    [self performSelector:@selector(demo1) withObject:nil afterDelay:3.0];</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<pre><code>//让程序保持运行状态
+[[NSRunLoop currentRunLoop] run];</code></pre>
+<hr>
+<h4 id="NSString"><a href="#NSString" class="headerlink" title="NSString"></a>NSString</h4><ul>
+<li><span class="exturl" data-url="aHR0cDovL3d3dy5qaWFuc2h1LmNvbS9wL2M0ZWFkZjU0Y2QyNQ==">第16章——NSString<i class="fa fa-external-link-alt"></i></span></li>
+</ul>
+<hr>
+<h4 id="NSMutableString"><a href="#NSMutableString" class="headerlink" title="NSMutableString"></a>NSMutableString</h4><ul>
+<li><span class="exturl" data-url="aHR0cDovL3d3dy5qaWFuc2h1LmNvbS9wL2I2MjhjNDhiZTU0Mg==">第16章——NSMutableString<i class="fa fa-external-link-alt"></i></span></li>
+</ul>
+<hr>
+<h4 id="NSArray"><a href="#NSArray" class="headerlink" title="NSArray"></a>NSArray</h4><ul>
+<li><span class="exturl" data-url="aHR0cDovL3d3dy5qaWFuc2h1LmNvbS9wL2FhYTg5ZTA3MGY4NA==">第17章——NSArray<i class="fa fa-external-link-alt"></i></span></li>
+</ul>
+<hr>
+<h4 id="NSMutableArray"><a href="#NSMutableArray" class="headerlink" title="NSMutableArray"></a>NSMutableArray</h4><ul>
+<li><span class="exturl" data-url="aHR0cDovL3d3dy5qaWFuc2h1LmNvbS9wLzY0NDQzYWVjYzRkZA==">第17章——NSMutableArray<i class="fa fa-external-link-alt"></i></span></li>
+</ul>
+<hr>
+<h4 id="Collection-类"><a href="#Collection-类" class="headerlink" title="Collection 类"></a>Collection 类</h4><ul>
+<li><span class="exturl" data-url="aHR0cDovL3d3dy5qaWFuc2h1LmNvbS9wL2Q4NGQ1NzBmZTZhOQ==">第24章——Collection 类<i class="fa fa-external-link-alt"></i></span></li>
+</ul>
+<hr>
+<h4 id="NSNumber"><a href="#NSNumber" class="headerlink" title="NSNumber"></a>NSNumber</h4><ul>
+<li><span class="exturl" data-url="aHR0cDovL3d3dy5qaWFuc2h1LmNvbS9wLzZmYTA5MjZkZDQ3OA==">NSNumber<i class="fa fa-external-link-alt"></i></span></li>
+</ul>
+<hr>
+<h4 id="NSValue"><a href="#NSValue" class="headerlink" title="NSValue"></a>NSValue</h4><ul>
+<li><span class="exturl" data-url="aHR0cDovL3d3dy5qaWFuc2h1LmNvbS9wLzkyODUwMmFiYTM3YQ==">NSValue<i class="fa fa-external-link-alt"></i></span></li>
+</ul>
+<hr>
+<h4 id="NSNull"><a href="#NSNull" class="headerlink" title="NSNull"></a>NSNull</h4><p>我们之前提到,不能在集合(collection) 中存储nil值,因为字典和数组中nil都有特殊的含义,但有时候你确实需要存储一个表示“什么都没有”的值。那就用 <strong>NSNull</strong> 代替,表示什么都不是,什么都没有。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; [zhangsan,lisi,  ,zhaoliu];</span><br><span class="line">NSNull *null &#x3D; [NSNull null];</span><br><span class="line">NSArray *array &#x3D; @[@&quot;zhagnsan&quot;,@&quot;lisi&quot;,null,@&quot;zhaoliu&quot;];</span><br></pre></td></tr></table></figure>
+
+<h5 id="线上的一个实际例子："><a href="#线上的一个实际例子：" class="headerlink" title="线上的一个实际例子："></a>线上的一个实际例子：</h5><p>本意：如果用户已经成功登录，就获取存储在磁盘上的用户名：<br> <code>NSDictionary *dictionary = @&#123;@&quot;username&quot;:_username&#125;;</code><br>实际生产环境中，发生了这样的情况：判断用户已经登录成功，但是无法获取用户名导致应用crash。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">attachDatas:</span><br><span class="line">Exception:&#123;</span><br><span class="line">    Name &#x3D; NSInvalidArgumentException;</span><br><span class="line">    Reason &#x3D; &quot;*** -[__NSPlaceholderDictionary initWithObjects:forKeys:count:]: attempt to insert nil object from objects[0]&quot;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>最初的修复方法是，判断为nil,就传入一个空字符串： @””：<br><code>NSDictionary *dictionary = @&#123;@&quot;username&quot;:_username?:@&quot;&quot;&#125;;</code><br>规范的方法是传入一个空对象：<br> <code>NSDictionary *dictionary = @&#123;@&quot;username&quot;:_username?:[NSNull null]&#125;;</code><br>参考：<span class="exturl" data-url="aHR0cDovL25zaGlwc3Rlci5jbi9uaWwv">nshipster: nil / Nil / NULL / NSNull<i class="fa fa-external-link-alt"></i></span></p>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>独木舟的木
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://andy0570.com/2016/08/08/Objective-C_Foundation%E6%A1%86%E6%9E%B6/" title="Objective-C_Foundation框架">https://andy0570.com/2016/08/08/Objective-C_Foundation框架/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <span class="exturl" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpo"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</span> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/iOS/" rel="tag"># iOS</a>
+              <a href="/tags/Objective-C/" rel="tag"># Objective-C</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2016/08/08/Objective-C_KVO%E3%80%81KVC/" rel="prev" title="Objective-C_KVO、KVC">
+      <i class="fa fa-chevron-left"></i> Objective-C_KVO、KVC
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2016/08/18/%E3%80%8AiOS%E7%BC%96%E7%A8%8B%EF%BC%88%E7%AC%AC%E5%9B%9B%E7%89%88%EF%BC%89%E3%80%8BDemo1%EF%BC%9AQuiz/" rel="next" title="《iOS编程（第四版）》Demo1：Quiz">
+      《iOS编程（第四版）》Demo1：Quiz <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+        </div>
+        
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">独木舟的木</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">2.1m</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">31:21</span>
+</div>
+  <div class="powered-by">由 <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZw==">NexT.Gemini</span> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

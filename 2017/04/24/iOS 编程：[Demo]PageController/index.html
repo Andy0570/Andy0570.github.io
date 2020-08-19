@@ -1,23 +1,556 @@
-{% extends '_layout.swig' %}
-{% import '_macro/post.swig' as post_template %}
-{% import '_macro/sidebar.swig' as sidebar_template %}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.0.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+  <meta name="google-site-verification" content="wioXOS3Gv2wXUpJ3sLtfZ4ft6YJYKNLLWSw6QoZTFYM">
+  <meta name="msvalidate.01" content="C96491A81239C517A50597C54EE53CD1">
+  <meta name="baidu-site-verification" content="h8asiToN1b">
 
-{% block title %}{{ page.title }} | {{ title }}{% endblock %}
+<link rel="stylesheet" href="/css/main.css">
 
-{% block page_class %}page-post-detail{% endblock %}
 
-{% block content %}
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  
+  <link rel="stylesheet" href="/lib/animate-css/animate.min.css">
 
-  <div id="posts" class="posts-expand">
-    {{ post_template.render(page) }}
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"andy0570.com","root":"/","scheme":"Gemini","version":"8.0.0-rc.5","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":"mac","bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false};
+  </script>
+
+  <meta name="description" content="目录结构  PageControllerViewController  PageControllerViewController 的父类是 UIViewController，它是一个容器视图控制器，用于处理两个子视图之间的切换  FirstSubViewController FirstSubViewController 的父类也是 UIViewController，褐色子视图。  SecondSu">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS 编程：[Demo]PageController">
+<meta property="og:url" content="https://andy0570.com/2017/04/24/iOS%20%E7%BC%96%E7%A8%8B%EF%BC%9A[Demo]PageController/index.html">
+<meta property="og:site_name" content="独木舟的木">
+<meta property="og:description" content="目录结构  PageControllerViewController  PageControllerViewController 的父类是 UIViewController，它是一个容器视图控制器，用于处理两个子视图之间的切换  FirstSubViewController FirstSubViewController 的父类也是 UIViewController，褐色子视图。  SecondSu">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/073020.jpg">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/073021.jpg">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/073022.gif">
+<meta property="article:published_time" content="2017-04-24T06:49:00.000Z">
+<meta property="article:modified_time" content="2019-05-01T13:36:28.000Z">
+<meta property="article:author" content="独木舟的木">
+<meta property="article:tag" content="iOS">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/073020.jpg">
+
+<link rel="canonical" href="https://andy0570.com/2017/04/24/iOS%20%E7%BC%96%E7%A8%8B%EF%BC%9A[Demo]PageController/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>iOS 编程：[Demo]PageController | 独木舟的木</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="独木舟的木" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <main class="main">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+        <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
   </div>
 
-{% endblock %}
+  <div class="site-meta">
 
-{% block sidebar %}
-  {{ sidebar_template.render(true) }}
-{% endblock %}
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">独木舟的木</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">iOS Developer</p>
+  </div>
 
-{% block script_extra %}
-  {% include '_scripts/pages/post-details.swig' %}
-{% endblock %}
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">14</span></a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">36</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">310</span></a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <section class="post-toc-wrap sidebar-panel">
+          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%9B%AE%E5%BD%95%E7%BB%93%E6%9E%84"><span class="nav-number">1.</span> <span class="nav-text">目录结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%84%E6%A8%A1%E5%9D%97%E4%BB%A3%E7%A0%81%EF%BC%9A"><span class="nav-number">2.</span> <span class="nav-text">各模块代码：</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%A4%E4%B8%AA%E5%AD%90%E8%A7%86%E5%9B%BE%E5%8F%AA%E6%98%AF%E7%AE%80%E5%8D%95%E5%9C%B0%E8%AE%BE%E7%BD%AE%E4%BA%86%E4%B8%80%E4%B8%8B%E8%83%8C%E6%99%AF%E9%A2%9C%E8%89%B2%E6%96%B9%E4%BE%BF%E8%AF%86%E5%88%AB"><span class="nav-number">2.1.</span> <span class="nav-text">两个子视图只是简单地设置了一下背景颜色方便识别</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#AppDelegate-%E4%B8%AD%E8%AE%BE%E7%BD%AE%E4%BA%86%E7%A8%8B%E5%BA%8F%E7%9A%84%E5%85%A5%E5%8F%A3"><span class="nav-number">2.2.</span> <span class="nav-text">AppDelegate 中设置了程序的入口</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#PageControllerViewController"><span class="nav-number">3.</span> <span class="nav-text">PageControllerViewController</span></a></li></ol></div>
+      </section>
+      <!--/noindex-->
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="独木舟的木"
+      src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+  <p class="site-author-name" itemprop="name">独木舟的木</p>
+  <div class="site-description" itemprop="description">生若直木，不语斧凿。</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">310</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">36</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL0FuZHkwNTcw" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Andy0570"><i class="fab fa-github fa-fw"></i>GitHub</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9zdGFja292ZXJmbG93LmNvbS91c2Vycy83MjY1NDAwL2FuZHkwNTcw" title="StackOverflow → https:&#x2F;&#x2F;stackoverflow.com&#x2F;users&#x2F;7265400&#x2F;andy0570"><i class="fab fa-stack-overflow fa-fw"></i>StackOverflow</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuamlhbnNodS5jb20vdS84NGM1ZmFkYzdjMTg=" title="简书 → https:&#x2F;&#x2F;www.jianshu.com&#x2F;u&#x2F;84c5fadc7c18"><i class="heartbeat fa-fw"></i>简书</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="bWFpbHRvOmFuZHl3aG1AMTYzLmNvbQ==" title="E-Mail → mailto:andywhm@163.com"><i class="fa fa-envelope fa-fw"></i>E-Mail</span>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <span class="exturl cc-opacity" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpo"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></span>
+  </div>
+
+
+
+      </section>
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </header>
+
+      
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div id="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+      <div class="main-inner">
+        
+
+        <div class="content post posts-expand">
+          
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://andy0570.com/2017/04/24/iOS%20%E7%BC%96%E7%A8%8B%EF%BC%9A[Demo]PageController/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+      <meta itemprop="name" content="独木舟的木">
+      <meta itemprop="description" content="生若直木，不语斧凿。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="独木舟的木">
+    </span>
+
+    
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          iOS 编程：[Demo]PageController
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2017-04-24 14:49:00" itemprop="dateCreated datePublished" datetime="2017-04-24T14:49:00+08:00">2017-04-24</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-05-01 21:36:28" itemprop="dateModified" datetime="2019-05-01T21:36:28+08:00">2019-05-01</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS/" itemprop="url" rel="index"><span itemprop="name">iOS</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>6.6k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>6 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h3 id="目录结构"><a href="#目录结构" class="headerlink" title="目录结构"></a>目录结构</h3><p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/073020.jpg"></p>
+<ul>
+<li><p><strong>PageControllerViewController</strong> </p>
+<p><strong>PageControllerViewController</strong> 的父类是 <strong>UIViewController</strong>，它是一个容器视图控制器，用于处理两个子视图之间的切换</p>
+</li>
+<li><p><strong>FirstSubViewController</strong></p>
+<p><strong>FirstSubViewController</strong> 的父类也是 <strong>UIViewController</strong>，褐色子视图。</p>
+</li>
+<li><p><strong>SecondSubViewController</strong></p>
+<p><strong>SecondSubViewController</strong> 的父类也是 <strong>UIViewController</strong>，紫色子视图。</p>
+</li>
+</ul>
+<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/073021.jpg"></p>
+<a id="more"></a>
+
+<h3 id="各模块代码："><a href="#各模块代码：" class="headerlink" title="各模块代码："></a>各模块代码：</h3><h4 id="两个子视图只是简单地设置了一下背景颜色方便识别"><a href="#两个子视图只是简单地设置了一下背景颜色方便识别" class="headerlink" title="两个子视图只是简单地设置了一下背景颜色方便识别"></a>两个子视图只是简单地设置了一下背景颜色方便识别</h4><ul>
+<li><p>FirstSubViewController.m 文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">#import &quot;FirstSubViewController.h&quot;</span><br><span class="line"></span><br><span class="line">@interface FirstSubViewController ()</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">@implementation FirstSubViewController</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 设置视图的背景颜色为褐色</span><br><span class="line">- (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil &#123;</span><br><span class="line">    self &#x3D; [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];</span><br><span class="line">    if (self) &#123;</span><br><span class="line">        self.view.backgroundColor &#x3D; [UIColor brownColor];</span><br><span class="line">    &#125;</span><br><span class="line">    return self;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>SecondSubViewController.m</strong> 文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">#import &quot;SecondSubViewController.h&quot;</span><br><span class="line"></span><br><span class="line">@interface SecondSubViewController ()</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">@implementation SecondSubViewController</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 设置视图的背景颜色为紫色</span><br><span class="line">- (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil &#123;</span><br><span class="line">    self &#x3D; [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];</span><br><span class="line">    if (self) &#123;</span><br><span class="line">        self.view.backgroundColor &#x3D; [UIColor purpleColor];</span><br><span class="line">    &#125;</span><br><span class="line">    return self;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+
+
+
+</li>
+</ul>
+<h4 id="AppDelegate-中设置了程序的入口"><a href="#AppDelegate-中设置了程序的入口" class="headerlink" title="AppDelegate 中设置了程序的入口"></a>AppDelegate 中设置了程序的入口</h4><ul>
+<li>AppDelegate.m 文件</li>
+</ul>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">#import &quot;AppDelegate.h&quot;</span><br><span class="line">#import &quot;PageControllerViewController.h&quot;</span><br><span class="line">#import &quot;FirstSubViewController.h&quot;</span><br><span class="line"></span><br><span class="line">@interface AppDelegate ()</span><br><span class="line"></span><br><span class="line">@property (nonatomic, strong) PageControllerViewController *viewController;</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">@implementation AppDelegate</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions &#123;</span><br><span class="line">    </span><br><span class="line">    self.window &#x3D; [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];</span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F; 创建程序的入口</span><br><span class="line">    self.viewController &#x3D; [[PageControllerViewController alloc] initWithNibName:NSStringFromClass([PageControllerViewController class]) bundle:nil];</span><br><span class="line">    self.window.rootViewController &#x3D; _viewController;</span><br><span class="line">    </span><br><span class="line">    self.window.backgroundColor &#x3D; [UIColor whiteColor];</span><br><span class="line">    [self.window makeKeyAndVisible];</span><br><span class="line">    </span><br><span class="line">    return YES;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="PageControllerViewController"><a href="#PageControllerViewController" class="headerlink" title="PageControllerViewController"></a>PageControllerViewController</h3><p>重点在这里</p>
+<ul>
+<li><p>PageControllerViewController.h 文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">#import &lt;UIKit&#x2F;UIKit.h&gt;</span><br><span class="line">#import &quot;FirstSubViewController.h&quot;</span><br><span class="line">#import &quot;SecondSubViewController.h&quot;</span><br><span class="line"></span><br><span class="line">@interface PageControllerViewController : UIViewController &lt;UIScrollViewDelegate&gt;</span><br><span class="line"></span><br><span class="line">@property (nonatomic) FirstSubViewController *firstSubViewController;</span><br><span class="line">@property (nonatomic) SecondSubViewController *secondSubViewController;</span><br><span class="line"></span><br><span class="line">&#x2F;**</span><br><span class="line"> 控制翻页的属性，使用它来控制滚动视图的翻页。通过该组件中的小白点，来观察当前页面的位置</span><br><span class="line"> *&#x2F;</span><br><span class="line">@property (nonatomic) UIPageControl *uiPageController;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 滚动视图属性</span><br><span class="line">@property (nonatomic) UIScrollView *uiscrollerView;</span><br><span class="line"></span><br><span class="line">&#x2F;**</span><br><span class="line"> 状态属性,用来标志页面拖动状态。</span><br><span class="line"> *&#x2F;</span><br><span class="line">@property (nonatomic) BOOL isPageControlUsed;</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>PageControllerViewController.m 文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br></pre></td><td class="code"><pre><span class="line">#import &quot;PageControllerViewController.h&quot;</span><br><span class="line"></span><br><span class="line">@interface PageControllerViewController ()</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">@implementation PageControllerViewController</span><br><span class="line"></span><br><span class="line">- (void)viewDidLoad &#123;</span><br><span class="line">    [super viewDidLoad];</span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F; 首先获取当前屏幕的尺寸</span><br><span class="line">    CGRect screenFrame &#x3D; [[UIScreen mainScreen] bounds];</span><br><span class="line">    &#x2F;&#x2F; 然后获得屏幕尺寸的宽度</span><br><span class="line">    int screenWidth &#x3D; screenFrame.size.width;</span><br><span class="line">    &#x2F;&#x2F; 再获得屏幕尺寸的高度值，并加上顶部状态栏高度</span><br><span class="line">    int screenHeight &#x3D; screenFrame.size.height + 20;</span><br><span class="line">    &#x2F;&#x2F; 创建一个区域，来显示之前创建的视图控制器</span><br><span class="line">    screenFrame &#x3D; CGRectMake(0, 0, screenWidth, screenHeight);</span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F; 初始换滚动视图对象，并设置滚动视图的尺寸信息</span><br><span class="line">    _uiscrollerView &#x3D; [[UIScrollView alloc] initWithFrame:screenFrame];</span><br><span class="line">    &#x2F;&#x2F; 设置滚动视图为分页模式，即每滚动一次就是一页</span><br><span class="line">    _uiscrollerView.pagingEnabled &#x3D; YES;</span><br><span class="line">    &#x2F;&#x2F; 我们有两个页面，所以将滚动视图的“取景范围”的宽度，设置为两倍页面宽度</span><br><span class="line">    _uiscrollerView.contentSize &#x3D; CGSizeMake(screenWidth * 2, screenHeight);</span><br><span class="line">    &#x2F;&#x2F; 设置滚动视图的背景色为黑色</span><br><span class="line">    _uiscrollerView.backgroundColor &#x3D; [UIColor blackColor];</span><br><span class="line">    &#x2F;&#x2F; 设置滚动视图对象的代理为当前类，这样就可以在当前文件中，编写代理方法，以捕捉滚动视图的相关动作</span><br><span class="line">    _uiscrollerView.delegate &#x3D; self;</span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F; 接着创建一个区域，显示页面控制器对象</span><br><span class="line">    int pcHeight &#x3D; 50;</span><br><span class="line">    &#x2F;&#x2F; 设置页面控制器对象的显示区域</span><br><span class="line">    CGRect rect &#x3D; CGRectMake(0, screenHeight - pcHeight, screenWidth, pcHeight);</span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F; 初始化页面控制器对象</span><br><span class="line">    _uiPageController &#x3D; [[UIPageControl alloc] initWithFrame:rect];</span><br><span class="line">    &#x2F;&#x2F; 设置总页数</span><br><span class="line">    _uiPageController.numberOfPages &#x3D; 2;</span><br><span class="line">    &#x2F;&#x2F; 设置当前页编号</span><br><span class="line">    _uiPageController.currentPage &#x3D; 0;</span><br><span class="line">    &#x2F;&#x2F; 设置页面控制器对象的背景颜色为灰色</span><br><span class="line">    _uiPageController.backgroundColor &#x3D; [UIColor grayColor];</span><br><span class="line">    &#x2F;&#x2F; 给页面控制器对象，添加监听页面切换事件的方法</span><br><span class="line">    [_uiPageController addTarget:self</span><br><span class="line">                          action:@selector(pageControlDidChanged:)</span><br><span class="line">                forControlEvents:UIControlEventValueChanged];</span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F; 创建第一个视图控制器对象的实例</span><br><span class="line">    _firstSubViewController &#x3D; [[FirstSubViewController alloc] initWithNibName:NSStringFromClass([FirstSubViewController class]) bundle:nil];</span><br><span class="line">    &#x2F;&#x2F; 设置坐标原点的纵向值为0</span><br><span class="line">    screenFrame.origin.y &#x3D; 0;</span><br><span class="line">    &#x2F;&#x2F; 设置第一个视图控制器对象的显示区域</span><br><span class="line">    _firstSubViewController.view.frame &#x3D; screenFrame;</span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F; 创建第二个视图控制器对象的实例</span><br><span class="line">    _secondSubViewController &#x3D; [[SecondSubViewController alloc] initWithNibName:NSStringFromClass([SecondSubViewController class]) bundle:nil];</span><br><span class="line">    &#x2F;&#x2F; 设置坐标原点的X值为屏幕宽度，即第二个视图控制器对象显示在屏幕之外</span><br><span class="line">    screenFrame.origin.x &#x3D; screenFrame.size.width;</span><br><span class="line">    &#x2F;&#x2F; 设置第二个视图控制器对象的显示区域</span><br><span class="line">    _secondSubViewController.view.frame &#x3D; screenFrame;</span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F; 将两个视图添加到滚动视图对象里</span><br><span class="line">    [_uiscrollerView addSubview:_firstSubViewController.view];</span><br><span class="line">    [_uiscrollerView addSubview:_secondSubViewController.view];</span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F; 再把滚动视图对象和页面控制器对象，添加到当前窗口的根视图里</span><br><span class="line">    [self.view insertSubview:_uiscrollerView atIndex:0];</span><br><span class="line">    [self.view insertSubview:_uiPageController atIndex:1];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 创建监听页面切换事件的方法</span><br><span class="line">- (void)pageControlDidChanged:(id)sender &#123;</span><br><span class="line">    &#x2F;&#x2F; 获得当前页面控制器对象的显示页码</span><br><span class="line">    NSInteger currentPage &#x3D; _uiPageController.currentPage;</span><br><span class="line">    &#x2F;&#x2F; 获得滚动视图当前显示区域</span><br><span class="line">    CGRect frame &#x3D; _uiscrollerView.frame;</span><br><span class="line">    &#x2F;&#x2F; 根据页面控制器对象的当前页码，计算滚动视图在下一页的显示区域</span><br><span class="line">    frame.origin.x &#x3D; frame.size.width * currentPage;</span><br><span class="line">    frame.origin.y &#x3D; 0;</span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F; 滚动视图到目标位置</span><br><span class="line">    [_uiscrollerView scrollRectToVisible:frame animated:YES];</span><br><span class="line">    &#x2F;&#x2F; 设置通过页面控制器对象切换页面</span><br><span class="line">    _isPageControlUsed &#x3D; YES;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 创建监听滚动视图的滚动事件的代理方法</span><br><span class="line">- (void)scrollViewDidScroll:(UIScrollView *)scrollView &#123;</span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F; 如果是通过【页面控制器对象切换】，则不执行后面的代码</span><br><span class="line">    if (_isPageControlUsed) &#123;</span><br><span class="line">        return;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F; 如果是【手指滑动切换】，要同步当前视图所对应的页面控制器页码值</span><br><span class="line">    &#x2F;&#x2F; 获得滚动视图的宽度值</span><br><span class="line">    CGFloat pageWidth &#x3D; _uiscrollerView.frame.size.width;</span><br><span class="line">    &#x2F;&#x2F; 根据滚动视图的宽度值和横向位移量，计算当前页码</span><br><span class="line">    int page &#x3D; floor((_uiscrollerView.contentOffset.x - pageWidth&#x2F;2) &#x2F; pageWidth) + 1;</span><br><span class="line">    &#x2F;&#x2F; 设置页面控制器的显示页码，为通过计算所得的页码</span><br><span class="line">    _uiPageController.currentPage &#x3D; page;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 创建监听滚动视图的滚动减速事件的代理方法。</span><br><span class="line">- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView &#123;</span><br><span class="line">    &#x2F;&#x2F; 重置标识变量的默认值</span><br><span class="line">    _isPageControlUsed &#x3D; NO;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+
+<p>Demo:</p>
+<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/073022.gif"></p>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>独木舟的木
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://andy0570.com/2017/04/24/iOS%20%E7%BC%96%E7%A8%8B%EF%BC%9A[Demo]PageController/" title="iOS 编程：[Demo]PageController">https://andy0570.com/2017/04/24/iOS 编程：[Demo]PageController/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <span class="exturl" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpo"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</span> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/iOS/" rel="tag"># iOS</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2017/04/24/XcodeSourceEditorExtension-Alignment%E2%80%94%E2%80%94Xcode-%E5%AF%B9%E9%BD%90%E6%8F%92%E4%BB%B6/" rel="prev" title="XcodeSourceEditorExtension-Alignment——Xcode 对齐插件">
+      <i class="fa fa-chevron-left"></i> XcodeSourceEditorExtension-Alignment——Xcode 对齐插件
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2017/04/25/PageMenu%E2%80%94%E2%80%94%E7%81%B5%E6%B4%BB%E5%8F%AF%E5%AE%9A%E5%88%B6%E7%9A%84%E5%88%86%E9%A1%B5%E8%8F%9C%E5%8D%95%E6%8E%A7%E5%88%B6%E5%99%A8/" rel="next" title="PageMenu——灵活可定制的分页菜单控制器">
+      PageMenu——灵活可定制的分页菜单控制器 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+        </div>
+        
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">独木舟的木</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">2.1m</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">31:21</span>
+</div>
+  <div class="powered-by">由 <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZw==">NexT.Gemini</span> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

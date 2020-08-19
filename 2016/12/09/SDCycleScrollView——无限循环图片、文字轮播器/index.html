@@ -1,23 +1,520 @@
-{% extends '_layout.swig' %}
-{% import '_macro/post.swig' as post_template %}
-{% import '_macro/sidebar.swig' as sidebar_template %}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.0.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+  <meta name="google-site-verification" content="wioXOS3Gv2wXUpJ3sLtfZ4ft6YJYKNLLWSw6QoZTFYM">
+  <meta name="msvalidate.01" content="C96491A81239C517A50597C54EE53CD1">
+  <meta name="baidu-site-verification" content="h8asiToN1b">
 
-{% block title %}{{ page.title }} | {{ title }}{% endblock %}
+<link rel="stylesheet" href="/css/main.css">
 
-{% block page_class %}page-post-detail{% endblock %}
 
-{% block content %}
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  
+  <link rel="stylesheet" href="/lib/animate-css/animate.min.css">
 
-  <div id="posts" class="posts-expand">
-    {{ post_template.render(page) }}
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"andy0570.com","root":"/","scheme":"Gemini","version":"8.0.0-rc.5","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":"mac","bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false};
+  </script>
+
+  <meta name="description" content="GitHub源码：SDCycleScrollView star：4100+                               ⭐️⭐️⭐️  以下内容来源于官方源码、 README 文档、测试 Demo或个人使用总结 ！">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SDCycleScrollView——无限循环图片、文字轮播器">
+<meta property="og:url" content="https://andy0570.com/2016/12/09/SDCycleScrollView%E2%80%94%E2%80%94%E6%97%A0%E9%99%90%E5%BE%AA%E7%8E%AF%E5%9B%BE%E7%89%87%E3%80%81%E6%96%87%E5%AD%97%E8%BD%AE%E6%92%AD%E5%99%A8/index.html">
+<meta property="og:site_name" content="独木舟的木">
+<meta property="og:description" content="GitHub源码：SDCycleScrollView star：4100+                               ⭐️⭐️⭐️  以下内容来源于官方源码、 README 文档、测试 Demo或个人使用总结 ！">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2016-12-09T01:10:00.000Z">
+<meta property="article:modified_time" content="2019-05-01T15:27:23.000Z">
+<meta property="article:author" content="独木舟的木">
+<meta property="article:tag" content="iOS">
+<meta property="article:tag" content="GitHub">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://andy0570.com/2016/12/09/SDCycleScrollView%E2%80%94%E2%80%94%E6%97%A0%E9%99%90%E5%BE%AA%E7%8E%AF%E5%9B%BE%E7%89%87%E3%80%81%E6%96%87%E5%AD%97%E8%BD%AE%E6%92%AD%E5%99%A8/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>SDCycleScrollView——无限循环图片、文字轮播器 | 独木舟的木</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="独木舟的木" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <main class="main">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+        <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
   </div>
 
-{% endblock %}
+  <div class="site-meta">
 
-{% block sidebar %}
-  {{ sidebar_template.render(true) }}
-{% endblock %}
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">独木舟的木</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">iOS Developer</p>
+  </div>
 
-{% block script_extra %}
-  {% include '_scripts/pages/post-details.swig' %}
-{% endblock %}
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">14</span></a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">36</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">310</span></a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-overview-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <section class="post-toc-wrap sidebar-panel">
+      </section>
+      <!--/noindex-->
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="独木舟的木"
+      src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+  <p class="site-author-name" itemprop="name">独木舟的木</p>
+  <div class="site-description" itemprop="description">生若直木，不语斧凿。</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">310</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">36</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL0FuZHkwNTcw" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Andy0570"><i class="fab fa-github fa-fw"></i>GitHub</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9zdGFja292ZXJmbG93LmNvbS91c2Vycy83MjY1NDAwL2FuZHkwNTcw" title="StackOverflow → https:&#x2F;&#x2F;stackoverflow.com&#x2F;users&#x2F;7265400&#x2F;andy0570"><i class="fab fa-stack-overflow fa-fw"></i>StackOverflow</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuamlhbnNodS5jb20vdS84NGM1ZmFkYzdjMTg=" title="简书 → https:&#x2F;&#x2F;www.jianshu.com&#x2F;u&#x2F;84c5fadc7c18"><i class="heartbeat fa-fw"></i>简书</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="bWFpbHRvOmFuZHl3aG1AMTYzLmNvbQ==" title="E-Mail → mailto:andywhm@163.com"><i class="fa fa-envelope fa-fw"></i>E-Mail</span>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <span class="exturl cc-opacity" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpo"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></span>
+  </div>
+
+
+
+      </section>
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </header>
+
+      
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div id="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+      <div class="main-inner">
+        
+
+        <div class="content post posts-expand">
+          
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://andy0570.com/2016/12/09/SDCycleScrollView%E2%80%94%E2%80%94%E6%97%A0%E9%99%90%E5%BE%AA%E7%8E%AF%E5%9B%BE%E7%89%87%E3%80%81%E6%96%87%E5%AD%97%E8%BD%AE%E6%92%AD%E5%99%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+      <meta itemprop="name" content="独木舟的木">
+      <meta itemprop="description" content="生若直木，不语斧凿。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="独木舟的木">
+    </span>
+
+    
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          SDCycleScrollView——无限循环图片、文字轮播器
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2016-12-09 09:10:00" itemprop="dateCreated datePublished" datetime="2016-12-09T09:10:00+08:00">2016-12-09</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-05-01 23:27:23" itemprop="dateModified" datetime="2019-05-01T23:27:23+08:00">2019-05-01</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS-%E5%BC%80%E6%BA%90%E6%A1%86%E6%9E%B6/" itemprop="url" rel="index"><span itemprop="name">iOS 开源框架</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>7.5k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>7 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <ul>
+<li>GitHub源码：<span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2dzZGlvcy9TREN5Y2xlU2Nyb2xsVmlldw==">SDCycleScrollView<i class="fa fa-external-link-alt"></i></span></li>
+<li>star：4100+</li>
+</ul>
+<blockquote>
+<pre><code>                            ⭐️⭐️⭐️ </code></pre>
+<p>以下内容来源于官方源码、 README 文档、测试 Demo或个人使用总结 ！</p>
+</blockquote>
+<a id="more"></a>
+
+<p>Demo用法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;</span><br><span class="line">&#x2F;&#x2F;  ViewController.m</span><br><span class="line">&#x2F;&#x2F;  SDCycleScrollView</span><br><span class="line">&#x2F;&#x2F;</span><br><span class="line">&#x2F;&#x2F;  Created by aier on 15-3-22.</span><br><span class="line">&#x2F;&#x2F;  Copyright (c) 2015年 GSD. All rights reserved.</span><br><span class="line">&#x2F;&#x2F;</span><br><span class="line"></span><br><span class="line">&#x2F;*</span><br><span class="line"> </span><br><span class="line"> *********************************************************************************</span><br><span class="line"> *</span><br><span class="line"> * 🌟🌟🌟 新建SDCycleScrollView交流QQ群：185534916 🌟🌟🌟</span><br><span class="line"> *</span><br><span class="line"> * 在您使用此自动轮播库的过程中如果出现bug请及时以以下任意一种方式联系我们，我们会及时修复bug并</span><br><span class="line"> * 帮您解决问题。</span><br><span class="line"> * 新浪微博:GSD_iOS</span><br><span class="line"> * Email : gsdios@126.com</span><br><span class="line"> * GitHub: https:&#x2F;&#x2F;github.com&#x2F;gsdios</span><br><span class="line"> *</span><br><span class="line"> * 另（我的自动布局库SDAutoLayout）：</span><br><span class="line"> *  一行代码搞定自动布局！支持Cell和Tableview高度自适应，Label和ScrollView内容自适应，致力于</span><br><span class="line"> *  做最简单易用的AutoLayout库。</span><br><span class="line"> * 视频教程：http:&#x2F;&#x2F;www.letv.com&#x2F;ptv&#x2F;vplay&#x2F;24038772.html</span><br><span class="line"> * 用法示例：https:&#x2F;&#x2F;github.com&#x2F;gsdios&#x2F;SDAutoLayout&#x2F;blob&#x2F;master&#x2F;README.md</span><br><span class="line"> * GitHub：https:&#x2F;&#x2F;github.com&#x2F;gsdios&#x2F;SDAutoLayout</span><br><span class="line"> *********************************************************************************</span><br><span class="line"> </span><br><span class="line"> *&#x2F;</span><br><span class="line"></span><br><span class="line">#import &quot;ViewController.h&quot;</span><br><span class="line">#import &quot;SDCycleScrollView.h&quot;</span><br><span class="line"></span><br><span class="line">@interface ViewController () &lt;SDCycleScrollViewDelegate&gt;</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">@implementation ViewController</span><br><span class="line"></span><br><span class="line">- (void)viewDidLoad &#123;</span><br><span class="line">    [super viewDidLoad];</span><br><span class="line">    </span><br><span class="line">    self.view.backgroundColor &#x3D; [UIColor colorWithRed:0.98 green:0.98 blue:0.98 alpha:0.99];</span><br><span class="line">    UIImageView *backgroundView &#x3D; [[UIImageView alloc] initWithImage:[UIImage imageNamed:@&quot;005.jpg&quot;]];</span><br><span class="line">    backgroundView.frame &#x3D; self.view.bounds;</span><br><span class="line">    [self.view addSubview:backgroundView];</span><br><span class="line">    </span><br><span class="line">    UIScrollView *demoContainerView &#x3D; [[UIScrollView alloc] initWithFrame:self.view.frame];</span><br><span class="line">    demoContainerView.contentSize &#x3D; CGSizeMake(self.view.frame.size.width, 1200);</span><br><span class="line">    [self.view addSubview:demoContainerView];</span><br><span class="line">    </span><br><span class="line">    self.title &#x3D; @&quot;轮播Demo&quot;;</span><br><span class="line"></span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F; 情景一：采用本地图片实现</span><br><span class="line">    NSArray *imageNames &#x3D; @[@&quot;h1.jpg&quot;,</span><br><span class="line">                            @&quot;h2.jpg&quot;,</span><br><span class="line">                            @&quot;h3.jpg&quot;,</span><br><span class="line">                            @&quot;h4.jpg&quot;,</span><br><span class="line">                            @&quot;h7&quot; &#x2F;&#x2F; 本地图片请填写全名</span><br><span class="line">                            ];</span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F; 情景二：采用网络图片实现</span><br><span class="line">    NSArray *imagesURLStrings &#x3D; @[</span><br><span class="line">                           @&quot;https:&#x2F;&#x2F;ss2.baidu.com&#x2F;-vo3dSag_xI4khGko9WTAnF6hhy&#x2F;super&#x2F;whfpf%3D425%2C260%2C50&#x2F;sign&#x3D;a4b3d7085dee3d6d2293d48b252b5910&#x2F;0e2442a7d933c89524cd5cd4d51373f0830200ea.jpg&quot;,</span><br><span class="line">                           @&quot;https:&#x2F;&#x2F;ss0.baidu.com&#x2F;-Po3dSag_xI4khGko9WTAnF6hhy&#x2F;super&#x2F;whfpf%3D425%2C260%2C50&#x2F;sign&#x3D;a41eb338dd33c895a62bcb3bb72e47c2&#x2F;5fdf8db1cb134954a2192ccb524e9258d1094a1e.jpg&quot;,</span><br><span class="line">                           @&quot;http:&#x2F;&#x2F;c.hiphotos.baidu.com&#x2F;image&#x2F;w%3D400&#x2F;sign&#x3D;c2318ff84334970a4773112fa5c8d1c0&#x2F;b7fd5266d0160924c1fae5ccd60735fae7cd340d.jpg&quot;</span><br><span class="line">                           ];</span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F; 情景三：图片配文字</span><br><span class="line">    NSArray *titles &#x3D; @[@&quot;新建交流QQ群：185534916 &quot;,</span><br><span class="line">                        @&quot;感谢您的支持，如果下载的&quot;,</span><br><span class="line">                        @&quot;如果代码在使用过程中出现问题&quot;,</span><br><span class="line">                        @&quot;您可以发邮件到gsdios@126.com&quot;</span><br><span class="line">                        ];</span><br><span class="line">    </span><br><span class="line">    CGFloat w &#x3D; self.view.bounds.size.width;</span><br><span class="line">    </span><br><span class="line">    </span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; &gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; demo轮播图1 &gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;</span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F; 本地加载 --- 创建不带标题的图片轮播器</span><br><span class="line">    CGRect rect1 &#x3D; CGRectMake(0, 64, w, 180);</span><br><span class="line">    SDCycleScrollView *cycleScrollView &#x3D; [SDCycleScrollView</span><br><span class="line">                                          cycleScrollViewWithFrame:rect1</span><br><span class="line">                                          shouldInfiniteLoop:YES</span><br><span class="line">                                          imageNamesGroup:imageNames];</span><br><span class="line">    cycleScrollView.delegate &#x3D; self;</span><br><span class="line">    cycleScrollView.pageControlStyle &#x3D; SDCycleScrollViewPageContolStyleAnimated;</span><br><span class="line">    [demoContainerView addSubview:cycleScrollView];</span><br><span class="line">    cycleScrollView.scrollDirection &#x3D; UICollectionViewScrollDirectionVertical;</span><br><span class="line">    &#x2F;&#x2F;         --- 轮播时间间隔，默认1.0秒，可自定义</span><br><span class="line">    cycleScrollView.autoScrollTimeInterval &#x3D; 4.0;</span><br><span class="line">    </span><br><span class="line">    </span><br><span class="line">&#x2F;&#x2F; &gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; demo轮播图2 &gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;</span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F; 网络加载 --- 创建带标题的图片轮播器</span><br><span class="line">    CGRect rect2 &#x3D; CGRectMake(0, 280, w, 180);</span><br><span class="line">    UIImage *image2 &#x3D; [UIImage imageNamed:@&quot;placeholder&quot;];</span><br><span class="line">    SDCycleScrollView *cycleScrollView2 &#x3D; [SDCycleScrollView</span><br><span class="line">                                           cycleScrollViewWithFrame:rect2</span><br><span class="line">                                           delegate:self</span><br><span class="line">                                           placeholderImage:image2];</span><br><span class="line">    </span><br><span class="line">    cycleScrollView2.pageControlAliment &#x3D; SDCycleScrollViewPageContolAlimentRight;</span><br><span class="line">    cycleScrollView2.titlesGroup &#x3D; titles;</span><br><span class="line">    cycleScrollView2.currentPageDotColor &#x3D; [UIColor whiteColor]; &#x2F;&#x2F; 自定义分页控件小圆标颜色</span><br><span class="line">    [demoContainerView addSubview:cycleScrollView2];</span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F;         --- 模拟加载延迟</span><br><span class="line">    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^&#123;</span><br><span class="line">        cycleScrollView2.imageURLStringsGroup &#x3D; imagesURLStrings;</span><br><span class="line">    &#125;);</span><br><span class="line">    </span><br><span class="line">    &#x2F;*</span><br><span class="line">     block监听点击方式</span><br><span class="line">     </span><br><span class="line">     cycleScrollView2.clickItemOperationBlock &#x3D; ^(NSInteger index) &#123;</span><br><span class="line">        NSLog(@&quot;&gt;&gt;&gt;&gt;&gt;  %ld&quot;, (long)index);</span><br><span class="line">     &#125;;</span><br><span class="line">     </span><br><span class="line">     *&#x2F;</span><br><span class="line">    </span><br><span class="line">    </span><br><span class="line">&#x2F;&#x2F; &gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; demo轮播图3 &gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;</span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F; 网络加载 --- 创建自定义图片的pageControlDot的图片轮播器</span><br><span class="line">    CGRect rect3 &#x3D; CGRectMake(0, 500, w, 180);</span><br><span class="line">    UIImage *image3 &#x3D; [UIImage imageNamed:@&quot;placeholder&quot;];</span><br><span class="line">    SDCycleScrollView *cycleScrollView3 &#x3D; [SDCycleScrollView</span><br><span class="line">                                           cycleScrollViewWithFrame:rect3</span><br><span class="line">                                           delegate:self</span><br><span class="line">                                           placeholderImage:image3];</span><br><span class="line">    cycleScrollView3.currentPageDotImage &#x3D; [UIImage imageNamed:@&quot;pageControlCurrentDot&quot;];</span><br><span class="line">    cycleScrollView3.pageDotImage &#x3D; [UIImage imageNamed:@&quot;pageControlDot&quot;];</span><br><span class="line">    cycleScrollView3.imageURLStringsGroup &#x3D; imagesURLStrings;</span><br><span class="line">    </span><br><span class="line">    [demoContainerView addSubview:cycleScrollView3];</span><br><span class="line">    </span><br><span class="line">&#x2F;&#x2F; &gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; demo轮播图4 &gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;</span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F; 网络加载 --- 创建只上下滚动展示文字的轮播器</span><br><span class="line">    &#x2F;&#x2F; 由于模拟器的渲染问题，如果发现轮播时有一条线不必处理，模拟器放大到100%或者真机调试是不会出现那条线的</span><br><span class="line">    CGRect rect4 &#x3D; CGRectMake(0, 750, w, 40);</span><br><span class="line">    SDCycleScrollView *cycleScrollView4 &#x3D; [SDCycleScrollView</span><br><span class="line">                                           cycleScrollViewWithFrame:rect4</span><br><span class="line">                                           delegate:self</span><br><span class="line">                                           placeholderImage:nil];</span><br><span class="line">    cycleScrollView4.scrollDirection &#x3D; UICollectionViewScrollDirectionVertical;</span><br><span class="line">    cycleScrollView4.onlyDisplayText &#x3D; YES;</span><br><span class="line">    </span><br><span class="line">    NSMutableArray *titlesArray &#x3D; [NSMutableArray new];</span><br><span class="line">    [titlesArray addObject:@&quot;纯文字上下滚动轮播&quot;];</span><br><span class="line">    [titlesArray addObject:@&quot;纯文字上下滚动轮播 -- demo轮播图4&quot;];</span><br><span class="line">    [titlesArray addObjectsFromArray:titles];</span><br><span class="line">    cycleScrollView4.titlesGroup &#x3D; [titlesArray copy];</span><br><span class="line">    </span><br><span class="line">    [demoContainerView addSubview:cycleScrollView4];</span><br><span class="line">    </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)viewWillAppear:(BOOL)animated</span><br><span class="line">&#123;</span><br><span class="line">    [super viewWillAppear:animated];</span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F; 如果你发现你的CycleScrollview会在viewWillAppear时图片卡在中间位置，你可以调用此方法调整图片位置</span><br><span class="line">&#x2F;&#x2F;    [你的CycleScrollview adjustWhenControllerViewWillAppera];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">#pragma mark - SDCycleScrollViewDelegate</span><br><span class="line"></span><br><span class="line">- (void)cycleScrollView:(SDCycleScrollView *)cycleScrollView didSelectItemAtIndex:(NSInteger)index</span><br><span class="line">&#123;</span><br><span class="line">    NSLog(@&quot;---点击了第%ld张图片&quot;, (long)index);</span><br><span class="line">    </span><br><span class="line">    [self.navigationController pushViewController:[NSClassFromString(@&quot;DemoVCWithXib&quot;) new] animated:YES];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&#x2F;*</span><br><span class="line"> </span><br><span class="line">&#x2F;&#x2F; 滚动到第几张图回调</span><br><span class="line">- (void)cycleScrollView:(SDCycleScrollView *)cycleScrollView didScrollToIndex:(NSInteger)index</span><br><span class="line">&#123;</span><br><span class="line">    NSLog(@&quot;&gt;&gt;&gt;&gt;&gt;&gt; 滚动到第%ld张图&quot;, (long)index);</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"> *&#x2F;</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>独木舟的木
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://andy0570.com/2016/12/09/SDCycleScrollView%E2%80%94%E2%80%94%E6%97%A0%E9%99%90%E5%BE%AA%E7%8E%AF%E5%9B%BE%E7%89%87%E3%80%81%E6%96%87%E5%AD%97%E8%BD%AE%E6%92%AD%E5%99%A8/" title="SDCycleScrollView——无限循环图片、文字轮播器">https://andy0570.com/2016/12/09/SDCycleScrollView——无限循环图片、文字轮播器/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <span class="exturl" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpo"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</span> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/iOS/" rel="tag"># iOS</a>
+              <a href="/tags/GitHub/" rel="tag"># GitHub</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2016/12/08/PXAlertView%E2%80%94%E2%80%94%E5%BC%B9%E5%87%BA%E8%A7%86%E5%9B%BE%EF%BC%88Popup-View%EF%BC%89,%E6%9B%BF%E6%8D%A2UIAlertView/" rel="prev" title="PXAlertView——弹出视图（Popup-View）,替换UIAlertView">
+      <i class="fa fa-chevron-left"></i> PXAlertView——弹出视图（Popup-View）,替换UIAlertView
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2016/12/12/Expressions%20-%20%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F%E5%B7%A5%E5%85%B7/" rel="next" title="Expressions - 正则表达式工具">
+      Expressions - 正则表达式工具 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+        </div>
+        
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">独木舟的木</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">2.1m</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">31:21</span>
+</div>
+  <div class="powered-by">由 <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZw==">NexT.Gemini</span> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

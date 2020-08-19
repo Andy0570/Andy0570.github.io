@@ -1,23 +1,621 @@
-{% extends '_layout.swig' %}
-{% import '_macro/post.swig' as post_template %}
-{% import '_macro/sidebar.swig' as sidebar_template %}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.0.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+  <meta name="google-site-verification" content="wioXOS3Gv2wXUpJ3sLtfZ4ft6YJYKNLLWSw6QoZTFYM">
+  <meta name="msvalidate.01" content="C96491A81239C517A50597C54EE53CD1">
+  <meta name="baidu-site-verification" content="h8asiToN1b">
 
-{% block title %}{{ page.title }} | {{ title }}{% endblock %}
+<link rel="stylesheet" href="/css/main.css">
 
-{% block page_class %}page-post-detail{% endblock %}
 
-{% block content %}
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  
+  <link rel="stylesheet" href="/lib/animate-css/animate.min.css">
 
-  <div id="posts" class="posts-expand">
-    {{ post_template.render(page) }}
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"andy0570.com","root":"/","scheme":"Gemini","version":"8.0.0-rc.5","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":"mac","bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false};
+  </script>
+
+  <meta name="description" content="网络拓扑图">
+<meta property="og:type" content="article">
+<meta property="og:title" content="为 VMware 虚拟机内安装的 Ubuntu 16.0.4 设置静态IP">
+<meta property="og:url" content="https://andy0570.com/2018/06/12/%E4%B8%BA%20VMware%20%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%86%85%E5%AE%89%E8%A3%85%E7%9A%84%20Ubuntu%2016.0.4%20%E8%AE%BE%E7%BD%AE%E9%9D%99%E6%80%81IP/index.html">
+<meta property="og:site_name" content="独木舟的木">
+<meta property="og:description" content="网络拓扑图">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/075613.png">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/075618.jpg">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/075620.jpg">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/075621.jpg">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/075622.jpg">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/075623.jpg">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/075624.jpg">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/075625.jpg">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/075626.jpg">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/075628.jpg">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/075631.jpg">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/075632.jpg">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/075632-1.jpg">
+<meta property="article:published_time" content="2018-06-11T16:56:00.000Z">
+<meta property="article:modified_time" content="2019-05-01T12:46:08.000Z">
+<meta property="article:author" content="独木舟的木">
+<meta property="article:tag" content="Ubuntu">
+<meta property="article:tag" content="VMware">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/075613.png">
+
+<link rel="canonical" href="https://andy0570.com/2018/06/12/%E4%B8%BA%20VMware%20%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%86%85%E5%AE%89%E8%A3%85%E7%9A%84%20Ubuntu%2016.0.4%20%E8%AE%BE%E7%BD%AE%E9%9D%99%E6%80%81IP/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>为 VMware 虚拟机内安装的 Ubuntu 16.0.4 设置静态IP | 独木舟的木</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="独木舟的木" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <main class="main">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+        <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
   </div>
 
-{% endblock %}
+  <div class="site-meta">
 
-{% block sidebar %}
-  {{ sidebar_template.render(true) }}
-{% endblock %}
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">独木舟的木</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">iOS Developer</p>
+  </div>
 
-{% block script_extra %}
-  {% include '_scripts/pages/post-details.swig' %}
-{% endblock %}
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">14</span></a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">36</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">310</span></a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <section class="post-toc-wrap sidebar-panel">
+          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E6%8B%93%E6%89%91%E5%9B%BE"><span class="nav-number">1.</span> <span class="nav-text">网络拓扑图</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B6%E5%AE%83%E9%97%AE%E9%A2%98"><span class="nav-number">2.</span> <span class="nav-text">其它问题</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9B%B4%E6%94%B9-Ubuntu-%E9%94%AE%E7%9B%98%E9%85%8D%E7%BD%AE"><span class="nav-number">2.1.</span> <span class="nav-text">更改 Ubuntu 键盘配置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8-vi-%E5%91%BD%E4%BB%A4%E7%BC%96%E8%BE%91%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E6%97%B6%EF%BC%8C%E9%94%AE%E7%9B%98%E8%BE%93%E5%85%A5i%E5%BA%95%E9%83%A8%E4%B8%8D%E6%98%BE%E7%A4%BA-%E2%80%93-INSERT-%E2%80%93-%E6%9D%A5%E6%98%BE%E7%A4%BA%E7%BC%96%E8%BE%91%E5%99%A8%E6%A8%A1%E5%BC%8F"><span class="nav-number">2.2.</span> <span class="nav-text">使用 vi 命令编辑配置文件时，键盘输入i底部不显示 – INSERT – 来显示编辑器模式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#su"><span class="nav-number">2.3.</span> <span class="nav-text">su</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%99%9A%E6%8B%9F%E6%9C%BA%E6%89%80%E5%B1%9E%E7%94%B5%E8%84%91%E7%9A%84%E9%98%B2%E7%81%AB%E5%A2%99%E8%AE%BE%E7%BD%AE"><span class="nav-number">2.4.</span> <span class="nav-text">虚拟机所属电脑的防火墙设置</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A1%A5%E6%8E%A5%E6%A8%A1%E5%BC%8F"><span class="nav-number"></span> <span class="nav-text">桥接模式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">1.</span> <span class="nav-text">参考</span></a></li></ol></div>
+      </section>
+      <!--/noindex-->
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="独木舟的木"
+      src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+  <p class="site-author-name" itemprop="name">独木舟的木</p>
+  <div class="site-description" itemprop="description">生若直木，不语斧凿。</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">310</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">36</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL0FuZHkwNTcw" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Andy0570"><i class="fab fa-github fa-fw"></i>GitHub</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9zdGFja292ZXJmbG93LmNvbS91c2Vycy83MjY1NDAwL2FuZHkwNTcw" title="StackOverflow → https:&#x2F;&#x2F;stackoverflow.com&#x2F;users&#x2F;7265400&#x2F;andy0570"><i class="fab fa-stack-overflow fa-fw"></i>StackOverflow</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuamlhbnNodS5jb20vdS84NGM1ZmFkYzdjMTg=" title="简书 → https:&#x2F;&#x2F;www.jianshu.com&#x2F;u&#x2F;84c5fadc7c18"><i class="heartbeat fa-fw"></i>简书</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="bWFpbHRvOmFuZHl3aG1AMTYzLmNvbQ==" title="E-Mail → mailto:andywhm@163.com"><i class="fa fa-envelope fa-fw"></i>E-Mail</span>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <span class="exturl cc-opacity" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpo"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></span>
+  </div>
+
+
+
+      </section>
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </header>
+
+      
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div id="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+      <div class="main-inner">
+        
+
+        <div class="content post posts-expand">
+          
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://andy0570.com/2018/06/12/%E4%B8%BA%20VMware%20%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%86%85%E5%AE%89%E8%A3%85%E7%9A%84%20Ubuntu%2016.0.4%20%E8%AE%BE%E7%BD%AE%E9%9D%99%E6%80%81IP/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+      <meta itemprop="name" content="独木舟的木">
+      <meta itemprop="description" content="生若直木，不语斧凿。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="独木舟的木">
+    </span>
+
+    
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          为 VMware 虚拟机内安装的 Ubuntu 16.0.4 设置静态IP
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-06-12 00:56:00" itemprop="dateCreated datePublished" datetime="2018-06-12T00:56:00+08:00">2018-06-12</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-05-01 20:46:08" itemprop="dateModified" datetime="2019-05-01T20:46:08+08:00">2019-05-01</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>2.4k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>2 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h3 id="网络拓扑图"><a href="#网络拓扑图" class="headerlink" title="网络拓扑图"></a>网络拓扑图</h3><p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/075613.png"></p>
+<a id="more"></a>
+
+
+<ol>
+<li><p>首先打开 Windows 设置 &gt; 控制面板 &gt; 网络和 Internet &gt; 网络和共享中心 &gt; 更改适配器设置 ：</p>
+<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/075618.jpg" alt="image"></p>
+<p>这边有两点需要注意的地方：</p>
+<p>一：主机连到外网的网卡（这里是 VMware Network Adapter VMnet1）需要鼠标右击属性 &gt; 设置 Internet 连接共享，添加 VMware Network Adapter VMnet8：</p>
+<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/075620.jpg" alt="image"></p>
+<p>添加共享之后，可以去 Windows 的 cmd 控制台查看网卡为 VMnet8 分配的 IP 地址：</p>
+<p>使用命令 <code>ipconfig</code> 即可查看：</p>
+<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/075621.jpg" alt="image"></p>
+</li>
+</ol>
+<p>   二：VMware Network Adapter VMnet8 网卡属性设置 Internet 协议版本（TCP/IPV4）属性如下：</p>
+<ul>
+<li><p>IP 地址就是上一步查询到的 IPv4 地址：192.168.137.1</p>
+<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/075622.jpg" alt="image"></p>
+</li>
+</ul>
+<ol start="2">
+<li><p>设置 VMware 菜单栏的编辑 &gt; 虚拟网络编辑器 :</p>
+<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/075623.jpg" alt="image"></p>
+<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/075624.jpg" alt="image"></p>
+<ul>
+<li><p>因为分配给 VMnet8 的IP地址是 192.168.137.1，所以子网IP要设置为192.168.137.0</p>
+</li>
+<li><p>取消勾选 DHCP 之前，可以先点击右边的 <strong>DHCP设置</strong>，查看 Ubuntu 虚拟机可用的IP地址范围：</p>
+<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/075625.jpg" alt="image"></p>
+<p>可以看到可用的IP地址范围是：192.168.137.128 ～ 192.168.137.254。所以说 <strong>IP 地址的值并不是完全任意设置的</strong>。</p>
+</li>
+<li><p>点击 NAT 设置，主要是查看并设置网关IP：192.168.137.2。然后这里的子网掩码、网关IP都需要记住，因为接下来设置静态IP会用到。下面的端口转发设置可以先不用管，下面会说到。</p>
+<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/075626.jpg" alt="image"></p>
+</li>
+</ul>
+</li>
+<li><p>编辑虚拟机设置，网络适配器设置为自定义 VMnet8（NAT模式）：</p>
+<p>💡 这一步需要在虚拟机关机状态下才能设置。</p>
+<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/075628.jpg" alt="image"></p>
+</li>
+<li><p>打开 Ubuntu虚拟机，设置该虚拟机的静态IP地址，编辑 <code>/etc/network/interfaces</code> 配置文件。</p>
+<p>打开控制台，命令行中输入：<code>sudo vim /etc/network/interfaces</code> ，编辑添加如下所示：</p>
+<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/075631.jpg" alt="image"></p>
+<ul>
+<li>ens33 是虚拟器的网卡名称，可以通过 <code>ifconfig</code> 查看你的这个网卡名称是啥，因为不一定是 eth0。</li>
+<li>address 是IP地址，因为IP地址的设置范围是192.168.137.128 ～ 192.168.137.254，所以可以设置为 192.168.137.130.</li>
+<li>netmask 是子网掩码。</li>
+<li>gateway 是网关地址。</li>
+<li>broadcast 是广播地址，不知道的话可以在控制台输入<code>ifconfig</code> 查看。</li>
+<li>dns-nameservers 是 DNS 地址。</li>
+</ul>
+</li>
+<li><p>编辑 <code>/etc/resolv.conf</code> DNS 配置文件。命令行输入<code>sudo vim /etc/resolv.conf</code>，配置 DNS 地址为阿里云的地址：</p>
+<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/075632.jpg" alt="image"></p>
+<blockquote>
+<p>注意：在相对较早的版本中，你需要设置 / etc 下的 resolv.conf 文件，并加入 nameserver，这样才可以连接互联网。但在 Ubuntu 12.04 之后，已经不推荐这种方式了，因为无论你想该配置文件中设置什么值，重新启动之后都会被还原为初始状态。推荐的做法是直接在 interfaces 配置文件中加入 dns-nameserver &lt;网关 IP&gt; 这一行。</p>
+</blockquote>
+<p>编辑完成后重启网卡：  <code>sudo /etc/init.d/networking restart</code>，或者重启虚拟器：<code>sudo reboot</code>。</p>
+<p>最后使用 ping 命令验证。</p>
+</li>
+</ol>
+<h3 id="其它问题"><a href="#其它问题" class="headerlink" title="其它问题"></a>其它问题</h3><h4 id="更改-Ubuntu-键盘配置"><a href="#更改-Ubuntu-键盘配置" class="headerlink" title="更改 Ubuntu 键盘配置"></a>更改 Ubuntu 键盘配置</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 更改为标准 104 键盘</span></span><br><span class="line">sudo dpkg-reconfigure keyboard-configuration</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="使用-vi-命令编辑配置文件时，键盘输入i底部不显示-–-INSERT-–-来显示编辑器模式"><a href="#使用-vi-命令编辑配置文件时，键盘输入i底部不显示-–-INSERT-–-来显示编辑器模式" class="headerlink" title="使用 vi 命令编辑配置文件时，键盘输入i底部不显示 – INSERT – 来显示编辑器模式"></a>使用 vi 命令编辑配置文件时，键盘输入i底部不显示 – INSERT – 来显示编辑器模式</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 安装并使用 vim</span></span><br><span class="line">sudo apt-get install vim</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="su"><a href="#su" class="headerlink" title="su"></a>su</h4><ol>
+<li>编辑 /etc/NetworkManger/NetworkManger.conf 文件<br><code>sudo vim /etc/NetworkManger/NetworkManger.conf</code><br>将 <code>managed=false</code> 修改为 <code>managed=true</code>。</li>
+<li>重启 network-manager service:<br><code>sudo service network-manager restart</code></li>
+</ol>
+<p>#NAT模式实现局域网物理机与虚拟机的互通访问</p>
+<p>这里就是上面略过的端口转发设置，不难理解，参考如下：</p>
+<ul>
+<li><span class="exturl" data-url="aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTEwMzE0MzAvYXJ0aWNsZS9kZXRhaWxzLzc3MTMxODQx"> NAT 模式实现局域网物理机与虚拟机的互通访问<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTIyNjgzMzkvYXJ0aWNsZS9kZXRhaWxzLzYxMjA0ODAx">局域网访问电脑中 VMware 虚拟机<i class="fa fa-external-link-alt"></i></span></li>
+</ul>
+<h4 id="虚拟机所属电脑的防火墙设置"><a href="#虚拟机所属电脑的防火墙设置" class="headerlink" title="虚拟机所属电脑的防火墙设置"></a>虚拟机所属电脑的防火墙设置</h4><p>端口转发设置好之后，同一个局域网内的主机应该可以访问 Ubuntu 上运行的 Server，或者使用 SSH 登录，如果不行或者 ping 不通的话，你可能需要稍微关注一下 Ubuntu 所在的 windows 主机防火墙设置，需要添加入站规则以打开端口：</p>
+<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/075632-1.jpg" alt="image"></p>
+<h2 id="桥接模式"><a href="#桥接模式" class="headerlink" title="桥接模式"></a>桥接模式</h2><p>NAT模式中，虚拟机和宿主机不是在同一个网段的，而使用桥接模式则可以让虚拟机和宿主机在同一个网段中。</p>
+<p>注意点：</p>
+<ol>
+<li>宿主机需要勾选 VMware Bridge Protocol（更改适配器设置-VMware Network Adapter VMnet1 属性 - 网络 - 勾选 VMware Bridge Protocol）。</li>
+<li>VMware 设置：虚拟网络编辑器添加桥接模式网络。</li>
+<li>虚拟机网络适配器设置：网络连接勾选「桥接模式」。</li>
+<li>打开虚拟机，设置IP地址需要和宿主机在同一个网段内，网关IP地址需要和宿主机相同。</li>
+<li>重启虚拟机网络适配器或重启电脑即可。</li>
+</ol>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><ul>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/chengssblog/p/6531964.html"><del>Vmware 虚拟机设置静态 IP 地址</del></a> | 文章里的修改网络配置文件目录指的应该是CentOS系统，而Ubuntu下应该是 /etc/network/interfaces 文件。</li>
+<li><span class="exturl" data-url="aHR0cDovL2Jsb2cuMTYzLmNvbS95aV95aXhpbnlpeWkvYmxvZy9zdGF0aWMvMTM2Mjg2ODg5MjAxMTIyMjIxNTI4NzU3Lw==">Ubuntu 的网络配置文件<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cHM6Ly93d3cubGludXhpZGMuY29tL0xpbnV4LzIwMTctMDQvMTQzMTAyLmh0bQ==">Linux公社: 为 VMware 虚拟机内安装的 Ubuntu 16.04 设置静态 IP 地址 | 2017-04-24<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cHM6Ly93d3cuamlhbnNodS5jb20vcC82MjVkZTk5MTFiZmI=">简书: 为 VMware 虚拟机内安装的 Ubuntu 16.04 设置静态 IP 地址<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cHM6Ly9ncmFzcGluZ3RlY2guY29tL3VidW50dS1zZXJ2ZXItMTYtMDQtc3RhdGljLWlwLw==">How to Configure Ubuntu Server 16.04 to Use a Static IP Address<i class="fa fa-external-link-alt"></i></span></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>独木舟的木
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://andy0570.com/2018/06/12/%E4%B8%BA%20VMware%20%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%86%85%E5%AE%89%E8%A3%85%E7%9A%84%20Ubuntu%2016.0.4%20%E8%AE%BE%E7%BD%AE%E9%9D%99%E6%80%81IP/" title="为 VMware 虚拟机内安装的 Ubuntu 16.0.4 设置静态IP">https://andy0570.com/2018/06/12/为 VMware 虚拟机内安装的 Ubuntu 16.0.4 设置静态IP/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <span class="exturl" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpo"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</span> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Ubuntu/" rel="tag"># Ubuntu</a>
+              <a href="/tags/VMware/" rel="tag"># VMware</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2018/06/09/%E6%9E%84%E5%BB%BAiOS%E7%95%8C%E9%9D%A2%EF%BC%9A%E5%85%A5%E9%97%A8/" rel="prev" title="构建iOS界面：入门">
+      <i class="fa fa-chevron-left"></i> 构建iOS界面：入门
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2018/06/24/Nginx%20%E4%BD%BF%E7%94%A8%E5%8F%8A%E9%85%8D%E7%BD%AE/" rel="next" title="Nginx 使用及配置">
+      Nginx 使用及配置 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+        </div>
+        
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">独木舟的木</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">2.1m</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">31:21</span>
+</div>
+  <div class="powered-by">由 <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZw==">NexT.Gemini</span> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

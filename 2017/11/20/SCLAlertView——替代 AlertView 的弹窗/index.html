@@ -1,23 +1,584 @@
-{% extends '_layout.swig' %}
-{% import '_macro/post.swig' as post_template %}
-{% import '_macro/sidebar.swig' as sidebar_template %}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.0.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+  <meta name="google-site-verification" content="wioXOS3Gv2wXUpJ3sLtfZ4ft6YJYKNLLWSw6QoZTFYM">
+  <meta name="msvalidate.01" content="C96491A81239C517A50597C54EE53CD1">
+  <meta name="baidu-site-verification" content="h8asiToN1b">
 
-{% block title %}{{ page.title }} | {{ title }}{% endblock %}
+<link rel="stylesheet" href="/css/main.css">
 
-{% block page_class %}page-post-detail{% endblock %}
 
-{% block content %}
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  
+  <link rel="stylesheet" href="/lib/animate-css/animate.min.css">
 
-  <div id="posts" class="posts-expand">
-    {{ post_template.render(page) }}
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"andy0570.com","root":"/","scheme":"Gemini","version":"8.0.0-rc.5","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":"mac","bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false};
+  </script>
+
+  <meta name="description" content="GitHub：SCLAlertView star:2800+   集成时要注意有两个版本，一个 Swift (SCLAlertView) 的，一个 Objective-C (SCLAlertView-Objective-C) 的。   支付宝也在用的一个框架：ios-custom-alertview">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SCLAlertView——替代 AlertView 的弹窗">
+<meta property="og:url" content="https://andy0570.com/2017/11/20/SCLAlertView%E2%80%94%E2%80%94%E6%9B%BF%E4%BB%A3%20AlertView%20%E7%9A%84%E5%BC%B9%E7%AA%97/index.html">
+<meta property="og:site_name" content="独木舟的木">
+<meta property="og:description" content="GitHub：SCLAlertView star:2800+   集成时要注意有两个版本，一个 Swift (SCLAlertView) 的，一个 Objective-C (SCLAlertView-Objective-C) 的。   支付宝也在用的一个框架：ios-custom-alertview">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072324.jpg">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072325.jpg">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072326.jpg">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072327.jpg">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072328.jpg">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072329.jpg">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072330.jpg">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072332.jpg">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072333.jpg">
+<meta property="article:published_time" content="2017-11-20T09:25:00.000Z">
+<meta property="article:modified_time" content="2019-05-01T14:12:18.000Z">
+<meta property="article:author" content="独木舟的木">
+<meta property="article:tag" content="iOS">
+<meta property="article:tag" content="GitHub">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072324.jpg">
+
+<link rel="canonical" href="https://andy0570.com/2017/11/20/SCLAlertView%E2%80%94%E2%80%94%E6%9B%BF%E4%BB%A3%20AlertView%20%E7%9A%84%E5%BC%B9%E7%AA%97/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>SCLAlertView——替代 AlertView 的弹窗 | 独木舟的木</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="独木舟的木" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <main class="main">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+        <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
   </div>
 
-{% endblock %}
+  <div class="site-meta">
 
-{% block sidebar %}
-  {{ sidebar_template.render(true) }}
-{% endblock %}
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">独木舟的木</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">iOS Developer</p>
+  </div>
 
-{% block script_extra %}
-  {% include '_scripts/pages/post-details.swig' %}
-{% endblock %}
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">14</span></a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">36</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">310</span></a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <section class="post-toc-wrap sidebar-panel">
+          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#SCLAlertView-Objective-C"><span class="nav-number">1.</span> <span class="nav-text">SCLAlertView-Objective-C</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%93%BE%E5%BC%8F%E8%AF%AD%E6%B3%95"><span class="nav-number">1.0.1.</span> <span class="nav-text">链式语法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%A4%8D%E6%9D%82%E6%A0%B7%E5%BC%8F"><span class="nav-number">1.0.1.1.</span> <span class="nav-text">复杂样式</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AE%80%E5%8D%95%E4%BD%BF%E7%94%A8"><span class="nav-number">1.0.2.</span> <span class="nav-text">简单使用</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%AF%E8%AE%BE%E7%BD%AE%E7%9A%84-Alert-View-%E7%B1%BB%E5%9E%8B"><span class="nav-number">1.0.2.1.</span> <span class="nav-text">可设置的 Alert View 类型</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0%E5%A4%9A%E4%B8%AA%E6%8C%89%E9%92%AE"><span class="nav-number">1.0.3.</span> <span class="nav-text">添加多个按钮</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0%E6%8C%89%E9%92%AE%E8%AE%A1%E6%97%B6%E5%99%A8"><span class="nav-number">1.0.4.</span> <span class="nav-text">添加按钮计时器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0%E6%96%87%E6%9C%AC%E5%B1%9E%E6%80%A7"><span class="nav-number">1.0.5.</span> <span class="nav-text">添加文本属性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0%E6%96%87%E6%9C%AC%E8%BE%93%E5%85%A5%E6%A1%86"><span class="nav-number">1.0.6.</span> <span class="nav-text">添加文本输入框</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%97%8B%E8%BD%AC%E8%BF%9B%E5%BA%A6%E6%9D%A1"><span class="nav-number">1.0.7.</span> <span class="nav-text">旋转进度条</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0%E5%88%87%E6%8D%A2%E6%8C%89%E9%92%AE"><span class="nav-number">1.0.8.</span> <span class="nav-text">添加切换按钮</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0%E8%87%AA%E5%AE%9A%E4%B9%89%E8%A7%86%E5%9B%BE"><span class="nav-number">1.0.9.</span> <span class="nav-text">添加自定义视图</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SCLAlertView%E5%B1%9E%E6%80%A7"><span class="nav-number">1.0.10.</span> <span class="nav-text">SCLAlertView属性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Helpers"><span class="nav-number">1.0.11.</span> <span class="nav-text">Helpers</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Alert-View-Styles%EF%BC%8C%E5%BC%B9%E7%AA%97%E6%A0%B7%E5%BC%8F"><span class="nav-number">1.0.11.1.</span> <span class="nav-text">Alert View Styles，弹窗样式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Alert-View-hide-animation-styles%EF%BC%8C%E9%9A%90%E8%97%8F%E5%8A%A8%E7%94%BB%E6%A0%B7%E5%BC%8F"><span class="nav-number">1.0.11.2.</span> <span class="nav-text">Alert View hide animation styles，隐藏动画样式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Alert-View-show-animation-styles%EF%BC%8C%E6%98%BE%E7%A4%BA%E5%8A%A8%E7%94%BB%E6%A0%B7%E5%BC%8F"><span class="nav-number">1.0.11.3.</span> <span class="nav-text">Alert View show animation styles，显示动画样式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Alert-View-background-styles%EF%BC%8C%E8%83%8C%E6%99%AF%E6%A0%B7%E5%BC%8F"><span class="nav-number">1.0.11.4.</span> <span class="nav-text">Alert View background styles，背景样式</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%88%91%E7%9A%84%E4%BD%BF%E7%94%A8%E7%A4%BA%E4%BE%8B"><span class="nav-number">1.0.12.</span> <span class="nav-text">我的使用示例</span></a></li></ol></li></ol></li></ol></div>
+      </section>
+      <!--/noindex-->
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="独木舟的木"
+      src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+  <p class="site-author-name" itemprop="name">独木舟的木</p>
+  <div class="site-description" itemprop="description">生若直木，不语斧凿。</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">310</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">36</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL0FuZHkwNTcw" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Andy0570"><i class="fab fa-github fa-fw"></i>GitHub</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9zdGFja292ZXJmbG93LmNvbS91c2Vycy83MjY1NDAwL2FuZHkwNTcw" title="StackOverflow → https:&#x2F;&#x2F;stackoverflow.com&#x2F;users&#x2F;7265400&#x2F;andy0570"><i class="fab fa-stack-overflow fa-fw"></i>StackOverflow</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuamlhbnNodS5jb20vdS84NGM1ZmFkYzdjMTg=" title="简书 → https:&#x2F;&#x2F;www.jianshu.com&#x2F;u&#x2F;84c5fadc7c18"><i class="heartbeat fa-fw"></i>简书</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="bWFpbHRvOmFuZHl3aG1AMTYzLmNvbQ==" title="E-Mail → mailto:andywhm@163.com"><i class="fa fa-envelope fa-fw"></i>E-Mail</span>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <span class="exturl cc-opacity" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpo"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></span>
+  </div>
+
+
+
+      </section>
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </header>
+
+      
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div id="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+      <div class="main-inner">
+        
+
+        <div class="content post posts-expand">
+          
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://andy0570.com/2017/11/20/SCLAlertView%E2%80%94%E2%80%94%E6%9B%BF%E4%BB%A3%20AlertView%20%E7%9A%84%E5%BC%B9%E7%AA%97/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+      <meta itemprop="name" content="独木舟的木">
+      <meta itemprop="description" content="生若直木，不语斧凿。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="独木舟的木">
+    </span>
+
+    
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          SCLAlertView——替代 AlertView 的弹窗
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2017-11-20 17:25:00" itemprop="dateCreated datePublished" datetime="2017-11-20T17:25:00+08:00">2017-11-20</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-05-01 22:12:18" itemprop="dateModified" datetime="2019-05-01T22:12:18+08:00">2019-05-01</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS-%E5%BC%80%E6%BA%90%E6%A1%86%E6%9E%B6/" itemprop="url" rel="index"><span itemprop="name">iOS 开源框架</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>13k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>11 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/dogo/SCLAlertView">GitHub：<strong>SCLAlertView</strong></a></li>
+<li>star:2800+</li>
+</ul>
+<blockquote>
+<p>集成时要注意有两个版本，一个 Swift (<strong>SCLAlertView</strong>) 的，一个 Objective-C (<strong>SCLAlertView-Objective-C</strong>) 的。</p>
+</blockquote>
+<blockquote>
+<p>支付宝也在用的一个框架：<span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL3dpbWFnZ3VjL2lvcy1jdXN0b20tYWxlcnR2aWV3">ios-custom-alertview<i class="fa fa-external-link-alt"></i></span></p>
+</blockquote>
+<a id="more"></a>
+
+<h1 id="SCLAlertView-Objective-C"><a href="#SCLAlertView-Objective-C" class="headerlink" title="SCLAlertView-Objective-C"></a>SCLAlertView-Objective-C</h1><p>Animated Alert View written in Swift but ported to Objective-C, which can be used as a <code>UIAlertView</code> or <code>UIAlertController</code> replacement.</p>
+<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072324.jpg" alt="image"></p>
+<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072325.jpg" alt="image"></p>
+<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072326.jpg" alt="image"></p>
+<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072327.jpg" alt="image"></p>
+<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072328.jpg" alt="image"></p>
+<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072329.jpg" alt="image"></p>
+<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072330.jpg" alt="image"></p>
+<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072332.jpg" alt="image"></p>
+<h3 id="链式语法"><a href="#链式语法" class="headerlink" title="链式语法"></a>链式语法</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">SCLAlertViewBuilder *builder &#x3D; [SCLAlertViewBuilder new]</span><br><span class="line">.addButtonWithActionBlock(@&quot;Send&quot;, ^&#123; &#x2F;*work here*&#x2F; &#125;);</span><br><span class="line">SCLAlertViewShowBuilder *showBuilder &#x3D; [SCLAlertViewShowBuilder new]</span><br><span class="line">.style(SCLAlertViewStyleWarning)</span><br><span class="line">.title(@&quot;Title&quot;)</span><br><span class="line">.subTitle(@&quot;Subtitle&quot;)</span><br><span class="line">.duration(0);</span><br><span class="line">[showBuilder showAlertView:builder.alertView onViewController:self.window.rootViewController];</span><br><span class="line">&#x2F;&#x2F; or even</span><br><span class="line">showBuilder.show(builder.alertView, self.window.rootViewController);</span><br></pre></td></tr></table></figure>
+
+<h4 id="复杂样式"><a href="#复杂样式" class="headerlink" title="复杂样式"></a>复杂样式</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">NSString *title &#x3D; @&quot;Title&quot;;</span><br><span class="line">NSString *message &#x3D; @&quot;Message&quot;;</span><br><span class="line">NSString *cancel &#x3D; @&quot;Cancel&quot;;</span><br><span class="line">NSString *done &#x3D; @&quot;Done&quot;;</span><br><span class="line"></span><br><span class="line">SCLALertViewTextFieldBuilder *textField &#x3D; [SCLALertViewTextFieldBuilder new].title(@&quot;Code&quot;);</span><br><span class="line">SCLALertViewButtonBuilder *doneButton &#x3D; [SCLALertViewButtonBuilder new].title(done)</span><br><span class="line">.validationBlock(^BOOL&#123;</span><br><span class="line">    NSString *code &#x3D; [textField.textField.text copy];</span><br><span class="line">    return [code isVisible];</span><br><span class="line">&#125;)</span><br><span class="line">.actionBlock(^&#123;</span><br><span class="line">    NSString *code &#x3D; [textField.textField.text copy];</span><br><span class="line">    [self confirmPhoneNumberWithCode:code];</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">SCLAlertViewBuilder *builder &#x3D; [SCLAlertViewBuilder new]</span><br><span class="line">.showAnimationType(SCLAlertViewShowAnimationFadeIn)</span><br><span class="line">.hideAnimationType(SCLAlertViewHideAnimationFadeOut)</span><br><span class="line">.shouldDismissOnTapOutside(NO)</span><br><span class="line">.addTextFieldWithBuilder(textField)</span><br><span class="line">.addButtonWithBuilder(doneButton);</span><br><span class="line"></span><br><span class="line">SCLAlertViewShowBuilder *showBuilder &#x3D; [SCLAlertViewShowBuilder new]</span><br><span class="line">.style(SCLAlertViewStyleCustom)</span><br><span class="line">.image([SCLAlertViewStyleKit imageOfInfo])</span><br><span class="line">.color([UIColor blueColor])</span><br><span class="line">.title(title)</span><br><span class="line">.subTitle(message)</span><br><span class="line">.closeButtonTitle(cancel)</span><br><span class="line">.duration(0.0f);</span><br><span class="line"></span><br><span class="line">[showBuilder showAlertView:builder.alertView onViewController:self];</span><br></pre></td></tr></table></figure>
+
+<h3 id="简单使用"><a href="#简单使用" class="headerlink" title="简单使用"></a>简单使用</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 1.创建 SCLAlertView 对象</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 方式一：默认方式（当前 UIViewController 窗口）</span><br><span class="line">SCLAlertView *alert &#x3D; [[SCLAlertView alloc] init];</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 方式二：new window 上创建</span><br><span class="line">SCLAlertView *alert &#x3D; [[SCLAlertView alloc] initWithNewWindow];</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 方式三：自定义 Alert 宽度</span><br><span class="line">SCLAlertView *alert &#x3D; [[SCLAlertView alloc] initWithWindowWidth:300.0f];</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 2.设置警告样式并显示</span><br><span class="line">[alert showSuccess:self title:@&quot;Hello World&quot; subTitle:@&quot;This is a more descriptive text.&quot; closeButtonTitle:@&quot;Done&quot; duration:0.0f];</span><br></pre></td></tr></table></figure>
+
+<p>以上两步就可以创建并显示一个简单的 Alert View：标题+子标题+默认按钮</p>
+<h4 id="可设置的-Alert-View-类型"><a href="#可设置的-Alert-View-类型" class="headerlink" title="可设置的 Alert View 类型"></a>可设置的 Alert View 类型</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; Success</span><br><span class="line">[alert showSuccess:self title:@&quot;Hello World&quot; subTitle:@&quot;This is a more descriptive text.&quot; closeButtonTitle:@&quot;Done&quot; duration:0.0f];</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; Error</span><br><span class="line">[alert showError:self title:@&quot;Hello Error&quot; subTitle:@&quot;This is a more descriptive error text.&quot; closeButtonTitle:@&quot;OK&quot; duration:0.0f];</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; Notice</span><br><span class="line">[alert showNotice:self title:@&quot;Hello Notice&quot; subTitle:@&quot;This is a more descriptive notice text.&quot; closeButtonTitle:@&quot;Done&quot; duration:0.0f];</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; Warning</span><br><span class="line">[alert showWarning:self title:@&quot;Hello Warning&quot; subTitle:@&quot;This is a more descriptive warning text.&quot; closeButtonTitle:@&quot;Done&quot; duration:0.0f]; </span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; Info</span><br><span class="line">[alert showInfo:self title:@&quot;Hello Info&quot; subTitle:@&quot;This is a more descriptive info text.&quot; closeButtonTitle:@&quot;Done&quot; duration:0.0f]; </span><br><span class="line"></span><br><span class="line"> &#x2F;&#x2F; Edit</span><br><span class="line">[alert showEdit:self title:@&quot;Hello Edit&quot; subTitle:@&quot;This is a more descriptive info text with a edit textbox&quot; closeButtonTitle:@&quot;Done&quot; duration:0.0f];</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; Custom</span><br><span class="line">[alert showCustom:self image:[UIImage imageNamed:@&quot;git&quot;] color:color title:@&quot;Custom&quot; subTitle:@&quot;Add a custom icon and color for your own type of alert!&quot; closeButtonTitle:@&quot;OK&quot; duration:0.0f]; </span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; Waiting</span><br><span class="line">[alert showWaiting:self title:@&quot;Waiting...&quot; subTitle:@&quot;Blah de blah de blah, blah. Blah de blah de&quot; closeButtonTitle:nil duration:5.0f];</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; Question</span><br><span class="line">[alert showQuestion:self title:@&quot;Question?&quot; subTitle:kSubtitle closeButtonTitle:@&quot;Dismiss&quot; duration:0.0f];</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="添加多个按钮"><a href="#添加多个按钮" class="headerlink" title="添加多个按钮"></a>添加多个按钮</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line">SCLAlertView *alert &#x3D; [[SCLAlertView alloc] init];</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 是否以水平分布方式显示按钮，默认垂直排列多个按钮</span><br><span class="line">[alert setHorizontalButtons:YES]; </span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 1. Selector 方式</span><br><span class="line">[alert addButton:@&quot;First Button&quot; target:self selector:@selector(firstButton)];</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 2. Block 方式</span><br><span class="line">[alert addButton:@&quot;Second Button&quot; actionBlock:^(void) &#123;</span><br><span class="line">    NSLog(@&quot;Second button tapped&quot;);</span><br><span class="line">&#125;];</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 3. Using Blocks With Validation，设置正则表达式验证</span><br><span class="line">[alert addButton:@&quot;Validate&quot; validationBlock:^BOOL &#123;</span><br><span class="line">    BOOL passedValidation &#x3D; ....</span><br><span class="line">    return passedValidation;</span><br><span class="line"></span><br><span class="line">&#125; actionBlock:^&#123;</span><br><span class="line">    &#x2F;&#x2F; handle successful validation here</span><br><span class="line">&#125;];</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 4.添加按钮，再自定义按钮样式</span><br><span class="line">&#x2F;&#x2F; 4.1 添加按钮</span><br><span class="line">SCLButton *button &#x3D; [alert addButton:@&quot;First Button&quot; target:self selector:@selector(firstButton)];</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 4.2 自定义按钮类型</span><br><span class="line">button.buttonFormatBlock &#x3D; ^NSDictionary* (void)</span><br><span class="line">&#123;</span><br><span class="line">    NSMutableDictionary *buttonConfig &#x3D; [[NSMutableDictionary alloc] init];</span><br><span class="line"></span><br><span class="line">    buttonConfig[@&quot;backgroundColor&quot;] &#x3D; [UIColor whiteColor];</span><br><span class="line">    buttonConfig[@&quot;textColor&quot;] &#x3D; [UIColor blackColor];</span><br><span class="line">    buttonConfig[@&quot;borderWidth&quot;] &#x3D; @2.0f;</span><br><span class="line">    buttonConfig[@&quot;borderColor&quot;] &#x3D; [UIColor greenColor];</span><br><span class="line"></span><br><span class="line">    return buttonConfig;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 添加弹窗声音</span><br><span class="line">alert.soundURL &#x3D; [NSURL fileURLWithPath:[NSString stringWithFormat:@&quot;%@&#x2F;right_answer.mp3&quot;, [NSBundle mainBundle].resourcePath]];</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 显示弹窗</span><br><span class="line">[alert showSuccess:self title:@&quot;Button View&quot; subTitle:@&quot;This alert view has buttons&quot; closeButtonTitle:@&quot;Done&quot; duration:0.0f];</span><br></pre></td></tr></table></figure>
+
+<h3 id="添加按钮计时器"><a href="#添加按钮计时器" class="headerlink" title="添加按钮计时器"></a>添加按钮计时器</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;The index of the button to add the timer display to.</span><br><span class="line">[alert addTimerToButtonIndex:0 reverse:NO];</span><br></pre></td></tr></table></figure>
+
+<p>Example:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">SCLAlertView *alert &#x3D; [[SCLAlertView alloc] init];</span><br><span class="line">[alert addTimerToButtonIndex:0 reverse:YES];</span><br><span class="line">[alert showInfo:self title:@&quot;Countdown Timer&quot; subTitle:@&quot;This alert has a duration set, and a countdown timer on the Dismiss button to show how long is left.&quot; closeButtonTitle:@&quot;Dismiss&quot; duration:10.0f];</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="添加文本属性"><a href="#添加文本属性" class="headerlink" title="添加文本属性"></a>添加文本属性</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">SCLAlertView *alert &#x3D; [[SCLAlertView alloc] init];</span><br><span class="line"></span><br><span class="line">alert.attributedFormatBlock &#x3D; ^NSAttributedString* (NSString *value)</span><br><span class="line">&#123;</span><br><span class="line">    NSMutableAttributedString *subTitle &#x3D; [[NSMutableAttributedString alloc]initWithString:value];</span><br><span class="line"></span><br><span class="line">    NSRange redRange &#x3D; [value rangeOfString:@&quot;Attributed&quot; options:NSCaseInsensitiveSearch];</span><br><span class="line">    [subTitle addAttribute:NSForegroundColorAttributeName value:[UIColor redColor] range:redRange];</span><br><span class="line"></span><br><span class="line">    NSRange greenRange &#x3D; [value rangeOfString:@&quot;successfully&quot; options:NSCaseInsensitiveSearch];</span><br><span class="line">    [subTitle addAttribute:NSForegroundColorAttributeName value:[UIColor greenColor] range:greenRange];</span><br><span class="line"></span><br><span class="line">    NSRange underline &#x3D; [value rangeOfString:@&quot;completed&quot; options:NSCaseInsensitiveSearch];</span><br><span class="line">    [subTitle addAttributes:@&#123;NSUnderlineStyleAttributeName:@(NSUnderlineStyleSingle)&#125; range:underline];</span><br><span class="line"></span><br><span class="line">    return subTitle;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">[alert showSuccess:self title:@&quot;Button View&quot; subTitle:@&quot;Attributed string operation successfully completed.&quot; closeButtonTitle:@&quot;Done&quot; duration:0.0f];</span><br></pre></td></tr></table></figure>
+
+<h3 id="添加文本输入框"><a href="#添加文本输入框" class="headerlink" title="添加文本输入框"></a>添加文本输入框</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">SCLAlertView *alert &#x3D; [[SCLAlertView alloc] init];</span><br><span class="line"></span><br><span class="line">UITextField *textField &#x3D; [alert addTextField:@&quot;Enter your name&quot;];</span><br><span class="line"></span><br><span class="line">[alert addButton:@&quot;Show Name&quot; actionBlock:^(void) &#123;</span><br><span class="line">    NSLog(@&quot;Text value: %@&quot;, textField.text);</span><br><span class="line">&#125;];</span><br><span class="line"></span><br><span class="line">[alert showEdit:self title:@&quot;Edit View&quot; subTitle:@&quot;This alert view shows a text box&quot; closeButtonTitle:@&quot;Done&quot; duration:0.0f];</span><br></pre></td></tr></table></figure>
+
+<h3 id="旋转进度条"><a href="#旋转进度条" class="headerlink" title="旋转进度条"></a>旋转进度条</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">SCLAlertView *alert &#x3D; [[SCLAlertView alloc] init];</span><br><span class="line">    </span><br><span class="line">[alert showWaiting:self title:@&quot;Waiting...&quot; subTitle:@&quot;Blah de blah de blah, blah. Blah de blah de&quot; closeButtonTitle:nil duration:5.0f];</span><br></pre></td></tr></table></figure>
+
+<h3 id="添加切换按钮"><a href="#添加切换按钮" class="headerlink" title="添加切换按钮"></a>添加切换按钮</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">SCLAlertView *alert &#x3D; [[SCLAlertView alloc] init];</span><br><span class="line">    </span><br><span class="line">SCLSwitchView *switchView &#x3D; [alert addSwitchViewWithLabel:@&quot;Don&#39;t show again&quot;.uppercaseString];</span><br><span class="line">switchView.tintColor &#x3D; [UIColor brownColor];</span><br><span class="line">    </span><br><span class="line">[alert addButton:@&quot;Done&quot; actionBlock:^(void) &#123;</span><br><span class="line">    NSLog(@&quot;Show again? %@&quot;, switchView.isSelected ? @&quot;-No&quot;: @&quot;-Yes&quot;);</span><br><span class="line">&#125;];</span><br><span class="line">    </span><br><span class="line">[alert showCustom:self image:[UIImage imageNamed:@&quot;switch&quot;] color:[UIColor brownColor] title:kInfoTitle subTitle:kSubtitle closeButtonTitle:nil duration:0.0f];</span><br></pre></td></tr></table></figure>
+
+<h3 id="添加自定义视图"><a href="#添加自定义视图" class="headerlink" title="添加自定义视图"></a>添加自定义视图</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">SCLAlertView *alert &#x3D; [[SCLAlertView alloc] init];</span><br><span class="line"></span><br><span class="line">UIView *customView &#x3D; [[UIView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 215.0f, 80.0f)];</span><br><span class="line">customView.backgroundColor &#x3D; [UIColor redColor];</span><br><span class="line"></span><br><span class="line">[alert addCustomView:customView];</span><br><span class="line"></span><br><span class="line">[alert showNotice:self title:@&quot;Title&quot; subTitle:@&quot;This alert view shows a custom view&quot; closeButtonTitle:@&quot;Done&quot; duration:0.0f];</span><br></pre></td></tr></table></figure>
+
+<h3 id="SCLAlertView属性"><a href="#SCLAlertView属性" class="headerlink" title="SCLAlertView属性"></a>SCLAlertView属性</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;Dismiss on tap outside (Default is NO)，点击灰色区域是否也可以关闭弹窗</span><br><span class="line">alert.shouldDismissOnTapOutside &#x3D; YES;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;Hide animation type (Default is SCLAlertViewHideAnimationFadeOut)</span><br><span class="line">alert.hideAnimationType &#x3D; SCLAlertViewHideAnimationSlideOutToBottom;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;Show animation type (Default is SCLAlertViewShowAnimationSlideInFromTop)</span><br><span class="line">alert.showAnimationType &#x3D;  SCLAlertViewShowAnimationSlideInFromLeft;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;Set background type (Default is SCLAlertViewBackgroundShadow)</span><br><span class="line">alert.backgroundType &#x3D; SCLAlertViewBackgroundBlur;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;Overwrite SCLAlertView (Buttons, top circle and borders) colors</span><br><span class="line">alert.customViewColor &#x3D; [UIColor purpleColor];</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;Set custom tint color for icon image.</span><br><span class="line">alert.iconTintColor &#x3D; [UIColor purpleColor];</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;Override top circle tint color with background color</span><br><span class="line">alert.tintTopCircle &#x3D; NO;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;Set custom corner radius for SCLAlertView</span><br><span class="line">alert.cornerRadius &#x3D; 13.0f;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;Overwrite SCLAlertView background color</span><br><span class="line">alert.backgroundViewColor &#x3D; [UIColor cyanColor];</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;Returns if the alert is visible or not.</span><br><span class="line">alert.isVisible;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;Make the top circle icon larger</span><br><span class="line">alert.useLargerIcon &#x3D; YES;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;Using sound</span><br><span class="line">alert.soundURL &#x3D; [NSURL fileURLWithPath:[NSString stringWithFormat:@&quot;%@&#x2F;right_answer.mp3&quot;, [[NSBundle mainBundle] resourcePath]]];</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="Helpers"><a href="#Helpers" class="headerlink" title="Helpers"></a>Helpers</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;Receiving information that SCLAlertView is dismissed</span><br><span class="line">[alert alertIsDismissed:^&#123;</span><br><span class="line">    NSLog(@&quot;SCLAlertView dismissed!&quot;);</span><br><span class="line">&#125;];</span><br></pre></td></tr></table></figure>
+
+<h4 id="Alert-View-Styles，弹窗样式"><a href="#Alert-View-Styles，弹窗样式" class="headerlink" title="Alert View Styles，弹窗样式"></a>Alert View Styles，弹窗样式</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">typedef NS_ENUM(NSInteger, SCLAlertViewStyle)</span><br><span class="line">&#123;</span><br><span class="line">    SCLAlertViewStyleSuccess,</span><br><span class="line">    SCLAlertViewStyleError,</span><br><span class="line">    SCLAlertViewStyleNotice,</span><br><span class="line">    SCLAlertViewStyleWarning,</span><br><span class="line">    SCLAlertViewStyleInfo,</span><br><span class="line">    SCLAlertViewStyleEdit,</span><br><span class="line">    SCLAlertViewStyleWaiting,</span><br><span class="line">    SCLAlertViewStyleQuestion,</span><br><span class="line">    SCLAlertViewStyleCustom</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h4 id="Alert-View-hide-animation-styles，隐藏动画样式"><a href="#Alert-View-hide-animation-styles，隐藏动画样式" class="headerlink" title="Alert View hide animation styles，隐藏动画样式"></a>Alert View hide animation styles，隐藏动画样式</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">typedef NS_ENUM(NSInteger, SCLAlertViewHideAnimation)</span><br><span class="line">&#123;</span><br><span class="line">    SCLAlertViewHideAnimationFadeOut,</span><br><span class="line">    SCLAlertViewHideAnimationSlideOutToBottom,</span><br><span class="line">    SCLAlertViewHideAnimationSlideOutToTop,</span><br><span class="line">    SCLAlertViewHideAnimationSlideOutToLeft,</span><br><span class="line">    SCLAlertViewHideAnimationSlideOutToRight,</span><br><span class="line">    SCLAlertViewHideAnimationSlideOutToCenter,</span><br><span class="line">    SCLAlertViewHideAnimationSlideOutFromCenter,</span><br><span class="line">    SCLAlertViewHideAnimationSimplyDisappear</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h4 id="Alert-View-show-animation-styles，显示动画样式"><a href="#Alert-View-show-animation-styles，显示动画样式" class="headerlink" title="Alert View show animation styles，显示动画样式"></a>Alert View show animation styles，显示动画样式</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">typedef NS_ENUM(NSInteger, SCLAlertViewShowAnimation)</span><br><span class="line">&#123;</span><br><span class="line">    SCLAlertViewShowAnimationFadeIn,</span><br><span class="line">    SCLAlertViewShowAnimationSlideInFromBottom,</span><br><span class="line">    SCLAlertViewShowAnimationSlideInFromTop,</span><br><span class="line">    SCLAlertViewShowAnimationSlideInFromLeft,</span><br><span class="line">    SCLAlertViewShowAnimationSlideInFromRight,</span><br><span class="line">    SCLAlertViewShowAnimationSlideInFromCenter,</span><br><span class="line">    SCLAlertViewShowAnimationSlideInToCenter,</span><br><span class="line">    SCLAlertViewShowAnimationSimplyAppear</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h4 id="Alert-View-background-styles，背景样式"><a href="#Alert-View-background-styles，背景样式" class="headerlink" title="Alert View background styles，背景样式"></a>Alert View background styles，背景样式</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">typedef NS_ENUM(NSInteger, SCLAlertViewBackground)</span><br><span class="line">&#123;</span><br><span class="line">    SCLAlertViewBackgroundShadow,     &#x2F;&#x2F; 灰色背景</span><br><span class="line">    SCLAlertViewBackgroundBlur,       &#x2F;&#x2F; 模糊背景</span><br><span class="line">    SCLAlertViewBackgroundTransparent &#x2F;&#x2F; 透明背景</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="我的使用示例"><a href="#我的使用示例" class="headerlink" title="我的使用示例"></a>我的使用示例</h3><p>版本更新提示</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 弹窗提示</span><br><span class="line">SCLAlertView *alert &#x3D; [[SCLAlertView alloc] initWithNewWindow];</span><br><span class="line">alert.horizontalButtons &#x3D; YES; &#x2F;&#x2F; 水平显示按钮</span><br><span class="line">alert.shouldDismissOnTapOutside &#x3D; YES; &#x2F;&#x2F; 点击其他区域隐藏弹窗</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 拒绝按钮</span><br><span class="line">SCLButton *button &#x3D; [alert addButton:@&quot;残忍拒绝&quot; actionBlock:nil];</span><br><span class="line">button.buttonFormatBlock &#x3D; ^NSDictionary *&#123;</span><br><span class="line">    NSMutableDictionary *buttonConfig &#x3D; [[NSMutableDictionary alloc] init];</span><br><span class="line">    buttonConfig[@&quot;backgroundColor&quot;] &#x3D; [UIColor whiteColor];</span><br><span class="line">    buttonConfig[@&quot;textColor&quot;] &#x3D; HexColor(@&quot;0x2866BF&quot;);</span><br><span class="line">    return buttonConfig;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 下载按钮</span><br><span class="line">[alert addButton:@&quot;前往下载&quot; actionBlock:^&#123;</span><br><span class="line">    &#x2F;&#x2F; 打开 App Store</span><br><span class="line">    NSString *urlStr &#x3D; [NSString stringWithFormat:@&quot;itms-apps:&#x2F;&#x2F;itunes.apple.com&#x2F;app&#x2F;id836500024&quot;];</span><br><span class="line">    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:urlStr]];</span><br><span class="line">&#125;];</span><br><span class="line"></span><br><span class="line">[alert showInfo:self title:@&quot;发现新版本&quot; subTitle:@&quot;您有新的版本可供下载&quot; closeButtonTitle:nil duration:0.0f];</span><br></pre></td></tr></table></figure>
+<p>效果：<br><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072333.jpg" alt="image"></p>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>独木舟的木
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://andy0570.com/2017/11/20/SCLAlertView%E2%80%94%E2%80%94%E6%9B%BF%E4%BB%A3%20AlertView%20%E7%9A%84%E5%BC%B9%E7%AA%97/" title="SCLAlertView——替代 AlertView 的弹窗">https://andy0570.com/2017/11/20/SCLAlertView——替代 AlertView 的弹窗/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <span class="exturl" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpo"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</span> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/iOS/" rel="tag"># iOS</a>
+              <a href="/tags/GitHub/" rel="tag"># GitHub</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2017/11/16/iOS%20%E7%BC%96%E7%A8%8B%EF%BC%9ANSValue/" rel="prev" title="iOS 编程：NSValue">
+      <i class="fa fa-chevron-left"></i> iOS 编程：NSValue
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2017/11/24/%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95/" rel="next" title="排序算法">
+      排序算法 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+        </div>
+        
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">独木舟的木</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">2.1m</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">31:21</span>
+</div>
+  <div class="powered-by">由 <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZw==">NexT.Gemini</span> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

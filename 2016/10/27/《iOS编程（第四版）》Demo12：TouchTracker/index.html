@@ -1,23 +1,639 @@
-{% extends '_layout.swig' %}
-{% import '_macro/post.swig' as post_template %}
-{% import '_macro/sidebar.swig' as sidebar_template %}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.0.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+  <meta name="google-site-verification" content="wioXOS3Gv2wXUpJ3sLtfZ4ft6YJYKNLLWSw6QoZTFYM">
+  <meta name="msvalidate.01" content="C96491A81239C517A50597C54EE53CD1">
+  <meta name="baidu-site-verification" content="h8asiToN1b">
 
-{% block title %}{{ page.title }} | {{ title }}{% endblock %}
+<link rel="stylesheet" href="/css/main.css">
 
-{% block page_class %}page-post-detail{% endblock %}
 
-{% block content %}
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  
+  <link rel="stylesheet" href="/lib/animate-css/animate.min.css">
 
-  <div id="posts" class="posts-expand">
-    {{ post_template.render(page) }}
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"andy0570.com","root":"/","scheme":"Gemini","version":"8.0.0-rc.5","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":"mac","bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false};
+  </script>
+
+  <meta name="description" content="TouchTracker参考：《iOS编程（第四版）[美]Christian Keur》 写的Demo笔记 1. 触摸事件与UIResponder因为 UIView 是 UIResponder 的子类，所以覆盖以下四个方法就可以处理四种不同的触摸事件：  1234567891011&#x2F;&#x2F; ① 一根手指或多根手指触摸屏幕- (void)touchesBegan:(NSSet&lt;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="《iOS编程（第四版）》Demo12：TouchTracker">
+<meta property="og:url" content="https://andy0570.com/2016/10/27/%E3%80%8AiOS%E7%BC%96%E7%A8%8B%EF%BC%88%E7%AC%AC%E5%9B%9B%E7%89%88%EF%BC%89%E3%80%8BDemo12%EF%BC%9ATouchTracker/index.html">
+<meta property="og:site_name" content="独木舟的木">
+<meta property="og:description" content="TouchTracker参考：《iOS编程（第四版）[美]Christian Keur》 写的Demo笔记 1. 触摸事件与UIResponder因为 UIView 是 UIResponder 的子类，所以覆盖以下四个方法就可以处理四种不同的触摸事件：  1234567891011&#x2F;&#x2F; ① 一根手指或多根手指触摸屏幕- (void)touchesBegan:(NSSet&lt;">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071316.gif">
+<meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071322.jpg">
+<meta property="article:published_time" content="2016-10-27T02:22:00.000Z">
+<meta property="article:modified_time" content="2019-05-01T14:45:12.000Z">
+<meta property="article:author" content="独木舟的木">
+<meta property="article:tag" content="iOS">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071316.gif">
+
+<link rel="canonical" href="https://andy0570.com/2016/10/27/%E3%80%8AiOS%E7%BC%96%E7%A8%8B%EF%BC%88%E7%AC%AC%E5%9B%9B%E7%89%88%EF%BC%89%E3%80%8BDemo12%EF%BC%9ATouchTracker/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>《iOS编程（第四版）》Demo12：TouchTracker | 独木舟的木</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="独木舟的木" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <main class="main">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+        <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
   </div>
 
-{% endblock %}
+  <div class="site-meta">
 
-{% block sidebar %}
-  {{ sidebar_template.render(true) }}
-{% endblock %}
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">独木舟的木</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">iOS Developer</p>
+  </div>
 
-{% block script_extra %}
-  {% include '_scripts/pages/post-details.swig' %}
-{% endblock %}
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">14</span></a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">36</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">310</span></a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <section class="post-toc-wrap sidebar-panel">
+          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#TouchTracker"><span class="nav-number">1.</span> <span class="nav-text">TouchTracker</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E8%A7%A6%E6%91%B8%E4%BA%8B%E4%BB%B6%E4%B8%8EUIResponder"><span class="nav-number"></span> <span class="nav-text">1. 触摸事件与UIResponder</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E5%88%9B%E5%BB%BAtouchTracker%E7%94%BB%E6%9D%BF%E5%BA%94%E7%94%A8"><span class="nav-number"></span> <span class="nav-text">2. 创建touchTracker画板应用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A1%B9%E7%9B%AE%E7%9A%84%E7%BB%84%E7%BB%87%E7%BB%93%E6%9E%84"><span class="nav-number">1.</span> <span class="nav-text">项目的组织结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A8%A1%E5%9E%8B%E5%AF%B9%E8%B1%A1%EF%BC%9A%E5%AE%9A%E4%B9%89%E4%B8%80%E6%9D%A1%E7%BA%BF"><span class="nav-number">2.</span> <span class="nav-text">模型对象：定义一条线</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E5%AE%9E%E7%8E%B0%E7%BB%98%E5%9B%BE%E5%8A%9F%E8%83%BD"><span class="nav-number"></span> <span class="nav-text">3. 实现绘图功能</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#8-%E5%93%8D%E5%BA%94%E5%AF%B9%E8%B1%A1%E9%93%BE"><span class="nav-number"></span> <span class="nav-text">8. 响应对象链</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#UIController"><span class="nav-number">1.</span> <span class="nav-text">UIController</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#13-UIGestureRecognizer-%E4%B8%8E-UIMenuController"><span class="nav-number"></span> <span class="nav-text">13. UIGestureRecognizer 与 UIMenuController</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%8C%E5%87%BB%E6%89%8B%E5%8A%BF"><span class="nav-number">1.</span> <span class="nav-text">双击手势</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8D%95%E5%87%BB%E6%89%8B%E5%8A%BF"><span class="nav-number">2.</span> <span class="nav-text">单击手势</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#UIMenuController"><span class="nav-number">3.</span> <span class="nav-text">UIMenuController</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-UILongPressGestureRecognizer"><span class="nav-number">4.</span> <span class="nav-text">5. UILongPressGestureRecognizer</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#UIPanGestureRecognizer%EF%BC%88%E6%8B%96%E5%8A%A8%E6%89%8B%E5%8A%BF%EF%BC%89%E4%BB%A5%E5%8F%8A%E5%90%8C%E6%97%B6%E8%AF%86%E5%88%AB%E5%A4%9A%E4%B8%AA%E6%89%8B%E5%8A%BF"><span class="nav-number"></span> <span class="nav-text">UIPanGestureRecognizer（拖动手势）以及同时识别多个手势</span></a></div>
+      </section>
+      <!--/noindex-->
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="独木舟的木"
+      src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+  <p class="site-author-name" itemprop="name">独木舟的木</p>
+  <div class="site-description" itemprop="description">生若直木，不语斧凿。</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">310</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">36</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL0FuZHkwNTcw" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Andy0570"><i class="fab fa-github fa-fw"></i>GitHub</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9zdGFja292ZXJmbG93LmNvbS91c2Vycy83MjY1NDAwL2FuZHkwNTcw" title="StackOverflow → https:&#x2F;&#x2F;stackoverflow.com&#x2F;users&#x2F;7265400&#x2F;andy0570"><i class="fab fa-stack-overflow fa-fw"></i>StackOverflow</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuamlhbnNodS5jb20vdS84NGM1ZmFkYzdjMTg=" title="简书 → https:&#x2F;&#x2F;www.jianshu.com&#x2F;u&#x2F;84c5fadc7c18"><i class="heartbeat fa-fw"></i>简书</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="bWFpbHRvOmFuZHl3aG1AMTYzLmNvbQ==" title="E-Mail → mailto:andywhm@163.com"><i class="fa fa-envelope fa-fw"></i>E-Mail</span>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <span class="exturl cc-opacity" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpo"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></span>
+  </div>
+
+
+
+      </section>
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </header>
+
+      
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div id="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+      <div class="main-inner">
+        
+
+        <div class="content post posts-expand">
+          
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://andy0570.com/2016/10/27/%E3%80%8AiOS%E7%BC%96%E7%A8%8B%EF%BC%88%E7%AC%AC%E5%9B%9B%E7%89%88%EF%BC%89%E3%80%8BDemo12%EF%BC%9ATouchTracker/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+      <meta itemprop="name" content="独木舟的木">
+      <meta itemprop="description" content="生若直木，不语斧凿。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="独木舟的木">
+    </span>
+
+    
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          《iOS编程（第四版）》Demo12：TouchTracker
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2016-10-27 10:22:00" itemprop="dateCreated datePublished" datetime="2016-10-27T10:22:00+08:00">2016-10-27</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-05-01 22:45:12" itemprop="dateModified" datetime="2019-05-01T22:45:12+08:00">2019-05-01</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS/" itemprop="url" rel="index"><span itemprop="name">iOS</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>14k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>13 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h3 id="TouchTracker"><a href="#TouchTracker" class="headerlink" title="TouchTracker"></a>TouchTracker</h3><p>参考：<span class="exturl" data-url="aHR0cHM6Ly93d3cuYW1hem9uLmNuL2dwL3Byb2R1Y3QvQjAxM1VHMlVMVy9yZWY9b2hfYXVpX2RfZGV0YWlscGFnZV9vMDNfP2llPVVURjgmcHNjPTE=">《iOS编程（第四版）[美]Christian Keur》<i class="fa fa-external-link-alt"></i></span> 写的Demo笔记</p>
+<h2 id="1-触摸事件与UIResponder"><a href="#1-触摸事件与UIResponder" class="headerlink" title="1. 触摸事件与UIResponder"></a>1. 触摸事件与UIResponder</h2><p>因为 <strong>UIView</strong> 是 <strong>UIResponder</strong> 的子类，所以覆盖以下四个方法就可以处理四种不同的触摸事件： </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; ① 一根手指或多根手指触摸屏幕</span><br><span class="line">- (void)touchesBegan:(NSSet&lt;UITouch *&gt; *)touches withEvent:(nullable UIEvent *)event;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; ② 一根手指或多根手指在屏幕上移动（随着手指的移动，相关的对象会持续发送该消息）</span><br><span class="line">- (void)touchesMoved:(NSSet&lt;UITouch *&gt; *)touches withEvent:(nullable UIEvent *)event;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; ③ 一根手指或多根手指离开屏幕</span><br><span class="line">- (void)touchesEnded:(NSSet&lt;UITouch *&gt; *)touches withEvent:(nullable UIEvent *)event;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; ④ 在触摸操作正常结束前，某个系统事件（例如突然来电话）打断了触摸过程</span><br><span class="line">- (void)touchesCancelled:(NSSet&lt;UITouch *&gt; *)touches withEvent:(nullable UIEvent *)event;</span><br></pre></td></tr></table></figure>
+
+<p>当系统检测到手指触摸屏幕的事件后，就会创建 <strong>UITouch</strong> 对象（一根手指的触摸事件对应一个<strong>UITouch</strong>对象）。发生触摸事件的 <strong>UIView</strong> 对象会收到不同阶段的以上四种消息。</p>
+<a id="more"></a>
+
+<p><strong>UITouch</strong> 对象和事件响应的方法的工作机制：</p>
+<ul>
+<li>一个 <strong>UITouch</strong> 对象对应屏幕上的一根手指。只要手指没有离开屏幕，相应的 <strong>UITouch</strong> 对象就会一直存在。这些 <strong>UITouch</strong> 对象都会保存对应的手指在屏幕上的当前位置。</li>
+<li>在触摸事件的持续过程中，无论发生什么，最初发生触摸事件的那个视图都会在各个阶段收到相应的触摸消息。也就是说，<u>当某个视图发生触摸事件后，该视图将永远“拥有”当时创建的所有 <strong>UITouch</strong> 对象</u>。</li>
+<li>读者自己编写的代码不需要也不应该保留任何 <strong>UITouch</strong> 对象。当某个 <strong>UITouch</strong> 对象的状态发生变化时，系统会向指定的对象发送特定的事件消息，并传入发生变化的 <strong>UITouch</strong> 对象。</li>
+<li>触摸事件由系统添加至一个由 <strong>UIApplication</strong> 单例管理的事件队列。</li>
+<li>当多根手指在<u>同一个视图、同一个时刻</u>执行相同的触摸动作时，<strong>UIApplication</strong> 会用<u>单个消息、一次分发所有相关的 <strong>UITouch</strong> 对象</u>。但是，因为 <strong>UIApplication</strong>对“同一时刻”的判断很严格，通常 <strong>UIApplication</strong> 都是发送<u>多个 <strong>UIResponder</strong> 消息，分批发送 <strong>UITouch</strong> 对象</u>。</li>
+</ul>
+<h2 id="2-创建touchTracker画板应用"><a href="#2-创建touchTracker画板应用" class="headerlink" title="2. 创建touchTracker画板应用"></a>2. 创建touchTracker画板应用</h2><p>通过创建一个“画板”应用来简单描述触摸事件和手势处理,用户可以在该视图上触摸并绘制线条，借助多点触控，用户还可以同时画多根线条。<br>demo演示：</p>
+<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071316.gif"></p>
+<h3 id="项目的组织结构"><a href="#项目的组织结构" class="headerlink" title="项目的组织结构"></a>项目的组织结构</h3><p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071322.jpg" alt="TouchTracker"></p>
+<h3 id="模型对象：定义一条线"><a href="#模型对象：定义一条线" class="headerlink" title="模型对象：定义一条线"></a>模型对象：定义一条线</h3><p>通过两个点可以定义一条直线，所以 <strong>HQLLine</strong> 对象需要用 <strong>begin</strong> 属性和 <strong>end</strong> 属性来保存起点和终点。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">#import &lt;Foundation&#x2F;Foundation.h&gt;</span><br><span class="line">#import &lt;CoreGraphics&#x2F;CoreGraphics.h&gt;</span><br><span class="line"></span><br><span class="line">&#x2F;**</span><br><span class="line"> 描述线条的模型对象：起点 begin（x,y）、终点 end（x,y）</span><br><span class="line"> *&#x2F;</span><br><span class="line">@interface HQLLine : NSObject</span><br><span class="line"></span><br><span class="line">@property (nonatomic) CGPoint begin;</span><br><span class="line">@property (nonatomic) CGPoint end;</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="3-实现绘图功能"><a href="#3-实现绘图功能" class="headerlink" title="3. 实现绘图功能"></a>3. 实现绘图功能</h2><p>HQLDrawView 对象要实现绘图功能： </p>
+<ul>
+<li>管理正在绘制的线条、被选中的线条和绘制完成的线条。所以在类扩展中添加这几个属性：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">@interface HQLDrawView () &lt;UIGestureRecognizerDelegate&gt;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 保存当前线（多点触控，同时保存多线）</span><br><span class="line">&#x2F;&#x2F; key 是 UITouch 对象的内存地址，value 是 HQLLine 对象</span><br><span class="line">@property (nonatomic, strong) NSMutableDictionary *linesInProgress;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 保存所有线</span><br><span class="line">@property (nonatomic, strong) NSMutableArray *finishedLines;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 单击手势选中的线条</span><br><span class="line">&#x2F;&#x2F; weak: ① finishedLines 数组会保存 selectedLine，是强引用；</span><br><span class="line">&#x2F;&#x2F;       ② 如果用户双击清除所有线条，finishedLines 数组会移除 selectedLine，这时 HQLDrawView会自动将 selectedLine 设置为 nil</span><br><span class="line">@property (nonatomic, weak) HQLLine *selectedLine;</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>当前线 <strong>linesInProgress</strong> 通过字典来保存<br>字典的key是一个NSValue对象，保存UITouch对象的内存地址。<br>字典的value就是UITouch对象所对应的线（HQLLine对象）。</p>
+<ul>
+<li><strong>使用内存地址分辨UITouch对象</strong> 的原因是：在触摸事件开始、移动、结束的整个过程中，其内存地址是不会改变的，内存地址相同的UITouch对象一定是同一个对象。</li>
+<li>而又用<strong>NSValue</strong>来封装<strong>UITouch</strong>对象的内存地址，而不是直接保存 <strong>UITouch对象</strong>是因为：<strong>NSDictionary</strong>及其子类<strong>NSMutableDictionary</strong>的键必须遵守<strong>NSCopying协议</strong>——键必须可以复制（可以响应copy消息）。<strong>UITouch</strong>并不遵守<strong>NSCopying协议</strong>，因为每一个触摸事件都是唯一的，不应该被复制。相反，<strong>NSValue</strong>遵守<strong>NSCopying协议</strong>，同一个<strong>UITouch对象</strong>会在触摸过程中创建包含相同内存地址的<strong>NSValue对象</strong>。</li>
+</ul>
+</blockquote>
+<ul>
+<li>处理触摸事件：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br></pre></td><td class="code"><pre><span class="line">#pragma mark 一根手指或多根手指触摸屏幕</span><br><span class="line">&#x2F;&#x2F; 触摸事件开始时,HQLDrawView 对象需要创建一个 HQLLine 对象，并将其begin属性和end属性设置为触摸发生时的手指位置</span><br><span class="line">- (void)touchesBegan:(NSSet&lt;UITouch *&gt; *)touches withEvent:(UIEvent *)event &#123;</span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F; 向控制台输出日志，查看触摸事件发生顺序</span><br><span class="line">    NSLog(@&quot;%@&quot;,NSStringFromSelector(_cmd));</span><br><span class="line">    </span><br><span class="line">    for (UITouch *t in touches) &#123;</span><br><span class="line">        &#x2F;&#x2F; 根据触摸位置创建 HQLLine 对象</span><br><span class="line">        CGPoint location &#x3D; [t locationInView:self];</span><br><span class="line">        HQLLine *line &#x3D; [[HQLLine alloc] init];</span><br><span class="line">        line.begin &#x3D; location;</span><br><span class="line">        line.end   &#x3D; location;</span><br><span class="line">        &#x2F;&#x2F; valueWithNonretainedObject：将 UITouch 对象的内存地址封装为 NSValue 对象</span><br><span class="line">        &#x2F;&#x2F; 使用内存地址分辨 UITouch 对象的原因是，在触摸事件开始、移动、结束的整个过程中，其内存地址不会改变，内存地址相同的 UITouch 对象一定是同一个对象。</span><br><span class="line">        NSValue *key &#x3D; [NSValue valueWithNonretainedObject:t];</span><br><span class="line">        &#x2F;&#x2F; 保存当前线到字典中，key值是内存地址，value值是 HQLLine 对象</span><br><span class="line">        self.linesInProgress[key] &#x3D; line;</span><br><span class="line">    &#125;</span><br><span class="line">    [self setNeedsDisplay];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">#pragma mark 一根手指或多根手指在屏幕上移动</span><br><span class="line">&#x2F;&#x2F; 触摸事件继续时（手指在频幕上移动），HQLDrawView对象需要将end设置为手指的当前位置</span><br><span class="line">- (void) touchesMoved:(NSSet&lt;UITouch *&gt; *)touches withEvent:(UIEvent *)event &#123;</span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F; 向控制台输出日志，查看触摸事件发生顺序</span><br><span class="line">    NSLog(@&quot;%@&quot;,NSStringFromSelector(_cmd));</span><br><span class="line">    </span><br><span class="line">    for (UITouch *t in touches) &#123;</span><br><span class="line">        &#x2F;&#x2F; 根据当前 UITouch 对象的内存地址找到key值，再找到value值，更新 HQLLine 对象的终点</span><br><span class="line">        NSValue *key &#x3D; [NSValue valueWithNonretainedObject:t];</span><br><span class="line">        HQLLine *line &#x3D; self.linesInProgress[key];</span><br><span class="line">        line.end &#x3D; [t locationInView:self];</span><br><span class="line">    &#125;</span><br><span class="line">    [self setNeedsDisplay];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">#pragma mark 一根手指或多根手指离开屏幕</span><br><span class="line">&#x2F;&#x2F; 触摸结束时，将当前线linesInProgress保存到finishedLines数组中。</span><br><span class="line">- (void) touchesEnded:(NSSet&lt;UITouch *&gt; *)touches withEvent:(UIEvent *)event &#123;</span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F; 向控制台输出日志，查看触摸事件发生顺序</span><br><span class="line">    NSLog(@&quot;%@&quot;,NSStringFromSelector(_cmd));</span><br><span class="line">    </span><br><span class="line">    for (UITouch *t in touches) &#123;</span><br><span class="line">        NSValue *key &#x3D; [NSValue valueWithNonretainedObject:t];</span><br><span class="line">        HQLLine *line &#x3D; self.linesInProgress[key];</span><br><span class="line">        &#x2F;&#x2F; 将所有绘制完成的线，即 HQLLine 对象添加到_finishedLines数组中</span><br><span class="line">        [self.finishedLines addObject:line];</span><br><span class="line">        &#x2F;&#x2F; 从当前线中移除 HQLLine 对象</span><br><span class="line">        [self.linesInProgress removeObjectForKey:key];</span><br><span class="line">    &#125;</span><br><span class="line">    [self setNeedsDisplay];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">#pragma mark 在触摸操作正常结束前，某个系统事件打断了触摸进程</span><br><span class="line">&#x2F;&#x2F; 触摸取消事件：当系统中断了应用，触摸事件就会被取消，这是应用应该恢复到触摸事件发生前的状态，这里就简单的清楚所有正在绘制的线条。</span><br><span class="line">- (void) touchesCancelled:(NSSet&lt;UITouch *&gt; *)touches withEvent:(UIEvent *)event &#123;</span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F;向控制台输出日志，查看触摸事件发生顺序</span><br><span class="line">    NSLog(@&quot;%@&quot;,NSStringFromSelector(_cmd));</span><br><span class="line">    </span><br><span class="line">    for (UITouch *t in touches) &#123;</span><br><span class="line">        NSValue *key &#x3D; [NSValue valueWithNonretainedObject:t];</span><br><span class="line">        &#x2F;&#x2F; 从当前线中移除 HQLLine 对象</span><br><span class="line">        [self.linesInProgress removeObjectForKey:key];</span><br><span class="line">    &#125;</span><br><span class="line">    [self setNeedsDisplay];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="8-响应对象链"><a href="#8-响应对象链" class="headerlink" title="8. 响应对象链"></a>8. 响应对象链</h2><p><strong>UIResponder</strong> 对象可以接受触摸事件，而 <strong>UIView</strong>、<strong>UIViewController</strong>、<strong>UIApplication</strong> 和 <strong>UIWindow</strong> 等都是 <strong>UIResponder</strong> 的子类。因此，他们都可以可以接受触摸事件。</p>
+<p>例如，虽然 <strong>UIViewController</strong> 不是视图对象，系统不能向 <strong>UIViewController</strong> 对象直接发送触摸事件，但是该对象能通过响应对象链接受事件。</p>
+<p><strong>UIResponder</strong> 对象拥有一个名为nextResponder的指针，相关的 <strong>UIResponder</strong> 对象可以通过该指针组成一个响应对象链。</p>
+<ul>
+<li>当 <strong>UIView</strong> 对象属于某个 <strong>UIViewController</strong> 对象时，其nextResponder指针就会指向包含该视图的**UIViewController **对象。</li>
+<li>当 <strong>UIView</strong> 对象不属于任何 <strong>UIViewController</strong> 对象时，其nextResponder指针就会指向该视图的父视图。<strong>UIViewController</strong> 对象的nextResponder通常会指向其视图的父视图。最顶层的父视图是 <strong>UIWindow</strong> 对象，而 <strong>UIWindow</strong> 对象的nextResponder指向的是 <strong>UIApplication</strong> 单例。</li>
+<li>如果没有为某个 <strong>UIResponder</strong> 对象覆盖特定的事件处理方法，那么该对象的nextResponder会尝试处理相应的触摸事件。最终，该事件会传递给<strong>UIApplication</strong>（响应对象链的最后一个对象），如果 <strong>UIApplication</strong> 也无法对其处理，系统就会丢弃该事件。</li>
+</ul>
+<p>除了由 <strong>UIResponder</strong> 对象向nextResponder转发消息，也可以直接向nextResponder发送消息。<br><code>[[self nextResponder]touchesBegan:touches withEvent:event];  </code></p>
+<h3 id="UIController"><a href="#UIController" class="headerlink" title="UIController"></a>UIController</h3><ul>
+<li><strong>UIController</strong>是部分Cocoa Touch类的父类，例如<strong>UIButton</strong>和<strong>UISlider</strong>。</li>
+<li><strong>UIControl</strong> 对象并不是直接向目标对象发送消息，而是通过 <strong>UIApplication</strong> 转发。<strong>UIApplication</strong> 在转发源自 <strong>UIControl</strong> 对象的消息时，会先判断目标对象是不是 <code>nil</code>。如果是 <code>nil</code>，<strong>UIApplication</strong> 就会先找出 <strong>UIWindow</strong> 对象的第一响应对象，然后向第一响应对象发送相应的动作消息。</li>
+</ul>
+<h2 id="13-UIGestureRecognizer-与-UIMenuController"><a href="#13-UIGestureRecognizer-与-UIMenuController" class="headerlink" title="13. UIGestureRecognizer 与 UIMenuController"></a>13. UIGestureRecognizer 与 UIMenuController</h2><ul>
+<li>**UIGestureRecognizer **对象可以用于识别特定手势，例如“张开或者合拢手指”（pinch）或者滑动（swipe）手势。</li>
+<li>在为应用添加手势识别功能时，需要<u>针对特定的手势创建 <strong>UIGestureRecognizer</strong> 子类对象，而不是直接使用 <strong>UIGestureRecognizer</strong> 对象。</u></li>
+</ul>
+<h3 id="双击手势"><a href="#双击手势" class="headerlink" title="双击手势"></a>双击手势</h3><p>添加双击手势需要在<strong>HQLDrawView.m</strong>的初始化方法中创建一个<strong>UITapGestureRecognize</strong>对象，并注册触发的手势方法。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; -----------------------------------------------</span><br><span class="line">&#x2F;&#x2F; 使用 UIGestureRecognize 子类步骤：</span><br><span class="line">&#x2F;&#x2F; ① 创建对象并设置目标-动作对；</span><br><span class="line">&#x2F;&#x2F; ② 将该对象“附着”在某个视图上；</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; UIGestureRecognize 子类 - UITapGestureRecognizer</span><br><span class="line">&#x2F;&#x2F; 1️⃣ 双击手势</span><br><span class="line">UITapGestureRecognizer *doubleTapRecognizer &#x3D;</span><br><span class="line">    [[UITapGestureRecognizer alloc] initWithTarget:self</span><br><span class="line">                                            action:@selector(doubleTap:)];</span><br><span class="line">&#x2F;&#x2F; 设置点击次数为2</span><br><span class="line">doubleTapRecognizer.numberOfTapsRequired &#x3D; 2;</span><br><span class="line">&#x2F;&#x2F; 设置手势优先：延迟 UIView 收到 UIResponder 消息</span><br><span class="line">&#x2F;&#x2F; 只有双击手势识别失败后，才能再去识别 UIResponder 消息的触摸手势，防止误识别。</span><br><span class="line">doubleTapRecognizer.delaysTouchesBegan &#x3D; YES;</span><br><span class="line">&#x2F;&#x2F; 将该对象“附着”在视图上；</span><br><span class="line">[self addGestureRecognizer:doubleTapRecognizer];</span><br></pre></td></tr></table></figure>
+
+
+
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; doubleTap:双击手势方法：删除所有线条</span><br><span class="line">- (void) doubleTap:(UIGestureRecognizer *)gr &#123;</span><br><span class="line">NSLog(@&quot;Recognized Double Tap&quot;);</span><br><span class="line">[self.linesInProgress removeAllObjects];</span><br><span class="line">[self.finishedLines removeAllObjects];</span><br><span class="line">[self setNeedsDisplay];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="单击手势"><a href="#单击手势" class="headerlink" title="单击手势"></a>单击手势</h3><p>在<strong>HQLDrawView.m</strong>的初始化方法中创建一个<strong>UITapGestureRecognizer</strong>单击手势对象。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 2️⃣ 单击手势</span><br><span class="line">UITapGestureRecognizer *tapRecognizer &#x3D;</span><br><span class="line">    [[UITapGestureRecognizer alloc] initWithTarget:self</span><br><span class="line">                                            action:@selector(tap:)];</span><br><span class="line">&#x2F;&#x2F; 同样设置手势优先：① 延迟 UIView 收到 UIResponder 消息</span><br><span class="line">tapRecognizer.delaysTouchesBegan &#x3D; YES;</span><br><span class="line">&#x2F;&#x2F; ② 需要双击手势识别失败时再识别单击手势</span><br><span class="line">[tapRecognizer requireGestureRecognizerToFail:doubleTapRecognizer];</span><br><span class="line">[self addGestureRecognizer:tapRecognizer];</span><br></pre></td></tr></table></figure>
+
+
+
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line">#pragma mark - 单击手势</span><br><span class="line"></span><br><span class="line">- (void) tap:(UIGestureRecognizer *)gr &#123;</span><br><span class="line">    </span><br><span class="line">    NSLog(@&quot;Recognized tap&quot;);</span><br><span class="line">    &#x2F;&#x2F; 获取点击的坐标位置</span><br><span class="line">    CGPoint point &#x3D; [gr locationInView:self];</span><br><span class="line">    &#x2F;&#x2F; 根据该点找到最近的线</span><br><span class="line">    self.selectedLine &#x3D; [self lineAtPoint:point];</span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F; 弹出删除菜单</span><br><span class="line">    if (self.selectedLine) &#123;</span><br><span class="line">        &#x2F;&#x2F; 使视图成为 UIMenuItem 动作消息的目标</span><br><span class="line">        [self becomeFirstResponder];</span><br><span class="line">        &#x2F;&#x2F; 获取 UIMenuController 对象</span><br><span class="line">        UIMenuController *menu &#x3D; [UIMenuController sharedMenuController];</span><br><span class="line">        &#x2F;&#x2F; 创建一个新的标题为 “Delete” 的 UIMenuItem 对象</span><br><span class="line">        UIMenuItem *deleteItem &#x3D;</span><br><span class="line">            [[UIMenuItem alloc] initWithTitle:@&quot;删除&quot;</span><br><span class="line">                                       action:@selector(deleteLine:)];</span><br><span class="line">        menu.menuItems &#x3D; @[deleteItem];</span><br><span class="line">        &#x2F;&#x2F; 先为 UIMenuController 对象设置显示区域，然后将其设置为可见</span><br><span class="line">        [menu setTargetRect:CGRectMake(point.x, point.y, 2, 2) inView:self];</span><br><span class="line">        [menu setMenuVisible:YES animated:YES];</span><br><span class="line">    &#125;else &#123;</span><br><span class="line">        &#x2F;&#x2F; 如果没有选中的线条，就隐藏 UIMenuController 对象</span><br><span class="line">        &#x2F;&#x2F; 即点击其他空白区域，隐藏 UIMenuController 对象</span><br><span class="line">        [[UIMenuController sharedMenuController] setMenuVisible:NO</span><br><span class="line">                                                       animated:YES];</span><br><span class="line">    &#125;</span><br><span class="line">    &#x2F;&#x2F; 用绿色重绘这根线条</span><br><span class="line">    [self setNeedsDisplay];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">#pragma 根据点找出最近的线</span><br><span class="line">- (HQLLine *) lineAtPoint:(CGPoint) p &#123;</span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F; 找出离P最近的 HQLLine 对象</span><br><span class="line">    for (HQLLine *l in self.finishedLines) &#123;</span><br><span class="line">        CGPoint start &#x3D; l.begin;</span><br><span class="line">        CGPoint end &#x3D; l.end;</span><br><span class="line">        &#x2F;&#x2F;检查线条的若干点</span><br><span class="line">        for (float t&#x3D; 0.0; t &lt;&#x3D; 1.0; t +&#x3D; 0.05) &#123;</span><br><span class="line">            float x &#x3D; start.x + t * (end.x - start.x);</span><br><span class="line">            float y &#x3D; start.y + t * (end.y - start.y);</span><br><span class="line">            &#x2F;&#x2F; 如果线条的某个点和p的距离在20点以内，就返回相应的HQLLine对象</span><br><span class="line">            if (hypot(x-p.x, y-p.y) &lt; 20.0) &#123;</span><br><span class="line">                return l;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    return nil;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">#pragma UIMenuItem 动作方法：删除线</span><br><span class="line"></span><br><span class="line">- (void) deleteLine:(id) sender &#123;</span><br><span class="line">    &#x2F;&#x2F; 从已经完成的线条中删除选中的线条</span><br><span class="line">    [self.finishedLines removeObject:self.selectedLine];</span><br><span class="line">    &#x2F;&#x2F; 重画整个视图</span><br><span class="line">    [self setNeedsDisplay];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="UIMenuController"><a href="#UIMenuController" class="headerlink" title="UIMenuController"></a>UIMenuController</h3><p>以上单击手势方法 <code>tap:</code> 中用到了 <strong>UIMenuController</strong> 对象</p>
+<ul>
+<li><strong>UIMenuController **对象用于在用户手指按下的地方显示一组 **UIMenuItem</strong> 对象（菜单项），每个 <strong>UIMenuItem</strong> 对象都有自己的标题和动作方法。<br>*显示 <strong>UIMenuItem</strong> 对象的 ∫ 对象必须是当前 <strong>UIWindow</strong> 对象的第一响应对象。</li>
+</ul>
+<blockquote>
+<p>如果要将某个自定义的 <strong>UIView</strong> 子类对象设置为第一响应者 <code>[self becomeFirstResponder]</code> ，就必须在HQLDrawView.m中覆盖 <code>canBecomeFirstResponder</code> 方法并返回YES。</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">- (BOOL) canBecomeFirstResponder &#123;</span><br><span class="line">return YES;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>还需要为<strong>UIMenuController</strong>对象实现删除线的动作方法，才会在选中某条线时显示<strong>UIMenuController</strong>对象。如果<strong>UIMenuController</strong>对象的动作方法没有实现，应用就不会显示<strong>UIMenucontroller</strong>对象。</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">- (void) deleteLine:(id) sender &#123;</span><br><span class="line">&#x2F;&#x2F;从已经完成的线条中删除选中的线条</span><br><span class="line">[self.finishedLines removeObject:self.selectedLine];</span><br><span class="line">&#x2F;&#x2F;重画整个视图</span><br><span class="line">[self setNeedsDisplay];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="5-UILongPressGestureRecognizer"><a href="#5-UILongPressGestureRecognizer" class="headerlink" title="5. UILongPressGestureRecognizer"></a>5. UILongPressGestureRecognizer</h3><p>###长按手势</p>
+<ul>
+<li><strong>UILongPressGestureRecognizer</strong> 对象默认会将持续时间超过0.5秒的触摸事件识别为长按手势。设置 <strong>UILongPressGestureRecognizer</strong> 对象的 <code>minimumPressDuration</code> 属性可以修改这个时间。   </li>
+<li>**UILongPressGestureRecognizer **对象在识别出长按手势后，会持续跟踪该手势并在不同的阶段分别触发三种不同的事件：   <ol>
+<li><strong>UIGestureRecognizerStatePossible</strong>（可能会发生）</li>
+<li><strong>UIGestureRecognizerStateBegan</strong>（长按开始）</li>
+<li><strong>UIGestureRecognizerStateEnded</strong>（长按结束）</li>
+</ol>
+</li>
+</ul>
+<p>在<strong>HQLDrawView.m</strong>的初始化方法中创建一个<strong>UILongPressGestureRecognizer</strong>长按手势对象。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; -----------------------------------------------</span><br><span class="line">        &#x2F;&#x2F; UIGestureRecognize 子类 - UILongPressGestureRecognizer</span><br><span class="line">        &#x2F;&#x2F; 3️⃣ 长按手势</span><br><span class="line">        UILongPressGestureRecognizer *pressRecognizer &#x3D; [[UILongPressGestureRecognizer alloc] initWithTarget:self</span><br><span class="line">                                                          action:@selector(longPress:)];</span><br><span class="line">        &#x2F;&#x2F; UILongPressGestureRecognizer 对象默认会将持续时间超过 0.5秒的触摸事件识别为长按手势</span><br><span class="line">        &#x2F;&#x2F; 设置 minimumPressDuration 属性可修改该时间</span><br><span class="line">        pressRecognizer.minimumPressDuration &#x3D; 0.6;</span><br><span class="line">        [self addGestureRecognizer:pressRecognizer];</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>在<strong>HQLDrawView.m</strong>中实现longPress:方法</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">- (void) longPress:(UIGestureRecognizer *)gr &#123;</span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F; 长按开始</span><br><span class="line">    if (gr.state &#x3D;&#x3D; UIGestureRecognizerStateBegan) &#123;</span><br><span class="line">        CGPoint point &#x3D; [gr locationInView:self];</span><br><span class="line">        &#x2F;&#x2F; 选中被长按的线</span><br><span class="line">        self.selectedLine &#x3D; [self lineAtPoint:point];</span><br><span class="line">        if (self.selectedLine) &#123;</span><br><span class="line">            &#x2F;&#x2F; 删除当前线</span><br><span class="line">            [self.linesInProgress removeAllObjects];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    &#x2F;&#x2F; 长按结束</span><br><span class="line">    else if (gr.state &#x3D;&#x3D; UIGestureRecognizerStateEnded) &#123;</span><br><span class="line">        self.selectedLine &#x3D; nil;</span><br><span class="line">    &#125;</span><br><span class="line">    [self setNeedsDisplay];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="UIPanGestureRecognizer（拖动手势）以及同时识别多个手势"><a href="#UIPanGestureRecognizer（拖动手势）以及同时识别多个手势" class="headerlink" title="UIPanGestureRecognizer（拖动手势）以及同时识别多个手势"></a>UIPanGestureRecognizer（拖动手势）以及同时识别多个手势</h2><p>在<strong>HQLDrawView.m</strong>中的类扩展中将<strong>HQLDrawView</strong>声明为遵守<strong>UIGestureRecognizerDelegate</strong>协议。然后声明一个类型为<strong>UIPanGestureRecognizer</strong>的属性:<br><code>@property (nonatomic,strong) UIPanGestureRecognizer *moveRecognizer;</code></p>
+<blockquote>
+<p>更新<strong>HQLDrawView.m</strong>的<code>initWithFrame:</code>方法,创建一个<strong>UIPanGestureRecognizer</strong>对象。默认情况下，UIGestureRecognize对象在识别出特定的手势时，会“吃掉”所有和该手势有段的UItouch对象，这边选择否“NO”，让UILongPressGestureRecognizer对象和UIPanGestureRecognizer对象能够同时识别手势。</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 4️⃣ 移动手势</span><br><span class="line">self.moveRecognizer &#x3D;</span><br><span class="line">    [[UIPanGestureRecognizer alloc] initWithTarget:self</span><br><span class="line">                                            action:@selector(moveLine:)];</span><br><span class="line">self.moveRecognizer.delegate &#x3D; self;</span><br><span class="line">&#x2F;&#x2F; cancelsTouchesInView 属性默认为 YES，这个对象会在识别出特定手势时，“吃掉”所有和该手势有关的 UITouch 对象；</span><br><span class="line">&#x2F;&#x2F; 这里设置为NO，因为还要处理相关的 UITouch 对象：</span><br><span class="line">&#x2F;&#x2F; 一开始，画板上没有任何线时，在屏幕上划动就会识别出 moveRecognizer 手势，它会发送 moveLine:消息。执行该消息，如果没有选中的线条就直接返回。与此同时 YES 的cancelsTouchesInView 属性拦截了所有的 UIResponder 方法，就无法处理 UITouch 对象，就无法画线。</span><br><span class="line">self.moveRecognizer.cancelsTouchesInView &#x3D; NO;</span><br><span class="line">[self addGestureRecognizer:self.moveRecognizer];</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>使用UIGestureRecognizerDelegate协议中的一个协议<code>gestureRecognizer: shouldRecognizeSimultaneouslyWithGestureRecognizer:</code>，当某个<strong>UIGestureRecognizer</strong>子类对象识别出特定的手势后，如果发现其他的<strong>UIGestureRecognizer</strong>子类对象也识别出了特定的手势，就会向其委托对象发送<code>gestureRecognizer: shouldRecognizeSimultaneouslyWithGestureRecognizer:</code>消息。如果相应的方法返回YES，那么当前的<strong>UIGestureRecognizer</strong>子类对象就会和其他的<strong>UIGestureRecognizer</strong>子类对象共享<strong>UITouch</strong>对象。</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">#pragma mark - UIGestureRecognizerDelegate</span><br><span class="line">&#x2F;&#x2F; 默认情况下，UIGestureRecognize 对象在识别出特定的手势时，会“吃掉”所有和该手势有关的 UItouch 对象</span><br><span class="line">&#x2F;&#x2F; 让 UILongPressGestureRecognizer 长按手势和 UIPanGestureRecognizer 拖动手势同时被识别</span><br><span class="line">- (BOOL) gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer &#123;</span><br><span class="line">    </span><br><span class="line">    if (gestureRecognizer &#x3D;&#x3D; self.moveRecognizer) &#123;</span><br><span class="line">        return YES;</span><br><span class="line">    &#125;</span><br><span class="line">    return NO;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>在<strong>HQLDrawView.m</strong>中实现<code>moveLine：</code>方法：</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">- (void) moveLine:(UIPanGestureRecognizer *)gr &#123;</span><br><span class="line">    &#x2F;&#x2F; 如果没有选中的线条就直接返回</span><br><span class="line">    if (! self.selectedLine) &#123;</span><br><span class="line">        return;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F; 如果菜单项可见，返回</span><br><span class="line">    UIMenuController *menuController &#x3D; [UIMenuController sharedMenuController];</span><br><span class="line">    if (menuController.isMenuVisible ) &#123;</span><br><span class="line">        return;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F; 如果 UIPanGestureRecognizer 对象处于“变化后”状态</span><br><span class="line">    if (gr.state &#x3D;&#x3D; UIGestureRecognizerStateChanged) &#123;</span><br><span class="line">        &#x2F;&#x2F; 获取手指的拖移距离</span><br><span class="line">        CGPoint translation &#x3D; [gr translationInView:self];</span><br><span class="line">        &#x2F;&#x2F; 将拖移距离加至选中的线条的起点和终点</span><br><span class="line">        CGPoint begin &#x3D; self.selectedLine.begin;</span><br><span class="line">        CGPoint end &#x3D; self.selectedLine.end;</span><br><span class="line">        begin.x +&#x3D; translation.x;</span><br><span class="line">        begin.y +&#x3D; translation.y;</span><br><span class="line">        end.x +&#x3D; translation.x;</span><br><span class="line">        end.y +&#x3D; translation.y;</span><br><span class="line">        &#x2F;&#x2F; 为选中的线段设置新的起点和和终点</span><br><span class="line">        self.selectedLine.begin &#x3D; begin;</span><br><span class="line">        self.selectedLine.end &#x3D; end;</span><br><span class="line">        &#x2F;&#x2F; 重画视图</span><br><span class="line">        [self setNeedsDisplay];</span><br><span class="line">        &#x2F;&#x2F; 使该对象增量地报告拖移距离</span><br><span class="line">        &#x2F;&#x2F; ：将手指的当前位置设置为拖移手势的起始位置</span><br><span class="line">        [gr setTranslation:CGPointZero inView:self];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p><span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL0FuZHkwNTcwL1RvdWNoVHJhY2tlci5naXQ=">GitHub源码<i class="fa fa-external-link-alt"></i></span></p>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>独木舟的木
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://andy0570.com/2016/10/27/%E3%80%8AiOS%E7%BC%96%E7%A8%8B%EF%BC%88%E7%AC%AC%E5%9B%9B%E7%89%88%EF%BC%89%E3%80%8BDemo12%EF%BC%9ATouchTracker/" title="《iOS编程（第四版）》Demo12：TouchTracker">https://andy0570.com/2016/10/27/《iOS编程（第四版）》Demo12：TouchTracker/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <span class="exturl" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpo"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</span> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/iOS/" rel="tag"># iOS</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2016/10/13/Cocoapods%20%E5%AE%89%E8%A3%85%E5%8F%8A%E4%BD%BF%E7%94%A8/" rel="prev" title="Cocoapods 安装及使用">
+      <i class="fa fa-chevron-left"></i> Cocoapods 安装及使用
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2016/11/09/iOS%209%20%E4%BA%BA%E6%9C%BA%E7%95%8C%E9%9D%A2%E6%8C%87%E5%8D%97/" rel="next" title="iOS 9 人机界面指南">
+      iOS 9 人机界面指南 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+        </div>
+        
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">独木舟的木</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">2.1m</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">31:21</span>
+</div>
+  <div class="powered-by">由 <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZw==">NexT.Gemini</span> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

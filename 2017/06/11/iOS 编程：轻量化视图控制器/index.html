@@ -1,23 +1,603 @@
-{% extends '_layout.swig' %}
-{% import '_macro/post.swig' as post_template %}
-{% import '_macro/sidebar.swig' as sidebar_template %}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.0.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+  <meta name="google-site-verification" content="wioXOS3Gv2wXUpJ3sLtfZ4ft6YJYKNLLWSw6QoZTFYM">
+  <meta name="msvalidate.01" content="C96491A81239C517A50597C54EE53CD1">
+  <meta name="baidu-site-verification" content="h8asiToN1b">
 
-{% block title %}{{ page.title }} | {{ title }}{% endblock %}
+<link rel="stylesheet" href="/css/main.css">
 
-{% block page_class %}page-post-detail{% endblock %}
 
-{% block content %}
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  
+  <link rel="stylesheet" href="/lib/animate-css/animate.min.css">
 
-  <div id="posts" class="posts-expand">
-    {{ post_template.render(page) }}
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"andy0570.com","root":"/","scheme":"Gemini","version":"8.0.0-rc.5","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":"mac","bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false};
+  </script>
+
+  <meta name="description" content="⭐️⭐️⭐️ 这是一篇轻量化视图控制器的笔记，针对原文有所更改，加了自己的一些理解。 参考的文章如下：  更轻量的 View Controllers @ObjC 中国 整洁的 Table View 代码 @ObjC 中国 View Controller 容器 @ObjC中国  也推荐给你，建议对着源码斟酌推敲，确实大有裨益。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS 编程：轻量化视图控制器">
+<meta property="og:url" content="https://andy0570.com/2017/06/11/iOS%20%E7%BC%96%E7%A8%8B%EF%BC%9A%E8%BD%BB%E9%87%8F%E5%8C%96%E8%A7%86%E5%9B%BE%E6%8E%A7%E5%88%B6%E5%99%A8/index.html">
+<meta property="og:site_name" content="独木舟的木">
+<meta property="og:description" content="⭐️⭐️⭐️ 这是一篇轻量化视图控制器的笔记，针对原文有所更改，加了自己的一些理解。 参考的文章如下：  更轻量的 View Controllers @ObjC 中国 整洁的 Table View 代码 @ObjC 中国 View Controller 容器 @ObjC中国  也推荐给你，建议对着源码斟酌推敲，确实大有裨益。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2017-06-11T08:06:00.000Z">
+<meta property="article:modified_time" content="2019-05-01T13:38:53.000Z">
+<meta property="article:author" content="独木舟的木">
+<meta property="article:tag" content="iOS">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://andy0570.com/2017/06/11/iOS%20%E7%BC%96%E7%A8%8B%EF%BC%9A%E8%BD%BB%E9%87%8F%E5%8C%96%E8%A7%86%E5%9B%BE%E6%8E%A7%E5%88%B6%E5%99%A8/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>iOS 编程：轻量化视图控制器 | 独木舟的木</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="独木舟的木" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <main class="main">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+        <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
   </div>
 
-{% endblock %}
+  <div class="site-meta">
 
-{% block sidebar %}
-  {{ sidebar_template.render(true) }}
-{% endblock %}
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">独木舟的木</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">iOS Developer</p>
+  </div>
 
-{% block script_extra %}
-  {% include '_scripts/pages/post-details.swig' %}
-{% endblock %}
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">14</span></a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">36</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">310</span></a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <section class="post-toc-wrap sidebar-panel">
+          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%95%B4%E6%B4%81%E7%9A%84-Table-View-%E4%BB%A3%E7%A0%81"><span class="nav-number">1.</span> <span class="nav-text">整洁的 Table View 代码</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Table-View-Controller-%E7%9A%84%E9%99%90%E5%88%B6"><span class="nav-number">1.1.</span> <span class="nav-text">Table View Controller 的限制</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8-Child-View-Controllers"><span class="nav-number">1.1.1.</span> <span class="nav-text">使用 Child View Controllers</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%86%E7%A6%BB%E5%85%B3%E6%B3%A8%E7%82%B9%EF%BC%88Separating-Concerns%EF%BC%89"><span class="nav-number">1.2.</span> <span class="nav-text">分离关注点（Separating Concerns）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%90%AD%E5%BB%BA-Model-%E5%AF%B9%E8%B1%A1%E5%92%8C-Cell-%E4%B9%8B%E9%97%B4%E7%9A%84%E6%A1%A5%E6%A2%81"><span class="nav-number">1.2.1.</span> <span class="nav-text">搭建 Model 对象和 Cell 之间的桥梁</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%A9-Cell-%E5%8F%AF%E5%A4%8D%E7%94%A8"><span class="nav-number">1.2.2.</span> <span class="nav-text">让 Cell 可复用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9C%A8-Cell-%E5%86%85%E9%83%A8%E6%8E%A7%E5%88%B6-Cell-%E7%9A%84%E7%8A%B6%E6%80%81"><span class="nav-number">1.2.3.</span> <span class="nav-text">在 Cell 内部控制 Cell 的状态</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8E%A7%E5%88%B6%E5%A4%9A%E4%B8%AA-Cell-%E7%B1%BB%E5%9E%8B"><span class="nav-number">1.2.4.</span> <span class="nav-text">控制多个 Cell 类型</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">1.3.</span> <span class="nav-text">总结</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9B%B4%E8%BD%BB%E9%87%8F%E7%9A%84-View-Controllers"><span class="nav-number">2.</span> <span class="nav-text">更轻量的 View Controllers</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8A%8A-Data-Source-%E5%92%8C%E5%85%B6%E4%BB%96-Protocols-%E5%88%86%E7%A6%BB%E5%87%BA%E6%9D%A5"><span class="nav-number">2.1.</span> <span class="nav-text">把 Data Source 和其他 Protocols 分离出来</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B0%86%E4%B8%9A%E5%8A%A1%E9%80%BB%E8%BE%91%E7%A7%BB%E5%88%B0-Model-%E4%B8%AD"><span class="nav-number">2.2.</span> <span class="nav-text">将业务逻辑移到 Model 中</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA-Store-%E7%B1%BB"><span class="nav-number">2.3.</span> <span class="nav-text">创建 Store 类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8A%8A%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%82%E9%80%BB%E8%BE%91%E7%A7%BB%E5%88%B0-Model-%E5%B1%82"><span class="nav-number">2.4.</span> <span class="nav-text">把网络请求逻辑移到 Model 层</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8A%8A-View-%E4%BB%A3%E7%A0%81%E7%A7%BB%E5%88%B0-View-%E5%B1%82"><span class="nav-number">2.5.</span> <span class="nav-text">把 View 代码移到 View 层</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93-1"><span class="nav-number">2.6.</span> <span class="nav-text">总结</span></a></li></ol></li></ol></div>
+      </section>
+      <!--/noindex-->
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="独木舟的木"
+      src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+  <p class="site-author-name" itemprop="name">独木舟的木</p>
+  <div class="site-description" itemprop="description">生若直木，不语斧凿。</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">310</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">36</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL0FuZHkwNTcw" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Andy0570"><i class="fab fa-github fa-fw"></i>GitHub</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9zdGFja292ZXJmbG93LmNvbS91c2Vycy83MjY1NDAwL2FuZHkwNTcw" title="StackOverflow → https:&#x2F;&#x2F;stackoverflow.com&#x2F;users&#x2F;7265400&#x2F;andy0570"><i class="fab fa-stack-overflow fa-fw"></i>StackOverflow</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuamlhbnNodS5jb20vdS84NGM1ZmFkYzdjMTg=" title="简书 → https:&#x2F;&#x2F;www.jianshu.com&#x2F;u&#x2F;84c5fadc7c18"><i class="heartbeat fa-fw"></i>简书</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="bWFpbHRvOmFuZHl3aG1AMTYzLmNvbQ==" title="E-Mail → mailto:andywhm@163.com"><i class="fa fa-envelope fa-fw"></i>E-Mail</span>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <span class="exturl cc-opacity" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpo"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></span>
+  </div>
+
+
+
+      </section>
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </header>
+
+      
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div id="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+      <div class="main-inner">
+        
+
+        <div class="content post posts-expand">
+          
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://andy0570.com/2017/06/11/iOS%20%E7%BC%96%E7%A8%8B%EF%BC%9A%E8%BD%BB%E9%87%8F%E5%8C%96%E8%A7%86%E5%9B%BE%E6%8E%A7%E5%88%B6%E5%99%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+      <meta itemprop="name" content="独木舟的木">
+      <meta itemprop="description" content="生若直木，不语斧凿。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="独木舟的木">
+    </span>
+
+    
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          iOS 编程：轻量化视图控制器
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2017-06-11 16:06:00" itemprop="dateCreated datePublished" datetime="2017-06-11T16:06:00+08:00">2017-06-11</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-05-01 21:38:53" itemprop="dateModified" datetime="2019-05-01T21:38:53+08:00">2019-05-01</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS/" itemprop="url" rel="index"><span itemprop="name">iOS</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>14k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>13 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <blockquote>
+<p>⭐️⭐️⭐️</p>
+<p>这是一篇轻量化视图控制器的笔记，针对原文有所更改，加了自己的一些理解。</p>
+<p>参考的文章如下：</p>
+<ul>
+<li><span class="exturl" data-url="aHR0cHM6Ly93d3cub2JqY2NuLmlvL2lzc3VlLTEtMS8=">更轻量的 View Controllers @ObjC 中国<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cHM6Ly93d3cub2JqY2NuLmlvL2lzc3VlLTEtMi8=">整洁的 Table View 代码 @ObjC 中国<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cHM6Ly9vYmpjY24uaW8vaXNzdWUtMS00Lw==">View Controller 容器 @ObjC中国<i class="fa fa-external-link-alt"></i></span></li>
+</ul>
+<p>也推荐给你，建议对着<span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL29iamNpby9pc3N1ZS0xLWxpZ2h0ZXItdmlldy1jb250cm9sbGVycw==">源码<i class="fa fa-external-link-alt"></i></span>斟酌推敲，确实大有裨益。</p>
+</blockquote>
+<a id="more"></a>
+
+<h1 id="整洁的-Table-View-代码"><a href="#整洁的-Table-View-代码" class="headerlink" title="整洁的 Table View 代码"></a>整洁的 Table View 代码</h1><h2 id="Table-View-Controller-的限制"><a href="#Table-View-Controller-的限制" class="headerlink" title="Table View Controller 的限制"></a>Table View Controller 的限制</h2><p>UITableViewController 对象 的 view 属性永远都是一个 tableView。如果你稍后决定在 tableView 旁边显示一些东西（比如一个地图），或者在视图底部显示一个固定位置的 Button 控件，这时候 UITableViewController  就无能为力了，要实现该需求只能把父类改成 UIViewController，然后把 tableView 设置为 subView ，再调整子视图之间的布局…总之，就是新建一个类，全部推倒重来。</p>
+<h3 id="使用-Child-View-Controllers"><a href="#使用-Child-View-Controllers" class="headerlink" title="使用 Child View Controllers"></a>使用 Child View Controllers</h3><p>和完全抛弃 UITableViewController 对象不同，你还可以将它作为 child view controller 添加到其他 view controller 中（<span class="exturl" data-url="aHR0cDovL29iamNjbi5pby9pc3N1ZS0xLTQ=">关于此话题的文章<i class="fa fa-external-link-alt"></i></span>）。这样，parent view controller 在管理其他的你需要的新加的界面元素的同时，table view controller 还可以继续管理它的 tableView。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">- (void)addPhotoDetailsTableView &#123;</span><br><span class="line">  </span><br><span class="line">    DetailsViewController *details &#x3D; [[DetailsViewController alloc] init];</span><br><span class="line">    details.photo &#x3D; self.photo;</span><br><span class="line">    details.delegate &#x3D; self;</span><br><span class="line">    [self addChildViewController:details];</span><br><span class="line">  </span><br><span class="line">    CGRect frame &#x3D; self.view.bounds;</span><br><span class="line">    frame.origin.y &#x3D; 110;</span><br><span class="line">    details.view.frame &#x3D; frame;</span><br><span class="line">    [self.view addSubview:details.view];</span><br><span class="line">  </span><br><span class="line">    [details didMoveToParentViewController:self];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>❇️ 优化原理：把 自定义的 <strong>UITableViewController</strong> 子类对象设置为视图控制器的 <code>childViewController</code>。</p>
+<p>如果你使用这个解决方案，你就必须在 child view controller 和 parent view controller 之间建立消息传递的渠道。比如，如果用户选择了一个 tableView 中的 cell，parent view controller 需要知道这个事件来推入其他 view controller。根据使用习惯，<strong>通常最清晰的方式是为这个 table view controller 定义一个 delegate protocol，然后到 parent view controller 中去实现</strong>。</p>
+<p>❇️ 当选择 DetailsViewController 中的某一行时，通过 Delegate 让 parentViewController 中去实现具体的行为方法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D; </span><br><span class="line">&#x2F;&#x2F; DetailsViewController.h</span><br><span class="line">#import &lt;UIKit&#x2F;UIKit.h&gt;</span><br><span class="line">@class Photo;</span><br><span class="line"></span><br><span class="line">@protocol DetailsViewControllerDelegate</span><br><span class="line">- (void)didSelectPhotoAttributeWithKey:(NSString *)key;</span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">@interface DetailsViewController : UITableViewController</span><br><span class="line">@property (nonatomic, strong) Photo *photo;</span><br><span class="line">@property (nonatomic, weak) id &lt;DetailsViewControllerDelegate&gt; delegate;</span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">  </span><br><span class="line">&#x2F;&#x2F; &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D; </span><br><span class="line">&#x2F;&#x2F; DetailsViewController.h</span><br><span class="line">@implementation DetailsViewController</span><br><span class="line">  </span><br><span class="line">&#x2F;&#x2F; ...</span><br><span class="line">  </span><br><span class="line">#pragma mark UITableViewDelegate</span><br><span class="line">- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath &#123;</span><br><span class="line">    NSString *key &#x3D; self.keys[(NSUInteger) indexPath.row];</span><br><span class="line">    [self.delegate didSelectPhotoAttributeWithKey:key];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D; </span><br><span class="line">&#x2F;&#x2F; parentViewController 的实现文件</span><br><span class="line">@interface PhotoViewController () &lt;DetailsViewControllerDelegate&gt;</span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">@implementation PhotoViewController</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; ...</span><br><span class="line">  </span><br><span class="line">#pragma mark DetailsViewControllerDelegate</span><br><span class="line">- (void)didSelectPhotoAttributeWithKey:(NSString *)key</span><br><span class="line">&#123;</span><br><span class="line">    &#x2F;&#x2F; 实现点击 childViewController 某一行后的行为</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="分离关注点（Separating-Concerns）"><a href="#分离关注点（Separating-Concerns）" class="headerlink" title="分离关注点（Separating Concerns）"></a>分离关注点（Separating Concerns）</h2><h3 id="搭建-Model-对象和-Cell-之间的桥梁"><a href="#搭建-Model-对象和-Cell-之间的桥梁" class="headerlink" title="搭建 Model 对象和 Cell 之间的桥梁"></a>搭建 Model 对象和 Cell 之间的桥梁</h3><p>在 Cell 上显示 Model 层数据，通常的做法是这样的：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 通常做法：</span><br><span class="line">- (UITableViewCell *)tableView:(UITableView *)tableView</span><br><span class="line">         cellForRowAtIndexPath:(NSIndexPath *)indexPath &#123;</span><br><span class="line">    PhotoCell *cell &#x3D; [tableView dequeueReusableCellWithIdentifier:@&quot;PhotoCell&quot;</span><br><span class="line">                                                      forIndexPath:indexPath];</span><br><span class="line">    Photo *photo &#x3D; items[indexPath.row];</span><br><span class="line">    cell.photoTitleLabel.text &#x3D; photo.name;</span><br><span class="line">    NSString* date &#x3D; [self.dateFormatter stringFromDate:photo.creationDate];</span><br><span class="line">    cell.photoDateLabel.text &#x3D; date;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>但是这样的代码会让 data source 变得混乱，因为它向 data source 暴露了 Cell 的设计。</p>
+<p>❇️❇️ 优化原理：为 Cell 创建一个范畴（<strong>Category</strong>）类来配置 Model：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D; </span><br><span class="line">&#x2F;&#x2F; PhotoCell+ConfigureForPhoto.h</span><br><span class="line">#import &lt;Foundation&#x2F;Foundation.h&gt;</span><br><span class="line">#import &quot;PhotoCell.h&quot;</span><br><span class="line">@class Photo;</span><br><span class="line"></span><br><span class="line">@interface PhotoCell (ConfigureForPhoto)</span><br><span class="line">&#x2F;&#x2F; Apple 官方的推荐的做法：为避免方法冲突，在 Category 类中的方法要加前缀_</span><br><span class="line">- (void)hql_configureForPhoto:(Photo *)photo;</span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">  </span><br><span class="line">&#x2F;&#x2F; &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D; </span><br><span class="line">&#x2F;&#x2F; PhotoCell+ConfigureForPhoto.m</span><br><span class="line">#import &quot;PhotoCell+ConfigureForPhoto.h&quot;</span><br><span class="line">#import &quot;Photo.h&quot;</span><br><span class="line"></span><br><span class="line">@implementation PhotoCell (ConfigureForPhoto)</span><br><span class="line"></span><br><span class="line">- (void)hql_configureForPhoto:(Photo *)photo &#123;</span><br><span class="line">    self.photoTitleLabel.text &#x3D; photo.name;</span><br><span class="line">    self.photoDateLabel.text &#x3D;</span><br><span class="line">        [self.dateFormatter stringFromDate:photo.creationDate];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (NSDateFormatter *)dateFormatter &#123;</span><br><span class="line">    static NSDateFormatter *dateFormatter;</span><br><span class="line">    if (!dateFormatter) &#123;</span><br><span class="line">        dateFormatter &#x3D; [[NSDateFormatter alloc] init];</span><br><span class="line">        dateFormatter.timeStyle &#x3D; NSDateFormatterMediumStyle;</span><br><span class="line">        dateFormatter.dateStyle &#x3D; NSDateFormatterMediumStyle;</span><br><span class="line">    &#125;</span><br><span class="line">    return dateFormatter;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+
+<p>有了上述代码后，视图控制器中的 data source 方法就变得简单了：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 优化做法：</span><br><span class="line">- (UITableViewCell *)tableView:(UITableView *)tableView</span><br><span class="line">         cellForRowAtIndexPath:(NSIndexPath *)indexPath &#123;</span><br><span class="line">    PhotoCell *cell &#x3D; [tableView dequeueReusableCellWithIdentifier:@&quot;PhotoCell&quot;</span><br><span class="line">                                                      forIndexPath:indexPath];</span><br><span class="line">    Photo *photo &#x3D; items[indexPath.row];</span><br><span class="line">    [cell hql_configureForPhoto:photo];</span><br><span class="line">    return cell;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="让-Cell-可复用"><a href="#让-Cell-可复用" class="headerlink" title="让 Cell 可复用"></a>让 Cell 可复用</h3><blockquote>
+<p>❇️</p>
+<p>关于如何让 cell 可以接收任何类型的 Model  一开始没理解</p>
+<p>参考了人家的笔记：<span class="exturl" data-url="aHR0cDovL2RldnRpYW4ubWUvMjAxNS8wMy8yMy9vYmpjLWlvLXN0dWR5bm90ZXMtVmlld0NvbnRyb2xsZXItc2xpbS8=">objc.io 学习笔记-ViewController瘦身记<i class="fa fa-external-link-alt"></i></span></p>
+</blockquote>
+<p>有时多种 model 对象需要用同一类型的 cell 来表示，这种情况下，我们可以进一步让 cell 可以复用。</p>
+<p>首先，我们给 cell 定义一个 protocol，需要用这个 cell 显示的对象必须遵循这个 protocol。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">@protocol HQLTableViewCellConfigureDelegate &lt;NSObject&gt;</span><br><span class="line">- (NSString *)imageName;</span><br><span class="line">- (NSString *)mainTitle;</span><br><span class="line">- (NSString *)detailTitle;</span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+
+<p>然后简单修改 category 中的设置方法，让它可以接受遵循这个 protocol 的任何对象。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">- (void)setContent:(id&lt;CellConfigDelegate&gt;)model;</span><br></pre></td></tr></table></figure>
+<p>需要使用该 cell 的 Model 就必须遵守 cell 中的 Delegate ，返回设置 cell 所需要的模型对象：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; HQLModel.h</span><br><span class="line">#import &lt;Foundation&#x2F;Foundation.h&gt;</span><br><span class="line">#import &quot;HQLTableViewCell.h&quot;</span><br><span class="line"></span><br><span class="line">@interface HQLModel : NSObject &lt;HQLTableViewCellConfigureDelegate&gt;</span><br><span class="line"></span><br><span class="line">@property (nonatomic, copy) NSString *icon;</span><br><span class="line">@property (nonatomic, copy) NSString *name;</span><br><span class="line">@property (nonatomic, copy) NSString *ModelDescription;</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; HQLModel.m</span><br><span class="line">#import &quot;HQLModel.h&quot;</span><br><span class="line"></span><br><span class="line">@implementation HQLModel</span><br><span class="line"></span><br><span class="line">#pragma mark - HQLTableViewCellConfigureDelegate</span><br><span class="line"></span><br><span class="line">- (NSString *)imageName &#123;</span><br><span class="line">    return _icon;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (NSString *)mainTitle &#123;</span><br><span class="line">    return _name;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (NSString *)detailTitle &#123;</span><br><span class="line">    return _ModelDescription;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+
+<p>这些简单的步骤让 cell 和任何特殊的 model 对象之间得以解耦，让它可适应不同的数据类型。</p>
+<h3 id="在-Cell-内部控制-Cell-的状态"><a href="#在-Cell-内部控制-Cell-的状态" class="headerlink" title="在 Cell 内部控制 Cell 的状态"></a>在 Cell 内部控制 Cell 的状态</h3><p>如果你想自定义 tableView 默认的高亮或选择行为，你可以实现两个 delegate 方法，把点击的 cell 修改成我们想要的样子。例如：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 通常做法，在视图控制器中修改点击选择 cell 的高亮行为</span><br><span class="line">- (void)tableView:(UITableView *)tableView</span><br><span class="line">        didHighlightRowAtIndexPath:(NSIndexPath *)indexPath &#123;</span><br><span class="line">    PhotoCell *cell &#x3D; [tableView cellForRowAtIndexPath:indexPath];</span><br><span class="line">    cell.photoTitleLabel.shadowColor &#x3D; [UIColor darkGrayColor];</span><br><span class="line">    cell.photoTitleLabel.shadowOffset &#x3D; CGSizeMake(3, 3);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)tableView:(UITableView *)tableView</span><br><span class="line">        didUnhighlightRowAtIndexPath:(NSIndexPath *)indexPath &#123;</span><br><span class="line">    PhotoCell *cell &#x3D; [tableView cellForRowAtIndexPath:indexPath];</span><br><span class="line">    cell.photoTitleLabel.shadowColor &#x3D; nil;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然而，这两个 delegate 方法的实现又基于 view controller 知晓 cell 实现的具体细节。如果我们想替换或重新设计 cell，我们必须改写 delegate 代码。View 的实现细节和 delegate 的实现交织在一起了。我们应该把这些细节移到 cell 自身中去。</p>
+<p>❇️ 优化原理：让 cell 自己的 .m 文件中去实现修改 Cell 状态的方法 ，来达到分离代码的目的。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">@implementation PhotoCell</span><br><span class="line">&#x2F;&#x2F; ...</span><br><span class="line">- (void)setHighlighted:(BOOL)highlighted animated:(BOOL)animated &#123;</span><br><span class="line">    [super setHighlighted:highlighted animated:animated];</span><br><span class="line">    if (highlighted) &#123;</span><br><span class="line">        self.photoTitleLabel.shadowColor &#x3D; [UIColor darkGrayColor];</span><br><span class="line">        self.photoTitleLabel.shadowOffset &#x3D; CGSizeMake(3, 3);</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        self.photoTitleLabel.shadowColor &#x3D; nil;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>总的来说，我们在努力<strong>把 view 层和 controller 层的实现细节分离开</strong>。delegate 肯定得清楚一个 view 该显示什么状态，但是它不应该了解如何修改 view 结构或者给某些 subviews 设置某些属性以获得正确的状态。所有这些逻辑都应该封装到 view 内部，然后给外部提供一个简单的 API。</p>
+<h3 id="控制多个-Cell-类型"><a href="#控制多个-Cell-类型" class="headerlink" title="控制多个 Cell 类型"></a>控制多个 Cell 类型</h3><p>如果一个 tableView 里面有多种类型的 cell，data source 方法很快就难以控制了。在我们示例程序中，DetailsViewController 有两种不同类型的 cell：一种用于显示几个星，另一种用来显示一个键值对。为了划分处理不同 cell 类型的代码，data source 方法简单地<strong>通过判断 cell 的类型，把任务派发给其他指定的方法</strong>。</p>
+<p>❇️ 优化原理：看源码就很容易理解，根据不同类型的 Cell ，配置方法分开写在指定的方法中：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">- (UITableViewCell *)tableView:(UITableView *)tableView</span><br><span class="line">         cellForRowAtIndexPath:(NSIndexPath *)indexPath</span><br><span class="line">&#123;</span><br><span class="line">    NSString *key &#x3D; self.keys[(NSUInteger) indexPath.row];</span><br><span class="line">    id value &#x3D; [self.photo valueForKey:key];</span><br><span class="line">    UITableViewCell *cell;</span><br><span class="line">    if ([key isEqual:PhotoRatingKey]) &#123;</span><br><span class="line">        cell &#x3D; [self cellForRating:value indexPath:indexPath];</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        cell &#x3D; [self detailCellForKey:key value:value];</span><br><span class="line">    &#125;</span><br><span class="line">    return cell;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (RatingCell *)cellForRating:(NSNumber *)rating</span><br><span class="line">                    indexPath:(NSIndexPath *)indexPath</span><br><span class="line">&#123;</span><br><span class="line">    &#x2F;&#x2F; ...</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (UITableViewCell *)detailCellForKey:(NSString *)key</span><br><span class="line">                                value:(id)value</span><br><span class="line">&#123;</span><br><span class="line">    &#x2F;&#x2F; ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>Table view controllers（以及其他的 controller 对象）应该在 model 和 view 对象之间扮演<span class="exturl" data-url="aHR0cDovL2RldmVsb3Blci5hcHBsZS5jb20vbGlicmFyeS9tYWMvI2RvY3VtZW50YXRpb24vR2VuZXJhbC9Db25jZXB0dWFsL0RldlBlZGlhLUNvY29hQ29yZS9Db250cm9sbGVyT2JqZWN0Lmh0bWw=">协调者和调解者的角色<i class="fa fa-external-link-alt"></i></span>。它不应该关心明显属于 view 层或 model 层的任务。你应该始终记住这点，这样 delegate 和 data source 方法会变得更小巧，最多包含一些简单的样板代码。</p>
+<p>这不仅减少了 table view controllers 的大小和复杂性，而且还把业务逻辑和 view 的逻辑放到了更合适的地方。Controller 层的里里外外的实现细节都被封装成了简单的 API，最终，它变得更加容易理解，也更利于团队协作。</p>
+<h1 id="更轻量的-View-Controllers"><a href="#更轻量的-View-Controllers" class="headerlink" title="更轻量的 View Controllers"></a>更轻量的 View Controllers</h1><h2 id="把-Data-Source-和其他-Protocols-分离出来"><a href="#把-Data-Source-和其他-Protocols-分离出来" class="headerlink" title="把 Data Source 和其他 Protocols 分离出来"></a>把 Data Source 和其他 Protocols 分离出来</h2><blockquote>
+<p>❇️ ❇️ </p>
+<p>之前的理解有些偏差，我明白作者轻量化 table view controller 的目的是为了复用。</p>
+<p>之前以为是复用 控制器 类；</p>
+<p>后来才明白是为了复用 <strong>UITableViewDataSource</strong> 协议的两个实现方法：</p>
+<ul>
+<li>tableView:numberOfRowsInSection:</li>
+<li>tableView:cellForRowAtIndexPath:</li>
+</ul>
+<p>把 <strong>UITableViewDataSource</strong> 协议需要实现的两个方法写在一个单独的类（创建一个 ArrayDataSource 类作为通用的数据源类）中。我们就不用在每个含有 tableView 的 ViewController 里边都实现一遍 <strong>UITableViewDataSource</strong> 协议了，只要创建 ArrayDataSource 类并传入指定的几个参数。</p>
+</blockquote>
+<p>把 <code>UITableViewDataSource</code> 的代码提取出来放到一个单独的类中，是为 view controller 瘦身的强大技术之一。</p>
+<p>示例项目中，有个 <code>PhotosViewController</code> 类，它有以下几个方法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 通常的做法：</span><br><span class="line"># pragma mark - UITableViewDataSource</span><br><span class="line"></span><br><span class="line">- (Photo*)photoAtIndexPath:(NSIndexPath*)indexPath &#123;</span><br><span class="line">    return photos[(NSUInteger)indexPath.row];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (NSInteger)tableView:(UITableView*)tableView</span><br><span class="line"> numberOfRowsInSection:(NSInteger)section &#123;</span><br><span class="line">    return photos.count;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (UITableViewCell*)tableView:(UITableView*)tableView</span><br><span class="line">        cellForRowAtIndexPath:(NSIndexPath*)indexPath &#123;</span><br><span class="line">    PhotoCell* cell &#x3D;</span><br><span class="line">        [tableView dequeueReusableCellWithIdentifier:PhotoCellIdentifier</span><br><span class="line">                                        forIndexPath:indexPath];</span><br><span class="line">    Photo* photo &#x3D; [self photoAtIndexPath:indexPath];</span><br><span class="line">    cell.label.text &#x3D; photo.name;</span><br><span class="line">    return cell;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这些代码基本都是围绕数组做一些事情，更针对地说，是围绕 view controller 所管理的 photos 数组做一些事情。我们可以尝试把数组相关的代码移到<span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL29iamNpby9pc3N1ZS0xLWxpZ2h0ZXItdmlldy1jb250cm9sbGVycy9ibG9iL21hc3Rlci9QaG90b0RhdGEvQXJyYXlEYXRhU291cmNlLmg=">单独的类<i class="fa fa-external-link-alt"></i></span>中。我们使用一个 block 来设置 cell，也可以用 delegate 来做这件事，这取决于你的习惯。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D; </span><br><span class="line">&#x2F;&#x2F; ArrayDataSource.h</span><br><span class="line">#import &lt;Foundation&#x2F;Foundation.h&gt;</span><br><span class="line"></span><br><span class="line">&#x2F;**</span><br><span class="line"> 配置cell的Block对象</span><br><span class="line"></span><br><span class="line"> @param cell cell 对象类</span><br><span class="line"> @param item item 模型类</span><br><span class="line"> *&#x2F;</span><br><span class="line">typedef void (^TableViewCellConfigureBlock)(id cell, id item);</span><br><span class="line"></span><br><span class="line">@interface ArrayDataSource : NSObject &lt;UITableViewDataSource&gt;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&#x2F;**</span><br><span class="line"> ArrayDataSource 的指定初始化方法</span><br><span class="line"></span><br><span class="line"> @param anItems             参数一：数组模型</span><br><span class="line"> @param aCellIdentifier     参数二：cell复用标识符</span><br><span class="line"> @param aConfigureCellBlock 参数三：配置cell的Block对象</span><br><span class="line"> @return 返回值：ArrayDataSource实例对象</span><br><span class="line"> *&#x2F;</span><br><span class="line">- (id)initWithItems:(NSArray *)anItems</span><br><span class="line">     cellIdentifier:(NSString *)aCellIdentifier</span><br><span class="line"> configureCellBlock:(TableViewCellConfigureBlock)aConfigureCellBlock;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&#x2F;**</span><br><span class="line"> 根据 index 找到 item 模型</span><br><span class="line"> </span><br><span class="line"> 这是一个公共方法，用到的地方主要有两处：</span><br><span class="line"> 1.配置 cell 时，根据 index 索引显示 model 数据；</span><br><span class="line"> 2.当用户点击 cell 时，根据 index 索引 找到对应的 model 作出响应</span><br><span class="line"> </span><br><span class="line"> @param indexPath index 索引</span><br><span class="line"> @return item 模型</span><br><span class="line"> *&#x2F;</span><br><span class="line">- (id)itemAtIndexPath:(NSIndexPath *)indexPath;</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D; </span><br><span class="line">&#x2F;&#x2F; ArrayDataSource.m</span><br><span class="line">#import &quot;ArrayDataSource.h&quot;</span><br><span class="line"></span><br><span class="line">@interface ArrayDataSource ()</span><br><span class="line"></span><br><span class="line">@property (nonatomic, strong) NSArray *items;</span><br><span class="line">@property (nonatomic, copy) NSString *cellIdentifier;</span><br><span class="line">@property (nonatomic, copy) TableViewCellConfigureBlock configureCellBlock;</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">@implementation ArrayDataSource</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">#pragma mark - Init</span><br><span class="line"></span><br><span class="line">- (id)init &#123;</span><br><span class="line">    return nil;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (id)initWithItems:(NSArray *)anItems</span><br><span class="line">     cellIdentifier:(NSString *)aCellIdentifier</span><br><span class="line"> configureCellBlock:(TableViewCellConfigureBlock)aConfigureCellBlock</span><br><span class="line">&#123;</span><br><span class="line">    self &#x3D; [super init];</span><br><span class="line">    if (self) &#123;</span><br><span class="line">        self.items &#x3D; anItems;</span><br><span class="line">        self.cellIdentifier &#x3D; aCellIdentifier;</span><br><span class="line">        self.configureCellBlock &#x3D; [aConfigureCellBlock copy];</span><br><span class="line">    &#125;</span><br><span class="line">    return self;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">#pragma mark - Public</span><br><span class="line"></span><br><span class="line">- (id)itemAtIndexPath:(NSIndexPath *)indexPath &#123;</span><br><span class="line">    return self.items[(NSUInteger) indexPath.row];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">#pragma mark UITableViewDataSource</span><br><span class="line"></span><br><span class="line">- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section &#123;</span><br><span class="line">    return self.items.count;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath &#123;</span><br><span class="line">    UITableViewCell *cell &#x3D;</span><br><span class="line">        [tableView dequeueReusableCellWithIdentifier:self.cellIdentifier</span><br><span class="line">                                        forIndexPath:indexPath];</span><br><span class="line">    id item &#x3D; [self itemAtIndexPath:indexPath];</span><br><span class="line">    &#x2F;&#x2F; 调用 Block 方法配置 cell</span><br><span class="line">    self.configureCellBlock(cell, item);</span><br><span class="line">    return cell;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+
+<p>现在，你可以把 view controller 中的这 3 个方法去掉了，取而代之，你可以创建一个 <code>ArrayDataSource</code> 类的实例作为 table view 的 data source。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">- (void)setupTableView &#123;</span><br><span class="line">    &#x2F;&#x2F; 参数一：数据源数组</span><br><span class="line">    NSArray *photos &#x3D; [AppDelegate sharedDelegate].store.sortedPhotos;</span><br><span class="line">    &#x2F;&#x2F; 参数三：配置 cell 的 Block 对象</span><br><span class="line">    TableViewCellConfigureBlock configureCell &#x3D; ^(PhotoCell *cell, Photo *photo) &#123;</span><br><span class="line">        &#x2F;&#x2F; 内部实现的是 cell 的范畴方法：根据 model 显示 cell</span><br><span class="line">        [cell configureForPhoto:photo];</span><br><span class="line">    &#125;;</span><br><span class="line">    self.photosArrayDataSource &#x3D;</span><br><span class="line">        [[ArrayDataSource alloc] initWithItems:photos</span><br><span class="line">                                cellIdentifier:PhotoCellIdentifier</span><br><span class="line">                            configureCellBlock:configureCell];</span><br><span class="line">    self.tableView.dataSource &#x3D; self.photosArrayDataSource;</span><br><span class="line">    </span><br><span class="line">    [self.tableView registerNib:[PhotoCell nib]</span><br><span class="line">         forCellReuseIdentifier:PhotoCellIdentifier];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>现在你不用担心把一个 index path 映射到数组中的位置了，每次你想把这个数组显示到一个 table view 中时，你都可以复用这些代码。你也可以实现一些额外的方法，比如 <code>tableView:commitEditingStyle:forRowAtIndexPath:</code>，在 table view controllers 之间共享。</p>
+<p>此外，这种方法也可以扩展到其他 protocols 上面。最明显的一个就是 <code>UICollectionViewDataSource</code>。这给了你极大的灵活性；如果在开发的某个时候，你想用 <code>UICollectionView</code> 代替 <code>UITableView</code>，你几乎不需要对 view controller 作任何修改。你甚至可以让你的 data source 同时支持这两个协议。</p>
+<h2 id="将业务逻辑移到-Model-中"><a href="#将业务逻辑移到-Model-中" class="headerlink" title="将业务逻辑移到 Model 中"></a>将业务逻辑移到 Model 中</h2><p>❇️ ❇️ 优化原理：把处理<u>业务逻辑</u>的代码移动到 Model 类的 category 中会变得更加清晰。</p>
+<h2 id="创建-Store-类"><a href="#创建-Store-类" class="headerlink" title="创建 Store 类"></a>创建 Store 类</h2><p>❇️ ❇️优化原理：Store 对象会关心<u>数据加载</u>、<u>缓存</u>和设置<u>数据栈</u>。它也经常被称为<strong>服务层</strong>或者<strong>仓库</strong>。通过分离，我们就可以复用这些代码，单独测试他们，并且让 view controller 保持小巧。</p>
+<h2 id="把网络请求逻辑移到-Model-层"><a href="#把网络请求逻辑移到-Model-层" class="headerlink" title="把网络请求逻辑移到 Model 层"></a>把网络请求逻辑移到 Model 层</h2><p>和上面的主题相似：不要在 view controller 中做网络请求的逻辑。取而代之，你应该将它们封装到另一个类中。这样，你的 view controller 就可以在之后通过使用回调（比如一个 completion 的 block）来请求网络了。这样的好处是，缓存和错误控制也可以在这个类里面完成。</p>
+<p>❇️ ❇️ 优化原理：就是把处理网络请求的方法封装在单独的类库中，比如猿题库的开源框架 <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL3l1YW50aWt1L1lUS05ldHdvcms=">YTKNetwork<i class="fa fa-external-link-alt"></i></span>。</p>
+<h2 id="把-View-代码移到-View-层"><a href="#把-View-代码移到-View-层" class="headerlink" title="把 View 代码移到 View 层"></a>把 View 代码移到 View 层</h2><p>不应该在 view controller 中构建复杂的 view 层次结构。你可以使用 Interface Builder 或者把 views 封装到一个 <code>UIView</code> 子类当中。例如，如果你要创建一个选择日期的控件，把它放到一个名为 <code>DatePickerView</code> 的类中会比把所有的事情都在 view controller 中做好好得多。再一次，这样增加了可复用性并保持了简单。</p>
+<h2 id="总结-1"><a href="#总结-1" class="headerlink" title="总结"></a>总结</h2><p>我们已经看到一些用来创建更小巧的 view controllers 的技术。我们并不是想把这些技术应用到每一个可能的角落，只是我们有一个目标：<strong>写可维护的代码。</strong>知道这些模式后，我们就更有可能把那些笨重的 view controllers 变得更整洁。</p>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>独木舟的木
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://andy0570.com/2017/06/11/iOS%20%E7%BC%96%E7%A8%8B%EF%BC%9A%E8%BD%BB%E9%87%8F%E5%8C%96%E8%A7%86%E5%9B%BE%E6%8E%A7%E5%88%B6%E5%99%A8/" title="iOS 编程：轻量化视图控制器">https://andy0570.com/2017/06/11/iOS 编程：轻量化视图控制器/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <span class="exturl" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpo"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</span> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/iOS/" rel="tag"># iOS</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2017/06/07/MJExtension%E2%80%94%E2%80%94%E6%A8%A1%E5%9E%8B%E8%BD%AC%E6%8D%A2%E6%A1%86%E6%9E%B6/" rel="prev" title="MJExtension——模型转换框架">
+      <i class="fa fa-chevron-left"></i> MJExtension——模型转换框架
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2017/06/20/iOS%20%E7%BC%96%E7%A8%8B%EF%BC%9A%E5%AF%86%E7%A0%81%E8%BE%93%E5%85%A5%E6%A1%86%20CYPasswordView_Block%20%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/" rel="next" title="iOS 编程：密码输入框 CYPasswordView_Block 源码解析">
+      iOS 编程：密码输入框 CYPasswordView_Block 源码解析 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+        </div>
+        
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">独木舟的木</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">2.1m</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">31:21</span>
+</div>
+  <div class="powered-by">由 <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZw==">NexT.Gemini</span> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
