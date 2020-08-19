@@ -18,21 +18,23 @@
 <link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css">
   
   <link rel="stylesheet" href="/lib/animate-css/animate.min.css">
+  <link rel="stylesheet" href="//unpkg.com/pace-js@1/themes/blue/pace-theme-minimal.css">
+  <script src="//unpkg.com/pace-js@1/pace.min.js"></script>
 
 <script class="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"andy0570.com","root":"/","scheme":"Gemini","version":"8.0.0-rc.5","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":"mac","bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false};
+    var CONFIG = {"hostname":"andy0570.com","root":"/","scheme":"Gemini","version":"8.0.0-rc.5","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":"mac","bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":true,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":true,"nav":null,"activeClass":"valine"},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"algolia":{"appID":"0E2AON8EZF","apiKey":"22fbefd84c8343239f5c04365b9728de","indexName":"MyBlogPlatform","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}}};
   </script>
 
-  <meta name="description" content="mitmproxy 是一款支持HTTP(S)的中间人代理工具。mitmproxy 提供了一个控制台接口用于动态拦截和编辑HTTP数据包。不同于Fiddler2，burpsuite等类似功能工具，mitmproxy可在终端下运行。mitmproxy使用Python开发，是辅助web开发&amp;测试，移动端调试，渗透测试的工具。mitmdump 是 mitmproxy 的命令行版本，功能与其相同。">
+  <meta name="description" content="mitmproxy 是一款支持 HTTP (S) 的中间人代理工具。mitmproxy 提供了一个控制台接口用于动态拦截和编辑 HTTP 数据包。不同于 Fiddler2，burpsuite 等类似功能工具，mitmproxy 可在终端下运行。mitmproxy 使用 Python 开发，是辅助 web 开发 &amp; 测试，移动端调试，渗透测试的工具。mitmdump 是 mitmproxy">
 <meta property="og:type" content="article">
-<meta property="og:title" content="mitmproxy——开源、免费的HTTP抓包分析工具">
+<meta property="og:title" content="mitmproxy—— 开源、免费的 HTTP 抓包分析工具">
 <meta property="og:url" content="https://andy0570.com/2016/11/25/mitmproxy%E2%80%94%E2%80%94%E5%BC%80%E6%BA%90%E3%80%81%E5%85%8D%E8%B4%B9%E7%9A%84HTTP%E6%8A%93%E5%8C%85%E5%88%86%E6%9E%90%E5%B7%A5%E5%85%B7/index.html">
 <meta property="og:site_name" content="独木舟的木">
-<meta property="og:description" content="mitmproxy 是一款支持HTTP(S)的中间人代理工具。mitmproxy 提供了一个控制台接口用于动态拦截和编辑HTTP数据包。不同于Fiddler2，burpsuite等类似功能工具，mitmproxy可在终端下运行。mitmproxy使用Python开发，是辅助web开发&amp;测试，移动端调试，渗透测试的工具。mitmdump 是 mitmproxy 的命令行版本，功能与其相同。">
+<meta property="og:description" content="mitmproxy 是一款支持 HTTP (S) 的中间人代理工具。mitmproxy 提供了一个控制台接口用于动态拦截和编辑 HTTP 数据包。不同于 Fiddler2，burpsuite 等类似功能工具，mitmproxy 可在终端下运行。mitmproxy 使用 Python 开发，是辅助 web 开发 &amp; 测试，移动端调试，渗透测试的工具。mitmdump 是 mitmproxy">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2016-11-25T08:25:00.000Z">
 <meta property="article:modified_time" content="2019-05-23T06:37:33.000Z">
@@ -43,7 +45,7 @@
 <link rel="canonical" href="https://andy0570.com/2016/11/25/mitmproxy%E2%80%94%E2%80%94%E5%BC%80%E6%BA%90%E3%80%81%E5%85%8D%E8%B4%B9%E7%9A%84HTTP%E6%8A%93%E5%8C%85%E5%88%86%E6%9E%90%E5%B7%A5%E5%85%B7/">
 
 
-<script class="page-configurations">
+<script data-pjax class="page-configurations">
   // https://hexo.io/docs/variables.html
   CONFIG.page = {
     sidebar: "",
@@ -53,10 +55,19 @@
   };
 </script>
 
-  <title>mitmproxy——开源、免费的HTTP抓包分析工具 | 独木舟的木</title>
+  <title>mitmproxy—— 开源、免费的 HTTP 抓包分析工具 | 独木舟的木</title>
   
 
 
+  <script data-pjax>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?8229a094facca297f211d61323fd9fde";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
 
 
 
@@ -126,6 +137,7 @@
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -159,11 +171,35 @@
     <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
 
   </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
   </ul>
 </nav>
 
 
 
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
 
 </div>
           
@@ -188,14 +224,14 @@
 
       <!--noindex-->
       <section class="post-toc-wrap sidebar-panel">
-          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85mitmproxy"><span class="nav-number">1.</span> <span class="nav-text">安装mitmproxy</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8"><span class="nav-number">2.</span> <span class="nav-text">使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#This-view"><span class="nav-number">3.</span> <span class="nav-text">This view:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Movement"><span class="nav-number">4.</span> <span class="nav-text">Movement</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Global-keys"><span class="nav-number">5.</span> <span class="nav-text">Global keys</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Filter-expressions-%E8%BF%87%E6%BB%A4%E8%A1%A8%E8%BE%BE%E5%BC%8F"><span class="nav-number">6.</span> <span class="nav-text">Filter expressions:(过滤表达式)</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Examples"><span class="nav-number">6.1.</span> <span class="nav-text">Examples:</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E7%AB%A0"><span class="nav-number">7.</span> <span class="nav-text">参考文章</span></a></li></ol></div>
+          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85mitmproxy"><span class="nav-number">1.</span> <span class="nav-text">安装 mitmproxy</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8"><span class="nav-number">2.</span> <span class="nav-text">使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#This-view"><span class="nav-number">3.</span> <span class="nav-text">This view:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Movement"><span class="nav-number">4.</span> <span class="nav-text">Movement</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Global-keys"><span class="nav-number">5.</span> <span class="nav-text">Global keys</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Filter-expressions-%E8%BF%87%E6%BB%A4%E8%A1%A8%E8%BE%BE%E5%BC%8F"><span class="nav-number">6.</span> <span class="nav-text">Filter expressions:(过滤表达式)</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Examples"><span class="nav-number">6.1.</span> <span class="nav-text">Examples:</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E7%AB%A0"><span class="nav-number">7.</span> <span class="nav-text">参考文章</span></a></li></ol></div>
       </section>
       <!--/noindex-->
 
       <section class="site-overview-wrap sidebar-panel">
         <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <img class="site-author-image" itemprop="image" alt="独木舟的木"
-      src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+      src="https://static01.imgkr.com/temp/88aab3c08a3f43f5a14f21c6c357c816.JPG">
   <p class="site-author-name" itemprop="name">独木舟的木</p>
   <div class="site-description" itemprop="description">生若直木，不语斧凿。</div>
 </div>
@@ -276,7 +312,7 @@
     <link itemprop="mainEntityOfPage" href="https://andy0570.com/2016/11/25/mitmproxy%E2%80%94%E2%80%94%E5%BC%80%E6%BA%90%E3%80%81%E5%85%8D%E8%B4%B9%E7%9A%84HTTP%E6%8A%93%E5%8C%85%E5%88%86%E6%9E%90%E5%B7%A5%E5%85%B7/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+      <meta itemprop="image" content="https://static01.imgkr.com/temp/88aab3c08a3f43f5a14f21c6c357c816.JPG">
       <meta itemprop="name" content="独木舟的木">
       <meta itemprop="description" content="生若直木，不语斧凿。">
     </span>
@@ -288,7 +324,7 @@
     
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          mitmproxy——开源、免费的HTTP抓包分析工具
+          mitmproxy—— 开源、免费的 HTTP 抓包分析工具
         </h1>
 
         <div class="post-meta">
@@ -317,7 +353,21 @@
                 </span>
             </span>
 
-          <br>
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2016/11/25/mitmproxy%E2%80%94%E2%80%94%E5%BC%80%E6%BA%90%E3%80%81%E5%85%8D%E8%B4%B9%E7%9A%84HTTP%E6%8A%93%E5%8C%85%E5%88%86%E6%9E%90%E5%B7%A5%E5%85%B7/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2016/11/25/mitmproxy%E2%80%94%E2%80%94%E5%BC%80%E6%BA%90%E3%80%81%E5%85%8D%E8%B4%B9%E7%9A%84HTTP%E6%8A%93%E5%8C%85%E5%88%86%E6%9E%90%E5%B7%A5%E5%85%B7/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  <br>
             <span class="post-meta-item" title="本文字数">
               <span class="post-meta-item-icon">
                 <i class="far fa-file-word"></i>
@@ -340,150 +390,150 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <p><span class="exturl" data-url="aHR0cHM6Ly9taXRtcHJveHkub3JnL2luZGV4Lmh0bWw=">mitmproxy<i class="fa fa-external-link-alt"></i></span> 是一款支持HTTP(S)的中间人代理工具。<strong>mitmproxy</strong> 提供了一个控制台接口用于动态拦截和编辑HTTP数据包。不同于<strong>Fiddler2</strong>，<strong>burpsuite</strong>等类似功能工具，<strong>mitmproxy</strong>可在终端下运行。<strong>mitmproxy</strong>使用<strong>Python</strong>开发，是辅助web开发&amp;测试，移动端调试，渗透测试的工具。<br><strong>mitmdump</strong> 是 <strong>mitmproxy</strong> 的命令行版本，功能与其相同。</p>
+        <p><span class="exturl" data-url="aHR0cHM6Ly9taXRtcHJveHkub3JnL2luZGV4Lmh0bWw=">mitmproxy<i class="fa fa-external-link-alt"></i></span> 是一款支持 HTTP (S) 的中间人代理工具。<strong>mitmproxy</strong> 提供了一个控制台接口用于动态拦截和编辑 HTTP 数据包。不同于 <strong>Fiddler2</strong>，<strong>burpsuite</strong> 等类似功能工具，<strong>mitmproxy</strong> 可在终端下运行。<strong>mitmproxy</strong> 使用 <strong>Python</strong> 开发，是辅助 web 开发 &amp; 测试，移动端调试，渗透测试的工具。<br><strong>mitmdump</strong> 是 <strong>mitmproxy</strong> 的命令行版本，功能与其相同。</p>
 <a id="more"></a>
 
-<h3 id="安装mitmproxy"><a href="#安装mitmproxy" class="headerlink" title="安装mitmproxy"></a>安装mitmproxy</h3><ol>
-<li><p>先要在Mac中安装 <strong>pip</strong>（Python包管理工具，主要是用于安装 PyPI 上的软件包，可以替代 easy_install 工具。） ,打开Termal终端，输入如下命令：   </p>
- <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ sudo easy_install pip</span><br><span class="line">Searching for pip</span><br><span class="line">Reading https:&#x2F;&#x2F;pypi.python.org&#x2F;simple&#x2F;pip&#x2F;</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<h3 id="安装mitmproxy"><a href="#安装mitmproxy" class="headerlink" title="安装mitmproxy"></a>安装 mitmproxy</h3><ol>
+<li><p>先要在 Mac 中安装 <strong>pip</strong>（Python 包管理工具，主要是用于安装 PyPI 上的软件包，可以替代 easy_install 工具。） , 打开 Termal 终端，输入如下命令：   </p>
+ <figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ sudo easy_install pip</span><br><span class="line">Searching for pip</span><br><span class="line">Reading https://pypi.python.org/simple/pip/</span><br><span class="line">...</span><br></pre></td></tr></tbody></table></figure>
 </li>
-<li><p>安装<strong>mitmproxy</strong> </p>
- <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo pip install mitmproxy --ignore-installed six</span><br></pre></td></tr></table></figure>
+<li><p>安装 <strong>mitmproxy</strong> </p>
+ <figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo pip install mitmproxy --ignore-installed six</span><br></pre></td></tr></tbody></table></figure>
 
 </li>
 </ol>
-<h3 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h3><p>使用方法目前自己也完全参考以上文章，因为目前也处于学习使用阶段，所以写一大堆和别人类似的东西或者不如别人详细完善的东西出来完全是浪费时间，Blog这个东西只是辅助手段，并不能放在首要目标上。</p>
-<p>以下vim命令可通过<code>？</code>获得</p>
+<h3 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h3><p>使用方法目前自己也完全参考以上文章，因为目前也处于学习使用阶段，所以写一大堆和别人类似的东西或者不如别人详细完善的东西出来完全是浪费时间，Blog 这个东西只是辅助手段，并不能放在首要目标上。</p>
+<p>以下 vim 命令可通过<code>？</code>获得</p>
 <h3 id="This-view"><a href="#This-view" class="headerlink" title="This view:"></a>This view:</h3><table>
 <thead>
 <tr>
 <th align="left">A</th>
-<th align="left">接收所有被拦截的流</th>
+<th align="left"> 接收所有被拦截的流</th>
 </tr>
 </thead>
 <tbody><tr>
-<td align="left">a</td>
-<td align="left">只接收该被拦截的流</td>
+<td align="left"> a</td>
+<td align="left"> 只接收该被拦截的流</td>
 </tr>
 <tr>
-<td align="left">b</td>
-<td align="left">保存 request/response 体</td>
+<td align="left"> b</td>
+<td align="left"> 保存 request/response 体</td>
 </tr>
 <tr>
-<td align="left">C</td>
-<td align="left">导出流到剪切板</td>
+<td align="left"> C</td>
+<td align="left"> 导出流到剪切板</td>
 </tr>
 <tr>
-<td align="left">d</td>
-<td align="left">删除流</td>
+<td align="left"> d</td>
+<td align="left"> 删除流</td>
 </tr>
 <tr>
-<td align="left">D</td>
-<td align="left">重复流</td>
+<td align="left"> D</td>
+<td align="left"> 重复流</td>
 </tr>
 <tr>
-<td align="left">e</td>
-<td align="left">切换事件日志</td>
+<td align="left"> e</td>
+<td align="left"> 切换事件日志</td>
 </tr>
 <tr>
-<td align="left">E</td>
-<td align="left">导出流到文件</td>
+<td align="left"> E</td>
+<td align="left"> 导出流到文件</td>
 </tr>
 <tr>
-<td align="left">f</td>
-<td align="left">过滤视图</td>
+<td align="left"> f</td>
+<td align="left"> 过滤视图</td>
 </tr>
 <tr>
-<td align="left">F</td>
-<td align="left">切换follow流列表</td>
+<td align="left"> F</td>
+<td align="left"> 切换 follow 流列表</td>
 </tr>
 <tr>
-<td align="left">L</td>
-<td align="left">加载保存的流</td>
+<td align="left"> L</td>
+<td align="left"> 加载保存的流</td>
 </tr>
 <tr>
-<td align="left">m</td>
-<td align="left">切换流标记</td>
+<td align="left"> m</td>
+<td align="left"> 切换流标记</td>
 </tr>
 <tr>
-<td align="left">M</td>
-<td align="left">切换标记的流视图</td>
+<td align="left"> M</td>
+<td align="left"> 切换标记的流视图</td>
 </tr>
 <tr>
-<td align="left">n</td>
-<td align="left">创建一个新的request</td>
+<td align="left"> n</td>
+<td align="left"> 创建一个新的 request</td>
 </tr>
 <tr>
 <td align="left">r</td>
-<td align="left">重复request</td>
+<td align="left"> 重复 request</td>
 </tr>
 <tr>
 <td align="left">S</td>
-<td align="left">服务器重复request</td>
+<td align="left"> 服务器重复 request</td>
 </tr>
 <tr>
 <td align="left">U</td>
-<td align="left">取消标记所有被标记的流</td>
+<td align="left"> 取消标记所有被标记的流</td>
 </tr>
 <tr>
-<td align="left">V</td>
-<td align="left">还原更改的请求</td>
+<td align="left"> V</td>
+<td align="left"> 还原更改的请求</td>
 </tr>
 <tr>
-<td align="left">w</td>
-<td align="left">保存流</td>
+<td align="left"> w</td>
+<td align="left"> 保存流</td>
 </tr>
 <tr>
-<td align="left">W</td>
-<td align="left">把流stream入文件</td>
+<td align="left"> W</td>
+<td align="left"> 把流 stream 入文件</td>
 </tr>
 <tr>
-<td align="left">X</td>
-<td align="left">杀死和删除流，即使它正被拦截</td>
+<td align="left"> X</td>
+<td align="left"> 杀死和删除流，即使它正被拦截</td>
 </tr>
 <tr>
-<td align="left">z</td>
-<td align="left">清楚流或事件日志</td>
+<td align="left"> z</td>
+<td align="left"> 清楚流或事件日志</td>
 </tr>
 <tr>
-<td align="left">tab</td>
-<td align="left">选项卡在事件日志和流列表之间切换</td>
+<td align="left"> tab</td>
+<td align="left"> 选项卡在事件日志和流列表之间切换</td>
 </tr>
 <tr>
-<td align="left">enter</td>
-<td align="left">查看流</td>
+<td align="left"> enter</td>
+<td align="left"> 查看流</td>
 </tr>
 <tr>
-<td align="left">l</td>
-<td align="left">运行脚本</td>
+<td align="left"> l</td>
+<td align="left"> 运行脚本</td>
 </tr>
 </tbody></table>
 <h3 id="Movement"><a href="#Movement" class="headerlink" title="Movement"></a>Movement</h3><table>
 <thead>
 <tr>
 <th align="left">j,k</th>
-<th align="left">下移，上移</th>
+<th align="left"> 下移，上移</th>
 </tr>
 </thead>
 <tbody><tr>
-<td align="left">h,l</td>
-<td align="left">左移，右移（在某些文本中）</td>
+<td align="left"> h,l</td>
+<td align="left"> 左移，右移（在某些文本中）</td>
 </tr>
 <tr>
 <td align="left">g,G</td>
-<td align="left">移至开头，结尾</td>
+<td align="left"> 移至开头，结尾</td>
 </tr>
 <tr>
-<td align="left">space</td>
-<td align="left">翻页</td>
+<td align="left"> space</td>
+<td align="left"> 翻页</td>
 </tr>
 <tr>
-<td align="left">page up/down</td>
-<td align="left">翻页</td>
+<td align="left"> page up/down</td>
+<td align="left"> 翻页</td>
 </tr>
 <tr>
-<td align="left">ctrl+b /ctrl+f</td>
-<td align="left">翻页</td>
+<td align="left"> ctrl+b /ctrl+f</td>
+<td align="left"> 翻页</td>
 </tr>
 <tr>
 <td align="left">方向键</td>
@@ -494,31 +544,31 @@
 <thead>
 <tr>
 <th align="left">i</th>
-<th align="left">设置拦截模式</th>
+<th align="left"> 设置拦截模式</th>
 </tr>
 </thead>
 <tbody><tr>
-<td align="left">o</td>
-<td align="left">选项</td>
+<td align="left"> o</td>
+<td align="left"> 选项</td>
 </tr>
 <tr>
-<td align="left">q</td>
-<td align="left">后退，返回</td>
+<td align="left"> q</td>
+<td align="left"> 后退，返回</td>
 </tr>
 <tr>
-<td align="left">Q</td>
-<td align="left">退出而不需要确认提示</td>
+<td align="left"> Q</td>
+<td align="left"> 退出而不需要确认提示</td>
 </tr>
 <tr>
-<td align="left">R</td>
-<td align="left">从文件中重复运行requests/responses</td>
+<td align="left"> R</td>
+<td align="left"> 从文件中重复运行 requests/responses</td>
 </tr>
 </tbody></table>
 <h3 id="Filter-expressions-过滤表达式"><a href="#Filter-expressions-过滤表达式" class="headerlink" title="Filter expressions:(过滤表达式)"></a>Filter expressions:(过滤表达式)</h3><table>
 <thead>
 <tr>
 <th align="left">~a</th>
-<th align="left">匹配response：CSS，JavaScript，Flash，image</th>
+<th align="left"> 匹配 response：CSS，JavaScript，Flash，image</th>
 </tr>
 </thead>
 <tbody><tr>
@@ -527,30 +577,30 @@
 </tr>
 <tr>
 <td align="left">~bq regex</td>
-<td align="left">request请求体</td>
+<td align="left">request 请求体</td>
 </tr>
 <tr>
-<td align="left">~bs  regex</td>
-<td align="left">response响应体</td>
+<td align="left"> ~bs  regex</td>
+<td align="left">response 响应体</td>
 </tr>
 <tr>
-<td align="left">~c int</td>
+<td align="left"> ~c int</td>
 <td align="left">HTTP response code</td>
 </tr>
 <tr>
 <td align="left">~d regex</td>
-<td align="left">Domain域</td>
+<td align="left">Domain 域</td>
 </tr>
 <tr>
-<td align="left">~dst regex</td>
-<td align="left">匹配目标地址</td>
+<td align="left"> ~dst regex</td>
+<td align="left"> 匹配目标地址</td>
 </tr>
 <tr>
-<td align="left">~e</td>
-<td align="left">匹配错误</td>
+<td align="left"> ~e</td>
+<td align="left"> 匹配错误</td>
 </tr>
 <tr>
-<td align="left">~h regex</td>
+<td align="left"> ~h regex</td>
 <td align="left">Header</td>
 </tr>
 <tr>
@@ -563,38 +613,38 @@
 </tr>
 <tr>
 <td align="left">~http</td>
-<td align="left">匹配http流</td>
+<td align="left"> 匹配 http 流</td>
 </tr>
 <tr>
-<td align="left">~m regex</td>
+<td align="left"> ~m regex</td>
 <td align="left">Method</td>
 </tr>
 <tr>
 <td align="left">~marked</td>
-<td align="left">匹配标记的流</td>
+<td align="left"> 匹配标记的流</td>
 </tr>
 <tr>
-<td align="left">~q</td>
-<td align="left">匹配request 而不需要response</td>
+<td align="left"> ~q</td>
+<td align="left"> 匹配 request 而不需要 response</td>
 </tr>
 <tr>
 <td align="left">~s</td>
-<td align="left">匹配response</td>
+<td align="left"> 匹配 response</td>
 </tr>
 <tr>
 <td align="left">~src regex</td>
-<td align="left">匹配源地址</td>
+<td align="left"> 匹配源地址</td>
 </tr>
 <tr>
-<td align="left">~t regex</td>
+<td align="left"> ~t regex</td>
 <td align="left">Content-type header</td>
 </tr>
 <tr>
 <td align="left">~tcp</td>
-<td align="left">匹配TCP流</td>
+<td align="left"> 匹配 TCP 流</td>
 </tr>
 <tr>
-<td align="left">~tq regex</td>
+<td align="left"> ~tq regex</td>
 <td align="left">Request Content-type header</td>
 </tr>
 <tr>
@@ -607,50 +657,50 @@
 </tr>
 <tr>
 <td align="left">!</td>
-<td align="left">非</td>
+<td align="left"> 非</td>
 </tr>
 <tr>
-<td align="left">&amp;</td>
-<td align="left">与</td>
+<td align="left"> &amp;</td>
+<td align="left"> 与</td>
 </tr>
 <tr>
-<td align="left">l</td>
-<td align="left">或</td>
+<td align="left"> l</td>
+<td align="left"> 或</td>
 </tr>
 <tr>
-<td align="left">(…)</td>
-<td align="left">集合</td>
+<td align="left"> (…)</td>
+<td align="left"> 集合</td>
 </tr>
 </tbody></table>
 <ul>
-<li>正则表达式是<strong>Python</strong>风格的。</li>
+<li>正则表达式是 <strong>Python</strong> 风格的。</li>
 <li>正则表达式可以被指定为带引号的字符串。</li>
-<li>Header匹配(<del>h,</del>hq,~hs)是针对“name：value”形式的字符串。</li>
-<li>没有运算符的表达式与URL的正则表达式匹配</li>
-<li>默认的二进制运算符是&amp;</li>
+<li>Header 匹配 (<del>h,</del>hq,~hs) 是针对 “name：value” 形式的字符串。</li>
+<li>没有运算符的表达式与 URL 的正则表达式匹配</li>
+<li>默认的二进制运算符是 &amp;</li>
 </ul>
 <h4 id="Examples"><a href="#Examples" class="headerlink" title="Examples:"></a>Examples:</h4><table>
 <thead>
 <tr>
 <th>google.com</th>
-<th align="center">URL包含“google.com”</th>
+<th align="center">URL 包含 “google.com”</th>
 </tr>
 </thead>
 <tbody><tr>
 <td>~q ~b test</td>
-<td align="center">Request请求体中包含“test”</td>
+<td align="center">Request 请求体中包含 “test”</td>
 </tr>
 <tr>
 <td>!(~q &amp; ~t “text/html”)</td>
-<td align="center">除了Request请求中带有 “text/html” 的内容类型</td>
+<td align="center"> 除了 Request 请求中带有 “text/html” 的内容类型</td>
 </tr>
 </tbody></table>
 <h3 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h3><ul>
-<li><span class="exturl" data-url="aHR0cDovL2Jsb2cuam9iYm9sZS5jb20vMzAyNTEv">推荐给开发人员的6个实用命令行工具<i class="fa fa-external-link-alt"></i></span>（阅读难度：★）</li>
-<li><span class="exturl" data-url="aHR0cDovL2hlbGxvMTAxMC5jb20vbWl0bXByb3h5LWFuZHJvaWQ=">使用mitmproxy进行移动端的HTTP抓包<i class="fa fa-external-link-alt"></i></span>（阅读难度：★★）</li>
-<li><span class="exturl" data-url="aHR0cDovL2dyZWVucm9ib3QubWUvZGV2cG9zdC9ob3ctdG8tZGVidWctYW5kcm9pZC1odHRwLWdldC1zdGFydGVkLw==">mitmproxy实践教程之调试 Android 上 HTTP流量<i class="fa fa-external-link-alt"></i></span>（阅读难度：★★）</li>
-<li><span class="exturl" data-url="aHR0cHM6Ly96aHVhbmxhbi56aGlodS5jb20vcC8yMzg3ODE0OQ==">和Charles同样强大的iOS免费抓包工具mitmproxy<i class="fa fa-external-link-alt"></i></span>（阅读难度：★★★）</li>
-<li><span class="exturl" data-url="aHR0cDovL3d3dy5mcmVlYnVmLmNvbS9zZWN0b29sLzc2MzYxLmh0bWw=">mitmproxy套件使用攻略<i class="fa fa-external-link-alt"></i></span>（阅读难度：★★★★）</li>
+<li><span class="exturl" data-url="aHR0cDovL2Jsb2cuam9iYm9sZS5jb20vMzAyNTEv">推荐给开发人员的 6 个实用命令行工具<i class="fa fa-external-link-alt"></i></span>（阅读难度：★）</li>
+<li><span class="exturl" data-url="aHR0cDovL2hlbGxvMTAxMC5jb20vbWl0bXByb3h5LWFuZHJvaWQ=">使用 mitmproxy 进行移动端的 HTTP 抓包<i class="fa fa-external-link-alt"></i></span>（阅读难度：★★）</li>
+<li><span class="exturl" data-url="aHR0cDovL2dyZWVucm9ib3QubWUvZGV2cG9zdC9ob3ctdG8tZGVidWctYW5kcm9pZC1odHRwLWdldC1zdGFydGVkLw==">mitmproxy 实践教程之调试 Android 上 HTTP 流量<i class="fa fa-external-link-alt"></i></span>（阅读难度：★★）</li>
+<li><span class="exturl" data-url="aHR0cHM6Ly96aHVhbmxhbi56aGlodS5jb20vcC8yMzg3ODE0OQ==">和 Charles 同样强大的 iOS 免费抓包工具 mitmproxy<i class="fa fa-external-link-alt"></i></span>（阅读难度：★★★）</li>
+<li><span class="exturl" data-url="aHR0cDovL3d3dy5mcmVlYnVmLmNvbS9zZWN0b29sLzc2MzYxLmh0bWw=">mitmproxy 套件使用攻略<i class="fa fa-external-link-alt"></i></span>（阅读难度：★★★★）</li>
 </ul>
 
     </div>
@@ -667,7 +717,7 @@
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="https://andy0570.com/2016/11/25/mitmproxy%E2%80%94%E2%80%94%E5%BC%80%E6%BA%90%E3%80%81%E5%85%8D%E8%B4%B9%E7%9A%84HTTP%E6%8A%93%E5%8C%85%E5%88%86%E6%9E%90%E5%B7%A5%E5%85%B7/" title="mitmproxy——开源、免费的HTTP抓包分析工具">https://andy0570.com/2016/11/25/mitmproxy——开源、免费的HTTP抓包分析工具/</a>
+    <a href="https://andy0570.com/2016/11/25/mitmproxy%E2%80%94%E2%80%94%E5%BC%80%E6%BA%90%E3%80%81%E5%85%8D%E8%B4%B9%E7%9A%84HTTP%E6%8A%93%E5%8C%85%E5%88%86%E6%9E%90%E5%B7%A5%E5%85%B7/" title="mitmproxy—— 开源、免费的 HTTP 抓包分析工具">https://andy0570.com/2016/11/25/mitmproxy——开源、免费的HTTP抓包分析工具/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <span class="exturl" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpo"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</span> 许可协议。转载请注明出处！
@@ -725,6 +775,7 @@
 
         </div>
         
+    <div class="comments" id="valine-comments"></div>
 
 <script>
   window.addEventListener('tabs:register', () => {
@@ -793,7 +844,11 @@
   </div>
 
   
-  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.0/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/next-theme/pjax@0/pjax.min.js"></script>
+  <script src="//unpkg.com/medium-zoom@1/dist/medium-zoom.min.js"></script>
+  <script src="//unpkg.com/lozad@1/dist/lozad.min.js"></script>
+  <script src="//unpkg.com/pangu@4/dist/browser/pangu.min.js"></script>
 
 <script src="/js/utils.js"></script>
 
@@ -804,9 +859,42 @@
 
 <script src="/js/bookmark.js"></script>
 
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '.page-configurations',
+    '.main-inner',
+    '.post-toc-wrap',
+    '.languages',
+    '.pjax'
+  ],
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+document.addEventListener('pjax:success', () => {
+  pjax.executeScripts(document.querySelectorAll('script[data-pjax], .pjax script'));
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  const hasTOC = document.querySelector('.post-toc');
+  document.querySelector('.sidebar-inner').classList.toggle('sidebar-nav-active', hasTOC);
+  document.querySelector(hasTOC ? '.sidebar-nav-toc' : '.sidebar-nav-overview').click();
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
 
   
-  <script>
+  <script data-pjax>
     (function(){
       var bp = document.createElement('script');
       var curProtocol = window.location.protocol.split(':')[0];
@@ -819,6 +907,10 @@
 
 
 
+  
+<script src="//unpkg.com/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//unpkg.com/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
 
 
 
@@ -830,9 +922,27 @@
 
 
 
+
+
+
+    <div class="pjax">
   
 
   
 
+
+<script>
+NexT.utils.loadComments('#valine-comments', () => {
+  NexT.utils.getScript('//unpkg.com/valine@1/dist/Valine.min.js', () => {
+    new Valine(Object.assign({
+      el  : '#valine-comments',
+      path: location.pathname,
+    }, {"enable":true,"appId":"S7i1Y8YorMKFPaYbJbekD5el-gzGzoHsz","appKey":"brOnU8mOQvSjpipJvdKUAIbU","placeholder":"写下你的评论...","avatar":"mm","meta":["nick","mail","link"],"pageSize":10,"language":"zh-cn","visitor":false,"comment_count":true,"recordIP":true,"serverURLs":null,"enableQQ":true,"requiredFields":[]}
+    ));
+  }, window.Valine);
+});
+</script>
+
+    </div>
 </body>
 </html>

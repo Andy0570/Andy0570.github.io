@@ -18,21 +18,23 @@
 <link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css">
   
   <link rel="stylesheet" href="/lib/animate-css/animate.min.css">
+  <link rel="stylesheet" href="//unpkg.com/pace-js@1/themes/blue/pace-theme-minimal.css">
+  <script src="//unpkg.com/pace-js@1/pace.min.js"></script>
 
 <script class="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"andy0570.com","root":"/","scheme":"Gemini","version":"8.0.0-rc.5","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":"mac","bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false};
+    var CONFIG = {"hostname":"andy0570.com","root":"/","scheme":"Gemini","version":"8.0.0-rc.5","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":"mac","bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":true,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":true,"nav":null,"activeClass":"valine"},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"algolia":{"appID":"0E2AON8EZF","apiKey":"22fbefd84c8343239f5c04365b9728de","indexName":"MyBlogPlatform","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}}};
   </script>
 
-  <meta name="description" content="创建主题 POST &#x2F;api&#x2F;v2&#x2F;topics 请求体：123456&amp;#123;  accesstoken: &amp;#x27;string&amp;#x27;,  title: &amp;#x27;string&amp;#x27;,  tab: &amp;#123; type: &amp;#x27;enum&amp;#x27;, values: [ &amp;#x27;ask&amp;#x27;, &amp;#x27;share&amp;#x27;, &amp;#x27;job&amp;#x2">
+  <meta name="description" content="创建主题 POST &#x2F;api&#x2F;v2&#x2F;topics 请求体：123456{  accesstoken: &#39;string&#39;,  title: &#39;string&#39;,  tab: { type: &#39;enum&#39;, values: [ &#39;ask&#39;, &#39;share&#39;, &#39;job&#39; ], required: false },  content: &#39;string&#39;,} 响应状态码：201  响应体：123{  &quot;to">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Node.js示例_CNode RESTful API">
+<meta property="og:title" content="Node.js 示例_CNode RESTful API">
 <meta property="og:url" content="https://andy0570.com/2018/11/13/Node.js%E7%A4%BA%E4%BE%8B_CNode%20RESTful%20API/index.html">
 <meta property="og:site_name" content="独木舟的木">
-<meta property="og:description" content="创建主题 POST &#x2F;api&#x2F;v2&#x2F;topics 请求体：123456&amp;#123;  accesstoken: &amp;#x27;string&amp;#x27;,  title: &amp;#x27;string&amp;#x27;,  tab: &amp;#123; type: &amp;#x27;enum&amp;#x27;, values: [ &amp;#x27;ask&amp;#x27;, &amp;#x27;share&amp;#x27;, &amp;#x27;job&amp;#x2">
+<meta property="og:description" content="创建主题 POST &#x2F;api&#x2F;v2&#x2F;topics 请求体：123456{  accesstoken: &#39;string&#39;,  title: &#39;string&#39;,  tab: { type: &#39;enum&#39;, values: [ &#39;ask&#39;, &#39;share&#39;, &#39;job&#39; ], required: false },  content: &#39;string&#39;,} 响应状态码：201  响应体：123{  &quot;to">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2018-11-13T05:53:00.000Z">
 <meta property="article:modified_time" content="2019-05-21T07:11:39.000Z">
@@ -43,7 +45,7 @@
 <link rel="canonical" href="https://andy0570.com/2018/11/13/Node.js%E7%A4%BA%E4%BE%8B_CNode%20RESTful%20API/">
 
 
-<script class="page-configurations">
+<script data-pjax class="page-configurations">
   // https://hexo.io/docs/variables.html
   CONFIG.page = {
     sidebar: "",
@@ -53,10 +55,19 @@
   };
 </script>
 
-  <title>Node.js示例_CNode RESTful API | 独木舟的木</title>
+  <title>Node.js 示例_CNode RESTful API | 独木舟的木</title>
   
 
 
+  <script data-pjax>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?8229a094facca297f211d61323fd9fde";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
 
 
 
@@ -126,6 +137,7 @@
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -159,11 +171,35 @@
     <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
 
   </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
   </ul>
 </nav>
 
 
 
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
 
 </div>
           
@@ -195,7 +231,7 @@
       <section class="site-overview-wrap sidebar-panel">
         <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <img class="site-author-image" itemprop="image" alt="独木舟的木"
-      src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+      src="https://static01.imgkr.com/temp/88aab3c08a3f43f5a14f21c6c357c816.JPG">
   <p class="site-author-name" itemprop="name">独木舟的木</p>
   <div class="site-description" itemprop="description">生若直木，不语斧凿。</div>
 </div>
@@ -276,7 +312,7 @@
     <link itemprop="mainEntityOfPage" href="https://andy0570.com/2018/11/13/Node.js%E7%A4%BA%E4%BE%8B_CNode%20RESTful%20API/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+      <meta itemprop="image" content="https://static01.imgkr.com/temp/88aab3c08a3f43f5a14f21c6c357c816.JPG">
       <meta itemprop="name" content="独木舟的木">
       <meta itemprop="description" content="生若直木，不语斧凿。">
     </span>
@@ -288,7 +324,7 @@
     
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          Node.js示例_CNode RESTful API
+          Node.js 示例_CNode RESTful API
         </h1>
 
         <div class="post-meta">
@@ -317,7 +353,21 @@
                 </span>
             </span>
 
-          <br>
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2018/11/13/Node.js%E7%A4%BA%E4%BE%8B_CNode%20RESTful%20API/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2018/11/13/Node.js%E7%A4%BA%E4%BE%8B_CNode%20RESTful%20API/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  <br>
             <span class="post-meta-item" title="本文字数">
               <span class="post-meta-item-icon">
                 <i class="far fa-file-word"></i>
@@ -342,29 +392,29 @@
     <div class="post-body" itemprop="articleBody">
         <h2 id="创建主题"><a href="#创建主题" class="headerlink" title="创建主题"></a>创建主题</h2><ul>
 <li><code>POST /api/v2/topics</code></li>
-<li>请求体：<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  accesstoken: &#x27;string&#x27;,</span><br><span class="line">  title: &#x27;string&#x27;,</span><br><span class="line">  tab: &#123; type: &#x27;enum&#x27;, values: [ &#x27;ask&#x27;, &#x27;share&#x27;, &#x27;job&#x27; ], required: false &#125;,</span><br><span class="line">  content: &#x27;string&#x27;,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li>请求体：<figure class="highlight"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">{</span><br><span class="line">  accesstoken: 'string',</span><br><span class="line">  title: 'string',</span><br><span class="line">  tab: { type: 'enum', values: [ 'ask', 'share', 'job' ], required: false },</span><br><span class="line">  content: 'string',</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure></li>
 <li>响应状态码：201</li>
-<li>响应体：<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">&quot;topic_id&quot;</span>: <span class="string">&quot;57ea257b3670ca3f44c5beb6&quot;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<li> 响应体：<figure class="highlight json"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">{</span><br><span class="line">  <span class="attr">"topic_id"</span>: <span class="string">"57ea257b3670ca3f44c5beb6"</span></span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
 
 </li>
 </ul>
 <a id="more"></a>
 
-<h2 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h2><h3 id="初始化项目"><a href="#初始化项目" class="headerlink" title="初始化项目"></a>初始化项目</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> npm i egg-init -g    <span class="comment"># 安装Egg脚手架</span></span></span><br><span class="line"><span class="meta">$</span><span class="bash"> egg-init cnode-api --<span class="built_in">type</span>=simple</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">cd</span> cnode-api</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> npm i</span></span><br></pre></td></tr></table></figure>
+<h2 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h2><h3 id="初始化项目"><a href="#初始化项目" class="headerlink" title="初始化项目"></a>初始化项目</h3><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> npm i egg-init -g    <span class="comment"># 安装Egg脚手架</span></span></span><br><span class="line"><span class="meta">$</span><span class="bash"> egg-init cnode-api --<span class="built_in">type</span>=simple</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">cd</span> cnode-api</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> npm i</span></span><br></pre></td></tr></tbody></table></figure>
 
-<h3 id="开启-validate-插件"><a href="#开启-validate-插件" class="headerlink" title="开启 validate 插件"></a>开启 validate 插件</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// config/plugin.js</span></span><br><span class="line"><span class="built_in">exports</span>.validate = &#123;</span><br><span class="line">  enable: <span class="literal">true</span>,</span><br><span class="line">  package: <span class="string">&#x27;egg-validate&#x27;</span>,</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h3 id="开启-validate-插件"><a href="#开启-validate-插件" class="headerlink" title="开启 validate 插件"></a>开启 validate 插件</h3><figure class="highlight javascript"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// config/plugin.js</span></span><br><span class="line"><span class="built_in">exports</span>.validate = {</span><br><span class="line">  enable: <span class="literal">true</span>,</span><br><span class="line">  package: <span class="string">'egg-validate'</span>,</span><br><span class="line">};</span><br></pre></td></tr></tbody></table></figure>
 
-<h3 id="注册路由"><a href="#注册路由" class="headerlink" title="注册路由"></a>注册路由</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// app/router.js</span></span><br><span class="line"><span class="built_in">module</span>.exports = <span class="function"><span class="params">app</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="comment">// app.resources(&#x27;routerName&#x27;, &#x27;pathMatch&#x27;, controller)</span></span><br><span class="line">  app.router.resources(<span class="string">&#x27;topics&#x27;</span>, <span class="string">&#x27;/api/v2/topics&#x27;</span>, app.controller.topics);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h3 id="注册路由"><a href="#注册路由" class="headerlink" title="注册路由"></a>注册路由</h3><figure class="highlight javascript"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// app/router.js</span></span><br><span class="line"><span class="built_in">module</span>.exports = <span class="function"><span class="params">app</span> =&gt;</span> {</span><br><span class="line">  <span class="comment">// app.resources('routerName', 'pathMatch', controller)</span></span><br><span class="line">  app.router.resources(<span class="string">'topics'</span>, <span class="string">'/api/v2/topics'</span>, app.controller.topics);</span><br><span class="line">};</span><br></pre></td></tr></tbody></table></figure>
 
 <p>通过 <code>app.resources</code> 方法，将 topics 这个资源的增删查改接口映射到了 <code>app/controller/topics.js</code> 文件。</p>
-<h3 id="controller-开发"><a href="#controller-开发" class="headerlink" title="controller 开发"></a>controller 开发</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// app/controller/topics.js</span></span><br><span class="line"><span class="keyword">const</span> Controller = <span class="built_in">require</span>(<span class="string">&#x27;egg&#x27;</span>).Controller;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">TopicsController</span> <span class="keyword">extends</span> <span class="title">Controller</span> </span>&#123;</span><br><span class="line">  <span class="keyword">constructor</span>(ctx) &#123;</span><br><span class="line">    <span class="built_in">super</span>(ctx);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 定义创建接口的请求参数规则</span></span><br><span class="line">    <span class="built_in">this</span>.createRule = &#123;</span><br><span class="line">      accesstoken: <span class="string">&#x27;string&#x27;</span>,</span><br><span class="line">      title: <span class="string">&#x27;string&#x27;</span>,</span><br><span class="line">      tab: &#123; <span class="attr">type</span>: <span class="string">&#x27;enum&#x27;</span>, <span class="attr">values</span>: [ <span class="string">&#x27;ask&#x27;</span>, <span class="string">&#x27;share&#x27;</span>, <span class="string">&#x27;job&#x27;</span> ], <span class="attr">required</span>: <span class="literal">false</span> &#125;,</span><br><span class="line">      content: <span class="string">&#x27;string&#x27;</span>,</span><br><span class="line">    &#125;;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// ------ 新建 ------</span></span><br><span class="line">  <span class="keyword">async</span> create() &#123;</span><br><span class="line">    <span class="keyword">const</span> &#123; ctx &#125; = <span class="built_in">this</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 1. 调用 validate 方法对请求参数进行验证。</span></span><br><span class="line">    <span class="comment">// 校验 `ctx.request.body` 是否符合我们预期的格式</span></span><br><span class="line">    <span class="comment">// 如果参数校验未通过，将会抛出一个 status = 422 的异常</span></span><br><span class="line">    ctx.validate(<span class="built_in">this</span>.createRule, ctx.request.body);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 2. 用验证过的参数调用 service 封装的业务逻辑来创建一个 topic。</span></span><br><span class="line">    <span class="comment">// 调用 service 创建一个 topic</span></span><br><span class="line">    <span class="keyword">const</span> id = <span class="keyword">await</span> ctx.service.topics.create(ctx.request.body);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 3. 按照接口约定的格式设置响应状态码和内容。</span></span><br><span class="line">    <span class="comment">// 设置响应体和状态码</span></span><br><span class="line">    ctx.body = &#123;</span><br><span class="line">      topic_id: id,</span><br><span class="line">    &#125;;</span><br><span class="line">    ctx.status = <span class="number">201</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = TopicsController;</span><br></pre></td></tr></table></figure>
+<h3 id="controller-开发"><a href="#controller-开发" class="headerlink" title="controller 开发"></a>controller 开发</h3><figure class="highlight javascript"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// app/controller/topics.js</span></span><br><span class="line"><span class="keyword">const</span> Controller = <span class="built_in">require</span>(<span class="string">'egg'</span>).Controller;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">TopicsController</span> <span class="keyword">extends</span> <span class="title">Controller</span> </span>{</span><br><span class="line">  <span class="keyword">constructor</span>(ctx) {</span><br><span class="line">    <span class="built_in">super</span>(ctx);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 定义创建接口的请求参数规则</span></span><br><span class="line">    <span class="built_in">this</span>.createRule = {</span><br><span class="line">      accesstoken: <span class="string">'string'</span>,</span><br><span class="line">      title: <span class="string">'string'</span>,</span><br><span class="line">      tab: { <span class="attr">type</span>: <span class="string">'enum'</span>, <span class="attr">values</span>: [ <span class="string">'ask'</span>, <span class="string">'share'</span>, <span class="string">'job'</span> ], <span class="attr">required</span>: <span class="literal">false</span> },</span><br><span class="line">      content: <span class="string">'string'</span>,</span><br><span class="line">    };</span><br><span class="line">  }</span><br><span class="line"></span><br><span class="line">  <span class="comment">// ------ 新建 ------</span></span><br><span class="line">  <span class="keyword">async</span> create() {</span><br><span class="line">    <span class="keyword">const</span> { ctx } = <span class="built_in">this</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 1. 调用 validate 方法对请求参数进行验证。</span></span><br><span class="line">    <span class="comment">// 校验 `ctx.request.body` 是否符合我们预期的格式</span></span><br><span class="line">    <span class="comment">// 如果参数校验未通过，将会抛出一个 status = 422 的异常</span></span><br><span class="line">    ctx.validate(<span class="built_in">this</span>.createRule, ctx.request.body);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 2. 用验证过的参数调用 service 封装的业务逻辑来创建一个 topic。</span></span><br><span class="line">    <span class="comment">// 调用 service 创建一个 topic</span></span><br><span class="line">    <span class="keyword">const</span> id = <span class="keyword">await</span> ctx.service.topics.create(ctx.request.body);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 3. 按照接口约定的格式设置响应状态码和内容。</span></span><br><span class="line">    <span class="comment">// 设置响应体和状态码</span></span><br><span class="line">    ctx.body = {</span><br><span class="line">      topic_id: id,</span><br><span class="line">    };</span><br><span class="line">    ctx.status = <span class="number">201</span>;</span><br><span class="line">  }</span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = TopicsController;</span><br></pre></td></tr></tbody></table></figure>
 
-<h3 id="service-开发"><a href="#service-开发" class="headerlink" title="service 开发"></a>service 开发</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> Service = <span class="built_in">require</span>(<span class="string">&#x27;egg&#x27;</span>).Service;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">TopicService</span> <span class="keyword">extends</span> <span class="title">Service</span> </span>&#123;</span><br><span class="line">  <span class="keyword">constructor</span>(ctx) &#123;</span><br><span class="line">    <span class="built_in">super</span>(ctx);</span><br><span class="line">    <span class="built_in">this</span>.root = <span class="string">&#x27;https://cnodejs.org/api/v1&#x27;</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">async</span> request(url, opts) &#123;</span><br><span class="line">    url = <span class="string">`<span class="subst">$&#123;<span class="built_in">this</span>.root&#125;</span><span class="subst">$&#123;url&#125;</span>`</span>;</span><br><span class="line">    opts = <span class="built_in">Object</span>.assign(&#123;</span><br><span class="line">      timeout: [ <span class="string">&#x27;30s&#x27;</span>, <span class="string">&#x27;30s&#x27;</span> ],</span><br><span class="line">      dataType: <span class="string">&#x27;json&#x27;</span>,</span><br><span class="line">    &#125;, opts);</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">this</span>.ctx.curl(url, opts);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">async</span> create(params) &#123;</span><br><span class="line">    <span class="comment">// 调用 CNode V1 版本 API</span></span><br><span class="line">    <span class="keyword">const</span> result = <span class="keyword">await</span> <span class="built_in">this</span>.request(<span class="string">&#x27;/topics&#x27;</span>, &#123;</span><br><span class="line">      method: <span class="string">&#x27;post&#x27;</span>,</span><br><span class="line">      data: params,</span><br><span class="line">      contentType: <span class="string">&#x27;json&#x27;</span>,</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 检查调用是否成功，如果调用失败会抛出异常</span></span><br><span class="line">    <span class="built_in">this</span>.checkSuccess(result);</span><br><span class="line">    <span class="comment">// 返回创建的 topic 的 id</span></span><br><span class="line">    <span class="keyword">return</span> result.data.topic_id;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 封装统一的调用检查函数，可以在查询、创建和更新等 Service 中复用</span></span><br><span class="line">  checkSuccess(result) &#123;</span><br><span class="line">    <span class="keyword">if</span> (result.status !== <span class="number">200</span>) &#123;</span><br><span class="line">      <span class="keyword">const</span> errorMsg = result.data &amp;&amp; result.data.error_msg ? result.data.error_msg : <span class="string">&#x27;unknown error&#x27;</span>;</span><br><span class="line">      <span class="built_in">this</span>.ctx.throw(result.status, errorMsg);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (!result.data.success) &#123;</span><br><span class="line">      <span class="comment">// 远程调用返回格式错误</span></span><br><span class="line">      <span class="built_in">this</span>.ctx.throw(<span class="number">500</span>, <span class="string">&#x27;remote response error&#x27;</span>, &#123; <span class="attr">data</span>: result.data &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = TopicService;</span><br></pre></td></tr></table></figure>
+<h3 id="service-开发"><a href="#service-开发" class="headerlink" title="service 开发"></a>service 开发</h3><figure class="highlight javascript"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> Service = <span class="built_in">require</span>(<span class="string">'egg'</span>).Service;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">TopicService</span> <span class="keyword">extends</span> <span class="title">Service</span> </span>{</span><br><span class="line">  <span class="keyword">constructor</span>(ctx) {</span><br><span class="line">    <span class="built_in">super</span>(ctx);</span><br><span class="line">    <span class="built_in">this</span>.root = <span class="string">'https://cnodejs.org/api/v1'</span>;</span><br><span class="line">  }</span><br><span class="line"></span><br><span class="line">  <span class="keyword">async</span> request(url, opts) {</span><br><span class="line">    url = <span class="string">`<span class="subst">${<span class="built_in">this</span>.root}</span><span class="subst">${url}</span>`</span>;</span><br><span class="line">    opts = <span class="built_in">Object</span>.assign({</span><br><span class="line">      timeout: [ <span class="string">'30s'</span>, <span class="string">'30s'</span> ],</span><br><span class="line">      dataType: <span class="string">'json'</span>,</span><br><span class="line">    }, opts);</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">this</span>.ctx.curl(url, opts);</span><br><span class="line">  }</span><br><span class="line"></span><br><span class="line">  <span class="keyword">async</span> create(params) {</span><br><span class="line">    <span class="comment">// 调用 CNode V1 版本 API</span></span><br><span class="line">    <span class="keyword">const</span> result = <span class="keyword">await</span> <span class="built_in">this</span>.request(<span class="string">'/topics'</span>, {</span><br><span class="line">      method: <span class="string">'post'</span>,</span><br><span class="line">      data: params,</span><br><span class="line">      contentType: <span class="string">'json'</span>,</span><br><span class="line">    });</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 检查调用是否成功，如果调用失败会抛出异常</span></span><br><span class="line">    <span class="built_in">this</span>.checkSuccess(result);</span><br><span class="line">    <span class="comment">// 返回创建的 topic 的 id</span></span><br><span class="line">    <span class="keyword">return</span> result.data.topic_id;</span><br><span class="line">  }</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 封装统一的调用检查函数，可以在查询、创建和更新等 Service 中复用</span></span><br><span class="line">  checkSuccess(result) {</span><br><span class="line">    <span class="keyword">if</span> (result.status !== <span class="number">200</span>) {</span><br><span class="line">      <span class="keyword">const</span> errorMsg = result.data &amp;&amp; result.data.error_msg ? result.data.error_msg : <span class="string">'unknown error'</span>;</span><br><span class="line">      <span class="built_in">this</span>.ctx.throw(result.status, errorMsg);</span><br><span class="line">    }</span><br><span class="line">    <span class="keyword">if</span> (!result.data.success) {</span><br><span class="line">      <span class="comment">// 远程调用返回格式错误</span></span><br><span class="line">      <span class="built_in">this</span>.ctx.throw(<span class="number">500</span>, <span class="string">'remote response error'</span>, { <span class="attr">data</span>: result.data });</span><br><span class="line">    }</span><br><span class="line">  }</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = TopicService;</span><br></pre></td></tr></tbody></table></figure>
 
-<h3 id="统一错误处理"><a href="#统一错误处理" class="headerlink" title="统一错误处理"></a>统一错误处理</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// app/middleware/error_handler.js</span></span><br><span class="line"><span class="built_in">module</span>.exports = <span class="function">(<span class="params">option, app</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">async</span> <span class="function"><span class="keyword">function</span> <span class="title">errorHandler</span>(<span class="params">ctx, next</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">      <span class="keyword">await</span> next();</span><br><span class="line">    &#125; <span class="keyword">catch</span> (err) &#123;</span><br><span class="line"></span><br><span class="line">      <span class="comment">// 所有的异常都在 app 上触发一个 error 事件，框架会记录一条错误日志</span></span><br><span class="line">      app.emit(<span class="string">&#x27;error&#x27;</span>, err, <span class="built_in">this</span>);</span><br><span class="line"></span><br><span class="line">      <span class="keyword">const</span> status = err.status || <span class="number">500</span>;</span><br><span class="line">      <span class="comment">// 生产环境时 500 错误的详细错误内容不返回给客户端，因为可能包含敏感信息</span></span><br><span class="line">      <span class="keyword">const</span> error = (( status === <span class="number">500</span> ) &amp;&amp; ( app.config.env === <span class="string">&#x27;prod&#x27;</span> ))</span><br><span class="line">        ? <span class="string">&#x27;Internal Server Error&#x27;</span></span><br><span class="line">        : err.message;</span><br><span class="line"></span><br><span class="line">      <span class="comment">// 从 error 对象上读出各个属性，设置到响应中</span></span><br><span class="line">      ctx.body = &#123; error &#125;;</span><br><span class="line">      <span class="keyword">if</span> (status === <span class="number">422</span>) &#123;</span><br><span class="line">        ctx.body.detail = err.errors;</span><br><span class="line">      &#125;</span><br><span class="line">      ctx.status = status;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h3 id="统一错误处理"><a href="#统一错误处理" class="headerlink" title="统一错误处理"></a>统一错误处理</h3><figure class="highlight javascript"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// app/middleware/error_handler.js</span></span><br><span class="line"><span class="built_in">module</span>.exports = <span class="function">(<span class="params">option, app</span>) =&gt;</span> {</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">async</span> <span class="function"><span class="keyword">function</span> <span class="title">errorHandler</span>(<span class="params">ctx, next</span>) </span>{</span><br><span class="line">    <span class="keyword">try</span> {</span><br><span class="line">      <span class="keyword">await</span> next();</span><br><span class="line">    } <span class="keyword">catch</span> (err) {</span><br><span class="line"></span><br><span class="line">      <span class="comment">// 所有的异常都在 app 上触发一个 error 事件，框架会记录一条错误日志</span></span><br><span class="line">      app.emit(<span class="string">'error'</span>, err, <span class="built_in">this</span>);</span><br><span class="line"></span><br><span class="line">      <span class="keyword">const</span> status = err.status || <span class="number">500</span>;</span><br><span class="line">      <span class="comment">// 生产环境时 500 错误的详细错误内容不返回给客户端，因为可能包含敏感信息</span></span><br><span class="line">      <span class="keyword">const</span> error = (( status === <span class="number">500</span> ) &amp;&amp; ( app.config.env === <span class="string">'prod'</span> ))</span><br><span class="line">        ? <span class="string">'Internal Server Error'</span></span><br><span class="line">        : err.message;</span><br><span class="line"></span><br><span class="line">      <span class="comment">// 从 error 对象上读出各个属性，设置到响应中</span></span><br><span class="line">      ctx.body = { error };</span><br><span class="line">      <span class="keyword">if</span> (status === <span class="number">422</span>) {</span><br><span class="line">        ctx.body.detail = err.errors;</span><br><span class="line">      }</span><br><span class="line">      ctx.status = status;</span><br><span class="line">    }</span><br><span class="line">  };</span><br><span class="line">};</span><br></pre></td></tr></tbody></table></figure>
 
 <p>通过配置文件（<code>config/config.default.js</code>）加载中间件：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">module</span>.exports = <span class="function"><span class="params">appInfo</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">const</span> config = &#123;&#125;;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// should change to your own</span></span><br><span class="line">  config.keys = appInfo.name + <span class="string">&#x27;_1490750627161_5967&#x27;</span>;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 加载 errorHandler 中间件</span></span><br><span class="line">  config.middleware = [ <span class="string">&#x27;errorHandler&#x27;</span> ];</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 配置 errorHandler 中间件：只对 /api 前缀的 url 路径生效</span></span><br><span class="line">  config.errorHandler = &#123;</span><br><span class="line">    match: <span class="string">&#x27;/api&#x27;</span>,</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> config;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">module</span>.exports = <span class="function"><span class="params">appInfo</span> =&gt;</span> {</span><br><span class="line">  <span class="keyword">const</span> config = {};</span><br><span class="line"></span><br><span class="line">  <span class="comment">// should change to your own</span></span><br><span class="line">  config.keys = appInfo.name + <span class="string">'_1490750627161_5967'</span>;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 加载 errorHandler 中间件</span></span><br><span class="line">  config.middleware = [ <span class="string">'errorHandler'</span> ];</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 配置 errorHandler 中间件：只对 /api 前缀的 url 路径生效</span></span><br><span class="line">  config.errorHandler = {</span><br><span class="line">    match: <span class="string">'/api'</span>,</span><br><span class="line">  };</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> config;</span><br><span class="line">};</span><br></pre></td></tr></tbody></table></figure>
 
 
 
@@ -387,7 +437,7 @@
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="https://andy0570.com/2018/11/13/Node.js%E7%A4%BA%E4%BE%8B_CNode%20RESTful%20API/" title="Node.js示例_CNode RESTful API">https://andy0570.com/2018/11/13/Node.js示例_CNode RESTful API/</a>
+    <a href="https://andy0570.com/2018/11/13/Node.js%E7%A4%BA%E4%BE%8B_CNode%20RESTful%20API/" title="Node.js 示例_CNode RESTful API">https://andy0570.com/2018/11/13/Node.js示例_CNode RESTful API/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <span class="exturl" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpo"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</span> 许可协议。转载请注明出处！
@@ -426,8 +476,8 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2018/11/08/Node.js%E5%AE%9E%E6%88%98_5.Connect%20%E8%87%AA%E5%B8%A6%E7%9A%84%E4%B8%AD%E9%97%B4%E4%BB%B6/" rel="prev" title="Node.js实战_5.Connect 自带的中间件">
-      <i class="fa fa-chevron-left"></i> Node.js实战_5.Connect 自带的中间件
+    <a href="/2018/11/08/Node.js%E5%AE%9E%E6%88%98_5.Connect%20%E8%87%AA%E5%B8%A6%E7%9A%84%E4%B8%AD%E9%97%B4%E4%BB%B6/" rel="prev" title="Node.js 实战_5.Connect 自带的中间件">
+      <i class="fa fa-chevron-left"></i> Node.js 实战_5.Connect 自带的中间件
     </a></div>
       <div class="post-nav-item">
     <a href="/2018/11/15/Node.js%20%E5%BC%82%E6%AD%A5%E7%BC%96%E7%A8%8B%E7%AC%94%E8%AE%B0/" rel="next" title="Node.js 异步编程笔记">
@@ -445,6 +495,7 @@
 
         </div>
         
+    <div class="comments" id="valine-comments"></div>
 
 <script>
   window.addEventListener('tabs:register', () => {
@@ -513,7 +564,11 @@
   </div>
 
   
-  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.0/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/next-theme/pjax@0/pjax.min.js"></script>
+  <script src="//unpkg.com/medium-zoom@1/dist/medium-zoom.min.js"></script>
+  <script src="//unpkg.com/lozad@1/dist/lozad.min.js"></script>
+  <script src="//unpkg.com/pangu@4/dist/browser/pangu.min.js"></script>
 
 <script src="/js/utils.js"></script>
 
@@ -524,9 +579,42 @@
 
 <script src="/js/bookmark.js"></script>
 
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '.page-configurations',
+    '.main-inner',
+    '.post-toc-wrap',
+    '.languages',
+    '.pjax'
+  ],
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+document.addEventListener('pjax:success', () => {
+  pjax.executeScripts(document.querySelectorAll('script[data-pjax], .pjax script'));
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  const hasTOC = document.querySelector('.post-toc');
+  document.querySelector('.sidebar-inner').classList.toggle('sidebar-nav-active', hasTOC);
+  document.querySelector(hasTOC ? '.sidebar-nav-toc' : '.sidebar-nav-overview').click();
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
 
   
-  <script>
+  <script data-pjax>
     (function(){
       var bp = document.createElement('script');
       var curProtocol = window.location.protocol.split(':')[0];
@@ -539,6 +627,10 @@
 
 
 
+  
+<script src="//unpkg.com/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//unpkg.com/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
 
 
 
@@ -550,9 +642,27 @@
 
 
 
+
+
+
+    <div class="pjax">
   
 
   
 
+
+<script>
+NexT.utils.loadComments('#valine-comments', () => {
+  NexT.utils.getScript('//unpkg.com/valine@1/dist/Valine.min.js', () => {
+    new Valine(Object.assign({
+      el  : '#valine-comments',
+      path: location.pathname,
+    }, {"enable":true,"appId":"S7i1Y8YorMKFPaYbJbekD5el-gzGzoHsz","appKey":"brOnU8mOQvSjpipJvdKUAIbU","placeholder":"写下你的评论...","avatar":"mm","meta":["nick","mail","link"],"pageSize":10,"language":"zh-cn","visitor":false,"comment_count":true,"recordIP":true,"serverURLs":null,"enableQQ":true,"requiredFields":[]}
+    ));
+  }, window.Valine);
+});
+</script>
+
+    </div>
 </body>
 </html>

@@ -18,21 +18,23 @@
 <link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css">
   
   <link rel="stylesheet" href="/lib/animate-css/animate.min.css">
+  <link rel="stylesheet" href="//unpkg.com/pace-js@1/themes/blue/pace-theme-minimal.css">
+  <script src="//unpkg.com/pace-js@1/pace.min.js"></script>
 
 <script class="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"andy0570.com","root":"/","scheme":"Gemini","version":"8.0.0-rc.5","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":"mac","bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false};
+    var CONFIG = {"hostname":"andy0570.com","root":"/","scheme":"Gemini","version":"8.0.0-rc.5","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":"mac","bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":true,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":true,"nav":null,"activeClass":"valine"},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"algolia":{"appID":"0E2AON8EZF","apiKey":"22fbefd84c8343239f5c04365b9728de","indexName":"MyBlogPlatform","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}}};
   </script>
 
-  <meta name="description" content="内存控制是在海量请求和长时间运行的前提下进行探讨的。 在Node中如何高效地使用内存？ V8 的垃圾回收机制与内存限制V8 的内存限制 Node通过 JavaScript 使用内存的限制：64位系统下约为 1.4 GB，32位系统下约为 0.7 GB。 Node 基于 V8 构建，所以在 Node 中使用的 JavaScript 对象基本上都是通过 V8 自己的方式来进行管理和分配的。  V8 的">
+  <meta name="description" content="内存控制是在海量请求和长时间运行的前提下进行探讨的。 在 Node 中如何高效地使用内存？ V8 的垃圾回收机制与内存限制V8 的内存限制 Node 通过 JavaScript 使用内存的限制：64 位系统下约为 1.4 GB，32 位系统下约为 0.7 GB。 Node 基于 V8 构建，所以在 Node 中使用的 JavaScript 对象基本上都是通过 V8 自己的方式来进行管理和分配的。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="深入浅出Node.js_内存控制">
+<meta property="og:title" content="深入浅出 Node.js_内存控制">
 <meta property="og:url" content="https://andy0570.com/2018/10/26/%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BANode.js_%E5%86%85%E5%AD%98%E6%8E%A7%E5%88%B6/index.html">
 <meta property="og:site_name" content="独木舟的木">
-<meta property="og:description" content="内存控制是在海量请求和长时间运行的前提下进行探讨的。 在Node中如何高效地使用内存？ V8 的垃圾回收机制与内存限制V8 的内存限制 Node通过 JavaScript 使用内存的限制：64位系统下约为 1.4 GB，32位系统下约为 0.7 GB。 Node 基于 V8 构建，所以在 Node 中使用的 JavaScript 对象基本上都是通过 V8 自己的方式来进行管理和分配的。  V8 的">
+<meta property="og:description" content="内存控制是在海量请求和长时间运行的前提下进行探讨的。 在 Node 中如何高效地使用内存？ V8 的垃圾回收机制与内存限制V8 的内存限制 Node 通过 JavaScript 使用内存的限制：64 位系统下约为 1.4 GB，32 位系统下约为 0.7 GB。 Node 基于 V8 构建，所以在 Node 中使用的 JavaScript 对象基本上都是通过 V8 自己的方式来进行管理和分配的。">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/075041.jpg">
 <meta property="article:published_time" content="2018-10-26T06:33:00.000Z">
@@ -45,7 +47,7 @@
 <link rel="canonical" href="https://andy0570.com/2018/10/26/%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BANode.js_%E5%86%85%E5%AD%98%E6%8E%A7%E5%88%B6/">
 
 
-<script class="page-configurations">
+<script data-pjax class="page-configurations">
   // https://hexo.io/docs/variables.html
   CONFIG.page = {
     sidebar: "",
@@ -55,10 +57,19 @@
   };
 </script>
 
-  <title>深入浅出Node.js_内存控制 | 独木舟的木</title>
+  <title>深入浅出 Node.js_内存控制 | 独木舟的木</title>
   
 
 
+  <script data-pjax>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?8229a094facca297f211d61323fd9fde";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
 
 
 
@@ -128,6 +139,7 @@
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -161,11 +173,35 @@
     <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
 
   </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
   </ul>
 </nav>
 
 
 
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
 
 </div>
           
@@ -190,14 +226,14 @@
 
       <!--noindex-->
       <section class="post-toc-wrap sidebar-panel">
-          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#V8-%E7%9A%84%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E6%9C%BA%E5%88%B6%E4%B8%8E%E5%86%85%E5%AD%98%E9%99%90%E5%88%B6"><span class="nav-number">1.</span> <span class="nav-text">V8 的垃圾回收机制与内存限制</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#V8-%E7%9A%84%E5%86%85%E5%AD%98%E9%99%90%E5%88%B6"><span class="nav-number">1.1.</span> <span class="nav-text">V8 的内存限制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#V8-%E7%9A%84%E5%AF%B9%E8%B1%A1%E5%88%86%E9%85%8D"><span class="nav-number">1.2.</span> <span class="nav-text">V8 的对象分配</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E8%BF%9B%E7%A8%8B%E7%9A%84%E5%86%85%E5%AD%98%E5%8D%A0%E7%94%A8%EF%BC%9Aprocess-memoryUsage"><span class="nav-number">1.2.1.</span> <span class="nav-text">查看进程的内存占用：process.memoryUsage()</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E7%B3%BB%E7%BB%9F%E7%9A%84%E5%86%85%E5%AD%98%E5%8D%A0%E7%94%A8%EF%BC%9Aos-totalmem-%E5%92%8C-freemem"><span class="nav-number">1.2.2.</span> <span class="nav-text">查看系统的内存占用：os.totalmem() 和 freemem()</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#V8-%E7%9A%84%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E6%9C%BA%E5%88%B6"><span class="nav-number">1.3.</span> <span class="nav-text">V8 的垃圾回收机制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E6%97%A5%E5%BF%97%EF%BC%9A-trach-gc"><span class="nav-number">1.4.</span> <span class="nav-text">查看垃圾回收日志：--trach_gc</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90%E6%95%B0%E6%8D%AE%EF%BC%9A-prof"><span class="nav-number">1.5.</span> <span class="nav-text">查看性能分析数据：--prof</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%AB%98%E6%95%88%E4%BD%BF%E7%94%A8%E5%86%85%E5%AD%98"><span class="nav-number">2.</span> <span class="nav-text">高效使用内存</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%9C%E7%94%A8%E5%9F%9F"><span class="nav-number">2.1.</span> <span class="nav-text">作用域</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%97%AD%E5%8C%85%EF%BC%9A%E5%AE%9E%E7%8E%B0%E5%A4%96%E9%83%A8%E4%BD%9C%E7%94%A8%E5%9F%9F%E8%AE%BF%E9%97%AE%E5%86%85%E9%83%A8%E4%BD%9C%E7%94%A8%E5%9F%9F%E4%B8%AD%E5%8F%98%E9%87%8F%E7%9A%84%E6%96%B9%E6%B3%95"><span class="nav-number">2.2.</span> <span class="nav-text">闭包：实现外部作用域访问内部作用域中变量的方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%85%8E%E5%B0%86%E5%86%85%E5%AD%98%E5%BD%93%E7%BC%93%E5%AD%98"><span class="nav-number">2.3.</span> <span class="nav-text">慎将内存当缓存</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BC%93%E5%AD%98%E7%9A%84%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88"><span class="nav-number">2.3.1.</span> <span class="nav-text">缓存的解决方案</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B3%E6%B3%A8%E9%98%9F%E5%88%97%E7%8A%B6%E6%80%81"><span class="nav-number">2.4.</span> <span class="nav-text">关注队列状态</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F%E6%8E%92%E6%9F%A5"><span class="nav-number">2.5.</span> <span class="nav-text">内存泄漏排查</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%A7%E5%86%85%E5%AD%98%E5%BA%94%E7%94%A8"><span class="nav-number">2.6.</span> <span class="nav-text">大内存应用</span></a></li></ol></li></ol></div>
+          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#V8-%E7%9A%84%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E6%9C%BA%E5%88%B6%E4%B8%8E%E5%86%85%E5%AD%98%E9%99%90%E5%88%B6"><span class="nav-number">1.</span> <span class="nav-text">V8 的垃圾回收机制与内存限制</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#V8-%E7%9A%84%E5%86%85%E5%AD%98%E9%99%90%E5%88%B6"><span class="nav-number">1.1.</span> <span class="nav-text">V8 的内存限制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#V8-%E7%9A%84%E5%AF%B9%E8%B1%A1%E5%88%86%E9%85%8D"><span class="nav-number">1.2.</span> <span class="nav-text">V8 的对象分配</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E8%BF%9B%E7%A8%8B%E7%9A%84%E5%86%85%E5%AD%98%E5%8D%A0%E7%94%A8%EF%BC%9Aprocess-memoryUsage"><span class="nav-number">1.2.1.</span> <span class="nav-text">查看进程的内存占用：process.memoryUsage ()</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E7%B3%BB%E7%BB%9F%E7%9A%84%E5%86%85%E5%AD%98%E5%8D%A0%E7%94%A8%EF%BC%9Aos-totalmem-%E5%92%8C-freemem"><span class="nav-number">1.2.2.</span> <span class="nav-text">查看系统的内存占用：os.totalmem () 和 freemem ()</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#V8-%E7%9A%84%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E6%9C%BA%E5%88%B6"><span class="nav-number">1.3.</span> <span class="nav-text">V8 的垃圾回收机制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E6%97%A5%E5%BF%97%EF%BC%9A-trach-gc"><span class="nav-number">1.4.</span> <span class="nav-text">查看垃圾回收日志：--trach_gc</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90%E6%95%B0%E6%8D%AE%EF%BC%9A-prof"><span class="nav-number">1.5.</span> <span class="nav-text">查看性能分析数据：--prof</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%AB%98%E6%95%88%E4%BD%BF%E7%94%A8%E5%86%85%E5%AD%98"><span class="nav-number">2.</span> <span class="nav-text">高效使用内存</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%9C%E7%94%A8%E5%9F%9F"><span class="nav-number">2.1.</span> <span class="nav-text">作用域</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%97%AD%E5%8C%85%EF%BC%9A%E5%AE%9E%E7%8E%B0%E5%A4%96%E9%83%A8%E4%BD%9C%E7%94%A8%E5%9F%9F%E8%AE%BF%E9%97%AE%E5%86%85%E9%83%A8%E4%BD%9C%E7%94%A8%E5%9F%9F%E4%B8%AD%E5%8F%98%E9%87%8F%E7%9A%84%E6%96%B9%E6%B3%95"><span class="nav-number">2.2.</span> <span class="nav-text">闭包：实现外部作用域访问内部作用域中变量的方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%85%8E%E5%B0%86%E5%86%85%E5%AD%98%E5%BD%93%E7%BC%93%E5%AD%98"><span class="nav-number">2.3.</span> <span class="nav-text">慎将内存当缓存</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BC%93%E5%AD%98%E7%9A%84%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88"><span class="nav-number">2.3.1.</span> <span class="nav-text">缓存的解决方案</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B3%E6%B3%A8%E9%98%9F%E5%88%97%E7%8A%B6%E6%80%81"><span class="nav-number">2.4.</span> <span class="nav-text">关注队列状态</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F%E6%8E%92%E6%9F%A5"><span class="nav-number">2.5.</span> <span class="nav-text">内存泄漏排查</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%A7%E5%86%85%E5%AD%98%E5%BA%94%E7%94%A8"><span class="nav-number">2.6.</span> <span class="nav-text">大内存应用</span></a></li></ol></li></ol></div>
       </section>
       <!--/noindex-->
 
       <section class="site-overview-wrap sidebar-panel">
         <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <img class="site-author-image" itemprop="image" alt="独木舟的木"
-      src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+      src="https://static01.imgkr.com/temp/88aab3c08a3f43f5a14f21c6c357c816.JPG">
   <p class="site-author-name" itemprop="name">独木舟的木</p>
   <div class="site-description" itemprop="description">生若直木，不语斧凿。</div>
 </div>
@@ -278,7 +314,7 @@
     <link itemprop="mainEntityOfPage" href="https://andy0570.com/2018/10/26/%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BANode.js_%E5%86%85%E5%AD%98%E6%8E%A7%E5%88%B6/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+      <meta itemprop="image" content="https://static01.imgkr.com/temp/88aab3c08a3f43f5a14f21c6c357c816.JPG">
       <meta itemprop="name" content="独木舟的木">
       <meta itemprop="description" content="生若直木，不语斧凿。">
     </span>
@@ -290,7 +326,7 @@
     
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          深入浅出Node.js_内存控制
+          深入浅出 Node.js_内存控制
         </h1>
 
         <div class="post-meta">
@@ -319,7 +355,21 @@
                 </span>
             </span>
 
-          <br>
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2018/10/26/%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BANode.js_%E5%86%85%E5%AD%98%E6%8E%A7%E5%88%B6/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2018/10/26/%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BANode.js_%E5%86%85%E5%AD%98%E6%8E%A7%E5%88%B6/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  <br>
             <span class="post-meta-item" title="本文字数">
               <span class="post-meta-item-icon">
                 <i class="far fa-file-word"></i>
@@ -343,75 +393,75 @@
     
     <div class="post-body" itemprop="articleBody">
         <p>内存控制是在<strong>海量请求</strong>和<strong>长时间运行</strong>的前提下进行探讨的。</p>
-<p>在Node中如何高效地使用内存？</p>
+<p>在 Node 中如何高效地使用内存？</p>
 <h2 id="V8-的垃圾回收机制与内存限制"><a href="#V8-的垃圾回收机制与内存限制" class="headerlink" title="V8 的垃圾回收机制与内存限制"></a>V8 的垃圾回收机制与内存限制</h2><h3 id="V8-的内存限制"><a href="#V8-的内存限制" class="headerlink" title="V8 的内存限制"></a>V8 的内存限制</h3><ul>
-<li>Node通过 JavaScript 使用内存的限制：64位系统下约为 1.4 GB，32位系统下约为 0.7 GB。</li>
+<li>Node 通过 JavaScript 使用内存的限制：64 位系统下约为 1.4 GB，32 位系统下约为 0.7 GB。</li>
 <li>Node 基于 V8 构建，所以在 Node 中使用的 JavaScript 对象基本上都是通过 V8 自己的方式来进行管理和分配的。</li>
 </ul>
 <h3 id="V8-的对象分配"><a href="#V8-的对象分配" class="headerlink" title="V8 的对象分配"></a>V8 的对象分配</h3><ul>
-<li>在 V8 中，所有的 JavaScript 对象都是通过==堆==来分配的。</li>
+<li>在 V8 中，所有的 JavaScript 对象都是通过 == 堆 == 来分配的。</li>
 <li>V8 限制堆内存，是基于垃圾回收机制与应用性能的考量（垃圾回收会引起 JS 线程暂停执行）。</li>
 </ul>
 <a id="more"></a>
 
-<h4 id="查看进程的内存占用：process-memoryUsage"><a href="#查看进程的内存占用：process-memoryUsage" class="headerlink" title="查看进程的内存占用：process.memoryUsage()"></a>查看进程的内存占用：process.memoryUsage()</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> node</span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> process.memoryUsage();</span></span><br><span class="line">&#123; rss: 23175168,      # 进程的常驻内存部分</span><br><span class="line">  heapTotal: 9682944, # 已申请到的堆内存</span><br><span class="line">  heapUsed: 5283000,  # 堆内存当前使用量</span><br><span class="line">  external: 11777 &#125;</span><br><span class="line"><span class="meta">&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 堆中的内存总量&lt;进程的常驻内存用量</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 堆外内存：不是通过V8分配的内存。</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> Buffer 对象不经过 V8 的内存分配机制。</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> Node 的内存构成：通过 V8 分配的部分 + Node 自行分配的部分。</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 因此，受到 V8 的垃圾回收机制限制的主要是 V8 的堆内存。</span></span><br></pre></td></tr></table></figure>
+<h4 id="查看进程的内存占用：process-memoryUsage"><a href="#查看进程的内存占用：process-memoryUsage" class="headerlink" title="查看进程的内存占用：process.memoryUsage()"></a>查看进程的内存占用：process.memoryUsage ()</h4><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> node</span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> process.memoryUsage();</span></span><br><span class="line">{ rss: 23175168,      # 进程的常驻内存部分</span><br><span class="line">  heapTotal: 9682944, # 已申请到的堆内存</span><br><span class="line">  heapUsed: 5283000,  # 堆内存当前使用量</span><br><span class="line">  external: 11777 }</span><br><span class="line"><span class="meta">&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 堆中的内存总量&lt;进程的常驻内存用量</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 堆外内存：不是通过V8分配的内存。</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> Buffer 对象不经过 V8 的内存分配机制。</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> Node 的内存构成：通过 V8 分配的部分 + Node 自行分配的部分。</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 因此，受到 V8 的垃圾回收机制限制的主要是 V8 的堆内存。</span></span><br></pre></td></tr></tbody></table></figure>
 
-<h4 id="查看系统的内存占用：os-totalmem-和-freemem"><a href="#查看系统的内存占用：os-totalmem-和-freemem" class="headerlink" title="查看系统的内存占用：os.totalmem() 和 freemem()"></a>查看系统的内存占用：os.totalmem() 和 freemem()</h4><p>查看操作系统的内存使用情况：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> node</span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> os.totalmem() <span class="comment"># 返回系统总内存</span></span></span><br><span class="line">17179869184</span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> os.freemem() <span class="comment"># 返回系统闲置内存</span></span></span><br><span class="line">4516331520  </span><br></pre></td></tr></table></figure>
+<h4 id="查看系统的内存占用：os-totalmem-和-freemem"><a href="#查看系统的内存占用：os-totalmem-和-freemem" class="headerlink" title="查看系统的内存占用：os.totalmem() 和 freemem()"></a>查看系统的内存占用：os.totalmem () 和 freemem ()</h4><p>查看操作系统的内存使用情况：</p>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> node</span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> os.totalmem() <span class="comment"># 返回系统总内存</span></span></span><br><span class="line">17179869184</span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> os.freemem() <span class="comment"># 返回系统闲置内存</span></span></span><br><span class="line">4516331520  </span><br></pre></td></tr></tbody></table></figure>
 
 
 
 <p>Node 启动时可以调整内存使用量：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">node --max-old-space-size&#x3D;1700 test.js &#x2F;&#x2F; 单位为MB，设置老生代内存空间最大值</span><br><span class="line">node --max-new-space-size&#x3D;1024 test.js &#x2F;&#x2F; 单位为KB，设置新生代内存空间大小</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">node --max-old-space-size=1700 test.js // 单位为MB，设置老生代内存空间最大值</span><br><span class="line">node --max-new-space-size=1024 test.js // 单位为KB，设置新生代内存空间大小</span><br></pre></td></tr></tbody></table></figure>
 
 
 
 <h3 id="V8-的垃圾回收机制"><a href="#V8-的垃圾回收机制" class="headerlink" title="V8 的垃圾回收机制"></a>V8 的垃圾回收机制</h3><ul>
-<li><p>V8 的垃圾回收策略主要基于==分代式垃圾回收机制==。</p>
+<li><p>V8 的垃圾回收策略主要基于 == 分代式垃圾回收机制 ==。</p>
 </li>
 <li><p>V8 的内存分代：</p>
 <ul>
-<li>V8 堆内存：新生代内存+老生代内存。</li>
+<li>V8 堆内存：新生代内存 + 老生代内存。</li>
 <li>新生代的内存空间中的对象：存活时间短。</li>
 <li>老生代的内存空间中的对象：存活时间长、常驻内存对象。</li>
 </ul>
 <table>
 <thead>
 <tr>
-<th>V8引擎下的堆内存分配</th>
-<th>64位系统</th>
-<th>32位系统</th>
+<th>V8 引擎下的堆内存分配</th>
+<th> 64 位系统</th>
+<th> 32 位系统</th>
 </tr>
 </thead>
 <tbody><tr>
 <td>默认老生代内存最大值</td>
-<td>1400 MB</td>
+<td> 1400 MB</td>
 <td>700 MB</td>
 </tr>
 <tr>
-<td>默认新生代内存最大值</td>
-<td>32 MB</td>
+<td> 默认新生代内存最大值</td>
+<td> 32 MB</td>
 <td>16 MB</td>
 </tr>
 <tr>
 <td>V8 堆内存的最大值</td>
-<td>1464 MB （1.4 GB）</td>
+<td> 1464 MB （1.4 GB）</td>
 <td>732 MB（0.7 GB）</td>
 </tr>
 </tbody></table>
 </li>
-<li><p>新生代中的对象主要通过 Scavenge 算法进行垃圾回收，Scavenge 算法主要采用 Cheney 算法（采用复制的方式实现垃圾回收From-To）实现。</p>
+<li><p>新生代中的对象主要通过 Scavenge 算法进行垃圾回收，Scavenge 算法主要采用 Cheney 算法（采用复制的方式实现垃圾回收 From-To）实现。</p>
 </li>
-<li><p>老生代中的对象主要采用了Mark-Sweep（标记清除）和Marl-Compact（标记整理）相结合的方式进行垃圾回收。</p>
-<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/075041.jpg" alt="image"></p>
+<li><p>老生代中的对象主要采用了 Mark-Sweep（标记清除）和 Marl-Compact（标记整理）相结合的方式进行垃圾回收。</p>
+<p><img data-src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/075041.jpg" alt="image"></p>
 </li>
 </ul>
-<h3 id="查看垃圾回收日志：-trach-gc"><a href="#查看垃圾回收日志：-trach-gc" class="headerlink" title="查看垃圾回收日志：--trach_gc"></a>查看垃圾回收日志：<code>--trach_gc</code></h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 在 gc.log 文件中得到所有的垃圾回收信息。</span></span><br><span class="line">node --trach_gc -e &quot;var a = [];for (var i = 0; i &lt; 1000000; i++) a.push(new Array(100));&quot; &gt; gc.log</span><br></pre></td></tr></table></figure>
+<h3 id="查看垃圾回收日志：-trach-gc"><a href="#查看垃圾回收日志：-trach-gc" class="headerlink" title="查看垃圾回收日志：--trach_gc"></a>查看垃圾回收日志：<code>--trach_gc</code></h3><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 在 gc.log 文件中得到所有的垃圾回收信息。</span></span><br><span class="line">node --trach_gc -e "var a = [];for (var i = 0; i &lt; 1000000; i++) a.push(new Array(100));" &gt; gc.log</span><br></pre></td></tr></tbody></table></figure>
 
-<h3 id="查看性能分析数据：-prof"><a href="#查看性能分析数据：-prof" class="headerlink" title="查看性能分析数据：--prof"></a>查看性能分析数据：<code>--prof</code></h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">node --prof test.js</span><br></pre></td></tr></table></figure>
+<h3 id="查看性能分析数据：-prof"><a href="#查看性能分析数据：-prof" class="headerlink" title="查看性能分析数据：--prof"></a>查看性能分析数据：<code>--prof</code></h3><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">node --prof test.js</span><br></pre></td></tr></tbody></table></figure>
 
-<p>V8 提供了 linux-tick-processor 工具（Node路径：deps/v8/tools）用于统计日志信息。</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 将该工具的目录添加到环境变量 PATH 中，执行分析日志命令：</span></span><br><span class="line">linux-tick-processor v8.log</span><br></pre></td></tr></table></figure>
+<p>V8 提供了 linux-tick-processor 工具（Node 路径：deps/v8/tools）用于统计日志信息。</p>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 将该工具的目录添加到环境变量 PATH 中，执行分析日志命令：</span></span><br><span class="line">linux-tick-processor v8.log</span><br></pre></td></tr></tbody></table></figure>
 
 
 
@@ -424,14 +474,14 @@
 <li><p>作用域链；</p>
 </li>
 <li><p>变量的主动释放：delete 操作、将变量重新赋值。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 全局变量，进程退出才会释放</span></span><br><span class="line"><span class="built_in">global</span>.foo = <span class="string">&#x27;I am global object&#x27;</span>;</span><br><span class="line"><span class="built_in">console</span>.log(<span class="built_in">global</span>.foo); <span class="comment">// =&gt; &#x27;I am global object&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 1. delete 操作删除全局变量</span></span><br><span class="line"><span class="keyword">delete</span> <span class="built_in">global</span>.foo; </span><br><span class="line"></span><br><span class="line"><span class="comment">// 2. 重新赋值</span></span><br><span class="line"><span class="built_in">global</span>.foo = <span class="literal">undefined</span>; <span class="comment">// or null</span></span><br><span class="line"><span class="built_in">console</span>.log(<span class="built_in">global</span>.foo); <span class="comment">// =&gt; &#x27;undefined&#x27;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 全局变量，进程退出才会释放</span></span><br><span class="line"><span class="built_in">global</span>.foo = <span class="string">'I am global object'</span>;</span><br><span class="line"><span class="built_in">console</span>.log(<span class="built_in">global</span>.foo); <span class="comment">// =&gt; 'I am global object'</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 1. delete 操作删除全局变量</span></span><br><span class="line"><span class="keyword">delete</span> <span class="built_in">global</span>.foo; </span><br><span class="line"></span><br><span class="line"><span class="comment">// 2. 重新赋值</span></span><br><span class="line"><span class="built_in">global</span>.foo = <span class="literal">undefined</span>; <span class="comment">// or null</span></span><br><span class="line"><span class="built_in">console</span>.log(<span class="built_in">global</span>.foo); <span class="comment">// =&gt; 'undefined'</span></span><br></pre></td></tr></tbody></table></figure>
 
 <blockquote>
 <p>💡 在 V8 中通过 delete 删除对象的属性有可能干扰 V8 的优化，所以<strong>通过赋值方式解除引用</strong>更好。</p>
 </blockquote>
 </li>
 </ul>
-<h3 id="闭包：实现外部作用域访问内部作用域中变量的方法"><a href="#闭包：实现外部作用域访问内部作用域中变量的方法" class="headerlink" title="闭包：实现外部作用域访问内部作用域中变量的方法"></a>闭包：实现外部作用域访问内部作用域中变量的方法</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> foo = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> bar = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="keyword">var</span> local = <span class="string">&#x27;局部变量&#x27;</span>;</span><br><span class="line">        <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123; <span class="comment">// 函数作为返回值，且该匿名函数可以访问local</span></span><br><span class="line">            <span class="keyword">return</span> local; <span class="comment">// 内部作用域可以访问外部对象</span></span><br><span class="line">        &#125;;</span><br><span class="line">    &#125;;</span><br><span class="line">    <span class="keyword">var</span> baz = bar(); <span class="comment">// bar() 函数返回的是一个匿名函数，且可以访问local</span></span><br><span class="line">    <span class="built_in">console</span>.log(baz());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="闭包：实现外部作用域访问内部作用域中变量的方法"><a href="#闭包：实现外部作用域访问内部作用域中变量的方法" class="headerlink" title="闭包：实现外部作用域访问内部作用域中变量的方法"></a>闭包：实现外部作用域访问内部作用域中变量的方法</h3><figure class="highlight javascript"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> foo = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>{</span><br><span class="line">    <span class="keyword">var</span> bar = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>{</span><br><span class="line">        <span class="keyword">var</span> local = <span class="string">'局部变量'</span>;</span><br><span class="line">        <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>{ <span class="comment">// 函数作为返回值，且该匿名函数可以访问local</span></span><br><span class="line">            <span class="keyword">return</span> local; <span class="comment">// 内部作用域可以访问外部对象</span></span><br><span class="line">        };</span><br><span class="line">    };</span><br><span class="line">    <span class="keyword">var</span> baz = bar(); <span class="comment">// bar() 函数返回的是一个匿名函数，且可以访问local</span></span><br><span class="line">    <span class="built_in">console</span>.log(baz());</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
 
 
 
@@ -441,7 +491,7 @@
 <li>全局变量；</li>
 </ol>
 <h3 id="慎将内存当缓存"><a href="#慎将内存当缓存" class="headerlink" title="慎将内存当缓存"></a>慎将内存当缓存</h3><ul>
-<li>在Node中，任何试图拿内存当缓存的行为都应当被限制。</li>
+<li>在 Node 中，任何试图拿内存当缓存的行为都应当被限制。</li>
 <li><span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2lzYWFjcy9ub2RlLWxydS1jYWNoZQ==">Iru cache<i class="fa fa-external-link-alt"></i></span></li>
 </ul>
 <h4 id="缓存的解决方案"><a href="#缓存的解决方案" class="headerlink" title="缓存的解决方案"></a>缓存的解决方案</h4><p>进程之间无法共享内存，使用大量缓存的解决方案：采用进程外的缓存，进程自身不存储状态。</p>
@@ -452,20 +502,20 @@
 </ul>
 <h3 id="关注队列状态"><a href="#关注队列状态" class="headerlink" title="关注队列状态"></a>关注队列状态</h3><p>消费速度 &lt; 生产速度时，将会形成堆积：</p>
 <p>日志收集时，选择更高效的文件写入日志，而不是数据库写入日志。</p>
-<p>深度的解决方案：1. 监控队列的长度；2.任意异步调用都应该包含超时机制。</p>
+<p>深度的解决方案：1. 监控队列的长度；2. 任意异步调用都应该包含超时机制。</p>
 <p>Bagpipe 的超时模式和拒绝模式。</p>
-<h3 id="内存泄漏排查"><a href="#内存泄漏排查" class="headerlink" title="内存泄漏排查"></a>内存泄漏排查</h3><p>Node内存泄漏检测工具：</p>
+<h3 id="内存泄漏排查"><a href="#内存泄漏排查" class="headerlink" title="内存泄漏排查"></a>内存泄漏排查</h3><p>Node 内存泄漏检测工具：</p>
 <ul>
-<li><del>v8-profiler。由Danny Coastes提供，它可以用于对V8堆内存抓取快照和对CPU进行分析，该项目已有3年没维护了</del></li>
-<li>node-heapdump。这是Node核心贡献者之一Ben Noordhuis编写的模块，它允许对V8堆内存抓取快照，用于事后分析。</li>
-<li>node-mtrace。由Jimb Esser提供，它使用了GCC的mtrace工具来分析堆的使用。</li>
-<li>dtace。在Joyent的SmartOS系统上，有完善的dtrace工具用来分析内存泄漏。</li>
-<li>node-memwatch。来自Mozilla的Lloyd Hilaiel贡献的模块，采用WTFPL许可发布。</li>
+<li><del>v8-profiler。由 Danny Coastes 提供，它可以用于对 V8 堆内存抓取快照和对 CPU 进行分析，该项目已有 3 年没维护了</del></li>
+<li> node-heapdump。这是 Node 核心贡献者之一 Ben Noordhuis 编写的模块，它允许对 V8 堆内存抓取快照，用于事后分析。</li>
+<li>node-mtrace。由 Jimb Esser 提供，它使用了 GCC 的 mtrace 工具来分析堆的使用。</li>
+<li>dtace。在 Joyent 的 SmartOS 系统上，有完善的 dtrace 工具用来分析内存泄漏。</li>
+<li>node-memwatch。来自 Mozilla 的 Lloyd Hilaiel 贡献的模块，采用 WTFPL 许可发布。</li>
 </ul>
 <h3 id="大内存应用"><a href="#大内存应用" class="headerlink" title="大内存应用"></a>大内存应用</h3><p>Node 提供了 <strong>stream</strong> 模块用于处理大文件。</p>
-<p>fs 模块的<code>createReadStream()</code> 和 <code>createWriteStream()</code> 方法可以分别用于创建文件的可读流与可写流。</p>
+<p>fs 模块的 <code>createReadStream()</code> 和 <code>createWriteStream()</code> 方法可以分别用于创建文件的可读流与可写流。</p>
 <p>process 模块中的 stdin 和 stdout 分别是可读流和可写流的示例。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> fs = <span class="built_in">require</span>(<span class="string">&#x27;fs&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 读取一个文件，然后将数据写入到另一个文件中</span></span><br><span class="line"><span class="comment">// 流处理的方式不会受到V8内存限制的影响。</span></span><br><span class="line"><span class="keyword">var</span> reader = fs.createReadStream(<span class="string">&#x27;in.txt&#x27;</span>);</span><br><span class="line"><span class="keyword">var</span> writer = fs.createWriteStream(<span class="string">&#x27;out.txt&#x27;</span>);</span><br><span class="line">reader.on(<span class="string">&#x27;data&#x27;</span>, <span class="function"><span class="keyword">function</span> (<span class="params">chunk</span>) </span>&#123;</span><br><span class="line">    writer.write(chunk);</span><br><span class="line">&#125;);</span><br><span class="line">reader.on(<span class="string">&#x27;end&#x27;</span>, <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    writer.end();</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 上述代码的简写方法：</span></span><br><span class="line"><span class="keyword">var</span> reader = fs.createReadStream(<span class="string">&#x27;in.txt&#x27;</span>);</span><br><span class="line"><span class="keyword">var</span> writer = fs.createWriteStream(<span class="string">&#x27;out.txt&#x27;</span>);</span><br><span class="line">reader.pipe(writer);</span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> fs = <span class="built_in">require</span>(<span class="string">'fs'</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 读取一个文件，然后将数据写入到另一个文件中</span></span><br><span class="line"><span class="comment">// 流处理的方式不会受到V8内存限制的影响。</span></span><br><span class="line"><span class="keyword">var</span> reader = fs.createReadStream(<span class="string">'in.txt'</span>);</span><br><span class="line"><span class="keyword">var</span> writer = fs.createWriteStream(<span class="string">'out.txt'</span>);</span><br><span class="line">reader.on(<span class="string">'data'</span>, <span class="function"><span class="keyword">function</span> (<span class="params">chunk</span>) </span>{</span><br><span class="line">    writer.write(chunk);</span><br><span class="line">});</span><br><span class="line">reader.on(<span class="string">'end'</span>, <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>{</span><br><span class="line">    writer.end();</span><br><span class="line">});</span><br><span class="line"></span><br><span class="line"><span class="comment">// 上述代码的简写方法：</span></span><br><span class="line"><span class="keyword">var</span> reader = fs.createReadStream(<span class="string">'in.txt'</span>);</span><br><span class="line"><span class="keyword">var</span> writer = fs.createWriteStream(<span class="string">'out.txt'</span>);</span><br><span class="line">reader.pipe(writer);</span><br></pre></td></tr></tbody></table></figure>
 
 <blockquote>
 <p> 💡</p>
@@ -486,7 +536,7 @@
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="https://andy0570.com/2018/10/26/%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BANode.js_%E5%86%85%E5%AD%98%E6%8E%A7%E5%88%B6/" title="深入浅出Node.js_内存控制">https://andy0570.com/2018/10/26/深入浅出Node.js_内存控制/</a>
+    <a href="https://andy0570.com/2018/10/26/%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BANode.js_%E5%86%85%E5%AD%98%E6%8E%A7%E5%88%B6/" title="深入浅出 Node.js_内存控制">https://andy0570.com/2018/10/26/深入浅出Node.js_内存控制/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <span class="exturl" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpo"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</span> 许可协议。转载请注明出处！
@@ -525,12 +575,12 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2018/10/26/%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BANode.js_%E5%BC%82%E6%AD%A5%E7%BC%96%E7%A8%8B/" rel="prev" title="深入浅出Node.js_异步编程">
-      <i class="fa fa-chevron-left"></i> 深入浅出Node.js_异步编程
+    <a href="/2018/10/26/%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BANode.js_%E5%BC%82%E6%AD%A5%E7%BC%96%E7%A8%8B/" rel="prev" title="深入浅出 Node.js_异步编程">
+      <i class="fa fa-chevron-left"></i> 深入浅出 Node.js_异步编程
     </a></div>
       <div class="post-nav-item">
-    <a href="/2018/10/28/%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BANode.js_Buffer/" rel="next" title="深入浅出Node.js_Buffer">
-      深入浅出Node.js_Buffer <i class="fa fa-chevron-right"></i>
+    <a href="/2018/10/28/%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BANode.js_Buffer/" rel="next" title="深入浅出 Node.js_Buffer">
+      深入浅出 Node.js_Buffer <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -544,6 +594,7 @@
 
         </div>
         
+    <div class="comments" id="valine-comments"></div>
 
 <script>
   window.addEventListener('tabs:register', () => {
@@ -612,7 +663,11 @@
   </div>
 
   
-  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.0/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/next-theme/pjax@0/pjax.min.js"></script>
+  <script src="//unpkg.com/medium-zoom@1/dist/medium-zoom.min.js"></script>
+  <script src="//unpkg.com/lozad@1/dist/lozad.min.js"></script>
+  <script src="//unpkg.com/pangu@4/dist/browser/pangu.min.js"></script>
 
 <script src="/js/utils.js"></script>
 
@@ -623,9 +678,42 @@
 
 <script src="/js/bookmark.js"></script>
 
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '.page-configurations',
+    '.main-inner',
+    '.post-toc-wrap',
+    '.languages',
+    '.pjax'
+  ],
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+document.addEventListener('pjax:success', () => {
+  pjax.executeScripts(document.querySelectorAll('script[data-pjax], .pjax script'));
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  const hasTOC = document.querySelector('.post-toc');
+  document.querySelector('.sidebar-inner').classList.toggle('sidebar-nav-active', hasTOC);
+  document.querySelector(hasTOC ? '.sidebar-nav-toc' : '.sidebar-nav-overview').click();
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
 
   
-  <script>
+  <script data-pjax>
     (function(){
       var bp = document.createElement('script');
       var curProtocol = window.location.protocol.split(':')[0];
@@ -638,6 +726,10 @@
 
 
 
+  
+<script src="//unpkg.com/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//unpkg.com/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
 
 
 
@@ -649,9 +741,27 @@
 
 
 
+
+
+
+    <div class="pjax">
   
 
   
 
+
+<script>
+NexT.utils.loadComments('#valine-comments', () => {
+  NexT.utils.getScript('//unpkg.com/valine@1/dist/Valine.min.js', () => {
+    new Valine(Object.assign({
+      el  : '#valine-comments',
+      path: location.pathname,
+    }, {"enable":true,"appId":"S7i1Y8YorMKFPaYbJbekD5el-gzGzoHsz","appKey":"brOnU8mOQvSjpipJvdKUAIbU","placeholder":"写下你的评论...","avatar":"mm","meta":["nick","mail","link"],"pageSize":10,"language":"zh-cn","visitor":false,"comment_count":true,"recordIP":true,"serverURLs":null,"enableQQ":true,"requiredFields":[]}
+    ));
+  }, window.Valine);
+});
+</script>
+
+    </div>
 </body>
 </html>

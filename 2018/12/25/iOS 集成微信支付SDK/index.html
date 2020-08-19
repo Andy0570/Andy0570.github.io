@@ -18,21 +18,23 @@
 <link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css">
   
   <link rel="stylesheet" href="/lib/animate-css/animate.min.css">
+  <link rel="stylesheet" href="//unpkg.com/pace-js@1/themes/blue/pace-theme-minimal.css">
+  <script src="//unpkg.com/pace-js@1/pace.min.js"></script>
 
 <script class="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"andy0570.com","root":"/","scheme":"Gemini","version":"8.0.0-rc.5","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":"mac","bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false};
+    var CONFIG = {"hostname":"andy0570.com","root":"/","scheme":"Gemini","version":"8.0.0-rc.5","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":"mac","bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":true,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":true,"nav":null,"activeClass":"valine"},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"algolia":{"appID":"0E2AON8EZF","apiKey":"22fbefd84c8343239f5c04365b9728de","indexName":"MyBlogPlatform","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}}};
   </script>
 
-  <meta name="description" content="微信支付SDK 版本：1.8.3 参考 微信支付开发文档 ⭐️ 微信开放平台 - iOS接入指南 ⭐️⭐️⭐️ 微信支付APP商户截图标准示范 简书 - iOS-微信支付总结 简书 - 微信支付 掘金 - iOS 微信支付接入以及工具类封装 GitHub：WXPay - 微信支付讲解示例 ⭐️⭐️⭐️">
+  <meta name="description" content="微信支付 SDK 版本：1.8.3 参考 微信支付开发文档 ⭐️ 微信开放平台 - iOS 接入指南 ⭐️⭐️⭐️ 微信支付 APP 商户截图标准示范 简书 - iOS - 微信支付总结 简书 - 微信支付 掘金 - iOS 微信支付接入以及工具类封装 GitHub：WXPay - 微信支付讲解示例 ⭐️⭐️⭐️">
 <meta property="og:type" content="article">
-<meta property="og:title" content="iOS 集成微信支付SDK">
+<meta property="og:title" content="iOS 集成微信支付 SDK">
 <meta property="og:url" content="https://andy0570.com/2018/12/25/iOS%20%E9%9B%86%E6%88%90%E5%BE%AE%E4%BF%A1%E6%94%AF%E4%BB%98SDK/index.html">
 <meta property="og:site_name" content="独木舟的木">
-<meta property="og:description" content="微信支付SDK 版本：1.8.3 参考 微信支付开发文档 ⭐️ 微信开放平台 - iOS接入指南 ⭐️⭐️⭐️ 微信支付APP商户截图标准示范 简书 - iOS-微信支付总结 简书 - 微信支付 掘金 - iOS 微信支付接入以及工具类封装 GitHub：WXPay - 微信支付讲解示例 ⭐️⭐️⭐️">
+<meta property="og:description" content="微信支付 SDK 版本：1.8.3 参考 微信支付开发文档 ⭐️ 微信开放平台 - iOS 接入指南 ⭐️⭐️⭐️ 微信支付 APP 商户截图标准示范 简书 - iOS - 微信支付总结 简书 - 微信支付 掘金 - iOS 微信支付接入以及工具类封装 GitHub：WXPay - 微信支付讲解示例 ⭐️⭐️⭐️">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/075930.jpg">
 <meta property="article:published_time" content="2018-12-25T09:07:00.000Z">
@@ -45,7 +47,7 @@
 <link rel="canonical" href="https://andy0570.com/2018/12/25/iOS%20%E9%9B%86%E6%88%90%E5%BE%AE%E4%BF%A1%E6%94%AF%E4%BB%98SDK/">
 
 
-<script class="page-configurations">
+<script data-pjax class="page-configurations">
   // https://hexo.io/docs/variables.html
   CONFIG.page = {
     sidebar: "",
@@ -55,10 +57,19 @@
   };
 </script>
 
-  <title>iOS 集成微信支付SDK | 独木舟的木</title>
+  <title>iOS 集成微信支付 SDK | 独木舟的木</title>
   
 
 
+  <script data-pjax>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?8229a094facca297f211d61323fd9fde";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
 
 
 
@@ -128,6 +139,7 @@
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -161,11 +173,35 @@
     <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
 
   </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
   </ul>
 </nav>
 
 
 
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
 
 </div>
           
@@ -197,7 +233,7 @@
       <section class="site-overview-wrap sidebar-panel">
         <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <img class="site-author-image" itemprop="image" alt="独木舟的木"
-      src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+      src="https://static01.imgkr.com/temp/88aab3c08a3f43f5a14f21c6c357c816.JPG">
   <p class="site-author-name" itemprop="name">独木舟的木</p>
   <div class="site-description" itemprop="description">生若直木，不语斧凿。</div>
 </div>
@@ -278,7 +314,7 @@
     <link itemprop="mainEntityOfPage" href="https://andy0570.com/2018/12/25/iOS%20%E9%9B%86%E6%88%90%E5%BE%AE%E4%BF%A1%E6%94%AF%E4%BB%98SDK/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+      <meta itemprop="image" content="https://static01.imgkr.com/temp/88aab3c08a3f43f5a14f21c6c357c816.JPG">
       <meta itemprop="name" content="独木舟的木">
       <meta itemprop="description" content="生若直木，不语斧凿。">
     </span>
@@ -290,7 +326,7 @@
     
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          iOS 集成微信支付SDK
+          iOS 集成微信支付 SDK
         </h1>
 
         <div class="post-meta">
@@ -319,7 +355,21 @@
                 </span>
             </span>
 
-          <br>
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2018/12/25/iOS%20%E9%9B%86%E6%88%90%E5%BE%AE%E4%BF%A1%E6%94%AF%E4%BB%98SDK/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2018/12/25/iOS%20%E9%9B%86%E6%88%90%E5%BE%AE%E4%BF%A1%E6%94%AF%E4%BB%98SDK/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  <br>
             <span class="post-meta-item" title="本文字数">
               <span class="post-meta-item-icon">
                 <i class="far fa-file-word"></i>
@@ -342,12 +392,12 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <p>微信支付SDK 版本：1.8.3</p>
+        <p>微信支付 SDK 版本：1.8.3</p>
 <h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
 <li><span class="exturl" data-url="aHR0cHM6Ly9wYXkud2VpeGluLnFxLmNvbS93aWtpL2RvYy9hcGkvYXBwL2FwcC5waHA/Y2hhcHRlcj04XzE=">微信支付开发文档<i class="fa fa-external-link-alt"></i></span> ⭐️</li>
-<li><span class="exturl" data-url="aHR0cHM6Ly9vcGVuLndlaXhpbi5xcS5jb20vY2dpLWJpbi9zaG93ZG9jdW1lbnQ/YWN0aW9uPWRpcl9saXN0JnQ9cmVzb3VyY2UvcmVzX2xpc3QmdmVyaWZ5PTEmaWQ9MTQxNzY5NDA4NCZ0b2tlbj0mbGFuZz16aF9DTg==">微信开放平台 - iOS接入指南<i class="fa fa-external-link-alt"></i></span> ⭐️⭐️⭐️</li>
-<li><span class="exturl" data-url="aHR0cHM6Ly9rZi5xcS5jb20vZmFxLzE2MTIyNmJ5bVEzeTE2MTIyNnlRYm1Rdi5odG1s">微信支付APP商户截图标准示范<i class="fa fa-external-link-alt"></i></span></li>
-<li><span class="exturl" data-url="aHR0cHM6Ly93d3cuamlhbnNodS5jb20vcC84Njc1NjNhMWYwODA=">简书 - iOS-微信支付总结<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cHM6Ly9vcGVuLndlaXhpbi5xcS5jb20vY2dpLWJpbi9zaG93ZG9jdW1lbnQ/YWN0aW9uPWRpcl9saXN0JnQ9cmVzb3VyY2UvcmVzX2xpc3QmdmVyaWZ5PTEmaWQ9MTQxNzY5NDA4NCZ0b2tlbj0mbGFuZz16aF9DTg==">微信开放平台 - iOS 接入指南<i class="fa fa-external-link-alt"></i></span> ⭐️⭐️⭐️</li>
+<li><span class="exturl" data-url="aHR0cHM6Ly9rZi5xcS5jb20vZmFxLzE2MTIyNmJ5bVEzeTE2MTIyNnlRYm1Rdi5odG1s">微信支付 APP 商户截图标准示范<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cHM6Ly93d3cuamlhbnNodS5jb20vcC84Njc1NjNhMWYwODA=">简书 - iOS - 微信支付总结<i class="fa fa-external-link-alt"></i></span></li>
 <li><span class="exturl" data-url="aHR0cHM6Ly93d3cuamlhbnNodS5jb20vcC8xNjJlY2UzMzViMzE=">简书 - 微信支付<i class="fa fa-external-link-alt"></i></span></li>
 <li><span class="exturl" data-url="aHR0cHM6Ly9qdWVqaW4uaW0vcG9zdC81YWMzMmE3YzUxODgyNTU1Njc3ZWJlYjM=">掘金 - iOS 微信支付接入以及工具类封装<i class="fa fa-external-link-alt"></i></span></li>
 <li><span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL3JlbnppZmVuZy9XWFBheQ==">GitHub：WXPay<i class="fa fa-external-link-alt"></i></span> - 微信支付讲解示例 ⭐️⭐️⭐️</li>
@@ -355,7 +405,7 @@
 <a id="more"></a>
 
 <h2 id="iOS-接入指南"><a href="#iOS-接入指南" class="headerlink" title="iOS 接入指南"></a>iOS 接入指南</h2><blockquote>
-<p>讲解 iOS 接入微信SDK，仅记录关键部分代码，其余在官方文档或网络文章中都已详述备尽，此处不再赘述。</p>
+<p>讲解 iOS 接入微信 SDK，仅记录关键部分代码，其余在官方文档或网络文章中都已详述备尽，此处不再赘述。</p>
 </blockquote>
 <h3 id="1-向微信注册你的应用程序-id"><a href="#1-向微信注册你的应用程序-id" class="headerlink" title="1. 向微信注册你的应用程序 id"></a>1. 向微信注册你的应用程序 id</h3><p>（略。。。）</p>
 <h3 id="2-下载微信终端-SDK-文件"><a href="#2-下载微信终端-SDK-文件" class="headerlink" title="2. 下载微信终端 SDK 文件"></a>2. 下载微信终端 SDK 文件</h3><p>集成微信 SDK 有两种方式：</p>
@@ -363,40 +413,40 @@
 <li><p>手动集成，<span class="exturl" data-url="aHR0cHM6Ly9wYXkud2VpeGluLnFxLmNvbS93aWtpL2RvYy9hcGkvYXBwL2FwcC5waHA/Y2hhcHRlcj0xMV8x">下载 SDK <i class="fa fa-external-link-alt"></i></span>然后拖拽相关库文件到你的项目中；</p>
 </li>
 <li><p>通过 CocoaPods 集成：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pod &#39;WechatOpenSDK&#39;, &#39;~&gt; 1.8.3&#39;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pod 'WechatOpenSDK', '~&gt; 1.8.3'</span><br></pre></td></tr></tbody></table></figure>
 
 </li>
 </ol>
 <h3 id="3-开发环境搭建"><a href="#3-开发环境搭建" class="headerlink" title="3. 开发环境搭建"></a>3. 开发环境搭建</h3><h4 id="3-1-设置-TARGETS-，在-URL-Types-中添加应用程序-id。"><a href="#3-1-设置-TARGETS-，在-URL-Types-中添加应用程序-id。" class="headerlink" title="3.1 设置 TARGETS ，在 URL Types 中添加应用程序 id。"></a>3.1 设置 TARGETS ，在 URL Types 中添加应用程序 id。</h4><p>（略。。。）</p>
 <h4 id="3-2-设置微信白名单"><a href="#3-2-设置微信白名单" class="headerlink" title="3.2 设置微信白名单"></a>3.2 设置微信白名单</h4><p>在 Xcode 中，选择你的工程设置项，选中 “TARGETS” 一栏，在 “info” 标签栏的 “LSApplicationQueriesSchemes“添加 weixin：</p>
-<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/075930.jpg" alt="weix"></p>
+<p><img data-src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/075930.jpg" alt="weix"></p>
 <p>⚠️ 这个步骤用于判断微信是否安装（<code>[WXApi isWXAppInstalled]</code>）</p>
 <p>详细可以参见 <span class="exturl" data-url="aHR0cHM6Ly93d3cuamlhbnNodS5jb20vcC9hMTg5NWM3NjY0MDA=">LSApplicationQueriesSchemes– 关于 info.plist 第三方登录 添加 URL Schemes 白名单<i class="fa fa-external-link-alt"></i></span></p>
 <h3 id="4-在项目中添加代码"><a href="#4-在项目中添加代码" class="headerlink" title="4. 在项目中添加代码"></a>4. 在项目中添加代码</h3><p>为了使项目代码更清晰简洁（解耦合思想），我创建了一个范畴（Category）类专门存放微信支付相关的代码：</p>
-<h4 id="4-1-AppDelegate-WechatPayService-h"><a href="#4-1-AppDelegate-WechatPayService-h" class="headerlink" title="4.1 AppDelegate+WechatPayService.h"></a>4.1 AppDelegate+WechatPayService.h</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">#import &quot;AppDelegate.h&quot;</span><br><span class="line"></span><br><span class="line">NS_ASSUME_NONNULL_BEGIN</span><br><span class="line"></span><br><span class="line">&#x2F;**</span><br><span class="line"> 集成微信支付</span><br><span class="line"> *&#x2F;</span><br><span class="line">@interface AppDelegate (WechatPayService)</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 配置方法，用于向微信终端注册应用 id</span><br><span class="line">- (void)hql_configureForWechatPay;</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">NS_ASSUME_NONNULL_END</span><br></pre></td></tr></table></figure>
+<h4 id="4-1-AppDelegate-WechatPayService-h"><a href="#4-1-AppDelegate-WechatPayService-h" class="headerlink" title="4.1 AppDelegate+WechatPayService.h"></a>4.1 AppDelegate+WechatPayService.h</h4><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">#import "AppDelegate.h"</span><br><span class="line"></span><br><span class="line">NS_ASSUME_NONNULL_BEGIN</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> 集成微信支付</span><br><span class="line"> */</span><br><span class="line">@interface AppDelegate (WechatPayService)</span><br><span class="line"></span><br><span class="line">// 配置方法，用于向微信终端注册应用 id</span><br><span class="line">- (void)hql_configureForWechatPay;</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">NS_ASSUME_NONNULL_END</span><br></pre></td></tr></tbody></table></figure>
 
 
 
-<h4 id="4-2-AppDelegate-WechatPayService-m"><a href="#4-2-AppDelegate-WechatPayService-m" class="headerlink" title="4.2 AppDelegate+WechatPayService.m"></a>4.2 AppDelegate+WechatPayService.m</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line">#import &quot;AppDelegate+WechatPayService.h&quot;</span><br><span class="line">#import &lt;WechatOpenSDK&#x2F;WXApi.h&gt; &#x2F;&#x2F; 引入微信 SDK</span><br><span class="line"></span><br><span class="line">@interface AppDelegate () &lt;WXApiDelegate&gt; &#x2F;&#x2F; 遵守 SDK 协议</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">@implementation AppDelegate (WechatPayService)</span><br><span class="line"></span><br><span class="line">#pragma mark - Public</span><br><span class="line"></span><br><span class="line">- (void)hql_configureForWechatPay &#123;</span><br><span class="line">    &#x2F;&#x2F;向微信注册</span><br><span class="line">    &#x2F;&#x2F;注：WechatAppId 是常量，已经写在了预编译配置文件中</span><br><span class="line">    &#x2F;&#x2F;#define WechatAppId @&quot;wx12345...67890&quot;</span><br><span class="line">    [WXApi registerApp:WechatAppId];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">#pragma mark - WeChatPay</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; NOTE: 9.0以后使用新API接口</span><br><span class="line">- (BOOL)application:(UIApplication *)app openURL:(NSURL *)url options:(NSDictionary&lt;NSString*, id&gt; *)options &#123;</span><br><span class="line">    return [WXApi handleOpenURL:url delegate:(id&lt;WXApiDelegate&gt;)self];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;*! @brief 发送一个sendReq后，收到微信的回应</span><br><span class="line"> *</span><br><span class="line"> * 收到一个来自微信的处理结果。调用一次sendReq后会收到onResp。</span><br><span class="line"> * 可能收到的处理结果有SendMessageToWXResp、SendAuthResp等。</span><br><span class="line"> * @param resp具体的回应内容，是自动释放的</span><br><span class="line"> *&#x2F;</span><br><span class="line">-(void) onResp:(BaseResp*)resp &#123;</span><br><span class="line">    &#x2F;&#x2F; 微信支付成功&#x2F;失败，发起通知查询</span><br><span class="line">    &#x2F;&#x2F; 注：HQLWechatPayOnResponceNotification 通知方法名是常量，统一写在配置文件中</span><br><span class="line">    &#x2F;&#x2F; #define HQLWechatPayOnResponceNotification @&quot;HQLWechatPayOnResponceNotification&quot;</span><br><span class="line">    [[NSNotificationCenter defaultCenter] postNotificationName:HQLWechatPayOnResponceNotification</span><br><span class="line">                                                        object:(BaseReq *)resp];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+<h4 id="4-2-AppDelegate-WechatPayService-m"><a href="#4-2-AppDelegate-WechatPayService-m" class="headerlink" title="4.2 AppDelegate+WechatPayService.m"></a>4.2 AppDelegate+WechatPayService.m</h4><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line">#import "AppDelegate+WechatPayService.h"</span><br><span class="line">#import &lt;WechatOpenSDK/WXApi.h&gt; // 引入微信 SDK</span><br><span class="line"></span><br><span class="line">@interface AppDelegate () &lt;WXApiDelegate&gt; // 遵守 SDK 协议</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">@implementation AppDelegate (WechatPayService)</span><br><span class="line"></span><br><span class="line">#pragma mark - Public</span><br><span class="line"></span><br><span class="line">- (void)hql_configureForWechatPay {</span><br><span class="line">    //向微信注册</span><br><span class="line">    //注：WechatAppId 是常量，已经写在了预编译配置文件中</span><br><span class="line">    //#define WechatAppId @"wx12345...67890"</span><br><span class="line">    [WXApi registerApp:WechatAppId];</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">#pragma mark - WeChatPay</span><br><span class="line"></span><br><span class="line">// NOTE: 9.0以后使用新API接口</span><br><span class="line">- (BOOL)application:(UIApplication *)app openURL:(NSURL *)url options:(NSDictionary&lt;NSString*, id&gt; *)options {</span><br><span class="line">    return [WXApi handleOpenURL:url delegate:(id&lt;WXApiDelegate&gt;)self];</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">/*! @brief 发送一个sendReq后，收到微信的回应</span><br><span class="line"> *</span><br><span class="line"> * 收到一个来自微信的处理结果。调用一次sendReq后会收到onResp。</span><br><span class="line"> * 可能收到的处理结果有SendMessageToWXResp、SendAuthResp等。</span><br><span class="line"> * @param resp具体的回应内容，是自动释放的</span><br><span class="line"> */</span><br><span class="line">-(void) onResp:(BaseResp*)resp {</span><br><span class="line">    // 微信支付成功/失败，发起通知查询</span><br><span class="line">    // 注：HQLWechatPayOnResponceNotification 通知方法名是常量，统一写在配置文件中</span><br><span class="line">    // #define HQLWechatPayOnResponceNotification @"HQLWechatPayOnResponceNotification"</span><br><span class="line">    [[NSNotificationCenter defaultCenter] postNotificationName:HQLWechatPayOnResponceNotification</span><br><span class="line">                                                        object:(BaseReq *)resp];</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></tbody></table></figure>
 
 
 
 <h4 id="4-3-AppDelegate-m"><a href="#4-3-AppDelegate-m" class="headerlink" title="4.3 AppDelegate.m"></a>4.3 AppDelegate.m</h4><p><strong>AppDelegate+WechatPayService</strong> 文件写好后，这里可以直接使用了。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">#import &quot;AppDelegate.h&quot;</span><br><span class="line">#import &quot;AppDelegate+WechatPayService.h&quot;</span><br><span class="line"></span><br><span class="line">@implementation AppDelegate</span><br><span class="line"></span><br><span class="line">- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions &#123;</span><br><span class="line">    [self hql_configureForWechatPay]; &#x2F;&#x2F; 是的，只有一行配置代码</span><br><span class="line">    return YES;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">#import "AppDelegate.h"</span><br><span class="line">#import "AppDelegate+WechatPayService.h"</span><br><span class="line"></span><br><span class="line">@implementation AppDelegate</span><br><span class="line"></span><br><span class="line">- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {</span><br><span class="line">    [self hql_configureForWechatPay]; // 是的，只有一行配置代码</span><br><span class="line">    return YES;</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
 
 
 
 <h3 id="5-发起微信支付代码"><a href="#5-发起微信支付代码" class="headerlink" title="5. 发起微信支付代码"></a>5. 发起微信支付代码</h3><h4 id="交互数据模型"><a href="#交互数据模型" class="headerlink" title="交互数据模型"></a>交互数据模型</h4><p>先来看一下商户服务端返回的 JSON 数据格式：</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    appid = &quot;wx12345...678906&quot;; （应用 ID）</span><br><span class="line">    noncestr = &quot;FS7JBpYQ5TzkyfcV&quot;; （随机字符串）</span><br><span class="line">    package = &quot;Sign=WXPay&quot;; （扩展字段，默认值）</span><br><span class="line">    partnerid = &quot;12345674321&quot;; （商户号）</span><br><span class="line">    prepayid = &quot;wx2530149711249kd7b531c00a2446020522&quot;; （预支付交易会话 ID）</span><br><span class="line">    sign = &quot;BEE9FA6FCD14D286CCCD4EE7DC74578B&quot;; （签名）</span><br><span class="line">    timestamp = 1545704053 （时间戳，精确到秒，10位！！！）</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">{</span><br><span class="line">    appid = "wx12345...678906"; （应用 ID）</span><br><span class="line">    noncestr = "FS7JBpYQ5TzkyfcV"; （随机字符串）</span><br><span class="line">    package = "Sign=WXPay"; （扩展字段，默认值）</span><br><span class="line">    partnerid = "12345674321"; （商户号）</span><br><span class="line">    prepayid = "wx2530149711249kd7b531c00a2446020522"; （预支付交易会话 ID）</span><br><span class="line">    sign = "BEE9FA6FCD14D286CCCD4EE7DC74578B"; （签名）</span><br><span class="line">    timestamp = 1545704053 （时间戳，精确到秒，10位！！！）</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
 
 <p>然后写一个模型类来映射 JSON 数据，如下，JSON 解析可以使用 <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2liaXJlbWUvWVlNb2RlbA==">YYModel<i class="fa fa-external-link-alt"></i></span> 库。</p>
-<h4 id="HQLWechatPayRequestModel-h"><a href="#HQLWechatPayRequestModel-h" class="headerlink" title="HQLWechatPayRequestModel.h"></a>HQLWechatPayRequestModel.h</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">#import &lt;Foundation&#x2F;Foundation.h&gt;</span><br><span class="line"></span><br><span class="line">NS_ASSUME_NONNULL_BEGIN</span><br><span class="line"></span><br><span class="line">&#x2F;**</span><br><span class="line"> 微信支付，服务器返回支付参数模型</span><br><span class="line"> *&#x2F;</span><br><span class="line">@interface HQLWechatPayRequestModel : NSObject</span><br><span class="line"></span><br><span class="line">&#x2F;** 应用 ID *&#x2F;</span><br><span class="line">@property (nonatomic, copy, readonly) NSString *appid;</span><br><span class="line">&#x2F;** 商家向财付通申请的商家 ID *&#x2F;</span><br><span class="line">@property (nonatomic, copy, readonly) NSString *partnerid;</span><br><span class="line">&#x2F;** 预支付订单 *&#x2F;</span><br><span class="line">@property (nonatomic, copy, readonly) NSString *prepayid;</span><br><span class="line">&#x2F;** 商家根据财付通文档填写的数据和签名，默认值为 Sign&#x3D;WXPay *&#x2F;</span><br><span class="line">@property (nonatomic, copy, readonly) NSString *package;</span><br><span class="line">&#x2F;** 随机串，防重发 *&#x2F;</span><br><span class="line">@property (nonatomic, copy, readonly) NSString *noncestr;</span><br><span class="line">&#x2F;** 时间戳，防重发 *&#x2F;</span><br><span class="line">@property (nonatomic, assign, readonly) UInt32 timestamp;</span><br><span class="line">&#x2F;** 商家根据微信开放平台文档对数据做的签名 *&#x2F;</span><br><span class="line">@property (nonatomic, copy, readonly) NSString *sign;</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">NS_ASSUME_NONNULL_END</span><br></pre></td></tr></table></figure>
+<h4 id="HQLWechatPayRequestModel-h"><a href="#HQLWechatPayRequestModel-h" class="headerlink" title="HQLWechatPayRequestModel.h"></a>HQLWechatPayRequestModel.h</h4><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">#import &lt;Foundation/Foundation.h&gt;</span><br><span class="line"></span><br><span class="line">NS_ASSUME_NONNULL_BEGIN</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> 微信支付，服务器返回支付参数模型</span><br><span class="line"> */</span><br><span class="line">@interface HQLWechatPayRequestModel : NSObject</span><br><span class="line"></span><br><span class="line">/** 应用 ID */</span><br><span class="line">@property (nonatomic, copy, readonly) NSString *appid;</span><br><span class="line">/** 商家向财付通申请的商家 ID */</span><br><span class="line">@property (nonatomic, copy, readonly) NSString *partnerid;</span><br><span class="line">/** 预支付订单 */</span><br><span class="line">@property (nonatomic, copy, readonly) NSString *prepayid;</span><br><span class="line">/** 商家根据财付通文档填写的数据和签名，默认值为 Sign=WXPay */</span><br><span class="line">@property (nonatomic, copy, readonly) NSString *package;</span><br><span class="line">/** 随机串，防重发 */</span><br><span class="line">@property (nonatomic, copy, readonly) NSString *noncestr;</span><br><span class="line">/** 时间戳，防重发 */</span><br><span class="line">@property (nonatomic, assign, readonly) UInt32 timestamp;</span><br><span class="line">/** 商家根据微信开放平台文档对数据做的签名 */</span><br><span class="line">@property (nonatomic, copy, readonly) NSString *sign;</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">NS_ASSUME_NONNULL_END</span><br></pre></td></tr></tbody></table></figure>
 
-<h4 id="HQLWechatPayRequestModel-m"><a href="#HQLWechatPayRequestModel-m" class="headerlink" title="HQLWechatPayRequestModel.m"></a>HQLWechatPayRequestModel.m</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">#import &quot;HQLWechatPayRequestModel.h&quot;</span><br><span class="line"></span><br><span class="line">@interface HQLWechatPayRequestModel ()</span><br><span class="line"></span><br><span class="line">@property (nonatomic, copy, readwrite) NSString *appid;</span><br><span class="line">@property (nonatomic, copy, readwrite) NSString *partnerid;</span><br><span class="line">@property (nonatomic, copy, readwrite) NSString *prepayid;</span><br><span class="line">@property (nonatomic, copy, readwrite) NSString *package;</span><br><span class="line">@property (nonatomic, copy, readwrite) NSString *noncestr;</span><br><span class="line">@property (nonatomic, assign, readwrite) UInt32 timestamp;</span><br><span class="line">@property (nonatomic, copy, readwrite) NSString *sign;</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">@implementation HQLWechatPayRequestModel</span><br><span class="line"></span><br><span class="line">#pragma mark - NSObject</span><br><span class="line"></span><br><span class="line">- (NSString *)description &#123;</span><br><span class="line">    return [self modelDescription];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+<h4 id="HQLWechatPayRequestModel-m"><a href="#HQLWechatPayRequestModel-m" class="headerlink" title="HQLWechatPayRequestModel.m"></a>HQLWechatPayRequestModel.m</h4><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">#import "HQLWechatPayRequestModel.h"</span><br><span class="line"></span><br><span class="line">@interface HQLWechatPayRequestModel ()</span><br><span class="line"></span><br><span class="line">@property (nonatomic, copy, readwrite) NSString *appid;</span><br><span class="line">@property (nonatomic, copy, readwrite) NSString *partnerid;</span><br><span class="line">@property (nonatomic, copy, readwrite) NSString *prepayid;</span><br><span class="line">@property (nonatomic, copy, readwrite) NSString *package;</span><br><span class="line">@property (nonatomic, copy, readwrite) NSString *noncestr;</span><br><span class="line">@property (nonatomic, assign, readwrite) UInt32 timestamp;</span><br><span class="line">@property (nonatomic, copy, readwrite) NSString *sign;</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">@implementation HQLWechatPayRequestModel</span><br><span class="line"></span><br><span class="line">#pragma mark - NSObject</span><br><span class="line"></span><br><span class="line">- (NSString *)description {</span><br><span class="line">    return [self modelDescription];</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></tbody></table></figure>
 
 
 
-<h4 id="发起微信支付"><a href="#发起微信支付" class="headerlink" title="发起微信支付"></a>发起微信支付</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br></pre></td><td class="code"><pre><span class="line">#import &quot;HQLWeChatPayViewController.h&quot;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; Frameworks</span><br><span class="line">#import &lt;WechatOpenSDK&#x2F;WXApi.h&gt;</span><br><span class="line">#import &lt;WechatOpenSDK&#x2F;WXApiObject.h&gt;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; Models</span><br><span class="line">#import &quot;HQLWechatPayRequestModel.h&quot;</span><br><span class="line"></span><br><span class="line">@implementation HQLThirdPartyPayViewController</span><br><span class="line"></span><br><span class="line">#pragma mark - Lifecycle</span><br><span class="line"></span><br><span class="line">- (void)dealloc &#123;</span><br><span class="line">    &#x2F;&#x2F; 移除微信支付通知</span><br><span class="line">    [[NSNotificationCenter defaultCenter] removeObserver:self];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)viewDidLoad &#123;</span><br><span class="line">    [super viewDidLoad];</span><br><span class="line">  </span><br><span class="line">    &#x2F;&#x2F; 添加微信支付通知</span><br><span class="line">    [[NSNotificationCenter defaultCenter] addObserver:self</span><br><span class="line">                                             selector:@selector(respondsToWechatPayNotification:)</span><br><span class="line">                                                 name:HQLWechatPayOnResponceNotification</span><br><span class="line">                                               object:nil];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">#pragma mark - Private</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 判断用户设备是否支持微信支付</span><br><span class="line">- (BOOL)isSupportWechatPay &#123;</span><br><span class="line">    &#x2F;&#x2F; 1.判断是否安装微信</span><br><span class="line">    if (![WXApi isWXAppInstalled]) &#123;</span><br><span class="line">        &#x2F;&#x2F; 业务代码，提示微信未安装...</span><br><span class="line">        return NO;</span><br><span class="line">    &#125;</span><br><span class="line">    &#x2F;&#x2F; 2.判断微信的版本是否支持最新API</span><br><span class="line">    if (![WXApi isWXAppSupportApi]) &#123;</span><br><span class="line">        &#x2F;&#x2F; 业务代码，提示微信当前版本不支持此功能...</span><br><span class="line">        return NO;</span><br><span class="line">    &#125;</span><br><span class="line">    return YES;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 响应微信支付回调通知</span><br><span class="line">- (void)respondsToWechatPayNotification:(NSNotification *)notification &#123;</span><br><span class="line">    BaseResp *responds &#x3D; notification.object;</span><br><span class="line">    switch (responds.errCode) &#123;</span><br><span class="line">        case WXSuccess: &#123;</span><br><span class="line">            &#x2F;&#x2F; 1. 微信支付成功</span><br><span class="line">            &#x2F;&#x2F; ...</span><br><span class="line">            break;</span><br><span class="line">        &#125;</span><br><span class="line">        case WXErrCodeCommon: &#123;</span><br><span class="line">            &#x2F;&#x2F; 2. 微信支付失败</span><br><span class="line">            &#x2F;&#x2F; ...</span><br><span class="line">            break;</span><br><span class="line">        &#125;</span><br><span class="line">        case WXErrCodeUserCancel: &#123;</span><br><span class="line">            &#x2F;&#x2F; 3. 用户点击取消并返回</span><br><span class="line">            &#x2F;&#x2F; ...</span><br><span class="line">            break;</span><br><span class="line">        &#125;</span><br><span class="line">        default: &#123;</span><br><span class="line">            break;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 发起支付请求</span><br><span class="line">- (void)dealWithOrderPay &#123;</span><br><span class="line">    &#x2F;&#x2F; 业务逻辑，先向服务器发起预支付请求，服务器返回支持订单信息。</span><br><span class="line">    &#x2F;&#x2F; ...</span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F; 先判断是否支持微信支付</span><br><span class="line">    if ([self isSupportWechatPay]) &#123;</span><br><span class="line">        &#x2F;&#x2F; 解析服务端返回的支付参数</span><br><span class="line">        NSDictionary *payDictionary;</span><br><span class="line">        &#x2F;&#x2F; 使用 YYModel 将 JSON 数据转化为数据模型 HQLWechatPayRequestModel</span><br><span class="line">        HQLWechatPayRequestModel *payRequestModel &#x3D; [HQLWechatPayRequestModel modelWithJSON:payDictionary];</span><br><span class="line">        &#x2F;&#x2F; 向微信终端发起支付的消息结构体</span><br><span class="line">        PayReq *request &#x3D; [[PayReq alloc] init];</span><br><span class="line">        request.partnerId &#x3D; payRequestModel.partnerid;</span><br><span class="line">        request.prepayId &#x3D; payRequestModel.prepayid;</span><br><span class="line">        request.package &#x3D; payRequestModel.package;</span><br><span class="line">        request.nonceStr &#x3D; payRequestModel.noncestr;</span><br><span class="line">        request.timeStamp &#x3D; payRequestModel.timestamp;</span><br><span class="line">        request.sign &#x3D; payRequestModel.sign;</span><br><span class="line">        &#x2F;&#x2F; 发起微信支付</span><br><span class="line">        [WXApi sendReq:request];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+<h4 id="发起微信支付"><a href="#发起微信支付" class="headerlink" title="发起微信支付"></a>发起微信支付</h4><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br></pre></td><td class="code"><pre><span class="line">#import "HQLWeChatPayViewController.h"</span><br><span class="line"></span><br><span class="line">// Frameworks</span><br><span class="line">#import &lt;WechatOpenSDK/WXApi.h&gt;</span><br><span class="line">#import &lt;WechatOpenSDK/WXApiObject.h&gt;</span><br><span class="line"></span><br><span class="line">// Models</span><br><span class="line">#import "HQLWechatPayRequestModel.h"</span><br><span class="line"></span><br><span class="line">@implementation HQLThirdPartyPayViewController</span><br><span class="line"></span><br><span class="line">#pragma mark - Lifecycle</span><br><span class="line"></span><br><span class="line">- (void)dealloc {</span><br><span class="line">    // 移除微信支付通知</span><br><span class="line">    [[NSNotificationCenter defaultCenter] removeObserver:self];</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">- (void)viewDidLoad {</span><br><span class="line">    [super viewDidLoad];</span><br><span class="line">  </span><br><span class="line">    // 添加微信支付通知</span><br><span class="line">    [[NSNotificationCenter defaultCenter] addObserver:self</span><br><span class="line">                                             selector:@selector(respondsToWechatPayNotification:)</span><br><span class="line">                                                 name:HQLWechatPayOnResponceNotification</span><br><span class="line">                                               object:nil];</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">#pragma mark - Private</span><br><span class="line"></span><br><span class="line">// 判断用户设备是否支持微信支付</span><br><span class="line">- (BOOL)isSupportWechatPay {</span><br><span class="line">    // 1.判断是否安装微信</span><br><span class="line">    if (![WXApi isWXAppInstalled]) {</span><br><span class="line">        // 业务代码，提示微信未安装...</span><br><span class="line">        return NO;</span><br><span class="line">    }</span><br><span class="line">    // 2.判断微信的版本是否支持最新API</span><br><span class="line">    if (![WXApi isWXAppSupportApi]) {</span><br><span class="line">        // 业务代码，提示微信当前版本不支持此功能...</span><br><span class="line">        return NO;</span><br><span class="line">    }</span><br><span class="line">    return YES;</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">// 响应微信支付回调通知</span><br><span class="line">- (void)respondsToWechatPayNotification:(NSNotification *)notification {</span><br><span class="line">    BaseResp *responds = notification.object;</span><br><span class="line">    switch (responds.errCode) {</span><br><span class="line">        case WXSuccess: {</span><br><span class="line">            // 1. 微信支付成功</span><br><span class="line">            // ...</span><br><span class="line">            break;</span><br><span class="line">        }</span><br><span class="line">        case WXErrCodeCommon: {</span><br><span class="line">            // 2. 微信支付失败</span><br><span class="line">            // ...</span><br><span class="line">            break;</span><br><span class="line">        }</span><br><span class="line">        case WXErrCodeUserCancel: {</span><br><span class="line">            // 3. 用户点击取消并返回</span><br><span class="line">            // ...</span><br><span class="line">            break;</span><br><span class="line">        }</span><br><span class="line">        default: {</span><br><span class="line">            break;</span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">// 发起支付请求</span><br><span class="line">- (void)dealWithOrderPay {</span><br><span class="line">    // 业务逻辑，先向服务器发起预支付请求，服务器返回支持订单信息。</span><br><span class="line">    // ...</span><br><span class="line">    </span><br><span class="line">    // 先判断是否支持微信支付</span><br><span class="line">    if ([self isSupportWechatPay]) {</span><br><span class="line">        // 解析服务端返回的支付参数</span><br><span class="line">        NSDictionary *payDictionary;</span><br><span class="line">        // 使用 YYModel 将 JSON 数据转化为数据模型 HQLWechatPayRequestModel</span><br><span class="line">        HQLWechatPayRequestModel *payRequestModel = [HQLWechatPayRequestModel modelWithJSON:payDictionary];</span><br><span class="line">        // 向微信终端发起支付的消息结构体</span><br><span class="line">        PayReq *request = [[PayReq alloc] init];</span><br><span class="line">        request.partnerId = payRequestModel.partnerid;</span><br><span class="line">        request.prepayId = payRequestModel.prepayid;</span><br><span class="line">        request.package = payRequestModel.package;</span><br><span class="line">        request.nonceStr = payRequestModel.noncestr;</span><br><span class="line">        request.timeStamp = payRequestModel.timestamp;</span><br><span class="line">        request.sign = payRequestModel.sign;</span><br><span class="line">        // 发起微信支付</span><br><span class="line">        [WXApi sendReq:request];</span><br><span class="line">    }</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></tbody></table></figure>
 
 
 
@@ -416,7 +466,7 @@
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="https://andy0570.com/2018/12/25/iOS%20%E9%9B%86%E6%88%90%E5%BE%AE%E4%BF%A1%E6%94%AF%E4%BB%98SDK/" title="iOS 集成微信支付SDK">https://andy0570.com/2018/12/25/iOS 集成微信支付SDK/</a>
+    <a href="https://andy0570.com/2018/12/25/iOS%20%E9%9B%86%E6%88%90%E5%BE%AE%E4%BF%A1%E6%94%AF%E4%BB%98SDK/" title="iOS 集成微信支付 SDK">https://andy0570.com/2018/12/25/iOS 集成微信支付SDK/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <span class="exturl" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpo"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</span> 许可协议。转载请注明出处！
@@ -455,12 +505,12 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2018/12/19/%E5%9D%97%E5%AD%98%E5%82%A8&%E5%AF%B9%E8%B1%A1%E5%AD%98%E5%82%A8&%E6%96%87%E4%BB%B6%E5%AD%98%E5%82%A8/" rel="prev" title="块存储&对象存储&文件存储">
-      <i class="fa fa-chevron-left"></i> 块存储&对象存储&文件存储
+    <a href="/2018/12/19/%E5%9D%97%E5%AD%98%E5%82%A8&%E5%AF%B9%E8%B1%A1%E5%AD%98%E5%82%A8&%E6%96%87%E4%BB%B6%E5%AD%98%E5%82%A8/" rel="prev" title="块存储 & 对象存储 & 文件存储">
+      <i class="fa fa-chevron-left"></i> 块存储 & 对象存储 & 文件存储
     </a></div>
       <div class="post-nav-item">
-    <a href="/2018/12/26/MGSwipeTableCell%E2%80%94%E2%80%94%E4%B8%BA%20cell%20%E6%B7%BB%E5%8A%A0%E5%B8%A6%E8%BF%87%E6%B8%A1%E5%8A%A8%E7%94%BB%E7%9A%84%E5%B7%A5%E5%85%B7%E6%8C%89%E9%92%AE/" rel="next" title="MGSwipeTableCell——为 cell 添加带过渡动画的工具按钮">
-      MGSwipeTableCell——为 cell 添加带过渡动画的工具按钮 <i class="fa fa-chevron-right"></i>
+    <a href="/2018/12/26/MGSwipeTableCell%E2%80%94%E2%80%94%E4%B8%BA%20cell%20%E6%B7%BB%E5%8A%A0%E5%B8%A6%E8%BF%87%E6%B8%A1%E5%8A%A8%E7%94%BB%E7%9A%84%E5%B7%A5%E5%85%B7%E6%8C%89%E9%92%AE/" rel="next" title="MGSwipeTableCell—— 为 cell 添加带过渡动画的工具按钮">
+      MGSwipeTableCell—— 为 cell 添加带过渡动画的工具按钮 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -474,6 +524,7 @@
 
         </div>
         
+    <div class="comments" id="valine-comments"></div>
 
 <script>
   window.addEventListener('tabs:register', () => {
@@ -542,7 +593,11 @@
   </div>
 
   
-  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.0/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/next-theme/pjax@0/pjax.min.js"></script>
+  <script src="//unpkg.com/medium-zoom@1/dist/medium-zoom.min.js"></script>
+  <script src="//unpkg.com/lozad@1/dist/lozad.min.js"></script>
+  <script src="//unpkg.com/pangu@4/dist/browser/pangu.min.js"></script>
 
 <script src="/js/utils.js"></script>
 
@@ -553,9 +608,42 @@
 
 <script src="/js/bookmark.js"></script>
 
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '.page-configurations',
+    '.main-inner',
+    '.post-toc-wrap',
+    '.languages',
+    '.pjax'
+  ],
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+document.addEventListener('pjax:success', () => {
+  pjax.executeScripts(document.querySelectorAll('script[data-pjax], .pjax script'));
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  const hasTOC = document.querySelector('.post-toc');
+  document.querySelector('.sidebar-inner').classList.toggle('sidebar-nav-active', hasTOC);
+  document.querySelector(hasTOC ? '.sidebar-nav-toc' : '.sidebar-nav-overview').click();
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
 
   
-  <script>
+  <script data-pjax>
     (function(){
       var bp = document.createElement('script');
       var curProtocol = window.location.protocol.split(':')[0];
@@ -568,6 +656,10 @@
 
 
 
+  
+<script src="//unpkg.com/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//unpkg.com/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
 
 
 
@@ -579,9 +671,27 @@
 
 
 
+
+
+
+    <div class="pjax">
   
 
   
 
+
+<script>
+NexT.utils.loadComments('#valine-comments', () => {
+  NexT.utils.getScript('//unpkg.com/valine@1/dist/Valine.min.js', () => {
+    new Valine(Object.assign({
+      el  : '#valine-comments',
+      path: location.pathname,
+    }, {"enable":true,"appId":"S7i1Y8YorMKFPaYbJbekD5el-gzGzoHsz","appKey":"brOnU8mOQvSjpipJvdKUAIbU","placeholder":"写下你的评论...","avatar":"mm","meta":["nick","mail","link"],"pageSize":10,"language":"zh-cn","visitor":false,"comment_count":true,"recordIP":true,"serverURLs":null,"enableQQ":true,"requiredFields":[]}
+    ));
+  }, window.Valine);
+});
+</script>
+
+    </div>
 </body>
 </html>

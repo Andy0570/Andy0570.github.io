@@ -18,17 +18,19 @@
 <link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css">
   
   <link rel="stylesheet" href="/lib/animate-css/animate.min.css">
+  <link rel="stylesheet" href="//unpkg.com/pace-js@1/themes/blue/pace-theme-minimal.css">
+  <script src="//unpkg.com/pace-js@1/pace.min.js"></script>
 
 <script class="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"andy0570.com","root":"/","scheme":"Gemini","version":"8.0.0-rc.5","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":"mac","bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false};
+    var CONFIG = {"hostname":"andy0570.com","root":"/","scheme":"Gemini","version":"8.0.0-rc.5","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":"mac","bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":true,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":true,"nav":null,"activeClass":"valine"},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"algolia":{"appID":"0E2AON8EZF","apiKey":"22fbefd84c8343239f5c04365b9728de","indexName":"MyBlogPlatform","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}}};
   </script>
 
   <meta property="og:type" content="article">
-<meta property="og:title" content="深入浅出Node.js_网络编程">
+<meta property="og:title" content="深入浅出 Node.js_网络编程">
 <meta property="og:url" content="https://andy0570.com/2018/10/29/%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BANode.js_%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/index.html">
 <meta property="og:site_name" content="独木舟的木">
 <meta property="og:locale" content="zh_CN">
@@ -45,7 +47,7 @@
 <link rel="canonical" href="https://andy0570.com/2018/10/29/%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BANode.js_%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/">
 
 
-<script class="page-configurations">
+<script data-pjax class="page-configurations">
   // https://hexo.io/docs/variables.html
   CONFIG.page = {
     sidebar: "",
@@ -55,10 +57,19 @@
   };
 </script>
 
-  <title>深入浅出Node.js_网络编程 | 独木舟的木</title>
+  <title>深入浅出 Node.js_网络编程 | 独木舟的木</title>
   
 
 
+  <script data-pjax>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?8229a094facca297f211d61323fd9fde";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
 
 
 
@@ -128,6 +139,7 @@
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -161,11 +173,35 @@
     <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
 
   </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
   </ul>
 </nav>
 
 
 
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
 
 </div>
           
@@ -197,7 +233,7 @@
       <section class="site-overview-wrap sidebar-panel">
         <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <img class="site-author-image" itemprop="image" alt="独木舟的木"
-      src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+      src="https://static01.imgkr.com/temp/88aab3c08a3f43f5a14f21c6c357c816.JPG">
   <p class="site-author-name" itemprop="name">独木舟的木</p>
   <div class="site-description" itemprop="description">生若直木，不语斧凿。</div>
 </div>
@@ -278,7 +314,7 @@
     <link itemprop="mainEntityOfPage" href="https://andy0570.com/2018/10/29/%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BANode.js_%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+      <meta itemprop="image" content="https://static01.imgkr.com/temp/88aab3c08a3f43f5a14f21c6c357c816.JPG">
       <meta itemprop="name" content="独木舟的木">
       <meta itemprop="description" content="生若直木，不语斧凿。">
     </span>
@@ -290,7 +326,7 @@
     
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          深入浅出Node.js_网络编程
+          深入浅出 Node.js_网络编程
         </h1>
 
         <div class="post-meta">
@@ -319,7 +355,21 @@
                 </span>
             </span>
 
-          <br>
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2018/10/29/%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BANode.js_%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2018/10/29/%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BANode.js_%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  <br>
             <span class="post-meta-item" title="本文字数">
               <span class="post-meta-item-icon">
                 <i class="far fa-file-word"></i>
@@ -342,35 +392,35 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/075314-1.jpg" alt="Node 网络模块"></p>
+        <p><img data-src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/075314-1.jpg" alt="Node 网络模块"></p>
 <a id="more"></a>
 
 <h2 id="构建-TCP-服务"><a href="#构建-TCP-服务" class="headerlink" title="构建 TCP 服务"></a>构建 TCP 服务</h2><p>TCP 是 ISO 模型中的传输层协议：</p>
-<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/075315.jpg" alt="OSI模型"></p>
+<p><img data-src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/075315.jpg" alt="OSI模型"></p>
 <p>TCP 是面向连接的协议，显著特性：三次握手。</p>
 <h2 id="构建-UDP-服务"><a href="#构建-UDP-服务" class="headerlink" title="构建 UDP 服务"></a>构建 UDP 服务</h2><p>未完待续…</p>
-<h2 id="构建-HTTP-服务"><a href="#构建-HTTP-服务" class="headerlink" title="构建 HTTP 服务"></a>构建 HTTP 服务</h2><p>HTTP 服务器：处理HTTP请求+发送HTTP响应。</p>
-<p>HTTP服务继承自TCP服务器（net 模块），TCP服务以connection为单位进行服务，HTTP服务以request为单位进行服务。HTTP模块即是将connection到request过程进行了封装。</p>
-<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/075317-1.jpg" alt="HTTP对TCP的封装"></p>
+<h2 id="构建-HTTP-服务"><a href="#构建-HTTP-服务" class="headerlink" title="构建 HTTP 服务"></a>构建 HTTP 服务</h2><p>HTTP 服务器：处理 HTTP 请求 + 发送 HTTP 响应。</p>
+<p>HTTP 服务继承自 TCP 服务器（net 模块），TCP 服务以 connection 为单位进行服务，HTTP 服务以 request 为单位进行服务。HTTP 模块即是将 connection 到 request 过程进行了封装。</p>
+<p><img data-src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/075317-1.jpg" alt="HTTP对TCP的封装"></p>
 <p>构建 Hello World 示例：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&#x27;use strict&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 导入 http 模块</span></span><br><span class="line"><span class="keyword">const</span> http = <span class="built_in">require</span>(<span class="string">&#x27;http&#x27;</span>);</span><br><span class="line"><span class="comment">// 创建 http server，并传入回调函数</span></span><br><span class="line">http.createServer(<span class="function"><span class="keyword">function</span> (<span class="params">req, res</span>) </span>&#123;</span><br><span class="line">    <span class="comment">// 回调函数接收 request 和 response 对象</span></span><br><span class="line">  </span><br><span class="line">    <span class="comment">// 将 HTTP 响应状态码 200 写入 response，同时设置 content-type 文本类型</span></span><br><span class="line">    res.writeHead(<span class="number">200</span>, &#123;<span class="string">&#x27;content-type&#x27;</span>: <span class="string">&#x27;text/plain&#x27;</span>&#125;);</span><br><span class="line">    <span class="comment">// 将 HTTP 响应内容写入 response</span></span><br><span class="line">    res.end(<span class="string">&#x27;Hello World\n&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 设置服务器监听端口 和 IP 地址</span></span><br><span class="line">&#125;).listen(<span class="number">1337</span>, <span class="string">&#x27;127.0.0.1&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">&#x27;Server running at http://127.0.0.1:1337&#x27;</span>);</span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">'use strict'</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 导入 http 模块</span></span><br><span class="line"><span class="keyword">const</span> http = <span class="built_in">require</span>(<span class="string">'http'</span>);</span><br><span class="line"><span class="comment">// 创建 http server，并传入回调函数</span></span><br><span class="line">http.createServer(<span class="function"><span class="keyword">function</span> (<span class="params">req, res</span>) </span>{</span><br><span class="line">    <span class="comment">// 回调函数接收 request 和 response 对象</span></span><br><span class="line">  </span><br><span class="line">    <span class="comment">// 将 HTTP 响应状态码 200 写入 response，同时设置 content-type 文本类型</span></span><br><span class="line">    res.writeHead(<span class="number">200</span>, {<span class="string">'content-type'</span>: <span class="string">'text/plain'</span>});</span><br><span class="line">    <span class="comment">// 将 HTTP 响应内容写入 response</span></span><br><span class="line">    res.end(<span class="string">'Hello World\n'</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 设置服务器监听端口 和 IP 地址</span></span><br><span class="line">}).listen(<span class="number">1337</span>, <span class="string">'127.0.0.1'</span>);</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'Server running at http://127.0.0.1:1337'</span>);</span><br></pre></td></tr></tbody></table></figure>
 
 
 
 <p>使用 curl 工具获取 HTTP 的报文：</p>
-<p>报文内容：报文头+报文体</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">☁  node [master] ⚡  curl -v http://127.0.0.1:1337</span><br><span class="line">* Rebuilt URL to: http://127.0.0.1:1337/</span><br><span class="line">*   Trying 127.0.0.1... # 1. 三次握手部分</span><br><span class="line">* TCP_NODELAY set</span><br><span class="line">* Connected to 127.0.0.1 (127.0.0.1) port 1337 (#0)</span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> GET / HTTP/1.1        <span class="comment"># 2. 客户端向服务端发送请求报文</span></span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> Host: 127.0.0.1:1337</span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> User-Agent: curl/7.54.0</span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> Accept: */*</span></span><br><span class="line"><span class="meta">&gt;</span></span><br><span class="line">&lt; HTTP/1.1 200 OK       # 3. 服务器完成处理后，向客户端发送响应内容</span><br><span class="line">&lt; content-type: text/plain</span><br><span class="line">&lt; Date: Sun, 28 Oct 2018 07:44:31 GMT</span><br><span class="line">&lt; Connection: keep-alive</span><br><span class="line">&lt; Transfer-Encoding: chunked</span><br><span class="line">&lt;</span><br><span class="line">Hello World</span><br><span class="line">* Connection #0 to host 127.0.0.1 left intact  # 4. 结束会话信息</span><br></pre></td></tr></table></figure>
+<p>报文内容：报文头 + 报文体</p>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">☁  node [master] ⚡  curl -v http://127.0.0.1:1337</span><br><span class="line">* Rebuilt URL to: http://127.0.0.1:1337/</span><br><span class="line">*   Trying 127.0.0.1... # 1. 三次握手部分</span><br><span class="line">* TCP_NODELAY set</span><br><span class="line">* Connected to 127.0.0.1 (127.0.0.1) port 1337 (#0)</span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> GET / HTTP/1.1        <span class="comment"># 2. 客户端向服务端发送请求报文</span></span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> Host: 127.0.0.1:1337</span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> User-Agent: curl/7.54.0</span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> Accept: */*</span></span><br><span class="line"><span class="meta">&gt;</span></span><br><span class="line">&lt; HTTP/1.1 200 OK       # 3. 服务器完成处理后，向客户端发送响应内容</span><br><span class="line">&lt; content-type: text/plain</span><br><span class="line">&lt; Date: Sun, 28 Oct 2018 07:44:31 GMT</span><br><span class="line">&lt; Connection: keep-alive</span><br><span class="line">&lt; Transfer-Encoding: chunked</span><br><span class="line">&lt;</span><br><span class="line">Hello World</span><br><span class="line">* Connection #0 to host 127.0.0.1 left intact  # 4. 结束会话信息</span><br></pre></td></tr></tbody></table></figure>
 
 <ul>
-<li>对于 TCP 连接的==读==操作，http 模块将其封装为 <strong>ServerRequest</strong> 对象。</li>
-<li>对于 TCP 连接的==写==操作，http 模块将其封装为 <strong>ServerResponse</strong> 对象。</li>
+<li>对于 TCP 连接的 == 读 == 操作，http 模块将其封装为 <strong>ServerRequest</strong> 对象。</li>
+<li>对于 TCP 连接的 == 写 == 操作，http 模块将其封装为 <strong>ServerResponse</strong> 对象。</li>
 <li>为了重用 TCP 连接，http 模块包含一个默认的客户端代理对象 <strong>http.globalAgent</strong>。</li>
 <li>如果设置 agent 为 false，就会脱离连接池的管理，使得请求不受并发的限制。</li>
 <li>Agent 对象的 sockets 和 requests 属性分别表示当前连接池中使用中的连接数和处于等待状态的请求数。</li>
 </ul>
 <h2 id="构建-WebScoket-服务"><a href="#构建-WebScoket-服务" class="headerlink" title="构建 WebScoket 服务"></a>构建 WebScoket 服务</h2><p>相比于 HTTP，WebSocket 的优点：</p>
 <ol>
-<li>客户端与服务器端只建立一个TCP连接，可以使用更少的连接。</li>
+<li>客户端与服务器端只建立一个 TCP 连接，可以使用更少的连接。</li>
 <li>WebSocket 服务端可以推送数据到客户端，实现客户端与服务端的全双工通信。</li>
 <li>更轻量级的协议头，减少数据传送量。</li>
 </ol>
@@ -389,7 +439,7 @@
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="https://andy0570.com/2018/10/29/%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BANode.js_%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/" title="深入浅出Node.js_网络编程">https://andy0570.com/2018/10/29/深入浅出Node.js_网络编程/</a>
+    <a href="https://andy0570.com/2018/10/29/%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BANode.js_%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/" title="深入浅出 Node.js_网络编程">https://andy0570.com/2018/10/29/深入浅出Node.js_网络编程/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <span class="exturl" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpo"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</span> 许可协议。转载请注明出处！
@@ -428,12 +478,12 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2018/10/28/%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BANode.js_Buffer/" rel="prev" title="深入浅出Node.js_Buffer">
-      <i class="fa fa-chevron-left"></i> 深入浅出Node.js_Buffer
+    <a href="/2018/10/28/%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BANode.js_Buffer/" rel="prev" title="深入浅出 Node.js_Buffer">
+      <i class="fa fa-chevron-left"></i> 深入浅出 Node.js_Buffer
     </a></div>
       <div class="post-nav-item">
-    <a href="/2018/11/01/Node.js%E5%AE%9E%E6%88%98_1.Node%20%E5%9F%BA%E7%A1%80/" rel="next" title="Node.js实战_1.Node 基础">
-      Node.js实战_1.Node 基础 <i class="fa fa-chevron-right"></i>
+    <a href="/2018/11/01/Node.js%E5%AE%9E%E6%88%98_1.Node%20%E5%9F%BA%E7%A1%80/" rel="next" title="Node.js 实战_1.Node 基础">
+      Node.js 实战_1.Node 基础 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -447,6 +497,7 @@
 
         </div>
         
+    <div class="comments" id="valine-comments"></div>
 
 <script>
   window.addEventListener('tabs:register', () => {
@@ -515,7 +566,11 @@
   </div>
 
   
-  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.0/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/next-theme/pjax@0/pjax.min.js"></script>
+  <script src="//unpkg.com/medium-zoom@1/dist/medium-zoom.min.js"></script>
+  <script src="//unpkg.com/lozad@1/dist/lozad.min.js"></script>
+  <script src="//unpkg.com/pangu@4/dist/browser/pangu.min.js"></script>
 
 <script src="/js/utils.js"></script>
 
@@ -526,9 +581,42 @@
 
 <script src="/js/bookmark.js"></script>
 
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '.page-configurations',
+    '.main-inner',
+    '.post-toc-wrap',
+    '.languages',
+    '.pjax'
+  ],
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+document.addEventListener('pjax:success', () => {
+  pjax.executeScripts(document.querySelectorAll('script[data-pjax], .pjax script'));
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  const hasTOC = document.querySelector('.post-toc');
+  document.querySelector('.sidebar-inner').classList.toggle('sidebar-nav-active', hasTOC);
+  document.querySelector(hasTOC ? '.sidebar-nav-toc' : '.sidebar-nav-overview').click();
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
 
   
-  <script>
+  <script data-pjax>
     (function(){
       var bp = document.createElement('script');
       var curProtocol = window.location.protocol.split(':')[0];
@@ -541,6 +629,10 @@
 
 
 
+  
+<script src="//unpkg.com/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//unpkg.com/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
 
 
 
@@ -552,9 +644,27 @@
 
 
 
+
+
+
+    <div class="pjax">
   
 
   
 
+
+<script>
+NexT.utils.loadComments('#valine-comments', () => {
+  NexT.utils.getScript('//unpkg.com/valine@1/dist/Valine.min.js', () => {
+    new Valine(Object.assign({
+      el  : '#valine-comments',
+      path: location.pathname,
+    }, {"enable":true,"appId":"S7i1Y8YorMKFPaYbJbekD5el-gzGzoHsz","appKey":"brOnU8mOQvSjpipJvdKUAIbU","placeholder":"写下你的评论...","avatar":"mm","meta":["nick","mail","link"],"pageSize":10,"language":"zh-cn","visitor":false,"comment_count":true,"recordIP":true,"serverURLs":null,"enableQQ":true,"requiredFields":[]}
+    ));
+  }, window.Valine);
+});
+</script>
+
+    </div>
 </body>
 </html>

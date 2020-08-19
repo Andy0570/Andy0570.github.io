@@ -18,21 +18,23 @@
 <link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css">
   
   <link rel="stylesheet" href="/lib/animate-css/animate.min.css">
+  <link rel="stylesheet" href="//unpkg.com/pace-js@1/themes/blue/pace-theme-minimal.css">
+  <script src="//unpkg.com/pace-js@1/pace.min.js"></script>
 
 <script class="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"andy0570.com","root":"/","scheme":"Gemini","version":"8.0.0-rc.5","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":"mac","bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false};
+    var CONFIG = {"hostname":"andy0570.com","root":"/","scheme":"Gemini","version":"8.0.0-rc.5","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":"mac","bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":true,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":true,"nav":null,"activeClass":"valine"},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"algolia":{"appID":"0E2AON8EZF","apiKey":"22fbefd84c8343239f5c04365b9728de","indexName":"MyBlogPlatform","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}}};
   </script>
 
-  <meta name="description" content="在 Docker 容器中运行 Nginx 服务（mynginx）：  1234567$ docker run \-d \-p 80:80 \--rm \--name mynginx \--volume &quot;&#x2F;var&#x2F;www&#x2F;arlingbc&quot;:&#x2F;usr&#x2F;share&#x2F;nginx&#x2F;html \nginx   将容器中的 Nginx 配置文件拷贝到当前目录下:  1$ docker">
+  <meta name="description" content="在 Docker 容器中运行 Nginx 服务（mynginx）：  1234567$ docker run \-d \-p 80:80 \--rm \--name mynginx \--volume &quot;&#x2F;var&#x2F;www&#x2F;arlingbc&quot;:&#x2F;usr&#x2F;share&#x2F;nginx&#x2F;html \nginx   将容器中的 Nginx 配置文件拷贝到当前目录下:  1$ docker cp mynginx">
 <meta property="og:type" content="article">
-<meta property="og:title" content="使用Docker运行Nginx服务">
+<meta property="og:title" content="使用 Docker 运行 Nginx 服务">
 <meta property="og:url" content="https://andy0570.com/2018/09/12/%E4%BD%BF%E7%94%A8Docker%E8%BF%90%E8%A1%8CNginx%E6%9C%8D%E5%8A%A1/index.html">
 <meta property="og:site_name" content="独木舟的木">
-<meta property="og:description" content="在 Docker 容器中运行 Nginx 服务（mynginx）：  1234567$ docker run \-d \-p 80:80 \--rm \--name mynginx \--volume &quot;&#x2F;var&#x2F;www&#x2F;arlingbc&quot;:&#x2F;usr&#x2F;share&#x2F;nginx&#x2F;html \nginx   将容器中的 Nginx 配置文件拷贝到当前目录下:  1$ docker">
+<meta property="og:description" content="在 Docker 容器中运行 Nginx 服务（mynginx）：  1234567$ docker run \-d \-p 80:80 \--rm \--name mynginx \--volume &quot;&#x2F;var&#x2F;www&#x2F;arlingbc&quot;:&#x2F;usr&#x2F;share&#x2F;nginx&#x2F;html \nginx   将容器中的 Nginx 配置文件拷贝到当前目录下:  1$ docker cp mynginx">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/075150.jpg">
 <meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/075153.jpg">
@@ -47,7 +49,7 @@
 <link rel="canonical" href="https://andy0570.com/2018/09/12/%E4%BD%BF%E7%94%A8Docker%E8%BF%90%E8%A1%8CNginx%E6%9C%8D%E5%8A%A1/">
 
 
-<script class="page-configurations">
+<script data-pjax class="page-configurations">
   // https://hexo.io/docs/variables.html
   CONFIG.page = {
     sidebar: "",
@@ -57,10 +59,19 @@
   };
 </script>
 
-  <title>使用Docker运行Nginx服务 | 独木舟的木</title>
+  <title>使用 Docker 运行 Nginx 服务 | 独木舟的木</title>
   
 
 
+  <script data-pjax>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?8229a094facca297f211d61323fd9fde";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
 
 
 
@@ -130,6 +141,7 @@
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -163,11 +175,35 @@
     <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
 
   </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
   </ul>
 </nav>
 
 
 
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
 
 </div>
           
@@ -199,7 +235,7 @@
       <section class="site-overview-wrap sidebar-panel">
         <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <img class="site-author-image" itemprop="image" alt="独木舟的木"
-      src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+      src="https://static01.imgkr.com/temp/88aab3c08a3f43f5a14f21c6c357c816.JPG">
   <p class="site-author-name" itemprop="name">独木舟的木</p>
   <div class="site-description" itemprop="description">生若直木，不语斧凿。</div>
 </div>
@@ -280,7 +316,7 @@
     <link itemprop="mainEntityOfPage" href="https://andy0570.com/2018/09/12/%E4%BD%BF%E7%94%A8Docker%E8%BF%90%E8%A1%8CNginx%E6%9C%8D%E5%8A%A1/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+      <meta itemprop="image" content="https://static01.imgkr.com/temp/88aab3c08a3f43f5a14f21c6c357c816.JPG">
       <meta itemprop="name" content="独木舟的木">
       <meta itemprop="description" content="生若直木，不语斧凿。">
     </span>
@@ -292,7 +328,7 @@
     
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          使用Docker运行Nginx服务
+          使用 Docker 运行 Nginx 服务
         </h1>
 
         <div class="post-meta">
@@ -321,7 +357,21 @@
                 </span>
             </span>
 
-          <br>
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2018/09/12/%E4%BD%BF%E7%94%A8Docker%E8%BF%90%E8%A1%8CNginx%E6%9C%8D%E5%8A%A1/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2018/09/12/%E4%BD%BF%E7%94%A8Docker%E8%BF%90%E8%A1%8CNginx%E6%9C%8D%E5%8A%A1/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  <br>
             <span class="post-meta-item" title="本文字数">
               <span class="post-meta-item-icon">
                 <i class="far fa-file-word"></i>
@@ -347,35 +397,35 @@
         <ol>
 <li>在 Docker 容器中运行 Nginx 服务（mynginx）：</li>
 </ol>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">$ docker run \</span><br><span class="line">-d \</span><br><span class="line">-p 80:80 \</span><br><span class="line">--rm \</span><br><span class="line">--name mynginx \</span><br><span class="line">--volume <span class="string">&quot;/var/www/arlingbc&quot;</span>:/usr/share/nginx/html \</span><br><span class="line">nginx</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">$ docker run \</span><br><span class="line">-d \</span><br><span class="line">-p 80:80 \</span><br><span class="line">--rm \</span><br><span class="line">--name mynginx \</span><br><span class="line">--volume <span class="string">"/var/www/arlingbc"</span>:/usr/share/nginx/html \</span><br><span class="line">nginx</span><br></pre></td></tr></tbody></table></figure>
 
 <ol start="2">
 <li>将容器中的 Nginx 配置文件拷贝到当前目录下:</li>
 </ol>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ docker cp mynginx:/etc/nginx .</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ docker cp mynginx:/etc/nginx .</span><br></pre></td></tr></tbody></table></figure>
 
-<p>nginx 配置文件会被拷贝到 ~/nginx 目录下:</p>
-<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/075150.jpg" alt="image"></p>
+<p>nginx 配置文件会被拷贝到～/nginx 目录下:</p>
+<p><img data-src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/075150.jpg" alt="image"></p>
 <ul>
-<li>其中，配置文件 <strong>nginx.conf</strong> 末尾有一行：<code>include /etc/nginx/conf.d/*.conf;</code>，表示它会包含 **conf.d中的所有配置文件</li>
+<li>其中，配置文件 <strong>nginx.conf</strong> 末尾有一行：<code>include /etc/nginx/conf.d/*.conf;</code>，表示它会包含 **conf.d 中的所有配置文件</li>
 </ul>
 <a id="more"></a>
 
 <ol start="3">
 <li>停止运行 Nginx 服务（mynginx）</li>
 </ol>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> docker stop mynginx</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> docker stop mynginx</span></span><br></pre></td></tr></tbody></table></figure>
 
 
 
 <ol start="4">
 <li>配置 Nginx 文件</li>
 </ol>
-<p>Nginx 配置文件已经拷贝到本地用户目录下，你可以像往常一样配置 Nginx 文件。关于 Nginx 如何配置，可以参考<span class="exturl" data-url="aHR0cHM6Ly93d3cuamlhbnNodS5jb20vcC84NDkzNDNmNjc5YWE=">Nginx 使用及配置<i class="fa fa-external-link-alt"></i></span></p>
+<p>Nginx 配置文件已经拷贝到本地用户目录下，你可以像往常一样配置 Nginx 文件。关于 Nginx 如何配置，可以参考<span class="exturl" data-url="aHR0cHM6Ly93d3cuamlhbnNodS5jb20vcC84NDkzNDNmNjc5YWE="> Nginx 使用及配置<i class="fa fa-external-link-alt"></i></span></p>
 <p>注意点：</p>
 <ul>
 <li><p><strong>~/nginx/conf.d/default.conf</strong> 中 server 的 root 路径应该是：<code>/usr/share/nginx/html</code>。</p>
-<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/075153.jpg" alt="Jietu20180912-180020@2x"></p>
+<p><img data-src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/075153.jpg" alt="Jietu20180912-180020@2x"></p>
 </li>
 <li><p><strong>~/nginx/nginx.conf</strong> 中 <code>include /etc/nginx/conf.d/*.conf;</code> 保持不变。</p>
 </li>
@@ -383,7 +433,7 @@
 <ol start="5">
 <li>运行 Nginx 服务:</li>
 </ol>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> docker run /</span></span><br><span class="line">-d /</span><br><span class="line">--name nginx_arlingbc /</span><br><span class="line">--volume &quot;/var/www/arlingbc&quot;:/usr/share/nginx/html /</span><br><span class="line">--volume &quot;/home/ubuntu/nginx&quot;:/etc/nginx /</span><br><span class="line">-p 80:80 /</span><br><span class="line">-p 443:443 /</span><br><span class="line">nginx</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 参数说明</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> -d：以后台方式运行 Nginx 服务。</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> --name：自定义容器名称。</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> --volume：挂载volume，将容器目录映射到本地目录。</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> -p：映射端口，将容器的端口暴露给宿主机的端口。</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> docker run /</span></span><br><span class="line">-d /</span><br><span class="line">--name nginx_arlingbc /</span><br><span class="line">--volume "/var/www/arlingbc":/usr/share/nginx/html /</span><br><span class="line">--volume "/home/ubuntu/nginx":/etc/nginx /</span><br><span class="line">-p 80:80 /</span><br><span class="line">-p 443:443 /</span><br><span class="line">nginx</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 参数说明</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> -d：以后台方式运行 Nginx 服务。</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> --name：自定义容器名称。</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> --volume：挂载volume，将容器目录映射到本地目录。</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> -p：映射端口，将容器的端口暴露给宿主机的端口。</span></span><br></pre></td></tr></tbody></table></figure>
 
 
 
@@ -406,7 +456,7 @@
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="https://andy0570.com/2018/09/12/%E4%BD%BF%E7%94%A8Docker%E8%BF%90%E8%A1%8CNginx%E6%9C%8D%E5%8A%A1/" title="使用Docker运行Nginx服务">https://andy0570.com/2018/09/12/使用Docker运行Nginx服务/</a>
+    <a href="https://andy0570.com/2018/09/12/%E4%BD%BF%E7%94%A8Docker%E8%BF%90%E8%A1%8CNginx%E6%9C%8D%E5%8A%A1/" title="使用 Docker 运行 Nginx 服务">https://andy0570.com/2018/09/12/使用Docker运行Nginx服务/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <span class="exturl" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpo"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</span> 许可协议。转载请注明出处！
@@ -446,8 +496,8 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2018/09/12/Docker%E5%9F%BA%E6%9C%AC%E7%94%A8%E6%B3%95/" rel="prev" title="Docker基本用法">
-      <i class="fa fa-chevron-left"></i> Docker基本用法
+    <a href="/2018/09/12/Docker%E5%9F%BA%E6%9C%AC%E7%94%A8%E6%B3%95/" rel="prev" title="Docker 基本用法">
+      <i class="fa fa-chevron-left"></i> Docker 基本用法
     </a></div>
       <div class="post-nav-item">
     <a href="/2018/09/13/Homebrew%20Cask/" rel="next" title="Homebrew Cask">
@@ -465,6 +515,7 @@
 
         </div>
         
+    <div class="comments" id="valine-comments"></div>
 
 <script>
   window.addEventListener('tabs:register', () => {
@@ -533,7 +584,11 @@
   </div>
 
   
-  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.0/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/next-theme/pjax@0/pjax.min.js"></script>
+  <script src="//unpkg.com/medium-zoom@1/dist/medium-zoom.min.js"></script>
+  <script src="//unpkg.com/lozad@1/dist/lozad.min.js"></script>
+  <script src="//unpkg.com/pangu@4/dist/browser/pangu.min.js"></script>
 
 <script src="/js/utils.js"></script>
 
@@ -544,9 +599,42 @@
 
 <script src="/js/bookmark.js"></script>
 
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '.page-configurations',
+    '.main-inner',
+    '.post-toc-wrap',
+    '.languages',
+    '.pjax'
+  ],
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+document.addEventListener('pjax:success', () => {
+  pjax.executeScripts(document.querySelectorAll('script[data-pjax], .pjax script'));
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  const hasTOC = document.querySelector('.post-toc');
+  document.querySelector('.sidebar-inner').classList.toggle('sidebar-nav-active', hasTOC);
+  document.querySelector(hasTOC ? '.sidebar-nav-toc' : '.sidebar-nav-overview').click();
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
 
   
-  <script>
+  <script data-pjax>
     (function(){
       var bp = document.createElement('script');
       var curProtocol = window.location.protocol.split(':')[0];
@@ -559,6 +647,10 @@
 
 
 
+  
+<script src="//unpkg.com/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//unpkg.com/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
 
 
 
@@ -570,9 +662,27 @@
 
 
 
+
+
+
+    <div class="pjax">
   
 
   
 
+
+<script>
+NexT.utils.loadComments('#valine-comments', () => {
+  NexT.utils.getScript('//unpkg.com/valine@1/dist/Valine.min.js', () => {
+    new Valine(Object.assign({
+      el  : '#valine-comments',
+      path: location.pathname,
+    }, {"enable":true,"appId":"S7i1Y8YorMKFPaYbJbekD5el-gzGzoHsz","appKey":"brOnU8mOQvSjpipJvdKUAIbU","placeholder":"写下你的评论...","avatar":"mm","meta":["nick","mail","link"],"pageSize":10,"language":"zh-cn","visitor":false,"comment_count":true,"recordIP":true,"serverURLs":null,"enableQQ":true,"requiredFields":[]}
+    ));
+  }, window.Valine);
+});
+</script>
+
+    </div>
 </body>
 </html>

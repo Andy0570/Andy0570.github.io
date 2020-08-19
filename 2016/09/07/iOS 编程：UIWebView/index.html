@@ -18,21 +18,23 @@
 <link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css">
   
   <link rel="stylesheet" href="/lib/animate-css/animate.min.css">
+  <link rel="stylesheet" href="//unpkg.com/pace-js@1/themes/blue/pace-theme-minimal.css">
+  <script src="//unpkg.com/pace-js@1/pace.min.js"></script>
 
 <script class="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"andy0570.com","root":"/","scheme":"Gemini","version":"8.0.0-rc.5","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":"mac","bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false};
+    var CONFIG = {"hostname":"andy0570.com","root":"/","scheme":"Gemini","version":"8.0.0-rc.5","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":"mac","bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":true,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":true,"nav":null,"activeClass":"valine"},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"algolia":{"appID":"0E2AON8EZF","apiKey":"22fbefd84c8343239f5c04365b9728de","indexName":"MyBlogPlatform","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}}};
   </script>
 
-  <meta name="description" content="使用webView加载本地HTML代码和网络资源Demo演示：">
+  <meta name="description" content="使用 webView 加载本地 HTML 代码和网络资源Demo 演示：">
 <meta property="og:type" content="article">
 <meta property="og:title" content="iOS 编程：UIWebView">
 <meta property="og:url" content="https://andy0570.com/2016/09/07/iOS%20%E7%BC%96%E7%A8%8B%EF%BC%9AUIWebView/index.html">
 <meta property="og:site_name" content="独木舟的木">
-<meta property="og:description" content="使用webView加载本地HTML代码和网络资源Demo演示：">
+<meta property="og:description" content="使用 webView 加载本地 HTML 代码和网络资源Demo 演示：">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071218.gif">
 <meta property="article:published_time" content="2016-09-07T08:37:00.000Z">
@@ -46,7 +48,7 @@
 <link rel="canonical" href="https://andy0570.com/2016/09/07/iOS%20%E7%BC%96%E7%A8%8B%EF%BC%9AUIWebView/">
 
 
-<script class="page-configurations">
+<script data-pjax class="page-configurations">
   // https://hexo.io/docs/variables.html
   CONFIG.page = {
     sidebar: "",
@@ -60,6 +62,15 @@
   
 
 
+  <script data-pjax>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?8229a094facca297f211d61323fd9fde";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
 
 
 
@@ -129,6 +140,7 @@
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -162,11 +174,35 @@
     <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
 
   </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
   </ul>
 </nav>
 
 
 
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
 
 </div>
           
@@ -191,14 +227,14 @@
 
       <!--noindex-->
       <section class="post-toc-wrap sidebar-panel">
-          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8webView%E5%8A%A0%E8%BD%BD%E6%9C%AC%E5%9C%B0HTML%E4%BB%A3%E7%A0%81%E5%92%8C%E7%BD%91%E7%BB%9C%E8%B5%84%E6%BA%90"><span class="nav-number">1.</span> <span class="nav-text">使用webView加载本地HTML代码和网络资源</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Demo%E6%BC%94%E7%A4%BA%EF%BC%9A"><span class="nav-number">1.1.</span> <span class="nav-text">Demo演示：</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89%E7%9B%B8%E5%85%B3%E6%8E%A7%E4%BB%B6%E5%B9%B6%E5%85%B3%E8%81%94"><span class="nav-number">1.1.1.</span> <span class="nav-text">定义相关控件并关联</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%A0%E8%BD%BD%E6%9C%AC%E5%9C%B0%E8%B5%84%E6%BA%90"><span class="nav-number">1.2.</span> <span class="nav-text">加载本地资源</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%B9%E6%B3%95%E4%B8%80%EF%BC%9A-void-loadHTMLString-NSString-string-baseURL-nullable-NSURL-baseURL"><span class="nav-number">1.2.1.</span> <span class="nav-text">方法一：-(void)loadHTMLString:(NSString *)string baseURL:(nullable NSURL *)baseURL;</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%B9%E6%B3%95%E4%BA%8C%EF%BC%9A-void-loadData-NSData-data-MIMEType-NSString-MIMEType-textEncodingName-NSString-textEncodingName-baseURL-NSURL-baseURL"><span class="nav-number">1.2.2.</span> <span class="nav-text">方法二：-(void)loadData:(NSData *)data MIMEType:(NSString *)MIMEType textEncodingName:(NSString *)textEncodingName baseURL:(NSURL *)baseURL;</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%A0%E8%BD%BD%E7%BD%91%E7%BB%9C%E8%B5%84%E6%BA%90"><span class="nav-number">1.3.</span> <span class="nav-text">加载网络资源</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%B9%E6%B3%95%EF%BC%9A-void-loadRequest-NSURLRequest-request"><span class="nav-number">1.3.1.</span> <span class="nav-text">方法：- (void)loadRequest:(NSURLRequest *)request;</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#UIWebViewDelegate%E5%A7%94%E6%89%98%E5%AE%9A%E4%B9%89%E6%96%B9%E6%B3%95"><span class="nav-number">1.4.</span> <span class="nav-text">UIWebViewDelegate委托定义方法</span></a></li></ol></li></ol></div>
+          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8webView%E5%8A%A0%E8%BD%BD%E6%9C%AC%E5%9C%B0HTML%E4%BB%A3%E7%A0%81%E5%92%8C%E7%BD%91%E7%BB%9C%E8%B5%84%E6%BA%90"><span class="nav-number">1.</span> <span class="nav-text">使用 webView 加载本地 HTML 代码和网络资源</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Demo%E6%BC%94%E7%A4%BA%EF%BC%9A"><span class="nav-number">1.1.</span> <span class="nav-text">Demo 演示：</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89%E7%9B%B8%E5%85%B3%E6%8E%A7%E4%BB%B6%E5%B9%B6%E5%85%B3%E8%81%94"><span class="nav-number">1.1.1.</span> <span class="nav-text">定义相关控件并关联</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%A0%E8%BD%BD%E6%9C%AC%E5%9C%B0%E8%B5%84%E6%BA%90"><span class="nav-number">1.2.</span> <span class="nav-text">加载本地资源</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%B9%E6%B3%95%E4%B8%80%EF%BC%9A-void-loadHTMLString-NSString-string-baseURL-nullable-NSURL-baseURL"><span class="nav-number">1.2.1.</span> <span class="nav-text">方法一：-(void) loadHTMLString:(NSString *) string baseURL:(nullable NSURL *) baseURL;</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%B9%E6%B3%95%E4%BA%8C%EF%BC%9A-void-loadData-NSData-data-MIMEType-NSString-MIMEType-textEncodingName-NSString-textEncodingName-baseURL-NSURL-baseURL"><span class="nav-number">1.2.2.</span> <span class="nav-text">方法二：-(void) loadData:(NSData *) data MIMEType:(NSString *) MIMEType textEncodingName:(NSString *) textEncodingName baseURL:(NSURL *) baseURL;</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%A0%E8%BD%BD%E7%BD%91%E7%BB%9C%E8%B5%84%E6%BA%90"><span class="nav-number">1.3.</span> <span class="nav-text">加载网络资源</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%B9%E6%B3%95%EF%BC%9A-void-loadRequest-NSURLRequest-request"><span class="nav-number">1.3.1.</span> <span class="nav-text">方法：- (void) loadRequest:(NSURLRequest *) request;</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#UIWebViewDelegate%E5%A7%94%E6%89%98%E5%AE%9A%E4%B9%89%E6%96%B9%E6%B3%95"><span class="nav-number">1.4.</span> <span class="nav-text">UIWebViewDelegate 委托定义方法</span></a></li></ol></li></ol></div>
       </section>
       <!--/noindex-->
 
       <section class="site-overview-wrap sidebar-panel">
         <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <img class="site-author-image" itemprop="image" alt="独木舟的木"
-      src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+      src="https://static01.imgkr.com/temp/88aab3c08a3f43f5a14f21c6c357c816.JPG">
   <p class="site-author-name" itemprop="name">独木舟的木</p>
   <div class="site-description" itemprop="description">生若直木，不语斧凿。</div>
 </div>
@@ -279,7 +315,7 @@
     <link itemprop="mainEntityOfPage" href="https://andy0570.com/2016/09/07/iOS%20%E7%BC%96%E7%A8%8B%EF%BC%9AUIWebView/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+      <meta itemprop="image" content="https://static01.imgkr.com/temp/88aab3c08a3f43f5a14f21c6c357c816.JPG">
       <meta itemprop="name" content="独木舟的木">
       <meta itemprop="description" content="生若直木，不语斧凿。">
     </span>
@@ -320,7 +356,21 @@
                 </span>
             </span>
 
-          <br>
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2016/09/07/iOS%20%E7%BC%96%E7%A8%8B%EF%BC%9AUIWebView/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2016/09/07/iOS%20%E7%BC%96%E7%A8%8B%EF%BC%9AUIWebView/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  <br>
             <span class="post-meta-item" title="本文字数">
               <span class="post-meta-item-icon">
                 <i class="far fa-file-word"></i>
@@ -343,7 +393,7 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <h1 id="使用webView加载本地HTML代码和网络资源"><a href="#使用webView加载本地HTML代码和网络资源" class="headerlink" title="使用webView加载本地HTML代码和网络资源"></a>使用webView加载本地HTML代码和网络资源</h1><h2 id="Demo演示："><a href="#Demo演示：" class="headerlink" title="Demo演示："></a>Demo演示：</h2><p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071218.gif" alt="webViewSample"></p>
+        <h1 id="使用webView加载本地HTML代码和网络资源"><a href="#使用webView加载本地HTML代码和网络资源" class="headerlink" title="使用webView加载本地HTML代码和网络资源"></a>使用 webView 加载本地 HTML 代码和网络资源</h1><h2 id="Demo演示："><a href="#Demo演示：" class="headerlink" title="Demo演示："></a>Demo 演示：</h2><p><img data-src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071218.gif" alt="webViewSample"></p>
 <a id="more"></a>
 
 <h3 id="定义相关控件并关联"><a href="#定义相关控件并关联" class="headerlink" title="定义相关控件并关联"></a>定义相关控件并关联</h3><pre><code>#import &lt;UIKit/UIKit.h&gt;
@@ -359,12 +409,12 @@
 - (IBAction)loadRequest:(id)sender;
 
 @end</code></pre>
-<h2 id="加载本地资源"><a href="#加载本地资源" class="headerlink" title="加载本地资源"></a>加载本地资源</h2><p>同步方式加载本地资源，数据可以来源于本地文件或者硬编码的HTML字符串</p>
-<h3 id="方法一：-void-loadHTMLString-NSString-string-baseURL-nullable-NSURL-baseURL"><a href="#方法一：-void-loadHTMLString-NSString-string-baseURL-nullable-NSURL-baseURL" class="headerlink" title="方法一：-(void)loadHTMLString:(NSString *)string baseURL:(nullable NSURL *)baseURL;"></a>方法一：-(void)loadHTMLString:(NSString *)string baseURL:(nullable NSURL *)baseURL;</h3><pre><code>//设定主页文件的基本路径，通过一个HTML字符串加载主页数据
-- (IBAction)loadHTMLString:(id)sender &#123;
+<h2 id="加载本地资源"><a href="#加载本地资源" class="headerlink" title="加载本地资源"></a>加载本地资源</h2><p>同步方式加载本地资源，数据可以来源于本地文件或者硬编码的 HTML 字符串</p>
+<h3 id="方法一：-void-loadHTMLString-NSString-string-baseURL-nullable-NSURL-baseURL"><a href="#方法一：-void-loadHTMLString-NSString-string-baseURL-nullable-NSURL-baseURL" class="headerlink" title="方法一：-(void)loadHTMLString:(NSString *)string baseURL:(nullable NSURL *)baseURL;"></a>方法一：-(void) loadHTMLString:(NSString *) string baseURL:(nullable NSURL *) baseURL;</h3><pre><code>//设定主页文件的基本路径，通过一个HTML字符串加载主页数据
+- (IBAction)loadHTMLString:(id)sender {
 
-NSString *htmlPath = [[NSBundle mainBundle] pathForResource:@&quot;Baidu001&quot;
-             ofType:@&quot;html&quot;];
+NSString *htmlPath = [[NSBundle mainBundle] pathForResource:@"Baidu001"
+             ofType:@"html"];
 //主页文件的基本路径
 NSURL *bundleUrl = [NSURL fileURLWithPath:[[NSBundle mainBundle] bundlePath]];
 
@@ -376,34 +426,34 @@ NSString *html = [[NSString alloc]
                   encoding:NSUTF8StringEncoding
                   error:&amp;error];
 
-if (error == nil) &#123; //数据加载没有错误的情况下
+if (error == nil) { //数据加载没有错误的情况下
     [self.webView loadHTMLString:html baseURL:bundleUrl];
-&#125; 
-&#125;</code></pre>
-<h3 id="方法二：-void-loadData-NSData-data-MIMEType-NSString-MIMEType-textEncodingName-NSString-textEncodingName-baseURL-NSURL-baseURL"><a href="#方法二：-void-loadData-NSData-data-MIMEType-NSString-MIMEType-textEncodingName-NSString-textEncodingName-baseURL-NSURL-baseURL" class="headerlink" title="方法二：-(void)loadData:(NSData *)data MIMEType:(NSString *)MIMEType textEncodingName:(NSString *)textEncodingName baseURL:(NSURL *)baseURL;"></a>方法二：-(void)loadData:(NSData *)data MIMEType:(NSString *)MIMEType textEncodingName:(NSString *)textEncodingName baseURL:(NSURL *)baseURL;</h3><pre><code>//指定MIME类型、编码集和NSDate对象加载一个主页数据，并设定主页文件基本路径
+} 
+}</code></pre>
+<h3 id="方法二：-void-loadData-NSData-data-MIMEType-NSString-MIMEType-textEncodingName-NSString-textEncodingName-baseURL-NSURL-baseURL"><a href="#方法二：-void-loadData-NSData-data-MIMEType-NSString-MIMEType-textEncodingName-NSString-textEncodingName-baseURL-NSURL-baseURL" class="headerlink" title="方法二：-(void)loadData:(NSData *)data MIMEType:(NSString *)MIMEType textEncodingName:(NSString *)textEncodingName baseURL:(NSURL *)baseURL;"></a>方法二：-(void) loadData:(NSData *) data MIMEType:(NSString *) MIMEType textEncodingName:(NSString *) textEncodingName baseURL:(NSURL *) baseURL;</h3><pre><code>//指定MIME类型、编码集和NSDate对象加载一个主页数据，并设定主页文件基本路径
 //NSData是一种二进制的字节数组类型。它没有字符集的概念，但用它来装载webView的时候必须指定字符集。
-- (IBAction)loadDATA:(id)sender &#123;
+- (IBAction)loadDATA:(id)sender {
 
-NSString *htmlPath = [[NSBundle mainBundle] pathForResource:@&quot;index&quot;
-             ofType:@&quot;html&quot;];
+NSString *htmlPath = [[NSBundle mainBundle] pathForResource:@"index"
+             ofType:@"html"];
 NSURL *bundleUrl = [NSURL fileURLWithPath:[[NSBundle mainBundle] bundlePath]];
 NSError *error = nil;
 
 NSData *htmlData = [[NSData alloc] initWithContentsOfFile:htmlPath];
 
-if (error == nil) &#123; //数据加载没有错误的情况下
+if (error == nil) { //数据加载没有错误的情况下
     [self.webView loadData:htmlData
-                  MIMEType:@&quot;text/html&quot;
-          textEncodingName:@&quot;UTF-8&quot;
+                  MIMEType:@"text/html"
+          textEncodingName:@"UTF-8"
                    baseURL:bundleUrl];
-&#125;
-&#125;</code></pre>
+}
+}</code></pre>
 <h2 id="加载网络资源"><a href="#加载网络资源" class="headerlink" title="加载网络资源"></a>加载网络资源</h2><p>异步方式加载网络资源，异步调用不会造成主线程堵塞，并且会获得较好的用户体验</p>
-<h3 id="方法：-void-loadRequest-NSURLRequest-request"><a href="#方法：-void-loadRequest-NSURLRequest-request" class="headerlink" title="方法：- (void)loadRequest:(NSURLRequest *)request;"></a>方法：- (void)loadRequest:(NSURLRequest *)request;</h3><pre><code>//提供NSURLRequest对象，需要实现相应的UIWebViewDelegate委托协议
-- (IBAction)loadRequest:(id)sender &#123;
+<h3 id="方法：-void-loadRequest-NSURLRequest-request"><a href="#方法：-void-loadRequest-NSURLRequest-request" class="headerlink" title="方法：- (void)loadRequest:(NSURLRequest *)request;"></a>方法：- (void) loadRequest:(NSURLRequest *) request;</h3><pre><code>//提供NSURLRequest对象，需要实现相应的UIWebViewDelegate委托协议
+- (IBAction)loadRequest:(id)sender {
 
-//    NSURL *url = [NSURL URLWithString:@&quot;http:www.51work6.com&quot;];
-NSURL *url = [NSURL URLWithString:@&quot;http://112.64.46.80/tem/&quot;];
+//    NSURL *url = [NSURL URLWithString:@"http:www.51work6.com"];
+NSURL *url = [NSURL URLWithString:@"http://112.64.46.80/tem/"];
 
 NSURLRequest *request = [NSURLRequest requestWithURL:url];
 
@@ -411,26 +461,26 @@ NSURLRequest *request = [NSURLRequest requestWithURL:url];
 self.webView.scalesPageToFit = YES;
 self.webView.delegate = self;
 
-&#125;
+}
 
 #pragma mark --UIWebViewDelegate委托定义方法
-- (void) webViewDidFinishLoad:(UIWebView *)webView &#123;
+- (void) webViewDidFinishLoad:(UIWebView *)webView {
 //stringByEvaluatingJavaScriptFromString：方法调用JavaScript语句
 //document.body.innerHTML：获得页面中HTML代码的JavaScript语句
-NSLog(@&quot;%@&quot;,[webView stringByEvaluatingJavaScriptFromString:@&quot;document.body.innerHTML&quot;]);
+NSLog(@"%@",[webView stringByEvaluatingJavaScriptFromString:@"document.body.innerHTML"]);
 
-&#125;</code></pre>
-<h2 id="UIWebViewDelegate委托定义方法"><a href="#UIWebViewDelegate委托定义方法" class="headerlink" title="UIWebViewDelegate委托定义方法"></a>UIWebViewDelegate委托定义方法</h2><p> UIWebViewDelegate委托协议定义的方法：</p>
+}</code></pre>
+<h2 id="UIWebViewDelegate委托定义方法"><a href="#UIWebViewDelegate委托定义方法" class="headerlink" title="UIWebViewDelegate委托定义方法"></a>UIWebViewDelegate 委托定义方法</h2><p> UIWebViewDelegate 委托协议定义的方法：</p>
 <ul>
-<li><p>该方法在webView<strong>开始加载</strong>新的界面<strong>之前</strong>调用，可以用来捕获webView中的JavaScript事件。<br>   <code>- (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType;</code></p>
+<li><p>该方法在 webView <strong>开始加载</strong>新的界面<strong>之前</strong>调用，可以用来捕获 webView 中的 JavaScript 事件。<br>   <code>- (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType;</code></p>
 </li>
-<li><p>该方法在webView<strong>开始加载</strong>新的界面<strong>之后</strong>调用。</p>
+<li><p>该方法在 webView <strong>开始加载</strong>新的界面<strong>之后</strong>调用。</p>
 <pre><code>   ``- (void)webViewDidStartLoad:(UIWebView *)webView;``</code></pre>
 </li>
-<li><p>该方法在webView<strong>完成加载</strong>新的界面<strong>之后</strong>调用。</p>
+<li><p>该方法在 webView <strong>完成加载</strong>新的界面<strong>之后</strong>调用。</p>
 <pre><code>   ``- (void)webViewDidFinishLoad:(UIWebView *)webView;``</code></pre>
 </li>
-<li><p>该方法在webView<strong>加载失败</strong>时调用。</p>
+<li><p>该方法在 webView <strong>加载失败</strong>时调用。</p>
 <pre><code>   ``- (void)webView:(UIWebView *)webView didFailLoadWithError:(nullable NSError *)error;``</code></pre>
 </li>
 </ul>
@@ -489,8 +539,8 @@ NSLog(@&quot;%@&quot;,[webView stringByEvaluatingJavaScriptFromString:@&quot;doc
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2016/08/30/API%E7%BF%BB%E8%AF%91%EF%BC%9AWKWebView/" rel="prev" title="API翻译：WKWebView">
-      <i class="fa fa-chevron-left"></i> API翻译：WKWebView
+    <a href="/2016/08/30/API%E7%BF%BB%E8%AF%91%EF%BC%9AWKWebView/" rel="prev" title="API 翻译：WKWebView">
+      <i class="fa fa-chevron-left"></i> API 翻译：WKWebView
     </a></div>
       <div class="post-nav-item">
     <a href="/2016/09/23/iOS%20%E5%AD%A6%E4%B9%A0%E5%85%A5%E9%97%A8%E6%8C%87%E5%8D%97/" rel="next" title="iOS 学习入门指南">
@@ -508,6 +558,7 @@ NSLog(@&quot;%@&quot;,[webView stringByEvaluatingJavaScriptFromString:@&quot;doc
 
         </div>
         
+    <div class="comments" id="valine-comments"></div>
 
 <script>
   window.addEventListener('tabs:register', () => {
@@ -576,7 +627,11 @@ NSLog(@&quot;%@&quot;,[webView stringByEvaluatingJavaScriptFromString:@&quot;doc
   </div>
 
   
-  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.0/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/next-theme/pjax@0/pjax.min.js"></script>
+  <script src="//unpkg.com/medium-zoom@1/dist/medium-zoom.min.js"></script>
+  <script src="//unpkg.com/lozad@1/dist/lozad.min.js"></script>
+  <script src="//unpkg.com/pangu@4/dist/browser/pangu.min.js"></script>
 
 <script src="/js/utils.js"></script>
 
@@ -587,9 +642,42 @@ NSLog(@&quot;%@&quot;,[webView stringByEvaluatingJavaScriptFromString:@&quot;doc
 
 <script src="/js/bookmark.js"></script>
 
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '.page-configurations',
+    '.main-inner',
+    '.post-toc-wrap',
+    '.languages',
+    '.pjax'
+  ],
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+document.addEventListener('pjax:success', () => {
+  pjax.executeScripts(document.querySelectorAll('script[data-pjax], .pjax script'));
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  const hasTOC = document.querySelector('.post-toc');
+  document.querySelector('.sidebar-inner').classList.toggle('sidebar-nav-active', hasTOC);
+  document.querySelector(hasTOC ? '.sidebar-nav-toc' : '.sidebar-nav-overview').click();
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
 
   
-  <script>
+  <script data-pjax>
     (function(){
       var bp = document.createElement('script');
       var curProtocol = window.location.protocol.split(':')[0];
@@ -602,6 +690,10 @@ NSLog(@&quot;%@&quot;,[webView stringByEvaluatingJavaScriptFromString:@&quot;doc
 
 
 
+  
+<script src="//unpkg.com/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//unpkg.com/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
 
 
 
@@ -613,9 +705,27 @@ NSLog(@&quot;%@&quot;,[webView stringByEvaluatingJavaScriptFromString:@&quot;doc
 
 
 
+
+
+
+    <div class="pjax">
   
 
   
 
+
+<script>
+NexT.utils.loadComments('#valine-comments', () => {
+  NexT.utils.getScript('//unpkg.com/valine@1/dist/Valine.min.js', () => {
+    new Valine(Object.assign({
+      el  : '#valine-comments',
+      path: location.pathname,
+    }, {"enable":true,"appId":"S7i1Y8YorMKFPaYbJbekD5el-gzGzoHsz","appKey":"brOnU8mOQvSjpipJvdKUAIbU","placeholder":"写下你的评论...","avatar":"mm","meta":["nick","mail","link"],"pageSize":10,"language":"zh-cn","visitor":false,"comment_count":true,"recordIP":true,"serverURLs":null,"enableQQ":true,"requiredFields":[]}
+    ));
+  }, window.Valine);
+});
+</script>
+
+    </div>
 </body>
 </html>

@@ -18,21 +18,23 @@
 <link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css">
   
   <link rel="stylesheet" href="/lib/animate-css/animate.min.css">
+  <link rel="stylesheet" href="//unpkg.com/pace-js@1/themes/blue/pace-theme-minimal.css">
+  <script src="//unpkg.com/pace-js@1/pace.min.js"></script>
 
 <script class="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"andy0570.com","root":"/","scheme":"Gemini","version":"8.0.0-rc.5","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":"mac","bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false};
+    var CONFIG = {"hostname":"andy0570.com","root":"/","scheme":"Gemini","version":"8.0.0-rc.5","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":"mac","bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":true,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":true,"nav":null,"activeClass":"valine"},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"algolia":{"appID":"0E2AON8EZF","apiKey":"22fbefd84c8343239f5c04365b9728de","indexName":"MyBlogPlatform","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}}};
   </script>
 
-  <meta name="description" content="Mac 上安装 AWS CLI 上的 plugin123456789101112# 1.下载文件$ curl &quot;https:&#x2F;&#x2F;s3.amazonaws.com&#x2F;session-manager-downloads&#x2F;plugin&#x2F;latest&#x2F;mac&#x2F;sessionmanager-bundle.zip&quot; -o &quot;sessionmanager-bundle.zip&amp;quo">
+  <meta name="description" content="Mac 上安装 AWS CLI 上的 plugin123456789101112# 1.下载文件$ curl &quot;https:&#x2F;&#x2F;s3.amazonaws.com&#x2F;session-manager-downloads&#x2F;plugin&#x2F;latest&#x2F;mac&#x2F;sessionmanager-bundle.zip&quot; -o &quot;sessionmanager-bundle.zip&quot;# 2.解压文件$ unzip se">
 <meta property="og:type" content="article">
 <meta property="og:title" content="AWS System Manager">
 <meta property="og:url" content="https://andy0570.com/2019/03/01/AWS%20System%20Manager/index.html">
 <meta property="og:site_name" content="独木舟的木">
-<meta property="og:description" content="Mac 上安装 AWS CLI 上的 plugin123456789101112# 1.下载文件$ curl &quot;https:&#x2F;&#x2F;s3.amazonaws.com&#x2F;session-manager-downloads&#x2F;plugin&#x2F;latest&#x2F;mac&#x2F;sessionmanager-bundle.zip&quot; -o &quot;sessionmanager-bundle.zip&amp;quo">
+<meta property="og:description" content="Mac 上安装 AWS CLI 上的 plugin123456789101112# 1.下载文件$ curl &quot;https:&#x2F;&#x2F;s3.amazonaws.com&#x2F;session-manager-downloads&#x2F;plugin&#x2F;latest&#x2F;mac&#x2F;sessionmanager-bundle.zip&quot; -o &quot;sessionmanager-bundle.zip&quot;# 2.解压文件$ unzip se">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2019-03-01T02:45:00.000Z">
 <meta property="article:modified_time" content="2019-05-01T12:41:03.000Z">
@@ -43,7 +45,7 @@
 <link rel="canonical" href="https://andy0570.com/2019/03/01/AWS%20System%20Manager/">
 
 
-<script class="page-configurations">
+<script data-pjax class="page-configurations">
   // https://hexo.io/docs/variables.html
   CONFIG.page = {
     sidebar: "",
@@ -57,6 +59,15 @@
   
 
 
+  <script data-pjax>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?8229a094facca297f211d61323fd9fde";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
 
 
 
@@ -126,6 +137,7 @@
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -159,11 +171,35 @@
     <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
 
   </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
   </ul>
 </nav>
 
 
 
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
 
 </div>
           
@@ -195,7 +231,7 @@
       <section class="site-overview-wrap sidebar-panel">
         <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <img class="site-author-image" itemprop="image" alt="独木舟的木"
-      src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+      src="https://static01.imgkr.com/temp/88aab3c08a3f43f5a14f21c6c357c816.JPG">
   <p class="site-author-name" itemprop="name">独木舟的木</p>
   <div class="site-description" itemprop="description">生若直木，不语斧凿。</div>
 </div>
@@ -276,7 +312,7 @@
     <link itemprop="mainEntityOfPage" href="https://andy0570.com/2019/03/01/AWS%20System%20Manager/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+      <meta itemprop="image" content="https://static01.imgkr.com/temp/88aab3c08a3f43f5a14f21c6c357c816.JPG">
       <meta itemprop="name" content="独木舟的木">
       <meta itemprop="description" content="生若直木，不语斧凿。">
     </span>
@@ -317,7 +353,21 @@
                 </span>
             </span>
 
-          <br>
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2019/03/01/AWS%20System%20Manager/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2019/03/01/AWS%20System%20Manager/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  <br>
             <span class="post-meta-item" title="本文字数">
               <span class="post-meta-item-icon">
                 <i class="far fa-file-word"></i>
@@ -340,10 +390,10 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <h3 id="Mac-上安装-AWS-CLI-上的-plugin"><a href="#Mac-上安装-AWS-CLI-上的-plugin" class="headerlink" title="Mac 上安装 AWS CLI 上的 plugin"></a>Mac 上安装 AWS CLI 上的 plugin</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 1.下载文件</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> curl <span class="string">&quot;https://s3.amazonaws.com/session-manager-downloads/plugin/latest/mac/sessionmanager-bundle.zip&quot;</span> -o <span class="string">&quot;sessionmanager-bundle.zip&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 2.解压文件</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> unzip sessionmanager-bundle.zip</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 3.安装插件</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo ./sessionmanager-bundle/install -i /usr/<span class="built_in">local</span>/sessionmanagerplugin -b /usr/<span class="built_in">local</span>/bin/session-manager-plugin</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 4.插件安装成功后，检验插件的安装情况</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> session-manager-plugin --version</span></span><br><span class="line">1.0.37.0</span><br></pre></td></tr></table></figure>
+        <h3 id="Mac-上安装-AWS-CLI-上的-plugin"><a href="#Mac-上安装-AWS-CLI-上的-plugin" class="headerlink" title="Mac 上安装 AWS CLI 上的 plugin"></a>Mac 上安装 AWS CLI 上的 plugin</h3><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 1.下载文件</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> curl <span class="string">"https://s3.amazonaws.com/session-manager-downloads/plugin/latest/mac/sessionmanager-bundle.zip"</span> -o <span class="string">"sessionmanager-bundle.zip"</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 2.解压文件</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> unzip sessionmanager-bundle.zip</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 3.安装插件</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo ./sessionmanager-bundle/install -i /usr/<span class="built_in">local</span>/sessionmanagerplugin -b /usr/<span class="built_in">local</span>/bin/session-manager-plugin</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 4.插件安装成功后，检验插件的安装情况</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> session-manager-plugin --version</span></span><br><span class="line">1.0.37.0</span><br></pre></td></tr></tbody></table></figure>
 
 <p>执行命令进行登录：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">aws ssm start-session --target instance-id</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">aws ssm start-session --target instance-id</span><br></pre></td></tr></tbody></table></figure>
 
 <a id="more"></a>
 
@@ -406,8 +456,8 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2019/02/26/Apache%20Bench%E2%80%94%E2%80%94ab%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95%E5%B7%A5%E5%85%B7/" rel="prev" title="Apache Bench——ab性能测试工具">
-      <i class="fa fa-chevron-left"></i> Apache Bench——ab性能测试工具
+    <a href="/2019/02/26/Apache%20Bench%E2%80%94%E2%80%94ab%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95%E5%B7%A5%E5%85%B7/" rel="prev" title="Apache Bench——ab 性能测试工具">
+      <i class="fa fa-chevron-left"></i> Apache Bench——ab 性能测试工具
     </a></div>
       <div class="post-nav-item">
     <a href="/2019/04/03/%E5%9F%BA%E4%BA%8E%20LVS%20+%20keepalived%20%E7%9A%84%E5%8F%8C%E6%9C%BA%E7%83%AD%E5%A4%87%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1%E5%99%A8/" rel="next" title="基于 LVS + keepalived 的双机热备负载均衡器">
@@ -425,6 +475,7 @@
 
         </div>
         
+    <div class="comments" id="valine-comments"></div>
 
 <script>
   window.addEventListener('tabs:register', () => {
@@ -493,7 +544,11 @@
   </div>
 
   
-  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.0/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/next-theme/pjax@0/pjax.min.js"></script>
+  <script src="//unpkg.com/medium-zoom@1/dist/medium-zoom.min.js"></script>
+  <script src="//unpkg.com/lozad@1/dist/lozad.min.js"></script>
+  <script src="//unpkg.com/pangu@4/dist/browser/pangu.min.js"></script>
 
 <script src="/js/utils.js"></script>
 
@@ -504,9 +559,42 @@
 
 <script src="/js/bookmark.js"></script>
 
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '.page-configurations',
+    '.main-inner',
+    '.post-toc-wrap',
+    '.languages',
+    '.pjax'
+  ],
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+document.addEventListener('pjax:success', () => {
+  pjax.executeScripts(document.querySelectorAll('script[data-pjax], .pjax script'));
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  const hasTOC = document.querySelector('.post-toc');
+  document.querySelector('.sidebar-inner').classList.toggle('sidebar-nav-active', hasTOC);
+  document.querySelector(hasTOC ? '.sidebar-nav-toc' : '.sidebar-nav-overview').click();
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
 
   
-  <script>
+  <script data-pjax>
     (function(){
       var bp = document.createElement('script');
       var curProtocol = window.location.protocol.split(':')[0];
@@ -519,6 +607,10 @@
 
 
 
+  
+<script src="//unpkg.com/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//unpkg.com/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
 
 
 
@@ -530,9 +622,27 @@
 
 
 
+
+
+
+    <div class="pjax">
   
 
   
 
+
+<script>
+NexT.utils.loadComments('#valine-comments', () => {
+  NexT.utils.getScript('//unpkg.com/valine@1/dist/Valine.min.js', () => {
+    new Valine(Object.assign({
+      el  : '#valine-comments',
+      path: location.pathname,
+    }, {"enable":true,"appId":"S7i1Y8YorMKFPaYbJbekD5el-gzGzoHsz","appKey":"brOnU8mOQvSjpipJvdKUAIbU","placeholder":"写下你的评论...","avatar":"mm","meta":["nick","mail","link"],"pageSize":10,"language":"zh-cn","visitor":false,"comment_count":true,"recordIP":true,"serverURLs":null,"enableQQ":true,"requiredFields":[]}
+    ));
+  }, window.Valine);
+});
+</script>
+
+    </div>
 </body>
 </html>

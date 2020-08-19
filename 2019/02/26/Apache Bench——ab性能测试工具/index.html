@@ -18,18 +18,20 @@
 <link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css">
   
   <link rel="stylesheet" href="/lib/animate-css/animate.min.css">
+  <link rel="stylesheet" href="//unpkg.com/pace-js@1/themes/blue/pace-theme-minimal.css">
+  <script src="//unpkg.com/pace-js@1/pace.min.js"></script>
 
 <script class="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"andy0570.com","root":"/","scheme":"Gemini","version":"8.0.0-rc.5","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":"mac","bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false};
+    var CONFIG = {"hostname":"andy0570.com","root":"/","scheme":"Gemini","version":"8.0.0-rc.5","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":"mac","bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":true,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":true,"nav":null,"activeClass":"valine"},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"algolia":{"appID":"0E2AON8EZF","apiKey":"22fbefd84c8343239f5c04365b9728de","indexName":"MyBlogPlatform","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}}};
   </script>
 
   <meta name="description" content="一、相关概念与压力测试有关的概念： 1. 吞吐率（Requests per second） 概念：服务器并发处理能力的量化描述，单位是 reqs&#x2F;s，指的是某个并发用户数下单位时间内处理的请求数。某个并发用户数下单位时间内能处理的最大请求数，称之为最大吞吐率。 计算公式：总请求数 &#x2F; 处理完成这些请求数所花费的时间，即每秒请求数 &#x3D; 完成请求数 &#x2F; 测试时间。  2. 并发连接数（并发连接数） 概">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Apache Bench——ab性能测试工具">
+<meta property="og:title" content="Apache Bench——ab 性能测试工具">
 <meta property="og:url" content="https://andy0570.com/2019/02/26/Apache%20Bench%E2%80%94%E2%80%94ab%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95%E5%B7%A5%E5%85%B7/index.html">
 <meta property="og:site_name" content="独木舟的木">
 <meta property="og:description" content="一、相关概念与压力测试有关的概念： 1. 吞吐率（Requests per second） 概念：服务器并发处理能力的量化描述，单位是 reqs&#x2F;s，指的是某个并发用户数下单位时间内处理的请求数。某个并发用户数下单位时间内能处理的最大请求数，称之为最大吞吐率。 计算公式：总请求数 &#x2F; 处理完成这些请求数所花费的时间，即每秒请求数 &#x3D; 完成请求数 &#x2F; 测试时间。  2. 并发连接数（并发连接数） 概">
@@ -43,7 +45,7 @@
 <link rel="canonical" href="https://andy0570.com/2019/02/26/Apache%20Bench%E2%80%94%E2%80%94ab%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95%E5%B7%A5%E5%85%B7/">
 
 
-<script class="page-configurations">
+<script data-pjax class="page-configurations">
   // https://hexo.io/docs/variables.html
   CONFIG.page = {
     sidebar: "",
@@ -53,10 +55,19 @@
   };
 </script>
 
-  <title>Apache Bench——ab性能测试工具 | 独木舟的木</title>
+  <title>Apache Bench——ab 性能测试工具 | 独木舟的木</title>
   
 
 
+  <script data-pjax>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?8229a094facca297f211d61323fd9fde";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
 
 
 
@@ -126,6 +137,7 @@
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -159,11 +171,35 @@
     <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
 
   </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
   </ul>
 </nav>
 
 
 
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
 
 </div>
           
@@ -195,7 +231,7 @@
       <section class="site-overview-wrap sidebar-panel">
         <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <img class="site-author-image" itemprop="image" alt="独木舟的木"
-      src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+      src="https://static01.imgkr.com/temp/88aab3c08a3f43f5a14f21c6c357c816.JPG">
   <p class="site-author-name" itemprop="name">独木舟的木</p>
   <div class="site-description" itemprop="description">生若直木，不语斧凿。</div>
 </div>
@@ -276,7 +312,7 @@
     <link itemprop="mainEntityOfPage" href="https://andy0570.com/2019/02/26/Apache%20Bench%E2%80%94%E2%80%94ab%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95%E5%B7%A5%E5%85%B7/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+      <meta itemprop="image" content="https://static01.imgkr.com/temp/88aab3c08a3f43f5a14f21c6c357c816.JPG">
       <meta itemprop="name" content="独木舟的木">
       <meta itemprop="description" content="生若直木，不语斧凿。">
     </span>
@@ -288,7 +324,7 @@
     
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          Apache Bench——ab性能测试工具
+          Apache Bench——ab 性能测试工具
         </h1>
 
         <div class="post-meta">
@@ -317,7 +353,21 @@
                 </span>
             </span>
 
-          <br>
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2019/02/26/Apache%20Bench%E2%80%94%E2%80%94ab%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95%E5%B7%A5%E5%85%B7/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2019/02/26/Apache%20Bench%E2%80%94%E2%80%94ab%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95%E5%B7%A5%E5%85%B7/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  <br>
             <span class="post-meta-item" title="本文字数">
               <span class="post-meta-item-icon">
                 <i class="far fa-file-word"></i>
@@ -355,7 +405,7 @@
 <li>计算公式：处理完成所有请求数所花费的时间 /（总请求数 / 并发用户数），即<br>每个请求的时间 = 测试所花费的时间 /（完整请求 / 并发级别）。</li>
 </ul>
 <h4 id="5-服务器平均请求等待时间（每个请求的时间：跨所有并发请求）"><a href="#5-服务器平均请求等待时间（每个请求的时间：跨所有并发请求）" class="headerlink" title="5. 服务器平均请求等待时间（每个请求的时间：跨所有并发请求）"></a>5. 服务器平均请求等待时间（每个请求的时间：跨所有并发请求）</h4><ul>
-<li>计算公式：处理完成所有请求数所花费的时间 / 总请求数，即所花费的时间 / testsComplete 请求。<br>可以看到，它是吞吐率的倒数。<br>同时，它也 = 用户平均请求等待时间 / 并发用户数，即<br>每个请求的时间 / 并发级别。</li>
+<li>计算公式：处理完成所有请求数所花费的时间 / 总请求数，即所花费的时间 /testsComplete 请求。<br>可以看到，它是吞吐率的倒数。<br>同时，它也 = 用户平均请求等待时间 / 并发用户数，即<br>每个请求的时间 / 并发级别。</li>
 </ul>
 <a id="more"></a>
 
@@ -374,15 +424,15 @@
 <p>总的来说 ab 工具 ab 小巧简单，上手学习较快，可以提供需要的基本性能指标，但是没有图形化结果，不能监控。因此 ab 工具可以用作临时紧急任务和简单测试。<br>同类型的压力测试工具还有：webbench、siege、http_load 等</p>
 </blockquote>
 <h3 id="三、使用"><a href="#三、使用" class="headerlink" title="三、使用"></a>三、使用</h3><h4 id="查看-Apache-版本"><a href="#查看-Apache-版本" class="headerlink" title="查看 Apache 版本"></a>查看 Apache 版本</h4><p>Mac 系统下自带 Apache，可以使用 <code>apachectl -v</code> 命令查看 Apache 版本：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> apachectl -v</span></span><br><span class="line">Server version: Apache/2.4.34 (Unix)</span><br><span class="line">Server built:   Aug 17 2018 18:35:43</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> apachectl -v</span></span><br><span class="line">Server version: Apache/2.4.34 (Unix)</span><br><span class="line">Server built:   Aug 17 2018 18:35:43</span><br></pre></td></tr></tbody></table></figure>
 
-<h4 id="查看-ab-版本"><a href="#查看-ab-版本" class="headerlink" title="查看 ab 版本"></a>查看 ab 版本</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ ab -V   # 注意到，这里是大写的V</span><br><span class="line">This is ApacheBench, Version 2.3 &lt;$Revision: 1826891 $&gt;</span><br><span class="line">Copyright 1996 Adam Twiss, Zeus Technology Ltd, http:&#x2F;&#x2F;www.zeustech.net&#x2F;</span><br><span class="line">Licensed to The Apache Software Foundation, http:&#x2F;&#x2F;www.apache.org&#x2F;</span><br></pre></td></tr></table></figure>
+<h4 id="查看-ab-版本"><a href="#查看-ab-版本" class="headerlink" title="查看 ab 版本"></a>查看 ab 版本</h4><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ ab -V   # 注意到，这里是大写的V</span><br><span class="line">This is ApacheBench, Version 2.3 &lt;$Revision: 1826891 $&gt;</span><br><span class="line">Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/</span><br><span class="line">Licensed to The Apache Software Foundation, http://www.apache.org/</span><br></pre></td></tr></tbody></table></figure>
 
 
-<h4 id="查看当前系统的默认文件打开数："><a href="#查看当前系统的默认文件打开数：" class="headerlink" title="查看当前系统的默认文件打开数："></a>查看当前系统的默认文件打开数：</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">ulimit -a</span><br><span class="line">-t: cpu time (seconds)              unlimited</span><br><span class="line">-f: file size (blocks)              unlimited</span><br><span class="line">-d: data seg size (kbytes)          unlimited</span><br><span class="line">-s: stack size (kbytes)             8192</span><br><span class="line">-c: core file size (blocks)         0</span><br><span class="line">-v: address space (kbytes)          unlimited</span><br><span class="line">-l: locked-in-memory size (kbytes)  unlimited</span><br><span class="line">-u: processes                       1418</span><br><span class="line">-n: file descriptors                4864</span><br></pre></td></tr></table></figure>
+<h4 id="查看当前系统的默认文件打开数："><a href="#查看当前系统的默认文件打开数：" class="headerlink" title="查看当前系统的默认文件打开数："></a>查看当前系统的默认文件打开数：</h4><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">ulimit -a</span><br><span class="line">-t: cpu time (seconds)              unlimited</span><br><span class="line">-f: file size (blocks)              unlimited</span><br><span class="line">-d: data seg size (kbytes)          unlimited</span><br><span class="line">-s: stack size (kbytes)             8192</span><br><span class="line">-c: core file size (blocks)         0</span><br><span class="line">-v: address space (kbytes)          unlimited</span><br><span class="line">-l: locked-in-memory size (kbytes)  unlimited</span><br><span class="line">-u: processes                       1418</span><br><span class="line">-n: file descriptors                4864</span><br></pre></td></tr></tbody></table></figure>
 
 <p>设置打开文件数限制为 2048：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ulimit -n 2048</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ulimit -n 2048</span><br></pre></td></tr></tbody></table></figure>
 
 <h4 id="测试命令"><a href="#测试命令" class="headerlink" title="测试命令"></a>测试命令</h4><table>
 <thead>
@@ -392,19 +442,19 @@
 </tr>
 </thead>
 <tbody><tr>
-<td>-n</td>
-<td>请求次数</td>
+<td> -n</td>
+<td> 请求次数</td>
 </tr>
 <tr>
-<td>-c</td>
-<td>并发数</td>
+<td> -c</td>
+<td> 并发数</td>
 </tr>
 <tr>
-<td>-r</td>
-<td>当接收到错误时，不要退出套接字（socket）</td>
+<td> -r</td>
+<td> 当接收到错误时，不要退出套接字（socket）</td>
 </tr>
 </tbody></table>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br></pre></td><td class="code"><pre><span class="line">$ ab -n 100 -c 10 https://www.baidu.com/</span><br><span class="line"></span><br><span class="line"><span class="comment"># -------- Apache 版本信息 --------</span></span><br><span class="line">This is ApacheBench, Version 2.3 &lt;<span class="variable">$Revision</span>: 1826891 $&gt;</span><br><span class="line">Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/</span><br><span class="line">Licensed to The Apache Software Foundation, http://www.apache.org/</span><br><span class="line"></span><br><span class="line">Benchmarking www.baidu.com (be patient).....<span class="keyword">done</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># -------- Web 服务器信息 --------</span></span><br><span class="line"><span class="comment"># 请求返回 header 类型，可能是 nginx、apache、IIs 等</span></span><br><span class="line">Server Software:        BWS/1.1</span><br><span class="line"><span class="comment"># 请求 ip 或者域名</span></span><br><span class="line">Server Hostname:        www.baidu.com</span><br><span class="line"><span class="comment"># 请求端口，当前请求为 https 所以端口为 443，请求 http 端口 80</span></span><br><span class="line">Server Port:            443</span><br><span class="line"><span class="comment"># HTTPS 端口协议</span></span><br><span class="line">SSL/TLS Protocol:       TLSv1.2,ECDHE-RSA-AES128-GCM-SHA256,2048,128</span><br><span class="line">TLS Server Name:        www.baidu.com</span><br><span class="line"></span><br><span class="line"><span class="comment"># -------- 请求文档相关信息 --------</span></span><br><span class="line"><span class="comment"># 请求路径</span></span><br><span class="line">Document Path:          /</span><br><span class="line"><span class="comment"># 第一个成功返回的文档的字节大小（此为 http 响应的正文长度）</span></span><br><span class="line">Document Length:        227 bytes</span><br><span class="line"></span><br><span class="line"><span class="comment"># -------- 压力测试指标 --------</span></span><br><span class="line"><span class="comment"># 并发请求数</span></span><br><span class="line">Concurrency Level:      10</span><br><span class="line"><span class="comment"># 测试持续时间：从建立连接到最后接受完成总时间</span></span><br><span class="line">Time taken <span class="keyword">for</span> tests:   3.412 seconds</span><br><span class="line"><span class="comment"># 完成的请求数</span></span><br><span class="line">Complete requests:      100</span><br><span class="line"><span class="comment"># 失败的请求数</span></span><br><span class="line">Failed requests:        0</span><br><span class="line"><span class="comment"># 网络传输量：从服务器接收的字节总数</span></span><br><span class="line">Total transferred:      89300 bytes</span><br><span class="line"><span class="comment"># HTML 内容传输量</span></span><br><span class="line">HTML transferred:       22700 bytes</span><br><span class="line"><span class="comment"># ———— ⭐️ 吞吐率，每秒请求数（总请求数 / 总时间）</span></span><br><span class="line"><span class="comment"># ———— 相当于 LR 中的每秒事务数，后面括号中的 mean 表示这是一个平均值</span></span><br><span class="line">Requests per second:    29.31 [<span class="comment">#/sec] (mean)</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># ———— ⭐️ 用户平均请求等待时间 =concurrency * timetaken * 1000 / done</span></span><br><span class="line"><span class="comment"># ———— 相当于 LR 中的平均事务响应时间，后面括号中的 mean 表示这是一个平均值</span></span><br><span class="line">Time per request:       341.196 [ms] (mean)</span><br><span class="line"></span><br><span class="line"><span class="comment"># ———— ⭐️ 服务器平均请求处理时间 =timetaken * 1000 / done</span></span><br><span class="line">Time per request:       34.120 [ms] (mean, across all concurrent requests)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 平均每秒网络上的流量，可以帮助排除是否存在网络流量过大导致响应时间延长的问题</span></span><br><span class="line">Transfer rate:          25.56 [Kbytes/sec] received</span><br><span class="line"></span><br><span class="line"><span class="comment"># -------- 网络连接情况 -------- </span></span><br><span class="line"><span class="comment"># 网络上消耗的时间的分解</span></span><br><span class="line">Connection Times (ms)</span><br><span class="line">              min  mean[+/-sd] median   max</span><br><span class="line">Connect:      101  219 284.1    132    1271</span><br><span class="line">Processing:    32   52  35.3     43     358</span><br><span class="line">Waiting:       32   47  15.4     42     112</span><br><span class="line">Total:        136  270 286.8    185    1310</span><br><span class="line"></span><br><span class="line"><span class="comment"># -------- 请求处理时间分布情况 -------- </span></span><br><span class="line"><span class="comment"># ⭐️ 每个请求处理时间的分布情况，50%的处理时间在185ms内，66%的处理时间在202ms内...，</span></span><br><span class="line"><span class="comment"># 重要的是看90%的处理时间。</span></span><br><span class="line">Percentage of the requests served within a certain time (ms)</span><br><span class="line">  50%    185</span><br><span class="line">  66%    202</span><br><span class="line">  75%    229</span><br><span class="line">  80%    235</span><br><span class="line">  90%    337</span><br><span class="line">  95%   1283</span><br><span class="line">  98%   1308</span><br><span class="line">  99%   1310</span><br><span class="line"> 100%   1310 (longest request)</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br></pre></td><td class="code"><pre><span class="line">$ ab -n 100 -c 10 https://www.baidu.com/</span><br><span class="line"></span><br><span class="line"><span class="comment"># -------- Apache 版本信息 --------</span></span><br><span class="line">This is ApacheBench, Version 2.3 &lt;<span class="variable">$Revision</span>: 1826891 $&gt;</span><br><span class="line">Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/</span><br><span class="line">Licensed to The Apache Software Foundation, http://www.apache.org/</span><br><span class="line"></span><br><span class="line">Benchmarking www.baidu.com (be patient).....<span class="keyword">done</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># -------- Web 服务器信息 --------</span></span><br><span class="line"><span class="comment"># 请求返回 header 类型，可能是 nginx、apache、IIs 等</span></span><br><span class="line">Server Software:        BWS/1.1</span><br><span class="line"><span class="comment"># 请求 ip 或者域名</span></span><br><span class="line">Server Hostname:        www.baidu.com</span><br><span class="line"><span class="comment"># 请求端口，当前请求为 https 所以端口为 443，请求 http 端口 80</span></span><br><span class="line">Server Port:            443</span><br><span class="line"><span class="comment"># HTTPS 端口协议</span></span><br><span class="line">SSL/TLS Protocol:       TLSv1.2,ECDHE-RSA-AES128-GCM-SHA256,2048,128</span><br><span class="line">TLS Server Name:        www.baidu.com</span><br><span class="line"></span><br><span class="line"><span class="comment"># -------- 请求文档相关信息 --------</span></span><br><span class="line"><span class="comment"># 请求路径</span></span><br><span class="line">Document Path:          /</span><br><span class="line"><span class="comment"># 第一个成功返回的文档的字节大小（此为 http 响应的正文长度）</span></span><br><span class="line">Document Length:        227 bytes</span><br><span class="line"></span><br><span class="line"><span class="comment"># -------- 压力测试指标 --------</span></span><br><span class="line"><span class="comment"># 并发请求数</span></span><br><span class="line">Concurrency Level:      10</span><br><span class="line"><span class="comment"># 测试持续时间：从建立连接到最后接受完成总时间</span></span><br><span class="line">Time taken <span class="keyword">for</span> tests:   3.412 seconds</span><br><span class="line"><span class="comment"># 完成的请求数</span></span><br><span class="line">Complete requests:      100</span><br><span class="line"><span class="comment"># 失败的请求数</span></span><br><span class="line">Failed requests:        0</span><br><span class="line"><span class="comment"># 网络传输量：从服务器接收的字节总数</span></span><br><span class="line">Total transferred:      89300 bytes</span><br><span class="line"><span class="comment"># HTML 内容传输量</span></span><br><span class="line">HTML transferred:       22700 bytes</span><br><span class="line"><span class="comment"># ———— ⭐️ 吞吐率，每秒请求数（总请求数 / 总时间）</span></span><br><span class="line"><span class="comment"># ———— 相当于 LR 中的每秒事务数，后面括号中的 mean 表示这是一个平均值</span></span><br><span class="line">Requests per second:    29.31 [<span class="comment">#/sec] (mean)</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># ———— ⭐️ 用户平均请求等待时间 =concurrency * timetaken * 1000 / done</span></span><br><span class="line"><span class="comment"># ———— 相当于 LR 中的平均事务响应时间，后面括号中的 mean 表示这是一个平均值</span></span><br><span class="line">Time per request:       341.196 [ms] (mean)</span><br><span class="line"></span><br><span class="line"><span class="comment"># ———— ⭐️ 服务器平均请求处理时间 =timetaken * 1000 / done</span></span><br><span class="line">Time per request:       34.120 [ms] (mean, across all concurrent requests)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 平均每秒网络上的流量，可以帮助排除是否存在网络流量过大导致响应时间延长的问题</span></span><br><span class="line">Transfer rate:          25.56 [Kbytes/sec] received</span><br><span class="line"></span><br><span class="line"><span class="comment"># -------- 网络连接情况 -------- </span></span><br><span class="line"><span class="comment"># 网络上消耗的时间的分解</span></span><br><span class="line">Connection Times (ms)</span><br><span class="line">              min  mean[+/-sd] median   max</span><br><span class="line">Connect:      101  219 284.1    132    1271</span><br><span class="line">Processing:    32   52  35.3     43     358</span><br><span class="line">Waiting:       32   47  15.4     42     112</span><br><span class="line">Total:        136  270 286.8    185    1310</span><br><span class="line"></span><br><span class="line"><span class="comment"># -------- 请求处理时间分布情况 -------- </span></span><br><span class="line"><span class="comment"># ⭐️ 每个请求处理时间的分布情况，50%的处理时间在185ms内，66%的处理时间在202ms内...，</span></span><br><span class="line"><span class="comment"># 重要的是看90%的处理时间。</span></span><br><span class="line">Percentage of the requests served within a certain time (ms)</span><br><span class="line">  50%    185</span><br><span class="line">  66%    202</span><br><span class="line">  75%    229</span><br><span class="line">  80%    235</span><br><span class="line">  90%    337</span><br><span class="line">  95%   1283</span><br><span class="line">  98%   1308</span><br><span class="line">  99%   1310</span><br><span class="line"> 100%   1310 (longest request)</span><br></pre></td></tr></tbody></table></figure>
 
 <h3 id="关于登陆的问题"><a href="#关于登陆的问题" class="headerlink" title="关于登陆的问题"></a>关于登陆的问题</h3><p>有时候进行压力测试需要用户登录，怎么办？<br>请参考以下步骤：</p>
 <ol>
@@ -415,13 +465,13 @@
 <li><p>如果需要多个 Cookie，就直接设 Header：<br> <code>ab -n 100 -H “Cookie: Key1=Value1; Key2=Value2” http://test.com/</code></p>
 </li>
 </ol>
-<h3 id="错误问题-apr-socket-connect-Operation-already-in-progress-37"><a href="#错误问题-apr-socket-connect-Operation-already-in-progress-37" class="headerlink" title="错误问题:apr_socket_connect(): Operation already in progress (37)"></a>错误问题:<code>apr_socket_connect(): Operation already in progress (37)</code></h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">$ ab -n 1000000 -c 2000 -r http:&#x2F;&#x2F;119.3.86.178:80&#x2F;</span><br><span class="line">This is ApacheBench, Version 2.3 &lt;$Revision: 1826891 $&gt;</span><br><span class="line">Copyright 1996 Adam Twiss, Zeus Technology Ltd, http:&#x2F;&#x2F;www.zeustech.net&#x2F;</span><br><span class="line">Licensed to The Apache Software Foundation, http:&#x2F;&#x2F;www.apache.org&#x2F;</span><br><span class="line"></span><br><span class="line">Benchmarking 119.3.86.178 (be patient)</span><br><span class="line"></span><br><span class="line">Test aborted after 10 failures</span><br><span class="line"></span><br><span class="line">apr_socket_connect(): Operation already in progress (37)</span><br><span class="line">Total of 9725 requests completed</span><br></pre></td></tr></table></figure>
+<h3 id="错误问题-apr-socket-connect-Operation-already-in-progress-37"><a href="#错误问题-apr-socket-connect-Operation-already-in-progress-37" class="headerlink" title="错误问题:apr_socket_connect(): Operation already in progress (37)"></a>错误问题:<code>apr_socket_connect(): Operation already in progress (37)</code></h3><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">$ ab -n 1000000 -c 2000 -r http://119.3.86.178:80/</span><br><span class="line">This is ApacheBench, Version 2.3 &lt;$Revision: 1826891 $&gt;</span><br><span class="line">Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/</span><br><span class="line">Licensed to The Apache Software Foundation, http://www.apache.org/</span><br><span class="line"></span><br><span class="line">Benchmarking 119.3.86.178 (be patient)</span><br><span class="line"></span><br><span class="line">Test aborted after 10 failures</span><br><span class="line"></span><br><span class="line">apr_socket_connect(): Operation already in progress (37)</span><br><span class="line">Total of 9725 requests completed</span><br></pre></td></tr></tbody></table></figure>
 
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">ulimit -n 2048</span><br><span class="line"> ~   master ●  ulimit -a</span><br><span class="line">-t: cpu time (seconds)              unlimited</span><br><span class="line">-f: file size (blocks)              unlimited</span><br><span class="line">-d: data seg size (kbytes)          unlimited</span><br><span class="line">-s: stack size (kbytes)             8192</span><br><span class="line">-c: core file size (blocks)         0</span><br><span class="line">-v: address space (kbytes)          unlimited</span><br><span class="line">-l: locked-in-memory size (kbytes)  unlimited</span><br><span class="line">-u: processes                       1418</span><br><span class="line">-n: file descriptors                2048</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">ulimit -n 2048</span><br><span class="line"> ~   master ●  ulimit -a</span><br><span class="line">-t: cpu time (seconds)              unlimited</span><br><span class="line">-f: file size (blocks)              unlimited</span><br><span class="line">-d: data seg size (kbytes)          unlimited</span><br><span class="line">-s: stack size (kbytes)             8192</span><br><span class="line">-c: core file size (blocks)         0</span><br><span class="line">-v: address space (kbytes)          unlimited</span><br><span class="line">-l: locked-in-memory size (kbytes)  unlimited</span><br><span class="line">-u: processes                       1418</span><br><span class="line">-n: file descriptors                2048</span><br></pre></td></tr></tbody></table></figure>
 
 <h3 id="错误问题-apr-socket-recv-Connection-reset-by-peer-54"><a href="#错误问题-apr-socket-recv-Connection-reset-by-peer-54" class="headerlink" title="错误问题: apr_socket_recv: Connection reset by peer (54)"></a>错误问题: <code>apr_socket_recv: Connection reset by peer (54)</code></h3><p>这个报错一般是由于使用的 MacOSX 默认自带的 ab 限制了并发数导致的。<br>解决办法：下载最新的 apache 并重新编译，备份原来的 ab 并将新编译的 ab 替换到原来的路径<br>参考：<span class="exturl" data-url="aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTA4NjA1MTgvYXJ0aWNsZS9kZXRhaWxzLzUzMzA5MDI0">MAC 上使用 ab<i class="fa fa-external-link-alt"></i></span></p>
 <h3 id="重新安装-Apache"><a href="#重新安装-Apache" class="headerlink" title="重新安装 Apache"></a>重新安装 Apache</h3><p>参考：<span class="exturl" data-url="aHR0cHM6Ly96aHVhbmxhbi56aGlodS5jb20vcC8zNzg4NTcxMg==">macOS 10.13 High Sierra Apache 安装程序：多个 PHP 版本<i class="fa fa-external-link-alt"></i></span></p>
-<h3 id="附：ab-参数说明"><a href="#附：ab-参数说明" class="headerlink" title="附：ab 参数说明"></a>附：ab 参数说明</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br></pre></td><td class="code"><pre><span class="line">Options are:</span><br><span class="line">    -n requests     Number of requests to perform</span><br><span class="line">                    在测试会话中所执行的请求个数。 默认时，仅执行一个请求，但通常其结果不具有代表意义</span><br><span class="line">    -c concurrency  Number of multiple requests to make at a time</span><br><span class="line">                    一次产生的请求个数。默认是一次一个</span><br><span class="line">    -t timelimit    Seconds to max. to spend on benchmarking</span><br><span class="line">                    This implies -n 50000</span><br><span class="line">                    测试所进行的最大秒数。其内部隐含值是-n 50000。 它可以使对服务器的测试限制在一个固定的总时间以内。默认时，没有时间限制</span><br><span class="line">    -s timeout      Seconds to max. wait for each response</span><br><span class="line">                    Default is 30 seconds</span><br><span class="line">                    单个请求最大延迟，默认为30s</span><br><span class="line">    -b windowsize   Size of TCP send/receive buffer, in bytes</span><br><span class="line">                    </span><br><span class="line">    -B address      Address to bind to when making outgoing connections</span><br><span class="line">    -p postfile     File containing data to POST. Remember also to set -T</span><br><span class="line">                    包含了需要POST的数据的文件</span><br><span class="line">    -u putfile      File containing data to PUT. Remember also to set -T</span><br><span class="line">    -T content-type Content-type header to use for POST/PUT data, eg.</span><br><span class="line">                    &#x27;application/x-www-form-urlencoded&#x27;</span><br><span class="line">                    Default is &#x27;text/plain&#x27;</span><br><span class="line">                    POST数据所使用的Content-type头信息</span><br><span class="line">    -v verbosity    How much troubleshooting info to print</span><br><span class="line">                    设置显示信息的详细程度 - 4或更大值会显示头信息， 3或更大值可以显示响应代码(404, 200等), 2或更大值可以显示警告和其他信息</span><br><span class="line">    -w              Print out results in HTML tables</span><br><span class="line">                    以HTML表的格式输出结果。默认时，它是白色背景的两列宽度的一张表</span><br><span class="line">    -i              Use HEAD instead of GET</span><br><span class="line">                    执行HEAD请求，而不是GET</span><br><span class="line">    -x attributes   String to insert as table attributes</span><br><span class="line">                    设置&lt;table&gt;属性的字符串。 此属性被填入&lt;table 这里 &gt;</span><br><span class="line">    -y attributes   String to insert as tr attributes</span><br><span class="line">                    设置&lt;tr&gt;属性的字符串</span><br><span class="line">    -z attributes   String to insert as td or th attributes</span><br><span class="line">                    设置&lt;td&gt;属性的字符串</span><br><span class="line">    -C attribute    Add cookie, eg. &#x27;Apache=1234&#x27;. (repeatable)</span><br><span class="line">                    对请求附加一个Cookie:行。 其典型形式是name=value的一个参数对。 此参数可以重复</span><br><span class="line">    -H attribute    Add Arbitrary header line, eg. &#x27;Accept-Encoding: gzip&#x27;</span><br><span class="line">                    Inserted after all normal header lines. (repeatable)</span><br><span class="line">                    对请求附加额外的头信息。 此参数的典型形式是一个有效的头信息行，其中包含了以冒号分隔的字段和值的对 (如, &quot;Accept-Encoding: zip/zop;8bit&quot;)</span><br><span class="line">    -A attribute    Add Basic WWW Authentication, the attributes</span><br><span class="line">                    are a colon separated username and password.</span><br><span class="line">                    对服务器提供BASIC认证信任。 用户名和密码由一个:隔开，并以base64编码形式发送。 无论服务器是否需要(即, 是否发送了401认证需求代码)，此字符串都会被发送</span><br><span class="line">    -P attribute    Add Basic Proxy Authentication, the attributes</span><br><span class="line">                    are a colon separated username and password.</span><br><span class="line">                    对一个中转代理提供BASIC认证信任。 用户名和密码由一个:隔开，并以base64编码形式发送。 无论服务器是否需要(即, 是否发送了401认证需求代码)，此字符串都会被发送</span><br><span class="line">    -X proxy:port   Proxyserver and port number to use</span><br><span class="line">                    对请求使用代理服务器</span><br><span class="line">    -V              Print version number and exit</span><br><span class="line">                    显示版本号并退出</span><br><span class="line">    -k              Use HTTP KeepAlive feature</span><br><span class="line">                    启用HTTP KeepAlive功能，即, 在一个HTTP会话中执行多个请求。 默认时，不启用KeepAlive功能</span><br><span class="line">    -d              Do not show percentiles served table.</span><br><span class="line">                    不显示&quot;percentage served within XX [ms] table&quot;的消息(为以前的版本提供支持)</span><br><span class="line">    -S              Do not show confidence estimators and warnings.</span><br><span class="line">                    不显示中值和标准背离值， 而且在均值和中值为标准背离值的1到2倍时，也不显示警告或出错信息。 默认时，会显示 最小值/均值/最大值等数值。(为以前的版本提供支持)</span><br><span class="line">    -q              Do not show progress when doing more than 150 requests</span><br><span class="line">                    如果处理的请求数大于150， ab每处理大约10%或者100个请求时，会在stderr输出一个进度计数。 此-q标记可以抑制这些信息</span><br><span class="line">    -l              Accept variable document length (use this for dynamic pages)</span><br><span class="line">    -g filename     Output collected data to gnuplot format file.</span><br><span class="line">                    把所有测试结果写入一个&#x27;gnuplot&#x27;或者TSV (以Tab分隔的)文件。 此文件可以方便地导入到Gnuplot, IDL, Mathematica, Igor甚至Excel中。 其中的第一行为标题</span><br><span class="line">    -e filename     Output CSV file with percentages served</span><br><span class="line">                    产生一个以逗号分隔的(CSV)文件， 其中包含了处理每个相应百分比的请求所需要(从1%到100%)的相应百分比的(以微妙为单位)时间。 由于这种格式已经“二进制化”，所以比&#x27;gnuplot&#x27;格式更有用</span><br><span class="line">    -r              Don&#x27;t exit on socket receive errors.</span><br><span class="line">    -h              Display usage information (this message)</span><br><span class="line">                    显示使用方法</span><br><span class="line">    -Z ciphersuite  Specify SSL/TLS cipher suite (See openssl ciphers)</span><br><span class="line">    -f protocol     Specify SSL/TLS protocol</span><br><span class="line">                    (SSL3, TLS1, TLS1.1, TLS1.2 or ALL)</span><br></pre></td></tr></table></figure>
+<h3 id="附：ab-参数说明"><a href="#附：ab-参数说明" class="headerlink" title="附：ab 参数说明"></a>附：ab 参数说明</h3><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br></pre></td><td class="code"><pre><span class="line">Options are:</span><br><span class="line">    -n requests     Number of requests to perform</span><br><span class="line">                    在测试会话中所执行的请求个数。 默认时，仅执行一个请求，但通常其结果不具有代表意义</span><br><span class="line">    -c concurrency  Number of multiple requests to make at a time</span><br><span class="line">                    一次产生的请求个数。默认是一次一个</span><br><span class="line">    -t timelimit    Seconds to max. to spend on benchmarking</span><br><span class="line">                    This implies -n 50000</span><br><span class="line">                    测试所进行的最大秒数。其内部隐含值是-n 50000。 它可以使对服务器的测试限制在一个固定的总时间以内。默认时，没有时间限制</span><br><span class="line">    -s timeout      Seconds to max. wait for each response</span><br><span class="line">                    Default is 30 seconds</span><br><span class="line">                    单个请求最大延迟，默认为30s</span><br><span class="line">    -b windowsize   Size of TCP send/receive buffer, in bytes</span><br><span class="line">                    </span><br><span class="line">    -B address      Address to bind to when making outgoing connections</span><br><span class="line">    -p postfile     File containing data to POST. Remember also to set -T</span><br><span class="line">                    包含了需要POST的数据的文件</span><br><span class="line">    -u putfile      File containing data to PUT. Remember also to set -T</span><br><span class="line">    -T content-type Content-type header to use for POST/PUT data, eg.</span><br><span class="line">                    'application/x-www-form-urlencoded'</span><br><span class="line">                    Default is 'text/plain'</span><br><span class="line">                    POST数据所使用的Content-type头信息</span><br><span class="line">    -v verbosity    How much troubleshooting info to print</span><br><span class="line">                    设置显示信息的详细程度 - 4或更大值会显示头信息， 3或更大值可以显示响应代码(404, 200等), 2或更大值可以显示警告和其他信息</span><br><span class="line">    -w              Print out results in HTML tables</span><br><span class="line">                    以HTML表的格式输出结果。默认时，它是白色背景的两列宽度的一张表</span><br><span class="line">    -i              Use HEAD instead of GET</span><br><span class="line">                    执行HEAD请求，而不是GET</span><br><span class="line">    -x attributes   String to insert as table attributes</span><br><span class="line">                    设置&lt;table&gt;属性的字符串。 此属性被填入&lt;table 这里 &gt;</span><br><span class="line">    -y attributes   String to insert as tr attributes</span><br><span class="line">                    设置&lt;tr&gt;属性的字符串</span><br><span class="line">    -z attributes   String to insert as td or th attributes</span><br><span class="line">                    设置&lt;td&gt;属性的字符串</span><br><span class="line">    -C attribute    Add cookie, eg. 'Apache=1234'. (repeatable)</span><br><span class="line">                    对请求附加一个Cookie:行。 其典型形式是name=value的一个参数对。 此参数可以重复</span><br><span class="line">    -H attribute    Add Arbitrary header line, eg. 'Accept-Encoding: gzip'</span><br><span class="line">                    Inserted after all normal header lines. (repeatable)</span><br><span class="line">                    对请求附加额外的头信息。 此参数的典型形式是一个有效的头信息行，其中包含了以冒号分隔的字段和值的对 (如, "Accept-Encoding: zip/zop;8bit")</span><br><span class="line">    -A attribute    Add Basic WWW Authentication, the attributes</span><br><span class="line">                    are a colon separated username and password.</span><br><span class="line">                    对服务器提供BASIC认证信任。 用户名和密码由一个:隔开，并以base64编码形式发送。 无论服务器是否需要(即, 是否发送了401认证需求代码)，此字符串都会被发送</span><br><span class="line">    -P attribute    Add Basic Proxy Authentication, the attributes</span><br><span class="line">                    are a colon separated username and password.</span><br><span class="line">                    对一个中转代理提供BASIC认证信任。 用户名和密码由一个:隔开，并以base64编码形式发送。 无论服务器是否需要(即, 是否发送了401认证需求代码)，此字符串都会被发送</span><br><span class="line">    -X proxy:port   Proxyserver and port number to use</span><br><span class="line">                    对请求使用代理服务器</span><br><span class="line">    -V              Print version number and exit</span><br><span class="line">                    显示版本号并退出</span><br><span class="line">    -k              Use HTTP KeepAlive feature</span><br><span class="line">                    启用HTTP KeepAlive功能，即, 在一个HTTP会话中执行多个请求。 默认时，不启用KeepAlive功能</span><br><span class="line">    -d              Do not show percentiles served table.</span><br><span class="line">                    不显示"percentage served within XX [ms] table"的消息(为以前的版本提供支持)</span><br><span class="line">    -S              Do not show confidence estimators and warnings.</span><br><span class="line">                    不显示中值和标准背离值， 而且在均值和中值为标准背离值的1到2倍时，也不显示警告或出错信息。 默认时，会显示 最小值/均值/最大值等数值。(为以前的版本提供支持)</span><br><span class="line">    -q              Do not show progress when doing more than 150 requests</span><br><span class="line">                    如果处理的请求数大于150， ab每处理大约10%或者100个请求时，会在stderr输出一个进度计数。 此-q标记可以抑制这些信息</span><br><span class="line">    -l              Accept variable document length (use this for dynamic pages)</span><br><span class="line">    -g filename     Output collected data to gnuplot format file.</span><br><span class="line">                    把所有测试结果写入一个'gnuplot'或者TSV (以Tab分隔的)文件。 此文件可以方便地导入到Gnuplot, IDL, Mathematica, Igor甚至Excel中。 其中的第一行为标题</span><br><span class="line">    -e filename     Output CSV file with percentages served</span><br><span class="line">                    产生一个以逗号分隔的(CSV)文件， 其中包含了处理每个相应百分比的请求所需要(从1%到100%)的相应百分比的(以微妙为单位)时间。 由于这种格式已经“二进制化”，所以比'gnuplot'格式更有用</span><br><span class="line">    -r              Don't exit on socket receive errors.</span><br><span class="line">    -h              Display usage information (this message)</span><br><span class="line">                    显示使用方法</span><br><span class="line">    -Z ciphersuite  Specify SSL/TLS cipher suite (See openssl ciphers)</span><br><span class="line">    -f protocol     Specify SSL/TLS protocol</span><br><span class="line">                    (SSL3, TLS1, TLS1.1, TLS1.2 or ALL)</span><br></pre></td></tr></tbody></table></figure>
 
 
 <h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><ul>
@@ -444,7 +494,7 @@
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="https://andy0570.com/2019/02/26/Apache%20Bench%E2%80%94%E2%80%94ab%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95%E5%B7%A5%E5%85%B7/" title="Apache Bench——ab性能测试工具">https://andy0570.com/2019/02/26/Apache Bench——ab性能测试工具/</a>
+    <a href="https://andy0570.com/2019/02/26/Apache%20Bench%E2%80%94%E2%80%94ab%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95%E5%B7%A5%E5%85%B7/" title="Apache Bench——ab 性能测试工具">https://andy0570.com/2019/02/26/Apache Bench——ab性能测试工具/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <span class="exturl" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpo"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</span> 许可协议。转载请注明出处！
@@ -502,6 +552,7 @@
 
         </div>
         
+    <div class="comments" id="valine-comments"></div>
 
 <script>
   window.addEventListener('tabs:register', () => {
@@ -570,7 +621,11 @@
   </div>
 
   
-  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.0/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/next-theme/pjax@0/pjax.min.js"></script>
+  <script src="//unpkg.com/medium-zoom@1/dist/medium-zoom.min.js"></script>
+  <script src="//unpkg.com/lozad@1/dist/lozad.min.js"></script>
+  <script src="//unpkg.com/pangu@4/dist/browser/pangu.min.js"></script>
 
 <script src="/js/utils.js"></script>
 
@@ -581,9 +636,42 @@
 
 <script src="/js/bookmark.js"></script>
 
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '.page-configurations',
+    '.main-inner',
+    '.post-toc-wrap',
+    '.languages',
+    '.pjax'
+  ],
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+document.addEventListener('pjax:success', () => {
+  pjax.executeScripts(document.querySelectorAll('script[data-pjax], .pjax script'));
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  const hasTOC = document.querySelector('.post-toc');
+  document.querySelector('.sidebar-inner').classList.toggle('sidebar-nav-active', hasTOC);
+  document.querySelector(hasTOC ? '.sidebar-nav-toc' : '.sidebar-nav-overview').click();
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
 
   
-  <script>
+  <script data-pjax>
     (function(){
       var bp = document.createElement('script');
       var curProtocol = window.location.protocol.split(':')[0];
@@ -596,6 +684,10 @@
 
 
 
+  
+<script src="//unpkg.com/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//unpkg.com/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
 
 
 
@@ -607,9 +699,27 @@
 
 
 
+
+
+
+    <div class="pjax">
   
 
   
 
+
+<script>
+NexT.utils.loadComments('#valine-comments', () => {
+  NexT.utils.getScript('//unpkg.com/valine@1/dist/Valine.min.js', () => {
+    new Valine(Object.assign({
+      el  : '#valine-comments',
+      path: location.pathname,
+    }, {"enable":true,"appId":"S7i1Y8YorMKFPaYbJbekD5el-gzGzoHsz","appKey":"brOnU8mOQvSjpipJvdKUAIbU","placeholder":"写下你的评论...","avatar":"mm","meta":["nick","mail","link"],"pageSize":10,"language":"zh-cn","visitor":false,"comment_count":true,"recordIP":true,"serverURLs":null,"enableQQ":true,"requiredFields":[]}
+    ));
+  }, window.Valine);
+});
+</script>
+
+    </div>
 </body>
 </html>

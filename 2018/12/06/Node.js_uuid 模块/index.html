@@ -18,13 +18,15 @@
 <link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css">
   
   <link rel="stylesheet" href="/lib/animate-css/animate.min.css">
+  <link rel="stylesheet" href="//unpkg.com/pace-js@1/themes/blue/pace-theme-minimal.css">
+  <script src="//unpkg.com/pace-js@1/pace.min.js"></script>
 
 <script class="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"andy0570.com","root":"/","scheme":"Gemini","version":"8.0.0-rc.5","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":"mac","bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false};
+    var CONFIG = {"hostname":"andy0570.com","root":"/","scheme":"Gemini","version":"8.0.0-rc.5","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":"mac","bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":true,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":true,"nav":null,"activeClass":"valine"},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"algolia":{"appID":"0E2AON8EZF","apiKey":"22fbefd84c8343239f5c04365b9728de","indexName":"MyBlogPlatform","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}}};
   </script>
 
   <meta name="description" content="UUID 定义UUID 是由一组 32 位的 16 进制数所构成，是故 UUID 理论上的总数为 16^32&#x3D;2^128，约等于 3.4 x 10^38。也就是说若每纳秒产生 1 兆个 UUID，要花 100 亿年才会将所有 UUID 用完。 UUID 示例：74760410-f963-11e8-b2a3-1bb26e1e5b69">
@@ -43,7 +45,7 @@
 <link rel="canonical" href="https://andy0570.com/2018/12/06/Node.js_uuid%20%E6%A8%A1%E5%9D%97/">
 
 
-<script class="page-configurations">
+<script data-pjax class="page-configurations">
   // https://hexo.io/docs/variables.html
   CONFIG.page = {
     sidebar: "",
@@ -57,6 +59,15 @@
   
 
 
+  <script data-pjax>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?8229a094facca297f211d61323fd9fde";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
 
 
 
@@ -126,6 +137,7 @@
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -159,11 +171,35 @@
     <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
 
   </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
   </ul>
 </nav>
 
 
 
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
 
 </div>
           
@@ -195,7 +231,7 @@
       <section class="site-overview-wrap sidebar-panel">
         <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <img class="site-author-image" itemprop="image" alt="独木舟的木"
-      src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+      src="https://static01.imgkr.com/temp/88aab3c08a3f43f5a14f21c6c357c816.JPG">
   <p class="site-author-name" itemprop="name">独木舟的木</p>
   <div class="site-description" itemprop="description">生若直木，不语斧凿。</div>
 </div>
@@ -276,7 +312,7 @@
     <link itemprop="mainEntityOfPage" href="https://andy0570.com/2018/12/06/Node.js_uuid%20%E6%A8%A1%E5%9D%97/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+      <meta itemprop="image" content="https://static01.imgkr.com/temp/88aab3c08a3f43f5a14f21c6c357c816.JPG">
       <meta itemprop="name" content="独木舟的木">
       <meta itemprop="description" content="生若直木，不语斧凿。">
     </span>
@@ -317,7 +353,21 @@
                 </span>
             </span>
 
-          <br>
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2018/12/06/Node.js_uuid%20%E6%A8%A1%E5%9D%97/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2018/12/06/Node.js_uuid%20%E6%A8%A1%E5%9D%97/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  <br>
             <span class="post-meta-item" title="本文字数">
               <span class="post-meta-item-icon">
                 <i class="far fa-file-word"></i>
@@ -351,20 +401,20 @@
 <li>“版本 4” UUID 使用<span class="exturl" data-url="aHR0cHM6Ly93d3cud2lraXdhbmQuY29tL3poLWhhbnMvJUU5JTlBJThGJUU2JTlDJUJBJUU2JTgwJUE3">随机性<i class="fa fa-external-link-alt"></i></span>或<span class="exturl" data-url="aHR0cHM6Ly93d3cud2lraXdhbmQuY29tL3poLWhhbnMvJUU0JUJDJUFBJUU5JTlBJThGJUU2JTlDJUJBJUU2JTgwJUE3">伪随机性<i class="fa fa-external-link-alt"></i></span>生成。</li>
 </ul>
 <h1 id="Node-js-uuid-模块示例"><a href="#Node-js-uuid-模块示例" class="headerlink" title="Node.js uuid 模块示例"></a>Node.js <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2tlbGVrdGl2L25vZGUtdXVpZA==">uuid<i class="fa fa-external-link-alt"></i></span> 模块示例</h1><p>在 JavaScript 中生成符合 RFC 规范的 UUID。</p>
-<h2 id="版本-1：基于时间的-UUID"><a href="#版本-1：基于时间的-UUID" class="headerlink" title="版本 1：基于时间的 UUID"></a>版本 1：基于时间的 UUID</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> uuidv1 = <span class="built_in">require</span>(<span class="string">&#x27;uuid/v1&#x27;</span>);</span><br><span class="line">uuidv1() <span class="comment">//  ⇨ 43d7e120-f963-11e8-999e-51f3e5aa256f</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> formatedUUID = uuidv1().replace(<span class="regexp">/-/g</span>, <span class="string">&#x27;&#x27;</span>); <span class="comment">// 去除横线-</span></span><br></pre></td></tr></table></figure>
+<h2 id="版本-1：基于时间的-UUID"><a href="#版本-1：基于时间的-UUID" class="headerlink" title="版本 1：基于时间的 UUID"></a>版本 1：基于时间的 UUID</h2><figure class="highlight javascript"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> uuidv1 = <span class="built_in">require</span>(<span class="string">'uuid/v1'</span>);</span><br><span class="line">uuidv1() <span class="comment">//  ⇨ 43d7e120-f963-11e8-999e-51f3e5aa256f</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> formatedUUID = uuidv1().replace(<span class="regexp">/-/g</span>, <span class="string">''</span>); <span class="comment">// 去除横线-</span></span><br></pre></td></tr></tbody></table></figure>
 
 
 
 <h2 id="版本-2：DCE-安全的-UUID"><a href="#版本-2：DCE-安全的-UUID" class="headerlink" title="版本 2：DCE 安全的 UUID"></a>版本 2：DCE 安全的 UUID</h2><p>未实现。</p>
-<h2 id="版本-3：基于名字空间的-UUID（MD5）"><a href="#版本-3：基于名字空间的-UUID（MD5）" class="headerlink" title="版本 3：基于名字空间的 UUID（MD5）"></a>版本 3：基于名字空间的 UUID（MD5）</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> uuidv3 = <span class="built_in">require</span>(<span class="string">&#x27;uuid/v3&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// ... using predefined DNS namespace (for domain names)</span></span><br><span class="line">uuidv3(<span class="string">&#x27;hello.example.com&#x27;</span>, uuidv3.DNS); <span class="comment">// ⇨ &#x27;9125a8dc-52ee-365b-a5aa-81b0b3681cf6&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// ... using predefined URL namespace (for, well, URLs)</span></span><br><span class="line">uuidv3(<span class="string">&#x27;http://example.com/hello&#x27;</span>, uuidv3.URL); <span class="comment">// ⇨ &#x27;c6235813-3ba4-3801-ae84-e0a6ebb7d138&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// ... using a custom namespace</span></span><br><span class="line"><span class="comment">//</span></span><br><span class="line"><span class="comment">// Note: Custom namespaces should be a UUID string specific to your application!</span></span><br><span class="line"><span class="comment">// E.g. the one here was generated using this modules `uuid` CLI.</span></span><br><span class="line"><span class="keyword">const</span> MY_NAMESPACE = <span class="string">&#x27;1b671a64-40d5-491e-99b0-da01ff1f3341&#x27;</span>;</span><br><span class="line">uuidv3(<span class="string">&#x27;Hello, World!&#x27;</span>, MY_NAMESPACE); <span class="comment">// ⇨ &#x27;e8b5a51d-11c8-3310-a6ab-367563f20686&#x27;</span></span><br></pre></td></tr></table></figure>
+<h2 id="版本-3：基于名字空间的-UUID（MD5）"><a href="#版本-3：基于名字空间的-UUID（MD5）" class="headerlink" title="版本 3：基于名字空间的 UUID（MD5）"></a>版本 3：基于名字空间的 UUID（MD5）</h2><figure class="highlight javascript"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> uuidv3 = <span class="built_in">require</span>(<span class="string">'uuid/v3'</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// ... using predefined DNS namespace (for domain names)</span></span><br><span class="line">uuidv3(<span class="string">'hello.example.com'</span>, uuidv3.DNS); <span class="comment">// ⇨ '9125a8dc-52ee-365b-a5aa-81b0b3681cf6'</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// ... using predefined URL namespace (for, well, URLs)</span></span><br><span class="line">uuidv3(<span class="string">'http://example.com/hello'</span>, uuidv3.URL); <span class="comment">// ⇨ 'c6235813-3ba4-3801-ae84-e0a6ebb7d138'</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// ... using a custom namespace</span></span><br><span class="line"><span class="comment">//</span></span><br><span class="line"><span class="comment">// Note: Custom namespaces should be a UUID string specific to your application!</span></span><br><span class="line"><span class="comment">// E.g. the one here was generated using this modules `uuid` CLI.</span></span><br><span class="line"><span class="keyword">const</span> MY_NAMESPACE = <span class="string">'1b671a64-40d5-491e-99b0-da01ff1f3341'</span>;</span><br><span class="line">uuidv3(<span class="string">'Hello, World!'</span>, MY_NAMESPACE); <span class="comment">// ⇨ 'e8b5a51d-11c8-3310-a6ab-367563f20686'</span></span><br></pre></td></tr></tbody></table></figure>
 
 
 
-<h2 id="版本-4：基于随机数的-UUID"><a href="#版本-4：基于随机数的-UUID" class="headerlink" title="版本 4：基于随机数的 UUID"></a>版本 4：基于随机数的 UUID</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> uuidv4 = <span class="built_in">require</span>(<span class="string">&#x27;uuid/v4&#x27;</span>);</span><br><span class="line">uuidv4(); <span class="comment">// ⇨ 57751a52-db27-4b2f-8a08-7e02f9e94a42</span></span><br></pre></td></tr></table></figure>
+<h2 id="版本-4：基于随机数的-UUID"><a href="#版本-4：基于随机数的-UUID" class="headerlink" title="版本 4：基于随机数的 UUID"></a>版本 4：基于随机数的 UUID</h2><figure class="highlight javascript"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> uuidv4 = <span class="built_in">require</span>(<span class="string">'uuid/v4'</span>);</span><br><span class="line">uuidv4(); <span class="comment">// ⇨ 57751a52-db27-4b2f-8a08-7e02f9e94a42</span></span><br></pre></td></tr></tbody></table></figure>
 
 
 
-<h2 id="版本-5：基于名字空间的-UUID（SHA1）"><a href="#版本-5：基于名字空间的-UUID（SHA1）" class="headerlink" title="版本 5：基于名字空间的 UUID（SHA1）"></a>版本 5：基于名字空间的 UUID（SHA1）</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> uuidv5 = <span class="built_in">require</span>(<span class="string">&#x27;uuid/v5&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// ... using predefined DNS namespace (for domain names)</span></span><br><span class="line">uuidv5(<span class="string">&#x27;hello.example.com&#x27;</span>, uuidv5.DNS); <span class="comment">// ⇨ &#x27;fdda765f-fc57-5604-a269-52a7df8164ec&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// ... using predefined URL namespace (for, well, URLs)</span></span><br><span class="line">uuidv5(<span class="string">&#x27;http://example.com/hello&#x27;</span>, uuidv5.URL); <span class="comment">// ⇨ &#x27;3bbcee75-cecc-5b56-8031-b6641c1ed1f1&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// ... using a custom namespace</span></span><br><span class="line"><span class="comment">//</span></span><br><span class="line"><span class="comment">// Note: Custom namespaces should be a UUID string specific to your application!</span></span><br><span class="line"><span class="comment">// E.g. the one here was generated using this modules `uuid` CLI.</span></span><br><span class="line"><span class="keyword">const</span> MY_NAMESPACE = <span class="string">&#x27;1b671a64-40d5-491e-99b0-da01ff1f3341&#x27;</span>;</span><br><span class="line">uuidv5(<span class="string">&#x27;Hello, World!&#x27;</span>, MY_NAMESPACE); <span class="comment">// ⇨ &#x27;630eb68f-e0fa-5ecc-887a-7c7a62614681&#x27;</span></span><br></pre></td></tr></table></figure>
+<h2 id="版本-5：基于名字空间的-UUID（SHA1）"><a href="#版本-5：基于名字空间的-UUID（SHA1）" class="headerlink" title="版本 5：基于名字空间的 UUID（SHA1）"></a>版本 5：基于名字空间的 UUID（SHA1）</h2><figure class="highlight javascript"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> uuidv5 = <span class="built_in">require</span>(<span class="string">'uuid/v5'</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// ... using predefined DNS namespace (for domain names)</span></span><br><span class="line">uuidv5(<span class="string">'hello.example.com'</span>, uuidv5.DNS); <span class="comment">// ⇨ 'fdda765f-fc57-5604-a269-52a7df8164ec'</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// ... using predefined URL namespace (for, well, URLs)</span></span><br><span class="line">uuidv5(<span class="string">'http://example.com/hello'</span>, uuidv5.URL); <span class="comment">// ⇨ '3bbcee75-cecc-5b56-8031-b6641c1ed1f1'</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// ... using a custom namespace</span></span><br><span class="line"><span class="comment">//</span></span><br><span class="line"><span class="comment">// Note: Custom namespaces should be a UUID string specific to your application!</span></span><br><span class="line"><span class="comment">// E.g. the one here was generated using this modules `uuid` CLI.</span></span><br><span class="line"><span class="keyword">const</span> MY_NAMESPACE = <span class="string">'1b671a64-40d5-491e-99b0-da01ff1f3341'</span>;</span><br><span class="line">uuidv5(<span class="string">'Hello, World!'</span>, MY_NAMESPACE); <span class="comment">// ⇨ '630eb68f-e0fa-5ecc-887a-7c7a62614681'</span></span><br></pre></td></tr></tbody></table></figure>
 
 
 
@@ -430,8 +480,8 @@
       <i class="fa fa-chevron-left"></i> Node.js_crypto 模块
     </a></div>
       <div class="post-nav-item">
-    <a href="/2018/12/11/%E6%B5%85%E5%B0%9D%E8%BE%84%E6%AD%A2%C2%B7%E6%91%84%E5%BD%B1/" rel="next" title="浅尝辄止·摄影">
-      浅尝辄止·摄影 <i class="fa fa-chevron-right"></i>
+    <a href="/2018/12/11/%E6%B5%85%E5%B0%9D%E8%BE%84%E6%AD%A2%C2%B7%E6%91%84%E5%BD%B1/" rel="next" title="浅尝辄止・摄影">
+      浅尝辄止・摄影 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -445,6 +495,7 @@
 
         </div>
         
+    <div class="comments" id="valine-comments"></div>
 
 <script>
   window.addEventListener('tabs:register', () => {
@@ -513,7 +564,11 @@
   </div>
 
   
-  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.0/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/next-theme/pjax@0/pjax.min.js"></script>
+  <script src="//unpkg.com/medium-zoom@1/dist/medium-zoom.min.js"></script>
+  <script src="//unpkg.com/lozad@1/dist/lozad.min.js"></script>
+  <script src="//unpkg.com/pangu@4/dist/browser/pangu.min.js"></script>
 
 <script src="/js/utils.js"></script>
 
@@ -524,9 +579,42 @@
 
 <script src="/js/bookmark.js"></script>
 
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '.page-configurations',
+    '.main-inner',
+    '.post-toc-wrap',
+    '.languages',
+    '.pjax'
+  ],
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+document.addEventListener('pjax:success', () => {
+  pjax.executeScripts(document.querySelectorAll('script[data-pjax], .pjax script'));
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  const hasTOC = document.querySelector('.post-toc');
+  document.querySelector('.sidebar-inner').classList.toggle('sidebar-nav-active', hasTOC);
+  document.querySelector(hasTOC ? '.sidebar-nav-toc' : '.sidebar-nav-overview').click();
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
 
   
-  <script>
+  <script data-pjax>
     (function(){
       var bp = document.createElement('script');
       var curProtocol = window.location.protocol.split(':')[0];
@@ -539,6 +627,10 @@
 
 
 
+  
+<script src="//unpkg.com/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//unpkg.com/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
 
 
 
@@ -550,9 +642,27 @@
 
 
 
+
+
+
+    <div class="pjax">
   
 
   
 
+
+<script>
+NexT.utils.loadComments('#valine-comments', () => {
+  NexT.utils.getScript('//unpkg.com/valine@1/dist/Valine.min.js', () => {
+    new Valine(Object.assign({
+      el  : '#valine-comments',
+      path: location.pathname,
+    }, {"enable":true,"appId":"S7i1Y8YorMKFPaYbJbekD5el-gzGzoHsz","appKey":"brOnU8mOQvSjpipJvdKUAIbU","placeholder":"写下你的评论...","avatar":"mm","meta":["nick","mail","link"],"pageSize":10,"language":"zh-cn","visitor":false,"comment_count":true,"recordIP":true,"serverURLs":null,"enableQQ":true,"requiredFields":[]}
+    ));
+  }, window.Valine);
+});
+</script>
+
+    </div>
 </body>
 </html>

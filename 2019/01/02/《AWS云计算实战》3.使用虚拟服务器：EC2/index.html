@@ -18,21 +18,23 @@
 <link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css">
   
   <link rel="stylesheet" href="/lib/animate-css/animate.min.css">
+  <link rel="stylesheet" href="//unpkg.com/pace-js@1/themes/blue/pace-theme-minimal.css">
+  <script src="//unpkg.com/pace-js@1/pace.min.js"></script>
 
 <script class="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"andy0570.com","root":"/","scheme":"Gemini","version":"8.0.0-rc.5","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":"mac","bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false};
+    var CONFIG = {"hostname":"andy0570.com","root":"/","scheme":"Gemini","version":"8.0.0-rc.5","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":"mac","bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":true,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":true,"nav":null,"activeClass":"valine"},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"algolia":{"appID":"0E2AON8EZF","apiKey":"22fbefd84c8343239f5c04365b9728de","indexName":"MyBlogPlatform","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}}};
   </script>
 
-  <meta name="description" content="AWS 的弹性计算云（Elastic Compute Cloud，EC2）服务用来提供虚拟服务器。 虚拟服务器是一台物理服务器的一部分。物理服务器通过软件来隔离其上的各个虚拟服务器。一台虚拟服务器由CPU、内存、网络接口和存储组成。物理服务器也称为宿主服务器（host serverguest），其上运行的虚拟服务器称为客户机（guest）。虚拟化管理器（hypervisor）负责孤立各个客户机并调">
+  <meta name="description" content="AWS 的弹性计算云（Elastic Compute Cloud，EC2）服务用来提供虚拟服务器。 虚拟服务器是一台物理服务器的一部分。物理服务器通过软件来隔离其上的各个虚拟服务器。一台虚拟服务器由 CPU、内存、网络接口和存储组成。物理服务器也称为宿主服务器（host serverguest），其上运行的虚拟服务器称为客户机（guest）。虚拟化管理器（hypervisor）负责孤立各个客户机并">
 <meta property="og:type" content="article">
-<meta property="og:title" content="《AWS云计算实战》3.使用虚拟服务器：EC2">
+<meta property="og:title" content="《AWS 云计算实战》3. 使用虚拟服务器：EC2">
 <meta property="og:url" content="https://andy0570.com/2019/01/02/%E3%80%8AAWS%E4%BA%91%E8%AE%A1%E7%AE%97%E5%AE%9E%E6%88%98%E3%80%8B3.%E4%BD%BF%E7%94%A8%E8%99%9A%E6%8B%9F%E6%9C%8D%E5%8A%A1%E5%99%A8%EF%BC%9AEC2/index.html">
 <meta property="og:site_name" content="独木舟的木">
-<meta property="og:description" content="AWS 的弹性计算云（Elastic Compute Cloud，EC2）服务用来提供虚拟服务器。 虚拟服务器是一台物理服务器的一部分。物理服务器通过软件来隔离其上的各个虚拟服务器。一台虚拟服务器由CPU、内存、网络接口和存储组成。物理服务器也称为宿主服务器（host serverguest），其上运行的虚拟服务器称为客户机（guest）。虚拟化管理器（hypervisor）负责孤立各个客户机并调">
+<meta property="og:description" content="AWS 的弹性计算云（Elastic Compute Cloud，EC2）服务用来提供虚拟服务器。 虚拟服务器是一台物理服务器的一部分。物理服务器通过软件来隔离其上的各个虚拟服务器。一台虚拟服务器由 CPU、内存、网络接口和存储组成。物理服务器也称为宿主服务器（host serverguest），其上运行的虚拟服务器称为客户机（guest）。虚拟化管理器（hypervisor）负责孤立各个客户机并">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/080033.jpg">
 <meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/080035.jpg">
@@ -47,7 +49,7 @@
 <link rel="canonical" href="https://andy0570.com/2019/01/02/%E3%80%8AAWS%E4%BA%91%E8%AE%A1%E7%AE%97%E5%AE%9E%E6%88%98%E3%80%8B3.%E4%BD%BF%E7%94%A8%E8%99%9A%E6%8B%9F%E6%9C%8D%E5%8A%A1%E5%99%A8%EF%BC%9AEC2/">
 
 
-<script class="page-configurations">
+<script data-pjax class="page-configurations">
   // https://hexo.io/docs/variables.html
   CONFIG.page = {
     sidebar: "",
@@ -57,10 +59,19 @@
   };
 </script>
 
-  <title>《AWS云计算实战》3.使用虚拟服务器：EC2 | 独木舟的木</title>
+  <title>《AWS 云计算实战》3. 使用虚拟服务器：EC2 | 独木舟的木</title>
   
 
 
+  <script data-pjax>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?8229a094facca297f211d61323fd9fde";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
 
 
 
@@ -130,6 +141,7 @@
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -163,11 +175,35 @@
     <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
 
   </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
   </ul>
 </nav>
 
 
 
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
 
 </div>
           
@@ -199,7 +235,7 @@
       <section class="site-overview-wrap sidebar-panel">
         <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <img class="site-author-image" itemprop="image" alt="独木舟的木"
-      src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+      src="https://static01.imgkr.com/temp/88aab3c08a3f43f5a14f21c6c357c816.JPG">
   <p class="site-author-name" itemprop="name">独木舟的木</p>
   <div class="site-description" itemprop="description">生若直木，不语斧凿。</div>
 </div>
@@ -280,7 +316,7 @@
     <link itemprop="mainEntityOfPage" href="https://andy0570.com/2019/01/02/%E3%80%8AAWS%E4%BA%91%E8%AE%A1%E7%AE%97%E5%AE%9E%E6%88%98%E3%80%8B3.%E4%BD%BF%E7%94%A8%E8%99%9A%E6%8B%9F%E6%9C%8D%E5%8A%A1%E5%99%A8%EF%BC%9AEC2/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+      <meta itemprop="image" content="https://static01.imgkr.com/temp/88aab3c08a3f43f5a14f21c6c357c816.JPG">
       <meta itemprop="name" content="独木舟的木">
       <meta itemprop="description" content="生若直木，不语斧凿。">
     </span>
@@ -292,7 +328,7 @@
     
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          《AWS云计算实战》3.使用虚拟服务器：EC2
+          《AWS 云计算实战》3. 使用虚拟服务器：EC2
         </h1>
 
         <div class="post-meta">
@@ -321,7 +357,21 @@
                 </span>
             </span>
 
-          <br>
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2019/01/02/%E3%80%8AAWS%E4%BA%91%E8%AE%A1%E7%AE%97%E5%AE%9E%E6%88%98%E3%80%8B3.%E4%BD%BF%E7%94%A8%E8%99%9A%E6%8B%9F%E6%9C%8D%E5%8A%A1%E5%99%A8%EF%BC%9AEC2/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2019/01/02/%E3%80%8AAWS%E4%BA%91%E8%AE%A1%E7%AE%97%E5%AE%9E%E6%88%98%E3%80%8B3.%E4%BD%BF%E7%94%A8%E8%99%9A%E6%8B%9F%E6%9C%8D%E5%8A%A1%E5%99%A8%EF%BC%9AEC2/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  <br>
             <span class="post-meta-item" title="本文字数">
               <span class="post-meta-item-icon">
                 <i class="far fa-file-word"></i>
@@ -345,7 +395,7 @@
     
     <div class="post-body" itemprop="articleBody">
         <p>AWS 的<strong>弹性计算云</strong>（Elastic Compute Cloud，EC2）服务用来提供虚拟服务器。</p>
-<p>虚拟服务器是一台物理服务器的一部分。物理服务器通过软件来隔离其上的各个虚拟服务器。一台虚拟服务器由CPU、内存、网络接口和存储组成。物理服务器也称为<strong>宿主服务器</strong>（host serverguest），其上运行的虚拟服务器称为<strong>客户机</strong>（guest）。<strong>虚拟化管理器</strong>（hypervisor）负责孤立各个客户机并调度它们对硬件的请求。</p>
+<p>虚拟服务器是一台物理服务器的一部分。物理服务器通过软件来隔离其上的各个虚拟服务器。一台虚拟服务器由 CPU、内存、网络接口和存储组成。物理服务器也称为<strong>宿主服务器</strong>（host serverguest），其上运行的虚拟服务器称为<strong>客户机</strong>（guest）。<strong>虚拟化管理器</strong>（hypervisor）负责孤立各个客户机并调度它们对硬件的请求。</p>
 <ul>
 <li>AWS 使用 Xen，一个开源的虚拟机管理程序，作为 EC2 服务的底层技术。</li>
 <li>HVM 是最新也是最快的虚拟化类型，HVM 技术是使用硬件辅助的虚拟化技术。</li>
@@ -367,20 +417,20 @@
 </li>
 </ol>
 <h2 id="2⃣️-连接到虚拟服务器"><a href="#2⃣️-连接到虚拟服务器" class="headerlink" title="2⃣️ 连接到虚拟服务器"></a>2⃣️ 连接到虚拟服务器</h2><p>创建一个免费实例，使用 SSH 方式远程连接到实例：</p>
-<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/080033.jpg" alt="连接到实例"></p>
+<p><img data-src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/080033.jpg" alt="连接到实例"></p>
 <h2 id="3⃣️-安装和运行软件"><a href="#3⃣️-安装和运行软件" class="headerlink" title="3⃣️ 安装和运行软件"></a>3⃣️ 安装和运行软件</h2><p>使用程序包管理软件 apt 下载和安装软件。<br>略。。。</p>
 <h2 id="4⃣️-监控和调试虚拟服务器"><a href="#4⃣️-监控和调试虚拟服务器" class="headerlink" title="4⃣️ 监控和调试虚拟服务器"></a>4⃣️ 监控和调试虚拟服务器</h2><h3 id="4-1-显示虚拟服务器的日志"><a href="#4-1-显示虚拟服务器的日志" class="headerlink" title="4.1 显示虚拟服务器的日志"></a>4.1 显示虚拟服务器的日志</h3><p>在 Web 管理控制台上查看服务器的日志：【操作】- 【实例设置】- 【获取系统日志】：</p>
-<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/080035.jpg" alt="查看服务器日志"></p>
+<p><img data-src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/080035.jpg" alt="查看服务器日志"></p>
 <h3 id="4-2-监控虚拟服务器的负载"><a href="#4-2-监控虚拟服务器的负载" class="headerlink" title="4.2 监控虚拟服务器的负载"></a>4.2 监控虚拟服务器的负载</h3><p>2.1 在 Web 管理控制台上查看服务器的负载情况：选择【监控】标签页，查看 CloudWatch 监控指标。</p>
 <p>2.2 在控制台查看虚拟服务器的 CPU 和内存信息</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> cat /proc/cpuinfo <span class="comment"># 查看 CPU</span></span></span><br><span class="line">processor    : 0</span><br><span class="line">vendor_id    : GenuineIntel</span><br><span class="line">cpu family    : 6</span><br><span class="line">model        : 63</span><br><span class="line">model name    : Intel(R) Xeon(R) CPU E5-2676 v3 @ 2.40GHz</span><br><span class="line">stepping    : 2</span><br><span class="line">microcode    : 0x3c</span><br><span class="line">cpu MHz        : 2400.062</span><br><span class="line">cache size    : 30720 KB</span><br><span class="line">physical id    : 0</span><br><span class="line">siblings    : 1</span><br><span class="line">core id        : 0</span><br><span class="line">cpu cores    : 1</span><br><span class="line">apicid        : 0</span><br><span class="line">initial apicid    : 0</span><br><span class="line">fpu        : yes</span><br><span class="line">fpu_exception    : yes</span><br><span class="line">cpuid level    : 13</span><br><span class="line">wp        : yes</span><br><span class="line">flags        : fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx rdtscp lm constant_tsc rep_good nopl xtopology eagerfpu pni pclmulqdq ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm abm invpcid_single kaiser fsgsbase bmi1 avx2 smep bmi2 erms invpcid xsaveopt</span><br><span class="line">bugs        : cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf</span><br><span class="line">bogomips    : 4800.12</span><br><span class="line">clflush size    : 64</span><br><span class="line">cache_alignment    : 64</span><br><span class="line">address sizes    : 46 bits physical, 48 bits virtual</span><br><span class="line">power management:</span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> free -m <span class="comment"># 查看内存信息</span></span></span><br><span class="line">              total        used        free      shared  buff/cache   available</span><br><span class="line">Mem:            990         664          85          11         240         130</span><br><span class="line">Swap:             0           0           0</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> cat /proc/cpuinfo <span class="comment"># 查看 CPU</span></span></span><br><span class="line">processor    : 0</span><br><span class="line">vendor_id    : GenuineIntel</span><br><span class="line">cpu family    : 6</span><br><span class="line">model        : 63</span><br><span class="line">model name    : Intel(R) Xeon(R) CPU E5-2676 v3 @ 2.40GHz</span><br><span class="line">stepping    : 2</span><br><span class="line">microcode    : 0x3c</span><br><span class="line">cpu MHz        : 2400.062</span><br><span class="line">cache size    : 30720 KB</span><br><span class="line">physical id    : 0</span><br><span class="line">siblings    : 1</span><br><span class="line">core id        : 0</span><br><span class="line">cpu cores    : 1</span><br><span class="line">apicid        : 0</span><br><span class="line">initial apicid    : 0</span><br><span class="line">fpu        : yes</span><br><span class="line">fpu_exception    : yes</span><br><span class="line">cpuid level    : 13</span><br><span class="line">wp        : yes</span><br><span class="line">flags        : fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx rdtscp lm constant_tsc rep_good nopl xtopology eagerfpu pni pclmulqdq ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm abm invpcid_single kaiser fsgsbase bmi1 avx2 smep bmi2 erms invpcid xsaveopt</span><br><span class="line">bugs        : cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf</span><br><span class="line">bogomips    : 4800.12</span><br><span class="line">clflush size    : 64</span><br><span class="line">cache_alignment    : 64</span><br><span class="line">address sizes    : 46 bits physical, 48 bits virtual</span><br><span class="line">power management:</span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> free -m <span class="comment"># 查看内存信息</span></span></span><br><span class="line">              total        used        free      shared  buff/cache   available</span><br><span class="line">Mem:            990         664          85          11         240         130</span><br><span class="line">Swap:             0           0           0</span><br></pre></td></tr></tbody></table></figure>
 
 <h2 id="5⃣️-更改虚拟服务器的容量"><a href="#5⃣️-更改虚拟服务器的容量" class="headerlink" title="5⃣️ 更改虚拟服务器的容量"></a>5⃣️ 更改虚拟服务器的容量</h2><p>要调整的虚拟服务器的容量，首先需要先<strong>停止</strong>（⚠️ 「停止」不是「终止」）正在运行的实例，然后再<strong>更改实例类型</strong>。</p>
 <h2 id="6⃣️-在另一个数据中心开启虚拟服务器"><a href="#6⃣️-在另一个数据中心开启虚拟服务器" class="headerlink" title="6⃣️ 在另一个数据中心开启虚拟服务器"></a>6⃣️ 在另一个数据中心开启虚拟服务器</h2><ul>
 <li>AWS 为全球提供数据中心，要使互联网上的请求获得低延迟，为主要用户选择一个最近的数据中心是很重要的。</li>
 <li>AWS 的各个区域间是完全独立的。典型情况下，一个区域由两个或更多位于同一地区的数据中心组成。</li>
 </ul>
-<h2 id="7⃣️-分配一个公有-IP-地址"><a href="#7⃣️-分配一个公有-IP-地址" class="headerlink" title="7⃣️ 分配一个公有 IP 地址"></a>7⃣️ 分配一个公有 IP 地址</h2><p>每个虚拟服务器都会自动连接到一个公有IP地址。但是，每次启动或停止一台虚拟服务器，公有IP地址就改变了。如果想要用一个固定IP地址运行一个应用程序，这样做就不可行了。AWS提供一项服务叫作<strong>弹性IP地址（Elastic IP address）</strong>来<strong>分配固定的公有 IP 地址</strong>。</p>
+<h2 id="7⃣️-分配一个公有-IP-地址"><a href="#7⃣️-分配一个公有-IP-地址" class="headerlink" title="7⃣️ 分配一个公有 IP 地址"></a>7⃣️ 分配一个公有 IP 地址</h2><p>每个虚拟服务器都会自动连接到一个公有 IP 地址。但是，每次启动或停止一台虚拟服务器，公有 IP 地址就改变了。如果想要用一个固定 IP 地址运行一个应用程序，这样做就不可行了。AWS 提供一项服务叫作<strong>弹性 IP 地址（Elastic IP address）</strong>来<strong>分配固定的公有 IP 地址</strong>。</p>
 <p>在默认情况下，所有 AWS 账户在每个区域最多可拥有五 (5) 个弹性 IP 地址，因为公有 (IPv4) Internet 地址是稀缺的公共资源。我们大大鼓励您主要使用弹性 IP 地址，以便在实例发生故障的情况下能够将该地址映射到另一实例，并能够将 DNS 主机名用于所有其他节点间通信。</p>
 <blockquote>
 <p>⚠️</p>
@@ -389,9 +439,9 @@
 <p>参考：<span class="exturl" data-url="aHR0cHM6Ly9kb2NzLmF3cy5hbWF6b24uY29tL3poX2NuL0FXU0VDMi9sYXRlc3QvVXNlckd1aWRlL2VsYXN0aWMtaXAtYWRkcmVzc2VzLWVpcC5odG1s">AWS 文档：弹性 IP 地址<i class="fa fa-external-link-alt"></i></span></p>
 <h2 id="8⃣️-向虚拟服务器添加额外的网络接口"><a href="#8⃣️-向虚拟服务器添加额外的网络接口" class="headerlink" title="8⃣️ 向虚拟服务器添加额外的网络接口"></a>8⃣️ 向虚拟服务器添加额外的网络接口</h2><p>用户可以向一台虚拟服务器添加多个网络接口，并且控制关联到这些网络接口的私有 IP 地址和公有 IP 地址。用户可以使用额外的网络接口关联第二个公有 IP 地址到自己的虚拟服务器上。</p>
 <p>可以让一台虚拟服务器通过两个不同的公有 IP 地址来访问，这样就可以根据公有 IP 地址提供两个不同的网站服务：</p>
-<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/080038.jpg" alt="多个网络接口"></p>
+<p><img data-src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/080038.jpg" alt="多个网络接口"></p>
 <p>命令行查看附加的网络接口：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ifconfig</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ifconfig</span><br></pre></td></tr></tbody></table></figure>
 
 <h2 id="9⃣️-优化虚拟服务器的开销"><a href="#9⃣️-优化虚拟服务器的开销" class="headerlink" title="9⃣️ 优化虚拟服务器的开销"></a>9⃣️ 优化虚拟服务器的开销</h2><table>
 <thead>
@@ -423,7 +473,7 @@
 </tbody></table>
 <blockquote>
 <p>💡</p>
-<p>用户如果使用预留实例（全部前期费用，3年试用期），相比按需实例，最多可节省 60% 的费用。</p>
+<p>用户如果使用预留实例（全部前期费用，3 年试用期），相比按需实例，最多可节省 60% 的费用。</p>
 <p>预留实例以灵活性换取成本减少。</p>
 <p>推荐：开始时使用按需服务器，然后切换到按需与预留服务器混合的模式！</p>
 <hr>
@@ -444,7 +494,7 @@
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="https://andy0570.com/2019/01/02/%E3%80%8AAWS%E4%BA%91%E8%AE%A1%E7%AE%97%E5%AE%9E%E6%88%98%E3%80%8B3.%E4%BD%BF%E7%94%A8%E8%99%9A%E6%8B%9F%E6%9C%8D%E5%8A%A1%E5%99%A8%EF%BC%9AEC2/" title="《AWS云计算实战》3.使用虚拟服务器：EC2">https://andy0570.com/2019/01/02/《AWS云计算实战》3.使用虚拟服务器：EC2/</a>
+    <a href="https://andy0570.com/2019/01/02/%E3%80%8AAWS%E4%BA%91%E8%AE%A1%E7%AE%97%E5%AE%9E%E6%88%98%E3%80%8B3.%E4%BD%BF%E7%94%A8%E8%99%9A%E6%8B%9F%E6%9C%8D%E5%8A%A1%E5%99%A8%EF%BC%9AEC2/" title="《AWS 云计算实战》3. 使用虚拟服务器：EC2">https://andy0570.com/2019/01/02/《AWS云计算实战》3.使用虚拟服务器：EC2/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <span class="exturl" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpo"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</span> 许可协议。转载请注明出处！
@@ -487,8 +537,8 @@
       <i class="fa fa-chevron-left"></i> 各厂商云服务费用调查
     </a></div>
       <div class="post-nav-item">
-    <a href="/2019/01/03/%E3%80%8AAWS%E4%BA%91%E8%AE%A1%E7%AE%97%E5%AE%9E%E6%88%98%E3%80%8B4.%E7%BC%96%E5%86%99%E5%9F%BA%E7%A1%80%E6%9E%B6%E6%9E%84%EF%BC%9A%E5%91%BD%E4%BB%A4%E8%A1%8C%E3%80%81SDK%20%E5%92%8C%20CloudFormation/" rel="next" title="《AWS云计算实战》4.编写基础架构：命令行、SDK 和 CloudFormation">
-      《AWS云计算实战》4.编写基础架构：命令行、SDK 和 CloudFormation <i class="fa fa-chevron-right"></i>
+    <a href="/2019/01/03/%E3%80%8AAWS%E4%BA%91%E8%AE%A1%E7%AE%97%E5%AE%9E%E6%88%98%E3%80%8B4.%E7%BC%96%E5%86%99%E5%9F%BA%E7%A1%80%E6%9E%B6%E6%9E%84%EF%BC%9A%E5%91%BD%E4%BB%A4%E8%A1%8C%E3%80%81SDK%20%E5%92%8C%20CloudFormation/" rel="next" title="《AWS 云计算实战》4. 编写基础架构：命令行、SDK 和 CloudFormation">
+      《AWS 云计算实战》4. 编写基础架构：命令行、SDK 和 CloudFormation <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -502,6 +552,7 @@
 
         </div>
         
+    <div class="comments" id="valine-comments"></div>
 
 <script>
   window.addEventListener('tabs:register', () => {
@@ -570,7 +621,11 @@
   </div>
 
   
-  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.0/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/next-theme/pjax@0/pjax.min.js"></script>
+  <script src="//unpkg.com/medium-zoom@1/dist/medium-zoom.min.js"></script>
+  <script src="//unpkg.com/lozad@1/dist/lozad.min.js"></script>
+  <script src="//unpkg.com/pangu@4/dist/browser/pangu.min.js"></script>
 
 <script src="/js/utils.js"></script>
 
@@ -581,9 +636,42 @@
 
 <script src="/js/bookmark.js"></script>
 
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '.page-configurations',
+    '.main-inner',
+    '.post-toc-wrap',
+    '.languages',
+    '.pjax'
+  ],
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+document.addEventListener('pjax:success', () => {
+  pjax.executeScripts(document.querySelectorAll('script[data-pjax], .pjax script'));
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  const hasTOC = document.querySelector('.post-toc');
+  document.querySelector('.sidebar-inner').classList.toggle('sidebar-nav-active', hasTOC);
+  document.querySelector(hasTOC ? '.sidebar-nav-toc' : '.sidebar-nav-overview').click();
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
 
   
-  <script>
+  <script data-pjax>
     (function(){
       var bp = document.createElement('script');
       var curProtocol = window.location.protocol.split(':')[0];
@@ -596,6 +684,10 @@
 
 
 
+  
+<script src="//unpkg.com/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//unpkg.com/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
 
 
 
@@ -607,9 +699,27 @@
 
 
 
+
+
+
+    <div class="pjax">
   
 
   
 
+
+<script>
+NexT.utils.loadComments('#valine-comments', () => {
+  NexT.utils.getScript('//unpkg.com/valine@1/dist/Valine.min.js', () => {
+    new Valine(Object.assign({
+      el  : '#valine-comments',
+      path: location.pathname,
+    }, {"enable":true,"appId":"S7i1Y8YorMKFPaYbJbekD5el-gzGzoHsz","appKey":"brOnU8mOQvSjpipJvdKUAIbU","placeholder":"写下你的评论...","avatar":"mm","meta":["nick","mail","link"],"pageSize":10,"language":"zh-cn","visitor":false,"comment_count":true,"recordIP":true,"serverURLs":null,"enableQQ":true,"requiredFields":[]}
+    ));
+  }, window.Valine);
+});
+</script>
+
+    </div>
 </body>
 </html>

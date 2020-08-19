@@ -18,21 +18,23 @@
 <link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css">
   
   <link rel="stylesheet" href="/lib/animate-css/animate.min.css">
+  <link rel="stylesheet" href="//unpkg.com/pace-js@1/themes/blue/pace-theme-minimal.css">
+  <script src="//unpkg.com/pace-js@1/pace.min.js"></script>
 
 <script class="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"andy0570.com","root":"/","scheme":"Gemini","version":"8.0.0-rc.5","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":"mac","bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false};
+    var CONFIG = {"hostname":"andy0570.com","root":"/","scheme":"Gemini","version":"8.0.0-rc.5","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":"mac","bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":true,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":true,"nav":null,"activeClass":"valine"},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"algolia":{"appID":"0E2AON8EZF","apiKey":"22fbefd84c8343239f5c04365b9728de","indexName":"MyBlogPlatform","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}}};
   </script>
 
-  <meta name="description" content="方法调用OC语言中采用特定的语言调用类或者实例(对象)的方法称为发送消息或方法调用。    1234&#x2F;&#x2F; 方法调用格式：[对象 方法名];[Person1 shopping];   &#x2F;&#x2F; 调用带参数的方法 [Person2 goshopping:200.0];">
+  <meta name="description" content="方法调用OC 语言中采用特定的语言调用类或者实例 (对象) 的方法称为发送消息或方法调用。    1234&#x2F;&#x2F; 方法调用格式：[对象 方法名];[Person1 shopping];   &#x2F;&#x2F; 调用带参数的方法 [Person2 goshopping:200.0];">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Objective-C_方法调用">
 <meta property="og:url" content="https://andy0570.com/2016/08/08/Objective-C_%E6%96%B9%E6%B3%95%E8%B0%83%E7%94%A8/index.html">
 <meta property="og:site_name" content="独木舟的木">
-<meta property="og:description" content="方法调用OC语言中采用特定的语言调用类或者实例(对象)的方法称为发送消息或方法调用。    1234&#x2F;&#x2F; 方法调用格式：[对象 方法名];[Person1 shopping];   &#x2F;&#x2F; 调用带参数的方法 [Person2 goshopping:200.0];">
+<meta property="og:description" content="方法调用OC 语言中采用特定的语言调用类或者实例 (对象) 的方法称为发送消息或方法调用。    1234&#x2F;&#x2F; 方法调用格式：[对象 方法名];[Person1 shopping];   &#x2F;&#x2F; 调用带参数的方法 [Person2 goshopping:200.0];">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2016-08-08T02:48:00.000Z">
 <meta property="article:modified_time" content="2019-05-01T15:04:34.000Z">
@@ -44,7 +46,7 @@
 <link rel="canonical" href="https://andy0570.com/2016/08/08/Objective-C_%E6%96%B9%E6%B3%95%E8%B0%83%E7%94%A8/">
 
 
-<script class="page-configurations">
+<script data-pjax class="page-configurations">
   // https://hexo.io/docs/variables.html
   CONFIG.page = {
     sidebar: "",
@@ -58,6 +60,15 @@
   
 
 
+  <script data-pjax>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?8229a094facca297f211d61323fd9fde";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
 
 
 
@@ -127,6 +138,7 @@
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -160,11 +172,35 @@
     <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
 
   </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
   </ul>
 </nav>
 
 
 
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
 
 </div>
           
@@ -189,14 +225,14 @@
 
       <!--noindex-->
       <section class="post-toc-wrap sidebar-panel">
-          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%B9%E6%B3%95%E8%B0%83%E7%94%A8"><span class="nav-number">1.</span> <span class="nav-text">方法调用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#set%E3%80%81get%E6%96%B9%E6%B3%95"><span class="nav-number">2.</span> <span class="nav-text">set、get方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B0%83%E7%94%A8"><span class="nav-number">3.</span> <span class="nav-text">调用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9D%E5%A7%8B%E5%8C%96%E6%96%B9%E6%B3%95"><span class="nav-number">4.</span> <span class="nav-text">初始化方法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%87%AA%E5%AE%9A%E4%B9%89%E5%88%9D%E5%A7%8B%E5%8C%96%E6%96%B9%E6%B3%95%E7%9A%84%E5%AE%9E%E7%8E%B0"><span class="nav-number">4.1.</span> <span class="nav-text">自定义初始化方法的实现</span></a></li></ol></li></ol></div>
+          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%B9%E6%B3%95%E8%B0%83%E7%94%A8"><span class="nav-number">1.</span> <span class="nav-text">方法调用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#set%E3%80%81get%E6%96%B9%E6%B3%95"><span class="nav-number">2.</span> <span class="nav-text">set、get 方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B0%83%E7%94%A8"><span class="nav-number">3.</span> <span class="nav-text">调用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9D%E5%A7%8B%E5%8C%96%E6%96%B9%E6%B3%95"><span class="nav-number">4.</span> <span class="nav-text">初始化方法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%87%AA%E5%AE%9A%E4%B9%89%E5%88%9D%E5%A7%8B%E5%8C%96%E6%96%B9%E6%B3%95%E7%9A%84%E5%AE%9E%E7%8E%B0"><span class="nav-number">4.1.</span> <span class="nav-text">自定义初始化方法的实现</span></a></li></ol></li></ol></div>
       </section>
       <!--/noindex-->
 
       <section class="site-overview-wrap sidebar-panel">
         <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <img class="site-author-image" itemprop="image" alt="独木舟的木"
-      src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+      src="https://static01.imgkr.com/temp/88aab3c08a3f43f5a14f21c6c357c816.JPG">
   <p class="site-author-name" itemprop="name">独木舟的木</p>
   <div class="site-description" itemprop="description">生若直木，不语斧凿。</div>
 </div>
@@ -277,7 +313,7 @@
     <link itemprop="mainEntityOfPage" href="https://andy0570.com/2016/08/08/Objective-C_%E6%96%B9%E6%B3%95%E8%B0%83%E7%94%A8/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+      <meta itemprop="image" content="https://static01.imgkr.com/temp/88aab3c08a3f43f5a14f21c6c357c816.JPG">
       <meta itemprop="name" content="独木舟的木">
       <meta itemprop="description" content="生若直木，不语斧凿。">
     </span>
@@ -318,7 +354,21 @@
                 </span>
             </span>
 
-          <br>
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2016/08/08/Objective-C_%E6%96%B9%E6%B3%95%E8%B0%83%E7%94%A8/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2016/08/08/Objective-C_%E6%96%B9%E6%B3%95%E8%B0%83%E7%94%A8/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  <br>
             <span class="post-meta-item" title="本文字数">
               <span class="post-meta-item-icon">
                 <i class="far fa-file-word"></i>
@@ -341,55 +391,55 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <h3 id="方法调用"><a href="#方法调用" class="headerlink" title="方法调用"></a>方法调用</h3><p>OC语言中采用特定的语言调用类或者实例(对象)的方法称为<strong>发送消息</strong>或<strong>方法调用</strong>。   </p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 方法调用格式：[对象 方法名];</span><br><span class="line">[Person1 shopping];   </span><br><span class="line">&#x2F;&#x2F; 调用带参数的方法 </span><br><span class="line">[Person2 goshopping:200.0]; </span><br></pre></td></tr></table></figure>
+        <h3 id="方法调用"><a href="#方法调用" class="headerlink" title="方法调用"></a>方法调用</h3><p>OC 语言中采用特定的语言调用类或者实例 (对象) 的方法称为<strong>发送消息</strong>或<strong>方法调用</strong>。   </p>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">// 方法调用格式：[对象 方法名];</span><br><span class="line">[Person1 shopping];   </span><br><span class="line">// 调用带参数的方法 </span><br><span class="line">[Person2 goshopping:200.0]; </span><br></pre></td></tr></tbody></table></figure>
 
 <a id="more"></a>
 
-<h3 id="set、get方法"><a href="#set、get方法" class="headerlink" title="set、get方法"></a>set、get方法</h3><p>set、get方法用来访问和修改对象里面的属性值。</p>
+<h3 id="set、get方法"><a href="#set、get方法" class="headerlink" title="set、get方法"></a>set、get 方法</h3><p>set、get 方法用来访问和修改对象里面的属性值。</p>
 <ul>
-<li>set方法是对某一个属性设值。</li>
-<li>get方法是获取某一个属性值。<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;1.定义设置器方法   </span><br><span class="line">&#x2F;&#x2F;年龄的设置器方法：给对象的年龄设置的   </span><br><span class="line">-(void)setAge:(NSInteger)age;   </span><br><span class="line">-(void)setName:(NSString *)name;   </span><br><span class="line">-(void)setWeight:(float)weight;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;2.定义多个参数的设置器方法   </span><br><span class="line">&#x2F;&#x2F;方法名：setName:setAge:setweight:   </span><br><span class="line">-(void)setAge:(NSInteger)age   setName:(NSString *)name   setWeight:(float)weight;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;3.定义访问器方法   </span><br><span class="line">&#x2F;&#x2F;访问器方法：用于访问对象的属性值   </span><br><span class="line">&#x2F;&#x2F;OC里的命名规范:get方法名不需要加get前缀   </span><br><span class="line">-(NSInteger)age;   </span><br><span class="line">-(NSString *)name;</span><br></pre></td></tr></table></figure>
+<li>set 方法是对某一个属性设值。</li>
+<li>get 方法是获取某一个属性值。<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">//1.定义设置器方法   </span><br><span class="line">//年龄的设置器方法：给对象的年龄设置的   </span><br><span class="line">-(void)setAge:(NSInteger)age;   </span><br><span class="line">-(void)setName:(NSString *)name;   </span><br><span class="line">-(void)setWeight:(float)weight;</span><br><span class="line"></span><br><span class="line">//2.定义多个参数的设置器方法   </span><br><span class="line">//方法名：setName:setAge:setweight:   </span><br><span class="line">-(void)setAge:(NSInteger)age   setName:(NSString *)name   setWeight:(float)weight;</span><br><span class="line"></span><br><span class="line">//3.定义访问器方法   </span><br><span class="line">//访问器方法：用于访问对象的属性值   </span><br><span class="line">//OC里的命名规范:get方法名不需要加get前缀   </span><br><span class="line">-(NSInteger)age;   </span><br><span class="line">-(NSString *)name;</span><br></pre></td></tr></tbody></table></figure>
 
 </li>
 </ul>
 <h3 id="调用"><a href="#调用" class="headerlink" title="调用"></a>调用</h3><p>在类的外部如：<em>main.m</em> 文件中想要给对象设置属性，要通过调用相应的设置器方法</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 格式：[对象 方法名]</span><br><span class="line">&#x2F;&#x2F; set 方法</span><br><span class="line">[Person setAge:34];   </span><br><span class="line">[Person setName:@&quot;张三&quot;];   </span><br><span class="line">[Person setWeight:80];&lt;br &#x2F;&gt;    </span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; get 方法  </span><br><span class="line">&#x2F;&#x2F; 用age变量接收调用的方法返回值   </span><br><span class="line">NSInteger age &#x3D; [Person age ];   </span><br><span class="line">NSLog(@&quot;person的年龄：%ld&quot;,age);   </span><br><span class="line">NSString *name &#x3D; [Person name];   </span><br><span class="line">NSLog(@&quot;person的名字：%@&quot;,name);   </span><br><span class="line">    </span><br><span class="line">&#x2F;&#x2F; 点语法</span><br><span class="line">&#x2F;&#x2F;点语法只能调用 set 和 get 方法</span><br><span class="line">Person.age &#x3D; 34;   &#x2F;&#x2F;等效于 [Person setAge:34]; </span><br><span class="line">NSInteger age &#x3D; Person.age; &#x2F;&#x2F;等效于 NSInteger age &#x3D; [Person age ]; </span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">// 格式：[对象 方法名]</span><br><span class="line">// set 方法</span><br><span class="line">[Person setAge:34];   </span><br><span class="line">[Person setName:@"张三"];   </span><br><span class="line">[Person setWeight:80];&lt;br /&gt;    </span><br><span class="line"></span><br><span class="line">// get 方法  </span><br><span class="line">// 用age变量接收调用的方法返回值   </span><br><span class="line">NSInteger age = [Person age ];   </span><br><span class="line">NSLog(@"person的年龄：%ld",age);   </span><br><span class="line">NSString *name = [Person name];   </span><br><span class="line">NSLog(@"person的名字：%@",name);   </span><br><span class="line">    </span><br><span class="line">// 点语法</span><br><span class="line">//点语法只能调用 set 和 get 方法</span><br><span class="line">Person.age = 34;   //等效于 [Person setAge:34]; </span><br><span class="line">NSInteger age = Person.age; //等效于 NSInteger age = [Person age ]; </span><br></pre></td></tr></tbody></table></figure>
 
 <ul>
-<li>字符串<br>  OC中字符串都是以@开头的,比如@<code>&quot;Hello&quot;</code>是OC中的字符串。</li>
-<li>控制台打印<br>   C语言中使用<code>printf(&quot;Hello&quot;)</code>打印字符串, OC中使用NSLog函数打印字符串:<code>NSLog(@&quot;Hello&quot;)</code>;</li>
-<li>把一个对象使用%@打印，实际上是调用了此对象的description，然后取的此方法的返回值打印。   <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">NSLog(@&quot;%@&quot;,book);     </span><br><span class="line">&#x2F;&#x2F;与下面的方法等价       </span><br><span class="line">NSString *desc &#x3D; [book description];        </span><br><span class="line">NSLog(@&quot;%@&quot;,desc); </span><br></pre></td></tr></table></figure>
+<li>字符串<br>  OC 中字符串都是以 @开头的，比如 @<code>"Hello"</code> 是 OC 中的字符串。</li>
+<li>控制台打印<br>   C 语言中使用 <code>printf("Hello")</code> 打印字符串，OC 中使用 NSLog 函数打印字符串:<code>NSLog(@"Hello")</code>;</li>
+<li> 把一个对象使用 %@打印，实际上是调用了此对象的 description，然后取的此方法的返回值打印。   <figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">NSLog(@"%@",book);     </span><br><span class="line">//与下面的方法等价       </span><br><span class="line">NSString *desc = [book description];        </span><br><span class="line">NSLog(@"%@",desc); </span><br></pre></td></tr></tbody></table></figure>
 
 
 </li>
 </ul>
 <h3 id="初始化方法"><a href="#初始化方法" class="headerlink" title="初始化方法"></a>初始化方法</h3><ul>
-<li>对象必须先创建,然后初始化,才能使用。如：<code>NSObject *object = [[NSObject alloc] init];</code>；</li>
-<li>OC中的对象通过指针来声明。如：<code>Person *p</code> ；</li>
-<li>初始化方法，是创建对象alloc之后调用，并且只能调用一次；</li>
-<li>方法名必须以init开头；</li>
-<li>返回值类型是id类型；<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;自定义初始化方法，将姓名传入   </span><br><span class="line">- (id)initWithName:(NSString *)name;</span><br><span class="line">&#x2F;&#x2F;多个参数的初始化方法的定义   </span><br><span class="line">- (id)initWithName:(NSString *)name WithAge:(NSInteger)age;</span><br></pre></td></tr></table></figure>
+<li>对象必须先创建，然后初始化，才能使用。如：<code>NSObject *object = [[NSObject alloc] init];</code>；</li>
+<li>OC 中的对象通过指针来声明。如：<code>Person *p</code> ；</li>
+<li>初始化方法，是创建对象 alloc 之后调用，并且只能调用一次；</li>
+<li>方法名必须以 init 开头；</li>
+<li>返回值类型是 id 类型；<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">//自定义初始化方法，将姓名传入   </span><br><span class="line">- (id)initWithName:(NSString *)name;</span><br><span class="line">//多个参数的初始化方法的定义   </span><br><span class="line">- (id)initWithName:(NSString *)name WithAge:(NSInteger)age;</span><br></pre></td></tr></tbody></table></figure>
 
 
 </li>
 </ul>
-<h4 id="自定义初始化方法的实现"><a href="#自定义初始化方法的实现" class="headerlink" title="自定义初始化方法的实现"></a>自定义初始化方法的实现</h4><p>在<strong>init方法</strong>中,若要父类完成所需的一次性初始化,需要调用<code>[super init]</code>,init方法返回的值,描述了被初始化的对象。<br>将<code>[super init]</code>的结果赋给<code>self</code>是<strong>Objective-C</strong>的标准惯例,这么做是为了防止父类在初始化过程中返回的对象不同于原先创建的对象。</p>
-<pre><code>- (id)initWithName:(NSString *)name&#123;
+<h4 id="自定义初始化方法的实现"><a href="#自定义初始化方法的实现" class="headerlink" title="自定义初始化方法的实现"></a>自定义初始化方法的实现</h4><p>在 <strong>init 方法</strong>中，若要父类完成所需的一次性初始化，需要调用 <code>[super init]</code>,init 方法返回的值，描述了被初始化的对象。<br>将 <code>[super init]</code> 的结果赋给 <code>self</code> 是 <strong>Objective-C</strong> 的标准惯例，这么做是为了防止父类在初始化过程中返回的对象不同于原先创建的对象。</p>
+<pre><code>- (id)initWithName:(NSString *)name{
 //使用super可以调用父类中定义的方法
 self = [super init];
-if (self) &#123;
+if (self) {
     //赋值
     _name = name;
-&#125; 
+} 
 return self;</code></pre>
 <p>}</p>
-<p>####调用初始化方法</p>
+<p>#### 调用初始化方法</p>
 <pre><code>Person *p1 = [[Person alloc] init];
-Person *p2 = [[Person alloc] initWithName:@&quot;jack&quot;];
-Person *p3 = [[Person alloc] initWithName:@&quot;Tom&quot; WithAge:22];</code></pre>
-<p><strong>initWithCString</strong>: c语言的字符串转换成OC的字符串   </p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">NSString *outputValue &#x3D; [[NSString alloc] initWithCString:inputValue encoding: NSUTF8StringEncoding];</span><br></pre></td></tr></table></figure>
+Person *p2 = [[Person alloc] initWithName:@"jack"];
+Person *p3 = [[Person alloc] initWithName:@"Tom" WithAge:22];</code></pre>
+<p><strong>initWithCString</strong>: c 语言的字符串转换成 OC 的字符串   </p>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">NSString *outputValue = [[NSString alloc] initWithCString:inputValue encoding: NSUTF8StringEncoding];</span><br></pre></td></tr></tbody></table></figure>
 
     </div>
 
@@ -445,8 +495,8 @@ Person *p3 = [[Person alloc] initWithName:@&quot;Tom&quot; WithAge:22];</code></
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2016/08/08/Objective-C_%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E2%80%94%E5%B0%81%E8%A3%85%E3%80%81%E7%BB%A7%E6%89%BF%E3%80%81%E5%A4%9A%E6%80%81/" rel="prev" title="Objective-C_面向对象—封装、继承、多态">
-      <i class="fa fa-chevron-left"></i> Objective-C_面向对象—封装、继承、多态
+    <a href="/2016/08/08/Objective-C_%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E2%80%94%E5%B0%81%E8%A3%85%E3%80%81%E7%BB%A7%E6%89%BF%E3%80%81%E5%A4%9A%E6%80%81/" rel="prev" title="Objective-C_面向对象 — 封装、继承、多态">
+      <i class="fa fa-chevron-left"></i> Objective-C_面向对象 — 封装、继承、多态
     </a></div>
       <div class="post-nav-item">
     <a href="/2016/08/08/Objective-C_%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/" rel="next" title="Objective-C_异常处理">
@@ -464,6 +514,7 @@ Person *p3 = [[Person alloc] initWithName:@&quot;Tom&quot; WithAge:22];</code></
 
         </div>
         
+    <div class="comments" id="valine-comments"></div>
 
 <script>
   window.addEventListener('tabs:register', () => {
@@ -532,7 +583,11 @@ Person *p3 = [[Person alloc] initWithName:@&quot;Tom&quot; WithAge:22];</code></
   </div>
 
   
-  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.0/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/next-theme/pjax@0/pjax.min.js"></script>
+  <script src="//unpkg.com/medium-zoom@1/dist/medium-zoom.min.js"></script>
+  <script src="//unpkg.com/lozad@1/dist/lozad.min.js"></script>
+  <script src="//unpkg.com/pangu@4/dist/browser/pangu.min.js"></script>
 
 <script src="/js/utils.js"></script>
 
@@ -543,9 +598,42 @@ Person *p3 = [[Person alloc] initWithName:@&quot;Tom&quot; WithAge:22];</code></
 
 <script src="/js/bookmark.js"></script>
 
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '.page-configurations',
+    '.main-inner',
+    '.post-toc-wrap',
+    '.languages',
+    '.pjax'
+  ],
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+document.addEventListener('pjax:success', () => {
+  pjax.executeScripts(document.querySelectorAll('script[data-pjax], .pjax script'));
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  const hasTOC = document.querySelector('.post-toc');
+  document.querySelector('.sidebar-inner').classList.toggle('sidebar-nav-active', hasTOC);
+  document.querySelector(hasTOC ? '.sidebar-nav-toc' : '.sidebar-nav-overview').click();
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
 
   
-  <script>
+  <script data-pjax>
     (function(){
       var bp = document.createElement('script');
       var curProtocol = window.location.protocol.split(':')[0];
@@ -558,6 +646,10 @@ Person *p3 = [[Person alloc] initWithName:@&quot;Tom&quot; WithAge:22];</code></
 
 
 
+  
+<script src="//unpkg.com/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//unpkg.com/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
 
 
 
@@ -569,9 +661,27 @@ Person *p3 = [[Person alloc] initWithName:@&quot;Tom&quot; WithAge:22];</code></
 
 
 
+
+
+
+    <div class="pjax">
   
 
   
 
+
+<script>
+NexT.utils.loadComments('#valine-comments', () => {
+  NexT.utils.getScript('//unpkg.com/valine@1/dist/Valine.min.js', () => {
+    new Valine(Object.assign({
+      el  : '#valine-comments',
+      path: location.pathname,
+    }, {"enable":true,"appId":"S7i1Y8YorMKFPaYbJbekD5el-gzGzoHsz","appKey":"brOnU8mOQvSjpipJvdKUAIbU","placeholder":"写下你的评论...","avatar":"mm","meta":["nick","mail","link"],"pageSize":10,"language":"zh-cn","visitor":false,"comment_count":true,"recordIP":true,"serverURLs":null,"enableQQ":true,"requiredFields":[]}
+    ));
+  }, window.Valine);
+});
+</script>
+
+    </div>
 </body>
 </html>

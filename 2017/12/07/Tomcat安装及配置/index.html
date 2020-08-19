@@ -18,21 +18,23 @@
 <link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css">
   
   <link rel="stylesheet" href="/lib/animate-css/animate.min.css">
+  <link rel="stylesheet" href="//unpkg.com/pace-js@1/themes/blue/pace-theme-minimal.css">
+  <script src="//unpkg.com/pace-js@1/pace.min.js"></script>
 
 <script class="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"andy0570.com","root":"/","scheme":"Gemini","version":"8.0.0-rc.5","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":"mac","bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false};
+    var CONFIG = {"hostname":"andy0570.com","root":"/","scheme":"Gemini","version":"8.0.0-rc.5","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":"mac","bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":true,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":true,"nav":null,"activeClass":"valine"},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"algolia":{"appID":"0E2AON8EZF","apiKey":"22fbefd84c8343239f5c04365b9728de","indexName":"MyBlogPlatform","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}}};
   </script>
 
-  <meta name="description" content="Tomcat 8权威指南RUNNING.txt UNIX 指令路径   UNIX 指令 注释    &#x2F; 根路径   .&#x2F; 当前路径   ..&#x2F; 上一级路径">
+  <meta name="description" content="Tomcat 8 权威指南RUNNING.txt UNIX 指令路径   UNIX 指令 注释     &#x2F;  根路径   .&#x2F;  当前路径   ..&#x2F;  上一级路径">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Tomcat安装及配置">
+<meta property="og:title" content="Tomcat 安装及配置">
 <meta property="og:url" content="https://andy0570.com/2017/12/07/Tomcat%E5%AE%89%E8%A3%85%E5%8F%8A%E9%85%8D%E7%BD%AE/index.html">
 <meta property="og:site_name" content="独木舟的木">
-<meta property="og:description" content="Tomcat 8权威指南RUNNING.txt UNIX 指令路径   UNIX 指令 注释    &#x2F; 根路径   .&#x2F; 当前路径   ..&#x2F; 上一级路径">
+<meta property="og:description" content="Tomcat 8 权威指南RUNNING.txt UNIX 指令路径   UNIX 指令 注释     &#x2F;  根路径   .&#x2F;  当前路径   ..&#x2F;  上一级路径">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2017-12-07T04:50:00.000Z">
 <meta property="article:modified_time" content="2019-05-01T14:24:06.000Z">
@@ -43,7 +45,7 @@
 <link rel="canonical" href="https://andy0570.com/2017/12/07/Tomcat%E5%AE%89%E8%A3%85%E5%8F%8A%E9%85%8D%E7%BD%AE/">
 
 
-<script class="page-configurations">
+<script data-pjax class="page-configurations">
   // https://hexo.io/docs/variables.html
   CONFIG.page = {
     sidebar: "",
@@ -53,10 +55,19 @@
   };
 </script>
 
-  <title>Tomcat安装及配置 | 独木舟的木</title>
+  <title>Tomcat 安装及配置 | 独木舟的木</title>
   
 
 
+  <script data-pjax>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?8229a094facca297f211d61323fd9fde";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
 
 
 
@@ -126,6 +137,7 @@
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -159,11 +171,35 @@
     <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
 
   </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
   </ul>
 </nav>
 
 
 
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
 
 </div>
           
@@ -195,7 +231,7 @@
       <section class="site-overview-wrap sidebar-panel">
         <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <img class="site-author-image" itemprop="image" alt="独木舟的木"
-      src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+      src="https://static01.imgkr.com/temp/88aab3c08a3f43f5a14f21c6c357c816.JPG">
   <p class="site-author-name" itemprop="name">独木舟的木</p>
   <div class="site-description" itemprop="description">生若直木，不语斧凿。</div>
 </div>
@@ -276,7 +312,7 @@
     <link itemprop="mainEntityOfPage" href="https://andy0570.com/2017/12/07/Tomcat%E5%AE%89%E8%A3%85%E5%8F%8A%E9%85%8D%E7%BD%AE/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+      <meta itemprop="image" content="https://static01.imgkr.com/temp/88aab3c08a3f43f5a14f21c6c357c816.JPG">
       <meta itemprop="name" content="独木舟的木">
       <meta itemprop="description" content="生若直木，不语斧凿。">
     </span>
@@ -288,7 +324,7 @@
     
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          Tomcat安装及配置
+          Tomcat 安装及配置
         </h1>
 
         <div class="post-meta">
@@ -317,7 +353,21 @@
                 </span>
             </span>
 
-          <br>
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2017/12/07/Tomcat%E5%AE%89%E8%A3%85%E5%8F%8A%E9%85%8D%E7%BD%AE/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2017/12/07/Tomcat%E5%AE%89%E8%A3%85%E5%8F%8A%E9%85%8D%E7%BD%AE/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  <br>
             <span class="post-meta-item" title="本文字数">
               <span class="post-meta-item-icon">
                 <i class="far fa-file-word"></i>
@@ -340,7 +390,7 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <p><span class="exturl" data-url="aHR0cDovL3dpa2kuamlrZXh1ZXl1YW4uY29tL3Byb2plY3QvdG9tY2F0Lw==">Tomcat 8权威指南<i class="fa fa-external-link-alt"></i></span><br><span class="exturl" data-url="aHR0cDovL3RvbWNhdC5hcGFjaGUub3JnL3RvbWNhdC04LjAtZG9jL1JVTk5JTkcudHh0">RUNNING.txt<i class="fa fa-external-link-alt"></i></span></p>
+        <p><span class="exturl" data-url="aHR0cDovL3dpa2kuamlrZXh1ZXl1YW4uY29tL3Byb2plY3QvdG9tY2F0Lw==">Tomcat 8 权威指南<i class="fa fa-external-link-alt"></i></span><br><span class="exturl" data-url="aHR0cDovL3RvbWNhdC5hcGFjaGUub3JnL3RvbWNhdC04LjAtZG9jL1JVTk5JTkcudHh0">RUNNING.txt<i class="fa fa-external-link-alt"></i></span></p>
 <h3 id="UNIX-指令路径"><a href="#UNIX-指令路径" class="headerlink" title="UNIX 指令路径"></a>UNIX 指令路径</h3><table>
 <thead>
 <tr>
@@ -349,16 +399,16 @@
 </tr>
 </thead>
 <tbody><tr>
-<td>/</td>
-<td>根路径</td>
+<td> /</td>
+<td> 根路径</td>
 </tr>
 <tr>
 <td>./</td>
-<td>当前路径</td>
+<td> 当前路径</td>
 </tr>
 <tr>
 <td>../</td>
-<td>上一级路径</td>
+<td> 上一级路径</td>
 </tr>
 </tbody></table>
 <a id="more"></a>
@@ -371,36 +421,36 @@
 </tr>
 </thead>
 <tbody><tr>
-<td>$CATALINA_HOME</td>
+<td> $CATALINA_HOME</td>
 <td>Tomcat 安装的根目录</td>
 </tr>
 <tr>
-<td>/bin</td>
-<td>存放用于启动及关闭的文件，以及其他一些脚本。其中，UNIX 系统专用的 <code>*.sh</code> 文件在功能上等同于 Windows 系统专用的 <code>*.bat</code> 文件。因为 Win32 的命令行缺乏某些功能，所以又额外地加入了一些文件。</td>
+<td> /bin</td>
+<td> 存放用于启动及关闭的文件，以及其他一些脚本。其中，UNIX 系统专用的 <code>*.sh</code> 文件在功能上等同于 Windows 系统专用的 <code>*.bat</code> 文件。因为 Win32 的命令行缺乏某些功能，所以又额外地加入了一些文件。</td>
 </tr>
 <tr>
 <td>/conf</td>
-<td>配置文件及相关的 DTD。其中最重要的文件是 server.xml，这是容器的主配置文件。</td>
+<td> 配置文件及相关的 DTD。其中最重要的文件是 server.xml，这是容器的主配置文件。</td>
 </tr>
 <tr>
 <td>/lib</td>
-<td>支持tomcat软件运行的jar包。其中还有技术支持包，如servlet，jsp</td>
+<td> 支持 tomcat 软件运行的 jar 包。其中还有技术支持包，如 servlet，jsp</td>
 </tr>
 <tr>
 <td>/logs</td>
-<td>日志文件的默认目录。</td>
+<td> 日志文件的默认目录。</td>
 </tr>
 <tr>
 <td>/webapps</td>
-<td>存放 Web 应用的相关文件。</td>
+<td> 存放 Web 应用的相关文件。</td>
 </tr>
 <tr>
 <td>/work</td>
-<td>Web应用程序的临时工作目录。</td>
+<td>Web 应用程序的临时工作目录。</td>
 </tr>
 <tr>
 <td>/temp</td>
-<td>JVM用于临时文件的目录（java.io.tmpdir）</td>
+<td>JVM 用于临时文件的目录（java.io.tmpdir）</td>
 </tr>
 </tbody></table>
 <h2 id="Mac-系统下-Tomcat-安装及配置"><a href="#Mac-系统下-Tomcat-安装及配置" class="headerlink" title="Mac 系统下 Tomcat 安装及配置"></a>Mac 系统下 Tomcat 安装及配置</h2><h3 id="一、下载"><a href="#一、下载" class="headerlink" title="一、下载"></a>一、下载</h3><p>下载页：<span class="exturl" data-url="aHR0cHM6Ly90b21jYXQuYXBhY2hlLm9yZy9kb3dubG9hZC04MC5jZ2k=">https://tomcat.apache.org/download-80.cgi<i class="fa fa-external-link-alt"></i></span></p>
@@ -409,12 +459,12 @@
 <p>修改权限：<code>sudo chmod 755 ./*.sh</code></p>
 <p>启动 Tomcat：<code>./startup.sh</code></p>
 <p>控制台输出日志如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Using CATALINA_BASE:   &#x2F;Library&#x2F;Tomcat8524</span><br><span class="line">Using CATALINA_HOME:   &#x2F;Library&#x2F;Tomcat8524</span><br><span class="line">Using CATALINA_TMPDIR: &#x2F;Library&#x2F;Tomcat8524&#x2F;temp</span><br><span class="line">Using JRE_HOME:        &#x2F;Library&#x2F;Java&#x2F;JavaVirtualMachines&#x2F;jdk1.8.0_152.jdk&#x2F;Contents&#x2F;Home</span><br><span class="line">Using CLASSPATH:       &#x2F;Library&#x2F;Tomcat8524&#x2F;bin&#x2F;bootstrap.jar:&#x2F;Library&#x2F;Tomcat8524&#x2F;bin&#x2F;tomcat-juli.jar</span><br><span class="line">Tomcat started.</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Using CATALINA_BASE:   /Library/Tomcat8524</span><br><span class="line">Using CATALINA_HOME:   /Library/Tomcat8524</span><br><span class="line">Using CATALINA_TMPDIR: /Library/Tomcat8524/temp</span><br><span class="line">Using JRE_HOME:        /Library/Java/JavaVirtualMachines/jdk1.8.0_152.jdk/Contents/Home</span><br><span class="line">Using CLASSPATH:       /Library/Tomcat8524/bin/bootstrap.jar:/Library/Tomcat8524/bin/tomcat-juli.jar</span><br><span class="line">Tomcat started.</span><br></pre></td></tr></tbody></table></figure>
 
 <p>打开浏览器输入网址验证：<code>http://localhost:8080</code></p>
 <p>关闭 Tomcat：<code>./shutdown.sh</code></p>
 <h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><ul>
-<li><span class="exturl" data-url="aHR0cDovL3d3dy5qYjUxLm5ldC9hcnRpY2xlLzk0MjAxLmh0bQ==">Mac环境下配置tomcat的步骤详解<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cDovL3d3dy5qYjUxLm5ldC9hcnRpY2xlLzk0MjAxLmh0bQ==">Mac 环境下配置 tomcat 的步骤详解<i class="fa fa-external-link-alt"></i></span></li>
 </ul>
 
     </div>
@@ -431,7 +481,7 @@
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="https://andy0570.com/2017/12/07/Tomcat%E5%AE%89%E8%A3%85%E5%8F%8A%E9%85%8D%E7%BD%AE/" title="Tomcat安装及配置">https://andy0570.com/2017/12/07/Tomcat安装及配置/</a>
+    <a href="https://andy0570.com/2017/12/07/Tomcat%E5%AE%89%E8%A3%85%E5%8F%8A%E9%85%8D%E7%BD%AE/" title="Tomcat 安装及配置">https://andy0570.com/2017/12/07/Tomcat安装及配置/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <span class="exturl" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpo"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</span> 许可协议。转载请注明出处！
@@ -470,12 +520,12 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2017/12/06/%E9%AB%98%E6%80%A7%E8%83%BD%20iOS%20%E5%BA%94%E7%94%A8%E5%BC%80%E5%8F%91%E2%80%94%E2%80%94%E5%88%9B%E5%BB%BA%E5%A4%8D%E5%90%88%E8%A7%86%E5%9B%BE%E7%9A%84%E6%AD%A3%E7%A1%AE%E6%96%B9%E5%BC%8F/" rel="prev" title="高性能 iOS 应用开发——创建复合视图的正确方式">
-      <i class="fa fa-chevron-left"></i> 高性能 iOS 应用开发——创建复合视图的正确方式
+    <a href="/2017/12/06/%E9%AB%98%E6%80%A7%E8%83%BD%20iOS%20%E5%BA%94%E7%94%A8%E5%BC%80%E5%8F%91%E2%80%94%E2%80%94%E5%88%9B%E5%BB%BA%E5%A4%8D%E5%90%88%E8%A7%86%E5%9B%BE%E7%9A%84%E6%AD%A3%E7%A1%AE%E6%96%B9%E5%BC%8F/" rel="prev" title="高性能 iOS 应用开发 —— 创建复合视图的正确方式">
+      <i class="fa fa-chevron-left"></i> 高性能 iOS 应用开发 —— 创建复合视图的正确方式
     </a></div>
       <div class="post-nav-item">
-    <a href="/2017/12/20/Reachability%E2%80%94%E2%80%94%E4%B8%80%E4%B8%AA%E7%94%A8%E4%BA%8E%E5%88%A4%E6%96%AD%E7%BD%91%E7%BB%9C%E5%8F%AF%E8%BE%BE%E6%80%A7%E7%9A%84%E5%BA%93/" rel="next" title="Reachability——一个用于判断网络可达性的库">
-      Reachability——一个用于判断网络可达性的库 <i class="fa fa-chevron-right"></i>
+    <a href="/2017/12/20/Reachability%E2%80%94%E2%80%94%E4%B8%80%E4%B8%AA%E7%94%A8%E4%BA%8E%E5%88%A4%E6%96%AD%E7%BD%91%E7%BB%9C%E5%8F%AF%E8%BE%BE%E6%80%A7%E7%9A%84%E5%BA%93/" rel="next" title="Reachability—— 一个用于判断网络可达性的库">
+      Reachability—— 一个用于判断网络可达性的库 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -489,6 +539,7 @@
 
         </div>
         
+    <div class="comments" id="valine-comments"></div>
 
 <script>
   window.addEventListener('tabs:register', () => {
@@ -557,7 +608,11 @@
   </div>
 
   
-  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.0/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/next-theme/pjax@0/pjax.min.js"></script>
+  <script src="//unpkg.com/medium-zoom@1/dist/medium-zoom.min.js"></script>
+  <script src="//unpkg.com/lozad@1/dist/lozad.min.js"></script>
+  <script src="//unpkg.com/pangu@4/dist/browser/pangu.min.js"></script>
 
 <script src="/js/utils.js"></script>
 
@@ -568,9 +623,42 @@
 
 <script src="/js/bookmark.js"></script>
 
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '.page-configurations',
+    '.main-inner',
+    '.post-toc-wrap',
+    '.languages',
+    '.pjax'
+  ],
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+document.addEventListener('pjax:success', () => {
+  pjax.executeScripts(document.querySelectorAll('script[data-pjax], .pjax script'));
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  const hasTOC = document.querySelector('.post-toc');
+  document.querySelector('.sidebar-inner').classList.toggle('sidebar-nav-active', hasTOC);
+  document.querySelector(hasTOC ? '.sidebar-nav-toc' : '.sidebar-nav-overview').click();
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
 
   
-  <script>
+  <script data-pjax>
     (function(){
       var bp = document.createElement('script');
       var curProtocol = window.location.protocol.split(':')[0];
@@ -583,6 +671,10 @@
 
 
 
+  
+<script src="//unpkg.com/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//unpkg.com/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
 
 
 
@@ -594,9 +686,27 @@
 
 
 
+
+
+
+    <div class="pjax">
   
 
   
 
+
+<script>
+NexT.utils.loadComments('#valine-comments', () => {
+  NexT.utils.getScript('//unpkg.com/valine@1/dist/Valine.min.js', () => {
+    new Valine(Object.assign({
+      el  : '#valine-comments',
+      path: location.pathname,
+    }, {"enable":true,"appId":"S7i1Y8YorMKFPaYbJbekD5el-gzGzoHsz","appKey":"brOnU8mOQvSjpipJvdKUAIbU","placeholder":"写下你的评论...","avatar":"mm","meta":["nick","mail","link"],"pageSize":10,"language":"zh-cn","visitor":false,"comment_count":true,"recordIP":true,"serverURLs":null,"enableQQ":true,"requiredFields":[]}
+    ));
+  }, window.Valine);
+});
+</script>
+
+    </div>
 </body>
 </html>

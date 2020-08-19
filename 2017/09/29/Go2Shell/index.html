@@ -18,13 +18,15 @@
 <link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css">
   
   <link rel="stylesheet" href="/lib/animate-css/animate.min.css">
+  <link rel="stylesheet" href="//unpkg.com/pace-js@1/themes/blue/pace-theme-minimal.css">
+  <script src="//unpkg.com/pace-js@1/pace.min.js"></script>
 
 <script class="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"andy0570.com","root":"/","scheme":"Gemini","version":"8.0.0-rc.5","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":"mac","bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false};
+    var CONFIG = {"hostname":"andy0570.com","root":"/","scheme":"Gemini","version":"8.0.0-rc.5","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":"mac","bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":true,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":true,"nav":null,"activeClass":"valine"},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"algolia":{"appID":"0E2AON8EZF","apiKey":"22fbefd84c8343239f5c04365b9728de","indexName":"MyBlogPlatform","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}}};
   </script>
 
   <meta property="og:type" content="article">
@@ -47,7 +49,7 @@
 <link rel="canonical" href="https://andy0570.com/2017/09/29/Go2Shell/">
 
 
-<script class="page-configurations">
+<script data-pjax class="page-configurations">
   // https://hexo.io/docs/variables.html
   CONFIG.page = {
     sidebar: "",
@@ -61,6 +63,15 @@
   
 
 
+  <script data-pjax>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?8229a094facca297f211d61323fd9fde";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
 
 
 
@@ -130,6 +141,7 @@
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -163,11 +175,35 @@
     <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
 
   </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
   </ul>
 </nav>
 
 
 
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
 
 </div>
           
@@ -192,14 +228,14 @@
 
       <!--noindex-->
       <section class="post-toc-wrap sidebar-panel">
-          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#App-Store-%E7%89%88%E6%9C%AC%EF%BC%881-2-2%E7%89%88%E6%9C%AC%EF%BC%89"><span class="nav-number">1.</span> <span class="nav-text">App Store 版本（1.2.2版本）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%89%93%E5%BC%80Go2Shell%E7%9A%84%E9%85%8D%E7%BD%AE%E9%A1%B5%E9%9D%A2"><span class="nav-number">1.1.</span> <span class="nav-text">打开Go2Shell的配置页面</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B0%86-Go2Shell-%E6%94%BE%E5%88%B0-Finder-%E5%B7%A5%E5%85%B7%E6%A0%8F%E4%B8%8A"><span class="nav-number">1.2.</span> <span class="nav-text">将 Go2Shell 放到 Finder 工具栏上</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B0%86Go2Shell%E5%9B%BA%E5%AE%9A%E5%88%B0Dock%E6%A0%8F%E3%80%82"><span class="nav-number">1.3.</span> <span class="nav-text">将Go2Shell固定到Dock栏。</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%87%8D%E7%82%B9%EF%BC%8C%E5%AE%98%E7%BD%91%E4%B8%8B%E8%BD%BD%E7%89%88%E6%9C%AC%EF%BC%882-3%E7%89%88%E6%9C%AC%EF%BC%89"><span class="nav-number">2.</span> <span class="nav-text">重点，官网下载版本（2.3版本）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B0%86-Go2Shell-%E6%94%BE%E5%88%B0-Finder-%E5%B7%A5%E5%85%B7%E6%A0%8F%E4%B8%8A-1"><span class="nav-number">2.1.</span> <span class="nav-text">将 Go2Shell 放到 Finder 工具栏上</span></a></li></ol></li></ol></div>
+          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#App-Store-%E7%89%88%E6%9C%AC%EF%BC%881-2-2%E7%89%88%E6%9C%AC%EF%BC%89"><span class="nav-number">1.</span> <span class="nav-text">App Store 版本（1.2.2 版本）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%89%93%E5%BC%80Go2Shell%E7%9A%84%E9%85%8D%E7%BD%AE%E9%A1%B5%E9%9D%A2"><span class="nav-number">1.1.</span> <span class="nav-text">打开 Go2Shell 的配置页面</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B0%86-Go2Shell-%E6%94%BE%E5%88%B0-Finder-%E5%B7%A5%E5%85%B7%E6%A0%8F%E4%B8%8A"><span class="nav-number">1.2.</span> <span class="nav-text">将 Go2Shell 放到 Finder 工具栏上</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B0%86Go2Shell%E5%9B%BA%E5%AE%9A%E5%88%B0Dock%E6%A0%8F%E3%80%82"><span class="nav-number">1.3.</span> <span class="nav-text">将 Go2Shell 固定到 Dock 栏。</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%87%8D%E7%82%B9%EF%BC%8C%E5%AE%98%E7%BD%91%E4%B8%8B%E8%BD%BD%E7%89%88%E6%9C%AC%EF%BC%882-3%E7%89%88%E6%9C%AC%EF%BC%89"><span class="nav-number">2.</span> <span class="nav-text">重点，官网下载版本（2.3 版本）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B0%86-Go2Shell-%E6%94%BE%E5%88%B0-Finder-%E5%B7%A5%E5%85%B7%E6%A0%8F%E4%B8%8A-1"><span class="nav-number">2.1.</span> <span class="nav-text">将 Go2Shell 放到 Finder 工具栏上</span></a></li></ol></li></ol></div>
       </section>
       <!--/noindex-->
 
       <section class="site-overview-wrap sidebar-panel">
         <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <img class="site-author-image" itemprop="image" alt="独木舟的木"
-      src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+      src="https://static01.imgkr.com/temp/88aab3c08a3f43f5a14f21c6c357c816.JPG">
   <p class="site-author-name" itemprop="name">独木舟的木</p>
   <div class="site-description" itemprop="description">生若直木，不语斧凿。</div>
 </div>
@@ -280,7 +316,7 @@
     <link itemprop="mainEntityOfPage" href="https://andy0570.com/2017/09/29/Go2Shell/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+      <meta itemprop="image" content="https://static01.imgkr.com/temp/88aab3c08a3f43f5a14f21c6c357c816.JPG">
       <meta itemprop="name" content="独木舟的木">
       <meta itemprop="description" content="生若直木，不语斧凿。">
     </span>
@@ -321,7 +357,21 @@
                 </span>
             </span>
 
-          <br>
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2017/09/29/Go2Shell/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2017/09/29/Go2Shell/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  <br>
             <span class="post-meta-item" title="本文字数">
               <span class="post-meta-item-icon">
                 <i class="far fa-file-word"></i>
@@ -344,39 +394,39 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/073726.jpg"></p>
+        <p><img data-src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/073726.jpg"></p>
 <a id="more"></a>
 
 <p>官网地址：<span class="exturl" data-url="aHR0cDovL3ppcHphcG1hYy5jb20vR28yU2hlbGw=">http://zipzapmac.com/Go2Shell<i class="fa fa-external-link-alt"></i></span></p>
-<p><strong>Go2Shell</strong> 可以在 Finder 中打开当前目录的终端窗口，是一个对开发者来说非常有用的App。</p>
-<p><strong>特点</strong>：软件开发工具、小巧（大概只有2M）、免费、功能简单易用。</p>
-<h2 id="App-Store-版本（1-2-2版本）"><a href="#App-Store-版本（1-2-2版本）" class="headerlink" title="App Store 版本（1.2.2版本）"></a>App Store 版本（1.2.2版本）</h2><p>‼️首先说明：不建议下载 App Store 上的版本，因为版本太旧，而且打不开 iTerm2（3.1.2版本）。</p>
+<p><strong>Go2Shell</strong> 可以在 Finder 中打开当前目录的终端窗口，是一个对开发者来说非常有用的 App。</p>
+<p><strong>特点</strong>：软件开发工具、小巧（大概只有 2M）、免费、功能简单易用。</p>
+<h2 id="App-Store-版本（1-2-2版本）"><a href="#App-Store-版本（1-2-2版本）" class="headerlink" title="App Store 版本（1.2.2版本）"></a>App Store 版本（1.2.2 版本）</h2><p>‼️首先说明：不建议下载 App Store 上的版本，因为版本太旧，而且打不开 iTerm2（3.1.2 版本）。</p>
 <p>此版本的目的是演示新旧版本的不同设置</p>
-<h3 id="打开Go2Shell的配置页面"><a href="#打开Go2Shell的配置页面" class="headerlink" title="打开Go2Shell的配置页面"></a>打开Go2Shell的配置页面</h3><p>终端输入：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">open -a Go2Shell --args config</span><br></pre></td></tr></table></figure>
+<h3 id="打开Go2Shell的配置页面"><a href="#打开Go2Shell的配置页面" class="headerlink" title="打开Go2Shell的配置页面"></a>打开 Go2Shell 的配置页面</h3><p>终端输入：</p>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">open -a Go2Shell --args config</span><br></pre></td></tr></tbody></table></figure>
 
 <p>就可以打开配置界面：</p>
-<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/073736.jpg"></p>
+<p><img data-src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/073736.jpg"></p>
 <h3 id="将-Go2Shell-放到-Finder-工具栏上"><a href="#将-Go2Shell-放到-Finder-工具栏上" class="headerlink" title="将 Go2Shell 放到 Finder 工具栏上"></a>将 Go2Shell 放到 Finder 工具栏上</h3><ol>
 <li>在应用程序中找到 Go2Shell.app，选中它。</li>
 <li>按住 command 键，鼠标左键拖动它到工具栏直到有➕号显示即可。</li>
 </ol>
-<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/073752.gif"></p>
+<p><img data-src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/073752.gif"></p>
 <ol start="3">
 <li>移除：按住 command 键，选中工具栏上的小图标往上托出窗口即可。</li>
 </ol>
-<h3 id="将Go2Shell固定到Dock栏。"><a href="#将Go2Shell固定到Dock栏。" class="headerlink" title="将Go2Shell固定到Dock栏。"></a>将Go2Shell固定到Dock栏。</h3><p>这个很简单，固定到Dock栏之后，配合 <strong>Manico</strong> 快捷键使用打开终端快得飞起。</p>
-<h2 id="重点，官网下载版本（2-3版本）"><a href="#重点，官网下载版本（2-3版本）" class="headerlink" title="重点，官网下载版本（2.3版本）"></a>重点，官网下载版本（2.3版本）</h2><p>之前也说过，App Store 上下载的旧版本无法打开 iTerm 2（3.1.2版本），所以我们要去<span class="exturl" data-url="aHR0cDovL3ppcHphcG1hYy5jb20vR28yU2hlbGw=">官网<i class="fa fa-external-link-alt"></i></span>下载最新的版本。</p>
+<h3 id="将Go2Shell固定到Dock栏。"><a href="#将Go2Shell固定到Dock栏。" class="headerlink" title="将Go2Shell固定到Dock栏。"></a>将 Go2Shell 固定到 Dock 栏。</h3><p>这个很简单，固定到 Dock 栏之后，配合 <strong>Manico</strong> 快捷键使用打开终端快得飞起。</p>
+<h2 id="重点，官网下载版本（2-3版本）"><a href="#重点，官网下载版本（2-3版本）" class="headerlink" title="重点，官网下载版本（2.3版本）"></a>重点，官网下载版本（2.3 版本）</h2><p>之前也说过，App Store 上下载的旧版本无法打开 iTerm 2（3.1.2 版本），所以我们要去<span class="exturl" data-url="aHR0cDovL3ppcHphcG1hYy5jb20vR28yU2hlbGw=">官网<i class="fa fa-external-link-alt"></i></span>下载最新的版本。</p>
 <p>新版本下载安装步骤：</p>
 <ol>
 <li>安装后启动 Go2Shell，出现配置界面如下：</li>
 </ol>
-<p>​    <img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/073755.jpg"></p>
+<p>​    <img data-src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/073755.jpg"></p>
 <ol start="2">
-<li><p>选择你喜欢的终端（当然是选择iTerm2啦）</p>
+<li><p>选择你喜欢的终端（当然是选择 iTerm2 啦）</p>
 </li>
 <li><p>点击安装 Go2Shell 到 Finder，你会发现图标和旧版本不一样，这个是白色的。</p>
-<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/073756.jpg"></p>
+<p><img data-src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/073756.jpg"></p>
 </li>
 </ol>
 <h3 id="将-Go2Shell-放到-Finder-工具栏上-1"><a href="#将-Go2Shell-放到-Finder-工具栏上-1" class="headerlink" title="将 Go2Shell 放到 Finder 工具栏上"></a>将 Go2Shell 放到 Finder 工具栏上</h3><p>2.3 版本的 Go2Shell 图标拖到 Dock 栏上是打不开终端的，它只会默认打开配置窗口。</p>
@@ -435,12 +485,12 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2017/09/22/%E5%A4%A9%E5%A4%A9%E5%93%81%E5%B0%9DiOS7%E7%94%9C%E7%82%B9%EF%BC%9A%E7%B3%BB%E5%88%97%E6%B1%87%E6%80%BB/" rel="prev" title="天天品尝iOS7甜点：系列汇总">
-      <i class="fa fa-chevron-left"></i> 天天品尝iOS7甜点：系列汇总
+    <a href="/2017/09/22/%E5%A4%A9%E5%A4%A9%E5%93%81%E5%B0%9DiOS7%E7%94%9C%E7%82%B9%EF%BC%9A%E7%B3%BB%E5%88%97%E6%B1%87%E6%80%BB/" rel="prev" title="天天品尝 iOS7 甜点：系列汇总">
+      <i class="fa fa-chevron-left"></i> 天天品尝 iOS7 甜点：系列汇总
     </a></div>
       <div class="post-nav-item">
-    <a href="/2017/10/16/gitignore%E8%AE%BE%E7%BD%AE%E6%A8%A1%E7%89%88/" rel="next" title="gitignore设置模版">
-      gitignore设置模版 <i class="fa fa-chevron-right"></i>
+    <a href="/2017/10/16/gitignore%E8%AE%BE%E7%BD%AE%E6%A8%A1%E7%89%88/" rel="next" title="gitignore 设置模版">
+      gitignore 设置模版 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -454,6 +504,7 @@
 
         </div>
         
+    <div class="comments" id="valine-comments"></div>
 
 <script>
   window.addEventListener('tabs:register', () => {
@@ -522,7 +573,11 @@
   </div>
 
   
-  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.0/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/next-theme/pjax@0/pjax.min.js"></script>
+  <script src="//unpkg.com/medium-zoom@1/dist/medium-zoom.min.js"></script>
+  <script src="//unpkg.com/lozad@1/dist/lozad.min.js"></script>
+  <script src="//unpkg.com/pangu@4/dist/browser/pangu.min.js"></script>
 
 <script src="/js/utils.js"></script>
 
@@ -533,9 +588,42 @@
 
 <script src="/js/bookmark.js"></script>
 
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '.page-configurations',
+    '.main-inner',
+    '.post-toc-wrap',
+    '.languages',
+    '.pjax'
+  ],
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+document.addEventListener('pjax:success', () => {
+  pjax.executeScripts(document.querySelectorAll('script[data-pjax], .pjax script'));
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  const hasTOC = document.querySelector('.post-toc');
+  document.querySelector('.sidebar-inner').classList.toggle('sidebar-nav-active', hasTOC);
+  document.querySelector(hasTOC ? '.sidebar-nav-toc' : '.sidebar-nav-overview').click();
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
 
   
-  <script>
+  <script data-pjax>
     (function(){
       var bp = document.createElement('script');
       var curProtocol = window.location.protocol.split(':')[0];
@@ -548,6 +636,10 @@
 
 
 
+  
+<script src="//unpkg.com/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//unpkg.com/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
 
 
 
@@ -559,9 +651,27 @@
 
 
 
+
+
+
+    <div class="pjax">
   
 
   
 
+
+<script>
+NexT.utils.loadComments('#valine-comments', () => {
+  NexT.utils.getScript('//unpkg.com/valine@1/dist/Valine.min.js', () => {
+    new Valine(Object.assign({
+      el  : '#valine-comments',
+      path: location.pathname,
+    }, {"enable":true,"appId":"S7i1Y8YorMKFPaYbJbekD5el-gzGzoHsz","appKey":"brOnU8mOQvSjpipJvdKUAIbU","placeholder":"写下你的评论...","avatar":"mm","meta":["nick","mail","link"],"pageSize":10,"language":"zh-cn","visitor":false,"comment_count":true,"recordIP":true,"serverURLs":null,"enableQQ":true,"requiredFields":[]}
+    ));
+  }, window.Valine);
+});
+</script>
+
+    </div>
 </body>
 </html>

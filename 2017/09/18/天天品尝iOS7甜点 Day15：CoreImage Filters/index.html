@@ -18,21 +18,23 @@
 <link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css">
   
   <link rel="stylesheet" href="/lib/animate-css/animate.min.css">
+  <link rel="stylesheet" href="//unpkg.com/pace-js@1/themes/blue/pace-theme-minimal.css">
+  <script src="//unpkg.com/pace-js@1/pace.min.js"></script>
 
 <script class="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"andy0570.com","root":"/","scheme":"Gemini","version":"8.0.0-rc.5","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":"mac","bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false};
+    var CONFIG = {"hostname":"andy0570.com","root":"/","scheme":"Gemini","version":"8.0.0-rc.5","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":"mac","bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":true,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":true,"nav":null,"activeClass":"valine"},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"algolia":{"appID":"0E2AON8EZF","apiKey":"22fbefd84c8343239f5c04365b9728de","indexName":"MyBlogPlatform","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}}};
   </script>
 
-  <meta name="description" content="本文主要内容：  一、为图像添加滤镜效果 二、字符串生存二维码   参考 GitHub 源码：shinobicontrols&#x2F;iOS7-day-by-day 天天品尝iOS7甜点 :: Day 15 :: CoreImage Filters">
+  <meta name="description" content="本文主要内容：  一、为图像添加滤镜效果 二、字符串生存二维码   参考 GitHub 源码：shinobicontrols&#x2F;iOS7-day-by-day 天天品尝 iOS7 甜点 :: Day 15 :: CoreImage Filters">
 <meta property="og:type" content="article">
-<meta property="og:title" content="天天品尝iOS7甜点 Day15：CoreImage Filters">
+<meta property="og:title" content="天天品尝 iOS7 甜点 Day15：CoreImage Filters">
 <meta property="og:url" content="https://andy0570.com/2017/09/18/%E5%A4%A9%E5%A4%A9%E5%93%81%E5%B0%9DiOS7%E7%94%9C%E7%82%B9%20Day15%EF%BC%9ACoreImage%20Filters/index.html">
 <meta property="og:site_name" content="独木舟的木">
-<meta property="og:description" content="本文主要内容：  一、为图像添加滤镜效果 二、字符串生存二维码   参考 GitHub 源码：shinobicontrols&#x2F;iOS7-day-by-day 天天品尝iOS7甜点 :: Day 15 :: CoreImage Filters">
+<meta property="og:description" content="本文主要内容：  一、为图像添加滤镜效果 二、字符串生存二维码   参考 GitHub 源码：shinobicontrols&#x2F;iOS7-day-by-day 天天品尝 iOS7 甜点 :: Day 15 :: CoreImage Filters">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071644.jpg">
 <meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071647.jpg">
@@ -48,7 +50,7 @@
 <link rel="canonical" href="https://andy0570.com/2017/09/18/%E5%A4%A9%E5%A4%A9%E5%93%81%E5%B0%9DiOS7%E7%94%9C%E7%82%B9%20Day15%EF%BC%9ACoreImage%20Filters/">
 
 
-<script class="page-configurations">
+<script data-pjax class="page-configurations">
   // https://hexo.io/docs/variables.html
   CONFIG.page = {
     sidebar: "",
@@ -58,10 +60,19 @@
   };
 </script>
 
-  <title>天天品尝iOS7甜点 Day15：CoreImage Filters | 独木舟的木</title>
+  <title>天天品尝 iOS7 甜点 Day15：CoreImage Filters | 独木舟的木</title>
   
 
 
+  <script data-pjax>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?8229a094facca297f211d61323fd9fde";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
 
 
 
@@ -131,6 +142,7 @@
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -164,11 +176,35 @@
     <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
 
   </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
   </ul>
 </nav>
 
 
 
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
 
 </div>
           
@@ -200,7 +236,7 @@
       <section class="site-overview-wrap sidebar-panel">
         <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <img class="site-author-image" itemprop="image" alt="独木舟的木"
-      src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+      src="https://static01.imgkr.com/temp/88aab3c08a3f43f5a14f21c6c357c816.JPG">
   <p class="site-author-name" itemprop="name">独木舟的木</p>
   <div class="site-description" itemprop="description">生若直木，不语斧凿。</div>
 </div>
@@ -281,7 +317,7 @@
     <link itemprop="mainEntityOfPage" href="https://andy0570.com/2017/09/18/%E5%A4%A9%E5%A4%A9%E5%93%81%E5%B0%9DiOS7%E7%94%9C%E7%82%B9%20Day15%EF%BC%9ACoreImage%20Filters/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+      <meta itemprop="image" content="https://static01.imgkr.com/temp/88aab3c08a3f43f5a14f21c6c357c816.JPG">
       <meta itemprop="name" content="独木舟的木">
       <meta itemprop="description" content="生若直木，不语斧凿。">
     </span>
@@ -293,7 +329,7 @@
     
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          天天品尝iOS7甜点 Day15：CoreImage Filters
+          天天品尝 iOS7 甜点 Day15：CoreImage Filters
         </h1>
 
         <div class="post-meta">
@@ -322,7 +358,21 @@
                 </span>
             </span>
 
-          <br>
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2017/09/18/%E5%A4%A9%E5%A4%A9%E5%93%81%E5%B0%9DiOS7%E7%94%9C%E7%82%B9%20Day15%EF%BC%9ACoreImage%20Filters/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2017/09/18/%E5%A4%A9%E5%A4%A9%E5%93%81%E5%B0%9DiOS7%E7%94%9C%E7%82%B9%20Day15%EF%BC%9ACoreImage%20Filters/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  <br>
             <span class="post-meta-item" title="本文字数">
               <span class="post-meta-item-icon">
                 <i class="far fa-file-word"></i>
@@ -354,30 +404,30 @@
 </blockquote>
 <h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><ul>
 <li><span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL1NoaW5vYmlDb250cm9scy9pT1M3LWRheS1ieS1kYXk=">GitHub 源码：shinobicontrols/iOS7-day-by-day<i class="fa fa-external-link-alt"></i></span></li>
-<li><span class="exturl" data-url="aHR0cDovL2Jsb2cua2luZ2lvbC5jb20vMjAxNC8wMS8xOS9pb3M3LWRheS1ieS1kYXktZGF5MTUtY29yZWltYWdlLWZpbHRlcnMv">天天品尝iOS7甜点 :: Day 15 :: CoreImage Filters<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cDovL2Jsb2cua2luZ2lvbC5jb20vMjAxNC8wMS8xOS9pb3M3LWRheS1ieS1kYXktZGF5MTUtY29yZWltYWdlLWZpbHRlcnMv">天天品尝 iOS7 甜点 :: Day 15 :: CoreImage Filters<i class="fa fa-external-link-alt"></i></span></li>
 </ul>
 <a id="more"></a>
 
 <h2 id="一、Photo-Effect-Filters-为图像添加滤镜效果"><a href="#一、Photo-Effect-Filters-为图像添加滤镜效果" class="headerlink" title="一、Photo Effect Filters - 为图像添加滤镜效果"></a>一、Photo Effect Filters - 为图像添加滤镜效果</h2><p>代码：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 1.创建 CIImage 对象：UIImage → CGImage → CIImage</span><br><span class="line">UIImage *image &#x3D; [UIImage imageNamed:@&quot;iu.png&quot;];</span><br><span class="line">CIImage *inputImage &#x3D; [CIImage imageWithCGImage:[image CGImage]];</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 2.1 创建 CIFilter 过滤器对象</span><br><span class="line">CIFilter *filter &#x3D; [CIFilter filterWithName:@&quot;CIPhotoEffectChrome&quot;];</span><br><span class="line">&#x2F;&#x2F; 2.2 KVC 设置过滤参数</span><br><span class="line">[filter setValue:inputImage forKey:kCIInputImageKey];</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 3.1 输出方法一： CIImage → UIImage</span><br><span class="line">UIImage *outputImage1 &#x3D; [UIImage imageWithCIImage:filter.outputImage];</span><br><span class="line">self.imageView.image &#x3D; outputImage1;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 3.2 输出方法二： CGImage → UIImage</span><br><span class="line">CGImageRef cgImage &#x3D; [[CIContext contextWithOptions:nil] createCGImage:filter.outputImage fromRect:filter.outputImage.extent];</span><br><span class="line">UIImage *outputImage2 &#x3D; [UIImage imageWithCGImage:cgImage];</span><br><span class="line">CGImageRelease(cgImage);</span><br><span class="line">self.imageView.image &#x3D; outputImage2;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">// 1.创建 CIImage 对象：UIImage → CGImage → CIImage</span><br><span class="line">UIImage *image = [UIImage imageNamed:@"iu.png"];</span><br><span class="line">CIImage *inputImage = [CIImage imageWithCGImage:[image CGImage]];</span><br><span class="line"></span><br><span class="line">// 2.1 创建 CIFilter 过滤器对象</span><br><span class="line">CIFilter *filter = [CIFilter filterWithName:@"CIPhotoEffectChrome"];</span><br><span class="line">// 2.2 KVC 设置过滤参数</span><br><span class="line">[filter setValue:inputImage forKey:kCIInputImageKey];</span><br><span class="line"></span><br><span class="line">// 3.1 输出方法一： CIImage → UIImage</span><br><span class="line">UIImage *outputImage1 = [UIImage imageWithCIImage:filter.outputImage];</span><br><span class="line">self.imageView.image = outputImage1;</span><br><span class="line"></span><br><span class="line">// 3.2 输出方法二： CGImage → UIImage</span><br><span class="line">CGImageRef cgImage = [[CIContext contextWithOptions:nil] createCGImage:filter.outputImage fromRect:filter.outputImage.extent];</span><br><span class="line">UIImage *outputImage2 = [UIImage imageWithCGImage:cgImage];</span><br><span class="line">CGImageRelease(cgImage);</span><br><span class="line">self.imageView.image = outputImage2;</span><br></pre></td></tr></tbody></table></figure>
 
 <p>原图：</p>
-<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071644.jpg" alt="听说点赞❤️就可以把IU还给你"></p>
+<p><img data-src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071644.jpg" alt="听说点赞❤️就可以把IU还给你"></p>
 <p>滤镜效果：</p>
-<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071647.jpg" alt="对不起，把你滤丑了"></p>
-<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071648.jpg" alt="要怼就怼史蒂夫，这是他们家的原生框架，我只是个搬运工"></p>
-<h3 id="CIFilter-过滤器类型："><a href="#CIFilter-过滤器类型：" class="headerlink" title="CIFilter 过滤器类型："></a><strong>CIFilter</strong> 过滤器类型：</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">@&quot;CIPhotoEffectChrome&quot;</span><br><span class="line">@&quot;CIPhotoEffectFade&quot;</span><br><span class="line">@&quot;CIPhotoEffectInstant&quot;</span><br><span class="line">@&quot;CIPhotoEffectMono&quot;</span><br><span class="line">@&quot;CIPhotoEffectNoir&quot;</span><br><span class="line">@&quot;CIPhotoEffectProcess&quot;</span><br><span class="line">@&quot;CIPhotoEffectTonal&quot;</span><br><span class="line">@&quot;CIPhotoEffectTransfer&quot;</span><br></pre></td></tr></table></figure>
+<p><img data-src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071647.jpg" alt="对不起，把你滤丑了"></p>
+<p><img data-src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071648.jpg" alt="要怼就怼史蒂夫，这是他们家的原生框架，我只是个搬运工"></p>
+<h3 id="CIFilter-过滤器类型："><a href="#CIFilter-过滤器类型：" class="headerlink" title="CIFilter 过滤器类型："></a><strong>CIFilter</strong> 过滤器类型：</h3><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">@"CIPhotoEffectChrome"</span><br><span class="line">@"CIPhotoEffectFade"</span><br><span class="line">@"CIPhotoEffectInstant"</span><br><span class="line">@"CIPhotoEffectMono"</span><br><span class="line">@"CIPhotoEffectNoir"</span><br><span class="line">@"CIPhotoEffectProcess"</span><br><span class="line">@"CIPhotoEffectTonal"</span><br><span class="line">@"CIPhotoEffectTransfer"</span><br></pre></td></tr></tbody></table></figure>
 
 <p>详细可参阅官方文档：<span class="exturl" data-url="aHR0cHM6Ly9kZXZlbG9wZXIuYXBwbGUuY29tL2xpYnJhcnkvY29udGVudC9kb2N1bWVudGF0aW9uL0dyYXBoaWNzSW1hZ2luZy9SZWZlcmVuY2UvQ29yZUltYWdlRmlsdGVyUmVmZXJlbmNlLyMvL2FwcGxlX3JlZi9kb2MvZmlsdGVyL2NpL0NJUGhvdG9FZmZlY3RDaHJvbWU=">CoreImage Filter Reference<i class="fa fa-external-link-alt"></i></span></p>
-<h2 id="二、QR-Code-Generation-生成二维码"><a href="#二、QR-Code-Generation-生成二维码" class="headerlink" title="二、QR Code Generation - 生成二维码"></a>二、QR Code Generation - 生成二维码</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line">- (void)viewDidLoad &#123;</span><br><span class="line">    [super viewDidLoad];</span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F; 1. 待编码字符串</span><br><span class="line">    NSString *string &#x3D; @&quot;http:&#x2F;&#x2F;www.jianshu.com&#x2F;u&#x2F;84c5fadc7c18&quot;;</span><br><span class="line">    &#x2F;&#x2F; 2. 生成二维码</span><br><span class="line">    CIImage *qrCode &#x3D; [self createQRForString:string];</span><br><span class="line">    &#x2F;&#x2F; 3. 调整图像大小并显示</span><br><span class="line">    UIImage *qrCodeImg &#x3D; [self createNonInterpolatedUIImageFormCIImage:qrCode withScale:[[UIScreen mainScreen] scale] * 2];</span><br><span class="line">    self.imageView.image &#x3D; qrCodeImg;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 生成二维码方法</span><br><span class="line">- (CIImage *)createQRForString:(NSString *)qrString &#123;</span><br><span class="line">    &#x2F;&#x2F; 1. 首先把 NSString 对象使用 UTF-8 编码转换成 NSData 对象</span><br><span class="line">    NSData *stringData &#x3D; [qrString dataUsingEncoding:NSUTF8StringEncoding];</span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F; 2. 创建 CIFilter 过滤器对象</span><br><span class="line">    CIFilter *qrFilter &#x3D; [CIFilter filterWithName:@&quot;CIQRCodeGenerator&quot;];</span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F; 3.1 设置 inputMessage （即输入内容）</span><br><span class="line">    [qrFilter setValue:stringData forKey:@&quot;inputMessage&quot;];</span><br><span class="line">    &#x2F;&#x2F; 3.2 设置生成二维码的误差等级</span><br><span class="line">    [qrFilter setValue:@&quot;H&quot; forKey:@&quot;inputCorrectionLevel&quot;];</span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F; 4. 输出为 CIImage</span><br><span class="line">    return qrFilter.outputImage;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 默认输出的 CIImage 是一个 1pt 的最小的分辨率的 CIImage 对象。</span><br><span class="line">&#x2F;&#x2F; 我们需要重设这个图像的大小，但是我们并不想对它进行篡改。</span><br><span class="line">&#x2F;&#x2F; 调整图像大小</span><br><span class="line">- (UIImage *)createNonInterpolatedUIImageFormCIImage:(CIImage *)image withScale:(CGFloat) scale &#123;</span><br><span class="line">    &#x2F;&#x2F; Render the CIImage into a CGImage</span><br><span class="line">    CGImageRef cgImage &#x3D; [[CIContext contextWithOptions:nil] createCGImage:image fromRect:image.extent];</span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F; Now we&#39;ll rescale using CoreGraphics</span><br><span class="line">    UIGraphicsBeginImageContext(CGSizeMake(image.extent.size.width * scale, image.extent.size.width * scale));</span><br><span class="line">    CGContextRef context &#x3D; UIGraphicsGetCurrentContext();</span><br><span class="line">    &#x2F;&#x2F; We don&#39;t want to interpolate (since we&#39;ve got a pixel-corrent image)</span><br><span class="line">    CGContextSetInterpolationQuality(context, kCGInterpolationNone);</span><br><span class="line">    CGContextDrawImage(context, CGContextGetClipBoundingBox(context), cgImage);</span><br><span class="line">    &#x2F;&#x2F; Get the image out</span><br><span class="line">    UIImage *scaledImage &#x3D; UIGraphicsGetImageFromCurrentImageContext();</span><br><span class="line">    &#x2F;&#x2F; Tidy up</span><br><span class="line">    UIGraphicsEndImageContext();</span><br><span class="line">    CGImageRelease(cgImage);</span><br><span class="line">    return scaledImage;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="二、QR-Code-Generation-生成二维码"><a href="#二、QR-Code-Generation-生成二维码" class="headerlink" title="二、QR Code Generation - 生成二维码"></a>二、QR Code Generation - 生成二维码</h2><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line">- (void)viewDidLoad {</span><br><span class="line">    [super viewDidLoad];</span><br><span class="line">    </span><br><span class="line">    // 1. 待编码字符串</span><br><span class="line">    NSString *string = @"http://www.jianshu.com/u/84c5fadc7c18";</span><br><span class="line">    // 2. 生成二维码</span><br><span class="line">    CIImage *qrCode = [self createQRForString:string];</span><br><span class="line">    // 3. 调整图像大小并显示</span><br><span class="line">    UIImage *qrCodeImg = [self createNonInterpolatedUIImageFormCIImage:qrCode withScale:[[UIScreen mainScreen] scale] * 2];</span><br><span class="line">    self.imageView.image = qrCodeImg;</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">// 生成二维码方法</span><br><span class="line">- (CIImage *)createQRForString:(NSString *)qrString {</span><br><span class="line">    // 1. 首先把 NSString 对象使用 UTF-8 编码转换成 NSData 对象</span><br><span class="line">    NSData *stringData = [qrString dataUsingEncoding:NSUTF8StringEncoding];</span><br><span class="line">    </span><br><span class="line">    // 2. 创建 CIFilter 过滤器对象</span><br><span class="line">    CIFilter *qrFilter = [CIFilter filterWithName:@"CIQRCodeGenerator"];</span><br><span class="line">    </span><br><span class="line">    // 3.1 设置 inputMessage （即输入内容）</span><br><span class="line">    [qrFilter setValue:stringData forKey:@"inputMessage"];</span><br><span class="line">    // 3.2 设置生成二维码的误差等级</span><br><span class="line">    [qrFilter setValue:@"H" forKey:@"inputCorrectionLevel"];</span><br><span class="line">    </span><br><span class="line">    // 4. 输出为 CIImage</span><br><span class="line">    return qrFilter.outputImage;</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">// 默认输出的 CIImage 是一个 1pt 的最小的分辨率的 CIImage 对象。</span><br><span class="line">// 我们需要重设这个图像的大小，但是我们并不想对它进行篡改。</span><br><span class="line">// 调整图像大小</span><br><span class="line">- (UIImage *)createNonInterpolatedUIImageFormCIImage:(CIImage *)image withScale:(CGFloat) scale {</span><br><span class="line">    // Render the CIImage into a CGImage</span><br><span class="line">    CGImageRef cgImage = [[CIContext contextWithOptions:nil] createCGImage:image fromRect:image.extent];</span><br><span class="line">    </span><br><span class="line">    // Now we'll rescale using CoreGraphics</span><br><span class="line">    UIGraphicsBeginImageContext(CGSizeMake(image.extent.size.width * scale, image.extent.size.width * scale));</span><br><span class="line">    CGContextRef context = UIGraphicsGetCurrentContext();</span><br><span class="line">    // We don't want to interpolate (since we've got a pixel-corrent image)</span><br><span class="line">    CGContextSetInterpolationQuality(context, kCGInterpolationNone);</span><br><span class="line">    CGContextDrawImage(context, CGContextGetClipBoundingBox(context), cgImage);</span><br><span class="line">    // Get the image out</span><br><span class="line">    UIImage *scaledImage = UIGraphicsGetImageFromCurrentImageContext();</span><br><span class="line">    // Tidy up</span><br><span class="line">    UIGraphicsEndImageContext();</span><br><span class="line">    CGImageRelease(cgImage);</span><br><span class="line">    return scaledImage;</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
 
 <p>生成的二维码：</p>
-<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071650.jpg"></p>
+<p><img data-src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071650.jpg"></p>
 <h3 id="inputCorrectionLevel-二维码等级"><a href="#inputCorrectionLevel-二维码等级" class="headerlink" title="inputCorrectionLevel - 二维码等级"></a>inputCorrectionLevel - 二维码等级</h3><ul>
-<li>L - 7%的错误弹性</li>
-<li>M - 15%的错误弹性</li>
-<li>Q - 25%的错误弹性</li>
-<li>H - 30%的错误弹性</li>
+<li>L - 7% 的错误弹性</li>
+<li> M - 15% 的错误弹性</li>
+<li> Q - 25% 的错误弹性</li>
+<li> H - 30% 的错误弹性</li>
 </ul>
 
     </div>
@@ -394,7 +444,7 @@
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="https://andy0570.com/2017/09/18/%E5%A4%A9%E5%A4%A9%E5%93%81%E5%B0%9DiOS7%E7%94%9C%E7%82%B9%20Day15%EF%BC%9ACoreImage%20Filters/" title="天天品尝iOS7甜点 Day15：CoreImage Filters">https://andy0570.com/2017/09/18/天天品尝iOS7甜点 Day15：CoreImage Filters/</a>
+    <a href="https://andy0570.com/2017/09/18/%E5%A4%A9%E5%A4%A9%E5%93%81%E5%B0%9DiOS7%E7%94%9C%E7%82%B9%20Day15%EF%BC%9ACoreImage%20Filters/" title="天天品尝 iOS7 甜点 Day15：CoreImage Filters">https://andy0570.com/2017/09/18/天天品尝iOS7甜点 Day15：CoreImage Filters/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <span class="exturl" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpo"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</span> 许可协议。转载请注明出处！
@@ -433,12 +483,12 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2017/09/15/%E5%A4%A9%E5%A4%A9%E5%93%81%E5%B0%9DiOS7%E7%94%9C%E7%82%B9%20Day14%EF%BC%9AInteractive%20View%20Controller%20Transitions/" rel="prev" title="天天品尝iOS7甜点 Day14：Interactive View Controller Transitions">
-      <i class="fa fa-chevron-left"></i> 天天品尝iOS7甜点 Day14：Interactive View Controller Transitions
+    <a href="/2017/09/15/%E5%A4%A9%E5%A4%A9%E5%93%81%E5%B0%9DiOS7%E7%94%9C%E7%82%B9%20Day14%EF%BC%9AInteractive%20View%20Controller%20Transitions/" rel="prev" title="天天品尝 iOS7 甜点 Day14：Interactive View Controller Transitions">
+      <i class="fa fa-chevron-left"></i> 天天品尝 iOS7 甜点 Day14：Interactive View Controller Transitions
     </a></div>
       <div class="post-nav-item">
-    <a href="/2017/09/19/%E5%A4%A9%E5%A4%A9%E5%93%81%E5%B0%9DiOS7%E7%94%9C%E7%82%B9%20Day16%EF%BC%9ADecoding%20QR%20Codes%20with%20AVFoundation/" rel="next" title="天天品尝iOS7甜点 Day16：Decoding QR Codes with AVFoundation">
-      天天品尝iOS7甜点 Day16：Decoding QR Codes with AVFoundation <i class="fa fa-chevron-right"></i>
+    <a href="/2017/09/19/%E5%A4%A9%E5%A4%A9%E5%93%81%E5%B0%9DiOS7%E7%94%9C%E7%82%B9%20Day16%EF%BC%9ADecoding%20QR%20Codes%20with%20AVFoundation/" rel="next" title="天天品尝 iOS7 甜点 Day16：Decoding QR Codes with AVFoundation">
+      天天品尝 iOS7 甜点 Day16：Decoding QR Codes with AVFoundation <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -452,6 +502,7 @@
 
         </div>
         
+    <div class="comments" id="valine-comments"></div>
 
 <script>
   window.addEventListener('tabs:register', () => {
@@ -520,7 +571,11 @@
   </div>
 
   
-  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.0/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/next-theme/pjax@0/pjax.min.js"></script>
+  <script src="//unpkg.com/medium-zoom@1/dist/medium-zoom.min.js"></script>
+  <script src="//unpkg.com/lozad@1/dist/lozad.min.js"></script>
+  <script src="//unpkg.com/pangu@4/dist/browser/pangu.min.js"></script>
 
 <script src="/js/utils.js"></script>
 
@@ -531,9 +586,42 @@
 
 <script src="/js/bookmark.js"></script>
 
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '.page-configurations',
+    '.main-inner',
+    '.post-toc-wrap',
+    '.languages',
+    '.pjax'
+  ],
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+document.addEventListener('pjax:success', () => {
+  pjax.executeScripts(document.querySelectorAll('script[data-pjax], .pjax script'));
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  const hasTOC = document.querySelector('.post-toc');
+  document.querySelector('.sidebar-inner').classList.toggle('sidebar-nav-active', hasTOC);
+  document.querySelector(hasTOC ? '.sidebar-nav-toc' : '.sidebar-nav-overview').click();
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
 
   
-  <script>
+  <script data-pjax>
     (function(){
       var bp = document.createElement('script');
       var curProtocol = window.location.protocol.split(':')[0];
@@ -546,6 +634,10 @@
 
 
 
+  
+<script src="//unpkg.com/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//unpkg.com/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
 
 
 
@@ -557,9 +649,27 @@
 
 
 
+
+
+
+    <div class="pjax">
   
 
   
 
+
+<script>
+NexT.utils.loadComments('#valine-comments', () => {
+  NexT.utils.getScript('//unpkg.com/valine@1/dist/Valine.min.js', () => {
+    new Valine(Object.assign({
+      el  : '#valine-comments',
+      path: location.pathname,
+    }, {"enable":true,"appId":"S7i1Y8YorMKFPaYbJbekD5el-gzGzoHsz","appKey":"brOnU8mOQvSjpipJvdKUAIbU","placeholder":"写下你的评论...","avatar":"mm","meta":["nick","mail","link"],"pageSize":10,"language":"zh-cn","visitor":false,"comment_count":true,"recordIP":true,"serverURLs":null,"enableQQ":true,"requiredFields":[]}
+    ));
+  }, window.Valine);
+});
+</script>
+
+    </div>
 </body>
 </html>

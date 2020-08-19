@@ -18,21 +18,23 @@
 <link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css">
   
   <link rel="stylesheet" href="/lib/animate-css/animate.min.css">
+  <link rel="stylesheet" href="//unpkg.com/pace-js@1/themes/blue/pace-theme-minimal.css">
+  <script src="//unpkg.com/pace-js@1/pace.min.js"></script>
 
 <script class="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"andy0570.com","root":"/","scheme":"Gemini","version":"8.0.0-rc.5","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":"mac","bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false};
+    var CONFIG = {"hostname":"andy0570.com","root":"/","scheme":"Gemini","version":"8.0.0-rc.5","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":"mac","bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":true,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":true,"nav":null,"activeClass":"valine"},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"algolia":{"appID":"0E2AON8EZF","apiKey":"22fbefd84c8343239f5c04365b9728de","indexName":"MyBlogPlatform","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}}};
   </script>
 
-  <meta name="description" content="属性@property 尽管可以使用obj-&gt;arr的形式去强制读取对象的成员变量，但是良好的编程形式是对外界提供成员变量的读写接口。**@property** 关键字提供了外界对成员变量的访问接口，其本质是自动为某一个属性生成set和get方法。  根据不同的需要，可以添加 readonly（只读，相当于只添加get不添加set方法）或者 readwrite（读写，如果不添加则为默认）；">
+  <meta name="description" content="属性@property 尽管可以使用 obj-&gt;arr 的形式去强制读取对象的成员变量，但是良好的编程形式是对外界提供成员变量的读写接口。**@property** 关键字提供了外界对成员变量的访问接口，其本质是自动为某一个属性生成 set 和 get 方法。  根据不同的需要，可以添加 readonly（只读，相当于只添加 get 不添加 set 方法）或者 readwrite（读写，如果">
 <meta property="og:type" content="article">
 <meta property="og:title" content="《Objective-C 编程》19.@property">
 <meta property="og:url" content="https://andy0570.com/2017/12/22/%E3%80%8AObjective-C%20%E7%BC%96%E7%A8%8B%E3%80%8B19.@property/index.html">
 <meta property="og:site_name" content="独木舟的木">
-<meta property="og:description" content="属性@property 尽管可以使用obj-&gt;arr的形式去强制读取对象的成员变量，但是良好的编程形式是对外界提供成员变量的读写接口。**@property** 关键字提供了外界对成员变量的访问接口，其本质是自动为某一个属性生成set和get方法。  根据不同的需要，可以添加 readonly（只读，相当于只添加get不添加set方法）或者 readwrite（读写，如果不添加则为默认）；">
+<meta property="og:description" content="属性@property 尽管可以使用 obj-&gt;arr 的形式去强制读取对象的成员变量，但是良好的编程形式是对外界提供成员变量的读写接口。**@property** 关键字提供了外界对成员变量的访问接口，其本质是自动为某一个属性生成 set 和 get 方法。  根据不同的需要，可以添加 readonly（只读，相当于只添加 get 不添加 set 方法）或者 readwrite（读写，如果">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2017-12-22T02:55:00.000Z">
 <meta property="article:modified_time" content="2019-05-01T13:16:06.000Z">
@@ -44,7 +46,7 @@
 <link rel="canonical" href="https://andy0570.com/2017/12/22/%E3%80%8AObjective-C%20%E7%BC%96%E7%A8%8B%E3%80%8B19.@property/">
 
 
-<script class="page-configurations">
+<script data-pjax class="page-configurations">
   // https://hexo.io/docs/variables.html
   CONFIG.page = {
     sidebar: "",
@@ -58,6 +60,15 @@
   
 
 
+  <script data-pjax>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?8229a094facca297f211d61323fd9fde";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
 
 
 
@@ -127,6 +138,7 @@
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -160,11 +172,35 @@
     <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
 
   </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
   </ul>
 </nav>
 
 
 
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
 
 </div>
           
@@ -196,7 +232,7 @@
       <section class="site-overview-wrap sidebar-panel">
         <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <img class="site-author-image" itemprop="image" alt="独木舟的木"
-      src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+      src="https://static01.imgkr.com/temp/88aab3c08a3f43f5a14f21c6c357c816.JPG">
   <p class="site-author-name" itemprop="name">独木舟的木</p>
   <div class="site-description" itemprop="description">生若直木，不语斧凿。</div>
 </div>
@@ -277,7 +313,7 @@
     <link itemprop="mainEntityOfPage" href="https://andy0570.com/2017/12/22/%E3%80%8AObjective-C%20%E7%BC%96%E7%A8%8B%E3%80%8B19.@property/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+      <meta itemprop="image" content="https://static01.imgkr.com/temp/88aab3c08a3f43f5a14f21c6c357c816.JPG">
       <meta itemprop="name" content="独木舟的木">
       <meta itemprop="description" content="生若直木，不语斧凿。">
     </span>
@@ -318,7 +354,21 @@
                 </span>
             </span>
 
-          <br>
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2017/12/22/%E3%80%8AObjective-C%20%E7%BC%96%E7%A8%8B%E3%80%8B19.@property/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2017/12/22/%E3%80%8AObjective-C%20%E7%BC%96%E7%A8%8B%E3%80%8B19.@property/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  <br>
             <span class="post-meta-item" title="本文字数">
               <span class="post-meta-item-icon">
                 <i class="far fa-file-word"></i>
@@ -342,17 +392,17 @@
     
     <div class="post-body" itemprop="articleBody">
         <h1 id="属性"><a href="#属性" class="headerlink" title="属性"></a>属性</h1><h4 id="property"><a href="#property" class="headerlink" title="@property"></a>@property</h4><ul>
-<li><p>尽管可以使用obj-&gt;arr的形式去强制读取对象的成员变量，但是良好的编程形式是对外界提供成员变量的读写接口。**@property** 关键字提供了外界对成员变量的访问接口，<strong>其本质是自动为某一个属性生成set和get方法</strong>。</p>
+<li><p>尽管可以使用 obj-&gt;arr 的形式去强制读取对象的成员变量，但是良好的编程形式是对外界提供成员变量的读写接口。**@property** 关键字提供了外界对成员变量的访问接口，<strong>其本质是自动为某一个属性生成 set 和 get 方法</strong>。</p>
 </li>
-<li><p>根据不同的需要，可以添加 <strong>readonly</strong>（只读，相当于只添加get不添加set方法）或者 <strong>readwrite</strong>（读写，如果不添加则为默认）；</p>
+<li><p>根据不同的需要，可以添加 <strong>readonly</strong>（只读，相当于只添加 get 不添加 set 方法）或者 <strong>readwrite</strong>（读写，如果不添加则为默认）；</p>
 </li>
-<li><p>还有三种赋值方式可选 ：<strong>assign</strong>（直接赋值，通常用于基本类型），<strong>retain</strong>（释放旧值，增加新的retaincount），<strong>copy</strong>（常用于字符串，生成一个新的拷贝）.      </p>
+<li><p>还有三种赋值方式可选 ：<strong>assign</strong>（直接赋值，通常用于基本类型），<strong>retain</strong>（释放旧值，增加新的 retaincount），<strong>copy</strong>（常用于字符串，生成一个新的拷贝）.      </p>
 </li>
-<li><p><strong>property的属性特性只对setter方法有效，对getter方法无效</strong></p>
+<li><p><strong>property 的属性特性只对 setter 方法有效，对 getter 方法无效</strong></p>
 <p><strong>格式</strong>：</p>
 </li>
 </ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">@property (原子性©,内存管理©,读写性©) NSString *string;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">@property (原子性©,内存管理©,读写性©) NSString *string;</span><br></pre></td></tr></tbody></table></figure>
 
 <a id="more"></a>
 
@@ -361,12 +411,12 @@
 <ul>
 <li><p><strong>atomic</strong>(默认)：原子性</p>
 <blockquote>
-<p><strong>atomic</strong> 意为操作是原子的，意味着只有一个线程访问实例变量。atomic是线程安全的，至少在当前的存取器上是安全的。它是一个默认的特性，但是很少使用，因为比较影响效率，这跟ARM平台和内部锁机制有关。</p>
+<p><strong>atomic</strong> 意为操作是原子的，意味着只有一个线程访问实例变量。atomic 是线程安全的，至少在当前的存取器上是安全的。它是一个默认的特性，但是很少使用，因为比较影响效率，这跟 ARM 平台和内部锁机制有关。</p>
 </blockquote>
 </li>
 <li><p><strong>nonatomic</strong>： 非原子性 </p>
 <blockquote>
-<p><strong>nonatomic</strong> 跟 <strong>atomic</strong> 刚好相反。表示非原子的，可以被多个线程访问。它的效率比atomic快。但不能保证在多线程环境下的安全性，在单线程和明确只有一个线程访问的情况下广泛使用。</p>
+<p><strong>nonatomic</strong> 跟 <strong>atomic</strong> 刚好相反。表示非原子的，可以被多个线程访问。它的效率比 atomic 快。但不能保证在多线程环境下的安全性，在单线程和明确只有一个线程访问的情况下广泛使用。</p>
 </blockquote>
 </li>
 </ul>
@@ -382,27 +432,27 @@
 <p>2⃣️ assign 修饰的属性不牵涉内存管理，不会被引用计数器管理。</p>
 </blockquote>
 </li>
-<li><p><strong>retain</strong>：保留对象；（所有的对象，都使用retain）</p>
+<li><p><strong>retain</strong>：保留对象；（所有的对象，都使用 retain）</p>
 <blockquote>
-<p>在<code>setter</code>方法中，需要对传入的对象进行引用计数加1的操作。<br>简单来说，就是对传入的对象拥有所有权，只要对该对象拥有所有权，该对象就不会被释放。</p>
+<p>在 <code>setter</code> 方法中，需要对传入的对象进行引用计数加 1 的操作。<br>简单来说，就是对传入的对象拥有所有权，只要对该对象拥有所有权，该对象就不会被释放。</p>
 </blockquote>
 </li>
-<li><p><strong>copy</strong>：拷贝对象；<strong>NSString</strong>／<strong>NSArray</strong> 的对象都使用<strong>copy</strong>属性；</p>
+<li><p><strong>copy</strong>：拷贝对象；<strong>NSString</strong>／<strong>NSArray</strong> 的对象都使用 <strong>copy</strong> 属性；</p>
 </li>
 <li><p><strong>strong</strong>：强引用</p>
 <blockquote>
-<p><strong>strong</strong> 是在IOS引入ARC的时候引入的关键字，是retain的一个可选的替代。表示实例变量对传入的对象要有所有权关系，即强引用。strong跟retain的意思相同并产生相同的代码，但是语意上更好更能体现对象的关系。</p>
+<p><strong>strong</strong> 是在 IOS 引入 ARC 的时候引入的关键字，是 retain 的一个可选的替代。表示实例变量对传入的对象要有所有权关系，即强引用。strong 跟 retain 的意思相同并产生相同的代码，但是语意上更好更能体现对象的关系。</p>
 </blockquote>
 </li>
 <li><p><strong>weak</strong>：弱引用，一般用来修饰对象。</p>
 <blockquote>
-<p>针对对象类型，在setter方法中，不会对传入的对象执行引用计数器+1的操作。也就是对传入的对象没有所有权，是弱引用。另外当传入的对象引用计数器为0，也就是被释放后，用weak声明的实例变量会指向nil，即空对象。</p>
+<p>针对对象类型，在 setter 方法中，不会对传入的对象执行引用计数器 + 1 的操作。也就是对传入的对象没有所有权，是弱引用。另外当传入的对象引用计数器为 0，也就是被释放后，用 weak 声明的实例变量会指向 nil，即空对象。</p>
 </blockquote>
 </li>
 <li><p><strong>unsafe_unretained:</strong></p>
 <blockquote>
-<p>1⃣️ 从字面上来看，我们可以拆分成两部分来理解，unretained和retain相反，也就是和strong相反，因此等同于weak，其实也是用在iOS5之前替代weak使用的。</p>
-<p>2⃣️ unsafe，不安全的，如上所述等同于weak的话那应该是安全的，这里不安全的是指当传入的对象被释放后，使用unsafe_unretained修饰的变量是不知道的，也不会像weak一样指向nil，所以此时访问可能会引起crash。因此，总结来说unsafe_unretained作用是等同于weak，但是是不安全的。</p>
+<p>1⃣️ 从字面上来看，我们可以拆分成两部分来理解，unretained 和 retain 相反，也就是和 strong 相反，因此等同于 weak，其实也是用在 iOS5 之前替代 weak 使用的。</p>
+<p>2⃣️ unsafe，不安全的，如上所述等同于 weak 的话那应该是安全的，这里不安全的是指当传入的对象被释放后，使用 unsafe_unretained 修饰的变量是不知道的，也不会像 weak 一样指向 nil，所以此时访问可能会引起 crash。因此，总结来说 unsafe_unretained 作用是等同于 weak，但是是不安全的。</p>
 </blockquote>
 </li>
 </ul>
@@ -411,22 +461,22 @@
 <ul>
 <li><p><strong>readwrite</strong>（默认）：</p>
 <blockquote>
-<p><code>readwrite</code>是默认值，表示该属性同时拥有<code>setter</code>和<code>getter</code>。</p>
+<p><code>readwrite</code> 是默认值，表示该属性同时拥有 <code>setter</code> 和 <code>getter</code>。</p>
 </blockquote>
 </li>
 <li><p><strong>readonly</strong>：只读</p>
 <blockquote>
-<p><code>readonly</code>表示只有<code>getter</code>没有<code>setter</code>。</p>
+<p><code>readonly</code> 表示只有 <code>getter</code> 没有 <code>setter</code>。</p>
 </blockquote>
 </li>
 </ul>
 </li>
 </ol>
 <h3 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h3><ul>
-<li><span class="exturl" data-url="aHR0cDovL3d3dy5qaWFuc2h1LmNvbS9wLzc0YWYwMzg0N2U3NA==">我所理解的内存管理：4、property相关 @杨淳引<i class="fa fa-external-link-alt"></i></span></li>
-<li><span class="exturl" data-url="aHR0cDovL3d3dy5qaWFuc2h1LmNvbS9wLzE0NTUyYjQ5NDZjNQ==">理解@property使用的关键字 @MrLeoZou<i class="fa fa-external-link-alt"></i></span></li>
-<li><span class="exturl" data-url="aHR0cDovL3d3dy5kZXZ0YWxraW5nLmNvbS9hcnRpY2xlcy95b3Utc2hvdWxkLXRvLWtub3ctcHJvcGVydHkv">Objective-C中的@property @程序员说<i class="fa fa-external-link-alt"></i></span></li>
-<li><span class="exturl" data-url="aHR0cHM6Ly9zZWdtZW50ZmF1bHQuY29tL2EvMTE5MDAwMDAwNDk0MzI3Ng==">Objective-C 内存管理——你需要知道的一切<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cDovL3d3dy5qaWFuc2h1LmNvbS9wLzc0YWYwMzg0N2U3NA==">我所理解的内存管理：4、property 相关 @杨淳引<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cDovL3d3dy5qaWFuc2h1LmNvbS9wLzE0NTUyYjQ5NDZjNQ==">理解 @property 使用的关键字 @MrLeoZou<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cDovL3d3dy5kZXZ0YWxraW5nLmNvbS9hcnRpY2xlcy95b3Utc2hvdWxkLXRvLWtub3ctcHJvcGVydHkv">Objective-C 中的 @property @程序员说<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cHM6Ly9zZWdtZW50ZmF1bHQuY29tL2EvMTE5MDAwMDAwNDk0MzI3Ng==">Objective-C 内存管理 —— 你需要知道的一切<i class="fa fa-external-link-alt"></i></span></li>
 <li><span class="exturl" data-url="aHR0cDovL2Jsb2cuZGV2dGFuZy5jb20vMjAxNi8wNy8zMC9pb3MtbWVtb3J5LW1hbmFnZW1lbnQv">理解 iOS 的内存管理 @唐巧<i class="fa fa-external-link-alt"></i></span></li>
 </ul>
 
@@ -484,8 +534,8 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2017/12/20/AFNetworking%E2%80%94%E2%80%94%E4%BC%98%E9%9B%85%E7%9A%84%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6/" rel="prev" title="AFNetworking——优雅的网络框架">
-      <i class="fa fa-chevron-left"></i> AFNetworking——优雅的网络框架
+    <a href="/2017/12/20/AFNetworking%E2%80%94%E2%80%94%E4%BC%98%E9%9B%85%E7%9A%84%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6/" rel="prev" title="AFNetworking—— 优雅的网络框架">
+      <i class="fa fa-chevron-left"></i> AFNetworking—— 优雅的网络框架
     </a></div>
       <div class="post-nav-item">
     <a href="/2017/12/22/nullable%20%E4%B8%8E%20nonnull%20%E7%9A%84%E4%BD%BF%E7%94%A8/" rel="next" title="nullable 与 nonnull 的使用">
@@ -503,6 +553,7 @@
 
         </div>
         
+    <div class="comments" id="valine-comments"></div>
 
 <script>
   window.addEventListener('tabs:register', () => {
@@ -571,7 +622,11 @@
   </div>
 
   
-  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.0/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/next-theme/pjax@0/pjax.min.js"></script>
+  <script src="//unpkg.com/medium-zoom@1/dist/medium-zoom.min.js"></script>
+  <script src="//unpkg.com/lozad@1/dist/lozad.min.js"></script>
+  <script src="//unpkg.com/pangu@4/dist/browser/pangu.min.js"></script>
 
 <script src="/js/utils.js"></script>
 
@@ -582,9 +637,42 @@
 
 <script src="/js/bookmark.js"></script>
 
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '.page-configurations',
+    '.main-inner',
+    '.post-toc-wrap',
+    '.languages',
+    '.pjax'
+  ],
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+document.addEventListener('pjax:success', () => {
+  pjax.executeScripts(document.querySelectorAll('script[data-pjax], .pjax script'));
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  const hasTOC = document.querySelector('.post-toc');
+  document.querySelector('.sidebar-inner').classList.toggle('sidebar-nav-active', hasTOC);
+  document.querySelector(hasTOC ? '.sidebar-nav-toc' : '.sidebar-nav-overview').click();
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
 
   
-  <script>
+  <script data-pjax>
     (function(){
       var bp = document.createElement('script');
       var curProtocol = window.location.protocol.split(':')[0];
@@ -597,6 +685,10 @@
 
 
 
+  
+<script src="//unpkg.com/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//unpkg.com/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
 
 
 
@@ -608,9 +700,27 @@
 
 
 
+
+
+
+    <div class="pjax">
   
 
   
 
+
+<script>
+NexT.utils.loadComments('#valine-comments', () => {
+  NexT.utils.getScript('//unpkg.com/valine@1/dist/Valine.min.js', () => {
+    new Valine(Object.assign({
+      el  : '#valine-comments',
+      path: location.pathname,
+    }, {"enable":true,"appId":"S7i1Y8YorMKFPaYbJbekD5el-gzGzoHsz","appKey":"brOnU8mOQvSjpipJvdKUAIbU","placeholder":"写下你的评论...","avatar":"mm","meta":["nick","mail","link"],"pageSize":10,"language":"zh-cn","visitor":false,"comment_count":true,"recordIP":true,"serverURLs":null,"enableQQ":true,"requiredFields":[]}
+    ));
+  }, window.Valine);
+});
+</script>
+
+    </div>
 </body>
 </html>

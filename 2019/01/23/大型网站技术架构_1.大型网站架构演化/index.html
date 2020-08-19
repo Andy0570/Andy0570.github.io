@@ -18,18 +18,20 @@
 <link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css">
   
   <link rel="stylesheet" href="/lib/animate-css/animate.min.css">
+  <link rel="stylesheet" href="//unpkg.com/pace-js@1/themes/blue/pace-theme-minimal.css">
+  <script src="//unpkg.com/pace-js@1/pace.min.js"></script>
 
 <script class="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"andy0570.com","root":"/","scheme":"Gemini","version":"8.0.0-rc.5","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":"mac","bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false};
+    var CONFIG = {"hostname":"andy0570.com","root":"/","scheme":"Gemini","version":"8.0.0-rc.5","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":"mac","bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":true,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":true,"nav":null,"activeClass":"valine"},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"algolia":{"appID":"0E2AON8EZF","apiKey":"22fbefd84c8343239f5c04365b9728de","indexName":"MyBlogPlatform","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}}};
   </script>
 
   <meta name="description" content="1. 大型网站架构演化传统企业应用系统面对的挑战：  功能性需求：复杂变化的业务逻辑； 非功能性需求：超大量的用户访问和海量的数据处理。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="大型网站技术架构_1.大型网站架构演化">
+<meta property="og:title" content="大型网站技术架构_1. 大型网站架构演化">
 <meta property="og:url" content="https://andy0570.com/2019/01/23/%E5%A4%A7%E5%9E%8B%E7%BD%91%E7%AB%99%E6%8A%80%E6%9C%AF%E6%9E%B6%E6%9E%84_1.%E5%A4%A7%E5%9E%8B%E7%BD%91%E7%AB%99%E6%9E%B6%E6%9E%84%E6%BC%94%E5%8C%96/index.html">
 <meta property="og:site_name" content="独木舟的木">
 <meta property="og:description" content="1. 大型网站架构演化传统企业应用系统面对的挑战：  功能性需求：复杂变化的业务逻辑； 非功能性需求：超大量的用户访问和海量的数据处理。">
@@ -56,7 +58,7 @@
 <link rel="canonical" href="https://andy0570.com/2019/01/23/%E5%A4%A7%E5%9E%8B%E7%BD%91%E7%AB%99%E6%8A%80%E6%9C%AF%E6%9E%B6%E6%9E%84_1.%E5%A4%A7%E5%9E%8B%E7%BD%91%E7%AB%99%E6%9E%B6%E6%9E%84%E6%BC%94%E5%8C%96/">
 
 
-<script class="page-configurations">
+<script data-pjax class="page-configurations">
   // https://hexo.io/docs/variables.html
   CONFIG.page = {
     sidebar: "",
@@ -66,10 +68,19 @@
   };
 </script>
 
-  <title>大型网站技术架构_1.大型网站架构演化 | 独木舟的木</title>
+  <title>大型网站技术架构_1. 大型网站架构演化 | 独木舟的木</title>
   
 
 
+  <script data-pjax>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?8229a094facca297f211d61323fd9fde";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
 
 
 
@@ -139,6 +150,7 @@
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -172,11 +184,35 @@
     <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
 
   </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
   </ul>
 </nav>
 
 
 
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
 
 </div>
           
@@ -201,14 +237,14 @@
 
       <!--noindex-->
       <section class="post-toc-wrap sidebar-panel">
-          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-%E5%A4%A7%E5%9E%8B%E7%BD%91%E7%AB%99%E6%9E%B6%E6%9E%84%E6%BC%94%E5%8C%96"><span class="nav-number">1.</span> <span class="nav-text">1. 大型网站架构演化</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-1-%E5%A4%A7%E5%9E%8B%E7%BD%91%E7%AB%99%E8%BD%AF%E4%BB%B6%E7%B3%BB%E7%BB%9F%E7%89%B9%E7%82%B9"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 大型网站软件系统特点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-2-%E5%A4%A7%E5%9E%8B%E7%BD%91%E7%AB%99%E6%9E%B6%E6%9E%84%E6%BC%94%E5%8C%96%E5%8F%91%E5%B1%95%E5%8E%86%E7%A8%8B"><span class="nav-number">1.2.</span> <span class="nav-text">1.2 大型网站架构演化发展历程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1%E2%83%A3%EF%B8%8F-%E5%88%9D%E5%A7%8B%E9%98%B6%E6%AE%B5%E7%9A%84%E7%BD%91%E7%AB%99%E6%9E%B6%E6%9E%84"><span class="nav-number">1.2.1.</span> <span class="nav-text">1⃣️ 初始阶段的网站架构</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%89%B9%E7%82%B9"><span class="nav-number">1.2.1.1.</span> <span class="nav-text">特点</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2%E2%83%A3%EF%B8%8F-%E5%BA%94%E7%94%A8%E6%9C%8D%E5%8A%A1%E5%92%8C%E6%95%B0%E6%8D%AE%E6%9C%8D%E5%8A%A1%E5%88%86%E7%A6%BB"><span class="nav-number">1.2.2.</span> <span class="nav-text">2⃣️ 应用服务和数据服务分离</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%89%B9%E7%82%B9-1"><span class="nav-number">1.2.2.1.</span> <span class="nav-text">特点</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3%E2%83%A3%EF%B8%8F-%E4%BD%BF%E7%94%A8%E7%BC%93%E5%AD%98%E6%94%B9%E5%96%84%E7%BD%91%E7%AB%99%E6%80%A7%E8%83%BD"><span class="nav-number">1.2.3.</span> <span class="nav-text">3⃣️ 使用缓存改善网站性能</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%89%B9%E7%82%B9-2"><span class="nav-number">1.2.3.1.</span> <span class="nav-text">特点</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4%E2%83%A3%EF%B8%8F-%E4%BD%BF%E7%94%A8%E5%BA%94%E7%94%A8%E6%9C%8D%E5%8A%A1%E5%99%A8%E9%9B%86%E7%BE%A4%E6%94%B9%E5%96%84%E7%BD%91%E7%AB%99%E7%9A%84%E5%B9%B6%E5%8F%91%E5%A4%84%E7%90%86%E8%83%BD%E5%8A%9B"><span class="nav-number">1.2.4.</span> <span class="nav-text">4⃣️ 使用应用服务器集群改善网站的并发处理能力</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%89%B9%E7%82%B9-3"><span class="nav-number">1.2.4.1.</span> <span class="nav-text">特点</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5%E2%83%A3%EF%B8%8F-%E6%95%B0%E6%8D%AE%E5%BA%93%E8%AF%BB%E5%86%99%E5%88%86%E7%A6%BB"><span class="nav-number">1.2.5.</span> <span class="nav-text">5⃣️ 数据库读写分离</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%89%B9%E7%82%B9-4"><span class="nav-number">1.2.5.1.</span> <span class="nav-text">特点</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6%E2%83%A3%EF%B8%8F-%E4%BD%BF%E7%94%A8%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86%E5%92%8CCDN%E5%8A%A0%E9%80%9F%E7%BD%91%E7%AB%99%E5%93%8D%E5%BA%94"><span class="nav-number">1.2.6.</span> <span class="nav-text">6⃣️ 使用反向代理和CDN加速网站响应</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%89%B9%E7%82%B9-5"><span class="nav-number">1.2.6.1.</span> <span class="nav-text">特点</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7%E2%83%A3%EF%B8%8F-%E4%BD%BF%E7%94%A8%E5%88%86%E5%B8%83%E5%BC%8F%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F%E5%92%8C%E5%88%86%E5%B8%83%E5%BC%8F%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E7%BB%9F"><span class="nav-number">1.2.7.</span> <span class="nav-text">7⃣️ 使用分布式文件系统和分布式数据库系统</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8%E2%83%A3%EF%B8%8F-%E4%BD%BF%E7%94%A8-NoSQL-%E5%92%8C%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E"><span class="nav-number">1.2.8.</span> <span class="nav-text">8⃣️ 使用 NoSQL 和搜索引擎</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#9%E2%83%A3%EF%B8%8F-%E4%B8%9A%E5%8A%A1%E6%8B%86%E5%88%86"><span class="nav-number">1.2.9.</span> <span class="nav-text">9⃣️ 业务拆分</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%F0%9F%94%9F-%E5%88%86%E5%B8%83%E5%BC%8F%E6%9C%8D%E5%8A%A1"><span class="nav-number">1.2.10.</span> <span class="nav-text">🔟 分布式服务</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-3-%E5%A4%A7%E5%9E%8B%E7%BD%91%E7%AB%99%E6%9E%B6%E6%9E%84%E6%BC%94%E5%8C%96%E7%9A%84%E4%BB%B7%E5%80%BC%E8%A7%82"><span class="nav-number">1.3.</span> <span class="nav-text">1.3 大型网站架构演化的价值观</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">2.</span> <span class="nav-text">参考</span></a></li></ol></div>
+          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-%E5%A4%A7%E5%9E%8B%E7%BD%91%E7%AB%99%E6%9E%B6%E6%9E%84%E6%BC%94%E5%8C%96"><span class="nav-number">1.</span> <span class="nav-text">1. 大型网站架构演化</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-1-%E5%A4%A7%E5%9E%8B%E7%BD%91%E7%AB%99%E8%BD%AF%E4%BB%B6%E7%B3%BB%E7%BB%9F%E7%89%B9%E7%82%B9"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 大型网站软件系统特点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-2-%E5%A4%A7%E5%9E%8B%E7%BD%91%E7%AB%99%E6%9E%B6%E6%9E%84%E6%BC%94%E5%8C%96%E5%8F%91%E5%B1%95%E5%8E%86%E7%A8%8B"><span class="nav-number">1.2.</span> <span class="nav-text">1.2 大型网站架构演化发展历程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1%E2%83%A3%EF%B8%8F-%E5%88%9D%E5%A7%8B%E9%98%B6%E6%AE%B5%E7%9A%84%E7%BD%91%E7%AB%99%E6%9E%B6%E6%9E%84"><span class="nav-number">1.2.1.</span> <span class="nav-text">1⃣️ 初始阶段的网站架构</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%89%B9%E7%82%B9"><span class="nav-number">1.2.1.1.</span> <span class="nav-text">特点</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2%E2%83%A3%EF%B8%8F-%E5%BA%94%E7%94%A8%E6%9C%8D%E5%8A%A1%E5%92%8C%E6%95%B0%E6%8D%AE%E6%9C%8D%E5%8A%A1%E5%88%86%E7%A6%BB"><span class="nav-number">1.2.2.</span> <span class="nav-text">2⃣️ 应用服务和数据服务分离</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%89%B9%E7%82%B9-1"><span class="nav-number">1.2.2.1.</span> <span class="nav-text">特点</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3%E2%83%A3%EF%B8%8F-%E4%BD%BF%E7%94%A8%E7%BC%93%E5%AD%98%E6%94%B9%E5%96%84%E7%BD%91%E7%AB%99%E6%80%A7%E8%83%BD"><span class="nav-number">1.2.3.</span> <span class="nav-text">3⃣️ 使用缓存改善网站性能</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%89%B9%E7%82%B9-2"><span class="nav-number">1.2.3.1.</span> <span class="nav-text">特点</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4%E2%83%A3%EF%B8%8F-%E4%BD%BF%E7%94%A8%E5%BA%94%E7%94%A8%E6%9C%8D%E5%8A%A1%E5%99%A8%E9%9B%86%E7%BE%A4%E6%94%B9%E5%96%84%E7%BD%91%E7%AB%99%E7%9A%84%E5%B9%B6%E5%8F%91%E5%A4%84%E7%90%86%E8%83%BD%E5%8A%9B"><span class="nav-number">1.2.4.</span> <span class="nav-text">4⃣️ 使用应用服务器集群改善网站的并发处理能力</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%89%B9%E7%82%B9-3"><span class="nav-number">1.2.4.1.</span> <span class="nav-text">特点</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5%E2%83%A3%EF%B8%8F-%E6%95%B0%E6%8D%AE%E5%BA%93%E8%AF%BB%E5%86%99%E5%88%86%E7%A6%BB"><span class="nav-number">1.2.5.</span> <span class="nav-text">5⃣️ 数据库读写分离</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%89%B9%E7%82%B9-4"><span class="nav-number">1.2.5.1.</span> <span class="nav-text">特点</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6%E2%83%A3%EF%B8%8F-%E4%BD%BF%E7%94%A8%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86%E5%92%8CCDN%E5%8A%A0%E9%80%9F%E7%BD%91%E7%AB%99%E5%93%8D%E5%BA%94"><span class="nav-number">1.2.6.</span> <span class="nav-text">6⃣️ 使用反向代理和 CDN 加速网站响应</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%89%B9%E7%82%B9-5"><span class="nav-number">1.2.6.1.</span> <span class="nav-text">特点</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7%E2%83%A3%EF%B8%8F-%E4%BD%BF%E7%94%A8%E5%88%86%E5%B8%83%E5%BC%8F%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F%E5%92%8C%E5%88%86%E5%B8%83%E5%BC%8F%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E7%BB%9F"><span class="nav-number">1.2.7.</span> <span class="nav-text">7⃣️ 使用分布式文件系统和分布式数据库系统</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8%E2%83%A3%EF%B8%8F-%E4%BD%BF%E7%94%A8-NoSQL-%E5%92%8C%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E"><span class="nav-number">1.2.8.</span> <span class="nav-text">8⃣️ 使用 NoSQL 和搜索引擎</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#9%E2%83%A3%EF%B8%8F-%E4%B8%9A%E5%8A%A1%E6%8B%86%E5%88%86"><span class="nav-number">1.2.9.</span> <span class="nav-text">9⃣️ 业务拆分</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%F0%9F%94%9F-%E5%88%86%E5%B8%83%E5%BC%8F%E6%9C%8D%E5%8A%A1"><span class="nav-number">1.2.10.</span> <span class="nav-text">🔟 分布式服务</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-3-%E5%A4%A7%E5%9E%8B%E7%BD%91%E7%AB%99%E6%9E%B6%E6%9E%84%E6%BC%94%E5%8C%96%E7%9A%84%E4%BB%B7%E5%80%BC%E8%A7%82"><span class="nav-number">1.3.</span> <span class="nav-text">1.3 大型网站架构演化的价值观</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">2.</span> <span class="nav-text">参考</span></a></li></ol></div>
       </section>
       <!--/noindex-->
 
       <section class="site-overview-wrap sidebar-panel">
         <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <img class="site-author-image" itemprop="image" alt="独木舟的木"
-      src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+      src="https://static01.imgkr.com/temp/88aab3c08a3f43f5a14f21c6c357c816.JPG">
   <p class="site-author-name" itemprop="name">独木舟的木</p>
   <div class="site-description" itemprop="description">生若直木，不语斧凿。</div>
 </div>
@@ -289,7 +325,7 @@
     <link itemprop="mainEntityOfPage" href="https://andy0570.com/2019/01/23/%E5%A4%A7%E5%9E%8B%E7%BD%91%E7%AB%99%E6%8A%80%E6%9C%AF%E6%9E%B6%E6%9E%84_1.%E5%A4%A7%E5%9E%8B%E7%BD%91%E7%AB%99%E6%9E%B6%E6%9E%84%E6%BC%94%E5%8C%96/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+      <meta itemprop="image" content="https://static01.imgkr.com/temp/88aab3c08a3f43f5a14f21c6c357c816.JPG">
       <meta itemprop="name" content="独木舟的木">
       <meta itemprop="description" content="生若直木，不语斧凿。">
     </span>
@@ -301,7 +337,7 @@
     
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          大型网站技术架构_1.大型网站架构演化
+          大型网站技术架构_1. 大型网站架构演化
         </h1>
 
         <div class="post-meta">
@@ -330,7 +366,21 @@
                 </span>
             </span>
 
-          <br>
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2019/01/23/%E5%A4%A7%E5%9E%8B%E7%BD%91%E7%AB%99%E6%8A%80%E6%9C%AF%E6%9E%B6%E6%9E%84_1.%E5%A4%A7%E5%9E%8B%E7%BD%91%E7%AB%99%E6%9E%B6%E6%9E%84%E6%BC%94%E5%8C%96/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2019/01/23/%E5%A4%A7%E5%9E%8B%E7%BD%91%E7%AB%99%E6%8A%80%E6%9C%AF%E6%9E%B6%E6%9E%84_1.%E5%A4%A7%E5%9E%8B%E7%BD%91%E7%AB%99%E6%9E%B6%E6%9E%84%E6%BC%94%E5%8C%96/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  <br>
             <span class="post-meta-item" title="本文字数">
               <span class="post-meta-item-icon">
                 <i class="far fa-file-word"></i>
@@ -353,7 +403,7 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/080106.jpg" alt="大型网站技术架构"></p>
+        <p><img data-src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/080106.jpg" alt="大型网站技术架构"></p>
 <h1 id="1-大型网站架构演化"><a href="#1-大型网站架构演化" class="headerlink" title="1. 大型网站架构演化"></a>1. 大型网站架构演化</h1><p>传统企业应用系统面对的挑战：</p>
 <ol>
 <li>功能性需求：复杂变化的业务逻辑；</li>
@@ -361,21 +411,21 @@
 </ol>
 <a id="more"></a>
 
-<h2 id="1-1-大型网站软件系统特点"><a href="#1-1-大型网站软件系统特点" class="headerlink" title="1.1 大型网站软件系统特点"></a>1.1 大型网站软件系统特点</h2><p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/080107.jpg" alt="大型网站软件系统特点"></p>
-<h2 id="1-2-大型网站架构演化发展历程"><a href="#1-2-大型网站架构演化发展历程" class="headerlink" title="1.2 大型网站架构演化发展历程"></a>1.2 大型网站架构演化发展历程</h2><h3 id="1⃣️-初始阶段的网站架构"><a href="#1⃣️-初始阶段的网站架构" class="headerlink" title="1⃣️ 初始阶段的网站架构"></a>1⃣️ 初始阶段的网站架构</h3><p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/080108.jpg" alt="初始阶段的网站架构"></p>
+<h2 id="1-1-大型网站软件系统特点"><a href="#1-1-大型网站软件系统特点" class="headerlink" title="1.1 大型网站软件系统特点"></a>1.1 大型网站软件系统特点</h2><p><img data-src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/080107.jpg" alt="大型网站软件系统特点"></p>
+<h2 id="1-2-大型网站架构演化发展历程"><a href="#1-2-大型网站架构演化发展历程" class="headerlink" title="1.2 大型网站架构演化发展历程"></a>1.2 大型网站架构演化发展历程</h2><h3 id="1⃣️-初始阶段的网站架构"><a href="#1⃣️-初始阶段的网站架构" class="headerlink" title="1⃣️ 初始阶段的网站架构"></a>1⃣️ 初始阶段的网站架构</h3><p><img data-src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/080108.jpg" alt="初始阶段的网站架构"></p>
 <h4 id="特点"><a href="#特点" class="headerlink" title="特点"></a>特点</h4><ul>
 <li>应用程序、数据库、文件等所有的资源都部署在一台服务器上。</li>
 <li>通常使用免费开源的系统架构，如 LAMP（Linux+Apache+MySQL+PHP）。</li>
 </ul>
-<h3 id="2⃣️-应用服务和数据服务分离"><a href="#2⃣️-应用服务和数据服务分离" class="headerlink" title="2⃣️ 应用服务和数据服务分离"></a>2⃣️ 应用服务和数据服务分离</h3><p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/080109.jpg" alt="应用服务和数据服务分离"></p>
+<h3 id="2⃣️-应用服务和数据服务分离"><a href="#2⃣️-应用服务和数据服务分离" class="headerlink" title="2⃣️ 应用服务和数据服务分离"></a>2⃣️ 应用服务和数据服务分离</h3><p><img data-src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/080109.jpg" alt="应用服务和数据服务分离"></p>
 <h4 id="特点-1"><a href="#特点-1" class="headerlink" title="特点"></a>特点</h4><ul>
 <li>应用和数据分离，包含：应用服务器、文件服务器、数据库服务器。</li>
-<li>应用服务器需要处理大量的业务逻辑，需要更快更强大的CPU。</li>
+<li>应用服务器需要处理大量的业务逻辑，需要更快更强大的 CPU。</li>
 <li>数据库服务器需要快速磁盘检索和数据缓存，需要更大的硬盘和内存。</li>
 <li>文件服务器需要存储大量用户上传的文件，需要更大的硬盘。</li>
 </ul>
 <h3 id="3⃣️-使用缓存改善网站性能"><a href="#3⃣️-使用缓存改善网站性能" class="headerlink" title="3⃣️ 使用缓存改善网站性能"></a>3⃣️ 使用缓存改善网站性能</h3><blockquote>
-<p>网络访问特点的二八定律：80%的业务访问集中在20%的数据上。</p>
+<p>网络访问特点的二八定律：80% 的业务访问集中在 20% 的数据上。</p>
 </blockquote>
 <p>提前将频繁访问的部分数据缓存在内存中，以减少数据库访问压力，提高网站访问速度，改善数据库的写入性能。</p>
 <p>网站使用的两种缓存：</p>
@@ -383,46 +433,46 @@
 <li>应用服务器上的本地缓存；</li>
 <li>分布式缓存服务器上的远程缓存；</li>
 </ol>
-<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/080110.jpg" alt="网站使用缓存"></p>
+<p><img data-src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/080110.jpg" alt="网站使用缓存"></p>
 <h4 id="特点-2"><a href="#特点-2" class="headerlink" title="特点"></a>特点</h4><ul>
 <li>使用缓存来减少数据库的访问压力。</li>
 </ul>
-<h3 id="4⃣️-使用应用服务器集群改善网站的并发处理能力"><a href="#4⃣️-使用应用服务器集群改善网站的并发处理能力" class="headerlink" title="4⃣️ 使用应用服务器集群改善网站的并发处理能力"></a>4⃣️ 使用应用服务器集群改善网站的并发处理能力</h3><p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/080111.jpg" alt="应用服务器集群部署"></p>
+<h3 id="4⃣️-使用应用服务器集群改善网站的并发处理能力"><a href="#4⃣️-使用应用服务器集群改善网站的并发处理能力" class="headerlink" title="4⃣️ 使用应用服务器集群改善网站的并发处理能力"></a>4⃣️ 使用应用服务器集群改善网站的并发处理能力</h3><p><img data-src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/080111.jpg" alt="应用服务器集群部署"></p>
 <h4 id="特点-3"><a href="#特点-3" class="headerlink" title="特点"></a>特点</h4><ul>
 <li>使用<strong>负载均衡调度服务器</strong>实现集群。</li>
 <li>使用集群是解决网站高并发，海量数据问题的常用手段。</li>
 <li>应用服务器实现集群是<strong>网站可伸缩集群架构</strong>设计的简单成熟的方式。</li>
 </ul>
 <h3 id="5⃣️-数据库读写分离"><a href="#5⃣️-数据库读写分离" class="headerlink" title="5⃣️ 数据库读写分离"></a>5⃣️ 数据库读写分离</h3><p>主流数据库都提供<strong>主从热备功能</strong>，通过配置两台数据库主从关系，可以将一台数据库服务器的数据更新同步到另一台服务器上。网站利用数据库的这一功能，实现数据库读写分离，从而改善数据库负载压力。</p>
-<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/080112.jpg" alt="数据库读写分离"></p>
+<p><img data-src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/080112.jpg" alt="数据库读写分离"></p>
 <h4 id="特点-4"><a href="#特点-4" class="headerlink" title="特点"></a>特点</h4><ul>
 <li>应用服务器写数据访问主数据库，主数据库通过主从复制机制将数据更新同步到从数据库。</li>
 <li>应用服务器读数据库时，访问从数据库。</li>
 <li>应用服务器端使用专门的数据访问模块，使数据库读写分离对应用透明。</li>
 </ul>
-<h3 id="6⃣️-使用反向代理和CDN加速网站响应"><a href="#6⃣️-使用反向代理和CDN加速网站响应" class="headerlink" title="6⃣️ 使用反向代理和CDN加速网站响应"></a>6⃣️ 使用反向代理和CDN加速网站响应</h3><p>CDN 和反向代理的基本原理都是<strong>缓存</strong>，区别在于：</p>
+<h3 id="6⃣️-使用反向代理和CDN加速网站响应"><a href="#6⃣️-使用反向代理和CDN加速网站响应" class="headerlink" title="6⃣️ 使用反向代理和CDN加速网站响应"></a>6⃣️ 使用反向代理和 CDN 加速网站响应</h3><p>CDN 和反向代理的基本原理都是<strong>缓存</strong>，区别在于：</p>
 <ul>
 <li>CDN 部署在网络提供商的机房，使用户在请求网站服务时，可以从距离自己最近的网络提供商机房获取数据；</li>
 <li>反向代理部署在网站的中心机房，当用户请求到达中心机房后，首先访问的服务器是反向代理服务器，如果反向代理服务器中缓存着用户请求的资源，就将其直接返回给用户。</li>
 </ul>
-<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/080113.jpg" alt="使用反向代理和CDN"></p>
+<p><img data-src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/080113.jpg" alt="使用反向代理和CDN"></p>
 <h4 id="特点-5"><a href="#特点-5" class="headerlink" title="特点"></a>特点</h4><ul>
 <li>使用反向代理和 CDN 的目的是尽早返回数据给用户，一方面加快用户访问速度，另一方面减轻后端服务器的负载压力。</li>
 </ul>
 <h3 id="7⃣️-使用分布式文件系统和分布式数据库系统"><a href="#7⃣️-使用分布式文件系统和分布式数据库系统" class="headerlink" title="7⃣️ 使用分布式文件系统和分布式数据库系统"></a>7⃣️ 使用分布式文件系统和分布式数据库系统</h3><p><strong>分布式数据库</strong>是网站数据库拆分的最后手段，只有在单表数据规模非常庞大的时候才使用。不到不得已时，网站更常用的数据库拆分手段是<strong>业务分库</strong>，将不同业务的数据库部署在不同的物理服务器上。</p>
-<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/080114.jpg" alt="使用分布式文件和分布式数据库服系统"></p>
+<p><img data-src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/080114.jpg" alt="使用分布式文件和分布式数据库服系统"></p>
 <h3 id="8⃣️-使用-NoSQL-和搜索引擎"><a href="#8⃣️-使用-NoSQL-和搜索引擎" class="headerlink" title="8⃣️ 使用 NoSQL 和搜索引擎"></a>8⃣️ 使用 NoSQL 和搜索引擎</h3><p>对数据存储和检索的需求变复杂时，需要采用非关系型数据库技术如 NoSQL 和非数据库查询技术如搜索引擎。</p>
-<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/080116.jpg" alt="使用 NoSQL 系统和搜索引擎"></p>
+<p><img data-src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/080116.jpg" alt="使用 NoSQL 系统和搜索引擎"></p>
 <h3 id="9⃣️-业务拆分"><a href="#9⃣️-业务拆分" class="headerlink" title="9⃣️ 业务拆分"></a>9⃣️ 业务拆分</h3><p>使用<strong>分而治之</strong>的手段将整个网站业务分成不同的产品线。根据产品线划分，将一个网站拆分成许多不同的应用，每个应用独立部署维护。</p>
 <p>通过消息队列进行数据分发。</p>
 <p>通过访问同一个数据存储系统来构成一个关联的完整系统。</p>
-<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/080117.jpg" alt="业务拆分"></p>
+<p><img data-src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/080117.jpg" alt="业务拆分"></p>
 <h3 id="🔟-分布式服务"><a href="#🔟-分布式服务" class="headerlink" title="🔟 分布式服务"></a>🔟 分布式服务</h3><p>将可复用的相同的业务操作提取出来，部署为公共业务服务，应用系统通过分布式服务调用共用业务服务完成具体业务操作。</p>
-<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/080118.jpg" alt="分布式服务"></p>
+<p><img data-src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/080118.jpg" alt="分布式服务"></p>
 <h2 id="1-3-大型网站架构演化的价值观"><a href="#1-3-大型网站架构演化的价值观" class="headerlink" title="1.3 大型网站架构演化的价值观"></a>1.3 大型网站架构演化的价值观</h2><p>网站的价值在于它能为用户提供什么价值，在于网站能做什么，而不在于它是怎么做的。</p>
 <ul>
-<li>大型网站技术架构的核心价值——<strong>随网站所需灵活应对</strong>。</li>
-<li>驱动大型网站技术发展的主要力量——<strong>网站的业务发展</strong>。</li>
+<li>大型网站技术架构的核心价值 —— <strong>随网站所需灵活应对</strong>。</li>
+<li>驱动大型网站技术发展的主要力量 —— <strong>网站的业务发展</strong>。</li>
 <li>不要企图用技术解决所有问题：技术是用来解决业务问题的，而业务的问题，也可以通过业务的手段去解决。（如：12306 的售票排队机制、整点售票调整为分时段售票）。</li>
 </ul>
 <h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><ul>
@@ -448,7 +498,7 @@
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="https://andy0570.com/2019/01/23/%E5%A4%A7%E5%9E%8B%E7%BD%91%E7%AB%99%E6%8A%80%E6%9C%AF%E6%9E%B6%E6%9E%84_1.%E5%A4%A7%E5%9E%8B%E7%BD%91%E7%AB%99%E6%9E%B6%E6%9E%84%E6%BC%94%E5%8C%96/" title="大型网站技术架构_1.大型网站架构演化">https://andy0570.com/2019/01/23/大型网站技术架构_1.大型网站架构演化/</a>
+    <a href="https://andy0570.com/2019/01/23/%E5%A4%A7%E5%9E%8B%E7%BD%91%E7%AB%99%E6%8A%80%E6%9C%AF%E6%9E%B6%E6%9E%84_1.%E5%A4%A7%E5%9E%8B%E7%BD%91%E7%AB%99%E6%9E%B6%E6%9E%84%E6%BC%94%E5%8C%96/" title="大型网站技术架构_1. 大型网站架构演化">https://andy0570.com/2019/01/23/大型网站技术架构_1.大型网站架构演化/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <span class="exturl" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpo"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</span> 许可协议。转载请注明出处！
@@ -487,12 +537,12 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2019/01/23/%E5%A4%A7%E5%9E%8B%E7%BD%91%E7%AB%99%E6%8A%80%E6%9C%AF%E6%9E%B6%E6%9E%84_2.%E7%BD%91%E7%AB%99%E6%9E%B6%E6%9E%84%E6%A8%A1%E5%BC%8F/" rel="prev" title="大型网站技术架构_2.网站架构模式">
-      <i class="fa fa-chevron-left"></i> 大型网站技术架构_2.网站架构模式
+    <a href="/2019/01/23/%E5%A4%A7%E5%9E%8B%E7%BD%91%E7%AB%99%E6%8A%80%E6%9C%AF%E6%9E%B6%E6%9E%84_2.%E7%BD%91%E7%AB%99%E6%9E%B6%E6%9E%84%E6%A8%A1%E5%BC%8F/" rel="prev" title="大型网站技术架构_2. 网站架构模式">
+      <i class="fa fa-chevron-left"></i> 大型网站技术架构_2. 网站架构模式
     </a></div>
       <div class="post-nav-item">
-    <a href="/2019/01/23/%E5%A4%A7%E5%9E%8B%E7%BD%91%E7%AB%99%E6%8A%80%E6%9C%AF%E6%9E%B6%E6%9E%84_3.%E5%A4%A7%E5%9E%8B%E7%BD%91%E7%AB%99%E6%A0%B8%E5%BF%83%E6%9E%B6%E6%9E%84%E8%A6%81%E7%B4%A0/" rel="next" title="大型网站技术架构_3.大型网站核心架构要素">
-      大型网站技术架构_3.大型网站核心架构要素 <i class="fa fa-chevron-right"></i>
+    <a href="/2019/01/23/%E5%A4%A7%E5%9E%8B%E7%BD%91%E7%AB%99%E6%8A%80%E6%9C%AF%E6%9E%B6%E6%9E%84_3.%E5%A4%A7%E5%9E%8B%E7%BD%91%E7%AB%99%E6%A0%B8%E5%BF%83%E6%9E%B6%E6%9E%84%E8%A6%81%E7%B4%A0/" rel="next" title="大型网站技术架构_3. 大型网站核心架构要素">
+      大型网站技术架构_3. 大型网站核心架构要素 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -506,6 +556,7 @@
 
         </div>
         
+    <div class="comments" id="valine-comments"></div>
 
 <script>
   window.addEventListener('tabs:register', () => {
@@ -574,7 +625,11 @@
   </div>
 
   
-  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.0/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/next-theme/pjax@0/pjax.min.js"></script>
+  <script src="//unpkg.com/medium-zoom@1/dist/medium-zoom.min.js"></script>
+  <script src="//unpkg.com/lozad@1/dist/lozad.min.js"></script>
+  <script src="//unpkg.com/pangu@4/dist/browser/pangu.min.js"></script>
 
 <script src="/js/utils.js"></script>
 
@@ -585,9 +640,42 @@
 
 <script src="/js/bookmark.js"></script>
 
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '.page-configurations',
+    '.main-inner',
+    '.post-toc-wrap',
+    '.languages',
+    '.pjax'
+  ],
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+document.addEventListener('pjax:success', () => {
+  pjax.executeScripts(document.querySelectorAll('script[data-pjax], .pjax script'));
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  const hasTOC = document.querySelector('.post-toc');
+  document.querySelector('.sidebar-inner').classList.toggle('sidebar-nav-active', hasTOC);
+  document.querySelector(hasTOC ? '.sidebar-nav-toc' : '.sidebar-nav-overview').click();
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
 
   
-  <script>
+  <script data-pjax>
     (function(){
       var bp = document.createElement('script');
       var curProtocol = window.location.protocol.split(':')[0];
@@ -600,6 +688,10 @@
 
 
 
+  
+<script src="//unpkg.com/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//unpkg.com/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
 
 
 
@@ -611,9 +703,27 @@
 
 
 
+
+
+
+    <div class="pjax">
   
 
   
 
+
+<script>
+NexT.utils.loadComments('#valine-comments', () => {
+  NexT.utils.getScript('//unpkg.com/valine@1/dist/Valine.min.js', () => {
+    new Valine(Object.assign({
+      el  : '#valine-comments',
+      path: location.pathname,
+    }, {"enable":true,"appId":"S7i1Y8YorMKFPaYbJbekD5el-gzGzoHsz","appKey":"brOnU8mOQvSjpipJvdKUAIbU","placeholder":"写下你的评论...","avatar":"mm","meta":["nick","mail","link"],"pageSize":10,"language":"zh-cn","visitor":false,"comment_count":true,"recordIP":true,"serverURLs":null,"enableQQ":true,"requiredFields":[]}
+    ));
+  }, window.Valine);
+});
+</script>
+
+    </div>
 </body>
 </html>

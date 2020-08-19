@@ -18,21 +18,23 @@
 <link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css">
   
   <link rel="stylesheet" href="/lib/animate-css/animate.min.css">
+  <link rel="stylesheet" href="//unpkg.com/pace-js@1/themes/blue/pace-theme-minimal.css">
+  <script src="//unpkg.com/pace-js@1/pace.min.js"></script>
 
 <script class="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"andy0570.com","root":"/","scheme":"Gemini","version":"8.0.0-rc.5","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":"mac","bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false};
+    var CONFIG = {"hostname":"andy0570.com","root":"/","scheme":"Gemini","version":"8.0.0-rc.5","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":"mac","bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":true,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":true,"nav":null,"activeClass":"valine"},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"algolia":{"appID":"0E2AON8EZF","apiKey":"22fbefd84c8343239f5c04365b9728de","indexName":"MyBlogPlatform","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}}};
   </script>
 
-  <meta name="description" content="容错系统就是为故障而构建的。如果发生故障，容错系统将不会中断，并且可以继续处理请求。 EC2 虚拟服务器，默认情况下不是容错的。 单点故障（SPOF），如果一个硬件发生故障，整个服务中断。 AWS 解决方案：自动扩展组（auto-scaling group）、ELB 和 SQS。    没有（单点故障）——在出现故障时，不能处理请求。 高可用性——在出现故障时，需要一些时间直到像之前一样处理请求">
+  <meta name="description" content="容错系统就是为故障而构建的。如果发生故障，容错系统将不会中断，并且可以继续处理请求。 EC2 虚拟服务器，默认情况下不是容错的。 单点故障（SPOF），如果一个硬件发生故障，整个服务中断。 AWS 解决方案：自动扩展组（auto-scaling group）、ELB 和 SQS。    没有（单点故障）—— 在出现故障时，不能处理请求。 高可用性 —— 在出现故障时，需要一些时间直到像之前一样处">
 <meta property="og:type" content="article">
-<meta property="og:title" content="《AWS云计算实战》12.容错设计">
+<meta property="og:title" content="《AWS 云计算实战》12. 容错设计">
 <meta property="og:url" content="https://andy0570.com/2019/02/21/%E3%80%8AAWS%E4%BA%91%E8%AE%A1%E7%AE%97%E5%AE%9E%E6%88%98%E3%80%8B12.%E5%AE%B9%E9%94%99%E8%AE%BE%E8%AE%A1/index.html">
 <meta property="og:site_name" content="独木舟的木">
-<meta property="og:description" content="容错系统就是为故障而构建的。如果发生故障，容错系统将不会中断，并且可以继续处理请求。 EC2 虚拟服务器，默认情况下不是容错的。 单点故障（SPOF），如果一个硬件发生故障，整个服务中断。 AWS 解决方案：自动扩展组（auto-scaling group）、ELB 和 SQS。    没有（单点故障）——在出现故障时，不能处理请求。 高可用性——在出现故障时，需要一些时间直到像之前一样处理请求">
+<meta property="og:description" content="容错系统就是为故障而构建的。如果发生故障，容错系统将不会中断，并且可以继续处理请求。 EC2 虚拟服务器，默认情况下不是容错的。 单点故障（SPOF），如果一个硬件发生故障，整个服务中断。 AWS 解决方案：自动扩展组（auto-scaling group）、ELB 和 SQS。    没有（单点故障）—— 在出现故障时，不能处理请求。 高可用性 —— 在出现故障时，需要一些时间直到像之前一样处">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2019-02-21T02:18:00.000Z">
 <meta property="article:modified_time" content="2019-04-28T08:01:32.000Z">
@@ -43,7 +45,7 @@
 <link rel="canonical" href="https://andy0570.com/2019/02/21/%E3%80%8AAWS%E4%BA%91%E8%AE%A1%E7%AE%97%E5%AE%9E%E6%88%98%E3%80%8B12.%E5%AE%B9%E9%94%99%E8%AE%BE%E8%AE%A1/">
 
 
-<script class="page-configurations">
+<script data-pjax class="page-configurations">
   // https://hexo.io/docs/variables.html
   CONFIG.page = {
     sidebar: "",
@@ -53,10 +55,19 @@
   };
 </script>
 
-  <title>《AWS云计算实战》12.容错设计 | 独木舟的木</title>
+  <title>《AWS 云计算实战》12. 容错设计 | 独木舟的木</title>
   
 
 
+  <script data-pjax>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?8229a094facca297f211d61323fd9fde";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
 
 
 
@@ -126,6 +137,7 @@
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -159,11 +171,35 @@
     <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
 
   </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
   </ul>
 </nav>
 
 
 
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
 
 </div>
           
@@ -195,7 +231,7 @@
       <section class="site-overview-wrap sidebar-panel">
         <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <img class="site-author-image" itemprop="image" alt="独木舟的木"
-      src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+      src="https://static01.imgkr.com/temp/88aab3c08a3f43f5a14f21c6c357c816.JPG">
   <p class="site-author-name" itemprop="name">独木舟的木</p>
   <div class="site-description" itemprop="description">生若直木，不语斧凿。</div>
 </div>
@@ -276,7 +312,7 @@
     <link itemprop="mainEntityOfPage" href="https://andy0570.com/2019/02/21/%E3%80%8AAWS%E4%BA%91%E8%AE%A1%E7%AE%97%E5%AE%9E%E6%88%98%E3%80%8B12.%E5%AE%B9%E9%94%99%E8%AE%BE%E8%AE%A1/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+      <meta itemprop="image" content="https://static01.imgkr.com/temp/88aab3c08a3f43f5a14f21c6c357c816.JPG">
       <meta itemprop="name" content="独木舟的木">
       <meta itemprop="description" content="生若直木，不语斧凿。">
     </span>
@@ -288,7 +324,7 @@
     
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          《AWS云计算实战》12.容错设计
+          《AWS 云计算实战》12. 容错设计
         </h1>
 
         <div class="post-meta">
@@ -317,7 +353,21 @@
                 </span>
             </span>
 
-          <br>
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2019/02/21/%E3%80%8AAWS%E4%BA%91%E8%AE%A1%E7%AE%97%E5%AE%9E%E6%88%98%E3%80%8B12.%E5%AE%B9%E9%94%99%E8%AE%BE%E8%AE%A1/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2019/02/21/%E3%80%8AAWS%E4%BA%91%E8%AE%A1%E7%AE%97%E5%AE%9E%E6%88%98%E3%80%8B12.%E5%AE%B9%E9%94%99%E8%AE%BE%E8%AE%A1/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  <br>
             <span class="post-meta-item" title="本文字数">
               <span class="post-meta-item-icon">
                 <i class="far fa-file-word"></i>
@@ -348,9 +398,9 @@
 </ul>
 <blockquote>
 <ul>
-<li>没有（单点故障）——在出现故障时，不能处理请求。</li>
-<li>高可用性——在出现故障时，需要一些时间直到像之前一样处理请求。</li>
-<li>容错——在出现故障时，请求会像之前一样得到处理，并且没有任何可用性问题。</li>
+<li>没有（单点故障）—— 在出现故障时，不能处理请求。</li>
+<li>高可用性 —— 在出现故障时，需要一些时间直到像之前一样处理请求。</li>
+<li>容错 —— 在出现故障时，请求会像之前一样得到处理，并且没有任何可用性问题。</li>
 </ul>
 </blockquote>
 <a id="more"></a>
@@ -379,7 +429,7 @@
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="https://andy0570.com/2019/02/21/%E3%80%8AAWS%E4%BA%91%E8%AE%A1%E7%AE%97%E5%AE%9E%E6%88%98%E3%80%8B12.%E5%AE%B9%E9%94%99%E8%AE%BE%E8%AE%A1/" title="《AWS云计算实战》12.容错设计">https://andy0570.com/2019/02/21/《AWS云计算实战》12.容错设计/</a>
+    <a href="https://andy0570.com/2019/02/21/%E3%80%8AAWS%E4%BA%91%E8%AE%A1%E7%AE%97%E5%AE%9E%E6%88%98%E3%80%8B12.%E5%AE%B9%E9%94%99%E8%AE%BE%E8%AE%A1/" title="《AWS 云计算实战》12. 容错设计">https://andy0570.com/2019/02/21/《AWS云计算实战》12.容错设计/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <span class="exturl" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpo"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</span> 许可协议。转载请注明出处！
@@ -418,12 +468,12 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2019/02/21/%E3%80%8AAWS%E4%BA%91%E8%AE%A1%E7%AE%97%E5%AE%9E%E6%88%98%E3%80%8B10.%20%E5%AE%9E%E7%8E%B0%E9%AB%98%E5%8F%AF%E7%94%A8%E6%80%A7%EF%BC%9A%E5%8F%AF%E7%94%A8%E5%8C%BA%E3%80%81%E8%87%AA%E5%8A%A8%E6%89%A9%E5%B1%95%E4%BB%A5%E5%8F%8A%20CloudWatch/" rel="prev" title="《AWS云计算实战》10. 实现高可用性：可用区、自动扩展以及 CloudWatch">
-      <i class="fa fa-chevron-left"></i> 《AWS云计算实战》10. 实现高可用性：可用区、自动扩展以及 CloudWatch
+    <a href="/2019/02/21/%E3%80%8AAWS%E4%BA%91%E8%AE%A1%E7%AE%97%E5%AE%9E%E6%88%98%E3%80%8B10.%20%E5%AE%9E%E7%8E%B0%E9%AB%98%E5%8F%AF%E7%94%A8%E6%80%A7%EF%BC%9A%E5%8F%AF%E7%94%A8%E5%8C%BA%E3%80%81%E8%87%AA%E5%8A%A8%E6%89%A9%E5%B1%95%E4%BB%A5%E5%8F%8A%20CloudWatch/" rel="prev" title="《AWS 云计算实战》10. 实现高可用性：可用区、自动扩展以及 CloudWatch">
+      <i class="fa fa-chevron-left"></i> 《AWS 云计算实战》10. 实现高可用性：可用区、自动扩展以及 CloudWatch
     </a></div>
       <div class="post-nav-item">
-    <a href="/2019/02/21/%E3%80%8AAWS%E4%BA%91%E8%AE%A1%E7%AE%97%E5%AE%9E%E6%88%98%E3%80%8B11.%E5%9F%BA%E7%A1%80%E8%AE%BE%E6%96%BD%E8%A7%A3%E8%80%A6%EF%BC%9AELB%20%E4%B8%8E%20SQS/" rel="next" title="《AWS云计算实战》11.基础设施解耦：ELB 与 SQS">
-      《AWS云计算实战》11.基础设施解耦：ELB 与 SQS <i class="fa fa-chevron-right"></i>
+    <a href="/2019/02/21/%E3%80%8AAWS%E4%BA%91%E8%AE%A1%E7%AE%97%E5%AE%9E%E6%88%98%E3%80%8B11.%E5%9F%BA%E7%A1%80%E8%AE%BE%E6%96%BD%E8%A7%A3%E8%80%A6%EF%BC%9AELB%20%E4%B8%8E%20SQS/" rel="next" title="《AWS 云计算实战》11. 基础设施解耦：ELB 与 SQS">
+      《AWS 云计算实战》11. 基础设施解耦：ELB 与 SQS <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -437,6 +487,7 @@
 
         </div>
         
+    <div class="comments" id="valine-comments"></div>
 
 <script>
   window.addEventListener('tabs:register', () => {
@@ -505,7 +556,11 @@
   </div>
 
   
-  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.0/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/next-theme/pjax@0/pjax.min.js"></script>
+  <script src="//unpkg.com/medium-zoom@1/dist/medium-zoom.min.js"></script>
+  <script src="//unpkg.com/lozad@1/dist/lozad.min.js"></script>
+  <script src="//unpkg.com/pangu@4/dist/browser/pangu.min.js"></script>
 
 <script src="/js/utils.js"></script>
 
@@ -516,9 +571,42 @@
 
 <script src="/js/bookmark.js"></script>
 
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '.page-configurations',
+    '.main-inner',
+    '.post-toc-wrap',
+    '.languages',
+    '.pjax'
+  ],
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+document.addEventListener('pjax:success', () => {
+  pjax.executeScripts(document.querySelectorAll('script[data-pjax], .pjax script'));
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  const hasTOC = document.querySelector('.post-toc');
+  document.querySelector('.sidebar-inner').classList.toggle('sidebar-nav-active', hasTOC);
+  document.querySelector(hasTOC ? '.sidebar-nav-toc' : '.sidebar-nav-overview').click();
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
 
   
-  <script>
+  <script data-pjax>
     (function(){
       var bp = document.createElement('script');
       var curProtocol = window.location.protocol.split(':')[0];
@@ -531,6 +619,10 @@
 
 
 
+  
+<script src="//unpkg.com/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//unpkg.com/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
 
 
 
@@ -542,9 +634,27 @@
 
 
 
+
+
+
+    <div class="pjax">
   
 
   
 
+
+<script>
+NexT.utils.loadComments('#valine-comments', () => {
+  NexT.utils.getScript('//unpkg.com/valine@1/dist/Valine.min.js', () => {
+    new Valine(Object.assign({
+      el  : '#valine-comments',
+      path: location.pathname,
+    }, {"enable":true,"appId":"S7i1Y8YorMKFPaYbJbekD5el-gzGzoHsz","appKey":"brOnU8mOQvSjpipJvdKUAIbU","placeholder":"写下你的评论...","avatar":"mm","meta":["nick","mail","link"],"pageSize":10,"language":"zh-cn","visitor":false,"comment_count":true,"recordIP":true,"serverURLs":null,"enableQQ":true,"requiredFields":[]}
+    ));
+  }, window.Valine);
+});
+</script>
+
+    </div>
 </body>
 </html>

@@ -18,21 +18,23 @@
 <link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css">
   
   <link rel="stylesheet" href="/lib/animate-css/animate.min.css">
+  <link rel="stylesheet" href="//unpkg.com/pace-js@1/themes/blue/pace-theme-minimal.css">
+  <script src="//unpkg.com/pace-js@1/pace.min.js"></script>
 
 <script class="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"andy0570.com","root":"/","scheme":"Gemini","version":"8.0.0-rc.5","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":"mac","bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false};
+    var CONFIG = {"hostname":"andy0570.com","root":"/","scheme":"Gemini","version":"8.0.0-rc.5","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":"mac","bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":true,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":true,"nav":null,"activeClass":"valine"},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"algolia":{"appID":"0E2AON8EZF","apiKey":"22fbefd84c8343239f5c04365b9728de","indexName":"MyBlogPlatform","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}}};
   </script>
 
-  <meta name="description" content="简单介绍Intel® Rapid Start Technology（IRST）：英特尔快速启动技术能够使您的系统从深度睡眠模式中更快地启动和运行，从而节省时间和功耗。 睡眠&amp;休眠 睡眠模式">
+  <meta name="description" content="简单介绍Intel® Rapid Start Technology（IRST）：英特尔快速启动技术能够使您的系统从深度睡眠模式中更快地启动和运行，从而节省时间和功耗。 睡眠 &amp; 休眠 睡眠模式">
 <meta property="og:type" content="article">
 <meta property="og:title" content="为 Windows 系统开启 Intel® Rapid Start Technology">
 <meta property="og:url" content="https://andy0570.com/2017/02/03/%E4%B8%BA%20Windows%20%E7%B3%BB%E7%BB%9F%E5%BC%80%E5%90%AF%20Intel%C2%AE%20Rapid%20Start%20Technology/index.html">
 <meta property="og:site_name" content="独木舟的木">
-<meta property="og:description" content="简单介绍Intel® Rapid Start Technology（IRST）：英特尔快速启动技术能够使您的系统从深度睡眠模式中更快地启动和运行，从而节省时间和功耗。 睡眠&amp;休眠 睡眠模式">
+<meta property="og:description" content="简单介绍Intel® Rapid Start Technology（IRST）：英特尔快速启动技术能够使您的系统从深度睡眠模式中更快地启动和运行，从而节省时间和功耗。 睡眠 &amp; 休眠 睡眠模式">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072241.png">
 <meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072253.png">
@@ -52,7 +54,7 @@
 <link rel="canonical" href="https://andy0570.com/2017/02/03/%E4%B8%BA%20Windows%20%E7%B3%BB%E7%BB%9F%E5%BC%80%E5%90%AF%20Intel%C2%AE%20Rapid%20Start%20Technology/">
 
 
-<script class="page-configurations">
+<script data-pjax class="page-configurations">
   // https://hexo.io/docs/variables.html
   CONFIG.page = {
     sidebar: "",
@@ -66,6 +68,15 @@
   
 
 
+  <script data-pjax>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?8229a094facca297f211d61323fd9fde";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
 
 
 
@@ -135,6 +146,7 @@
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -168,11 +180,35 @@
     <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
 
   </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
   </ul>
 </nav>
 
 
 
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
 
 </div>
           
@@ -197,14 +233,14 @@
 
       <!--noindex-->
       <section class="post-toc-wrap sidebar-panel">
-          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AE%80%E5%8D%95%E4%BB%8B%E7%BB%8D"><span class="nav-number">1.</span> <span class="nav-text">简单介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%9D%A1%E7%9C%A0-amp-%E4%BC%91%E7%9C%A0"><span class="nav-number">1.1.</span> <span class="nav-text">睡眠&amp;休眠</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0%E6%9D%A1%E4%BB%B6"><span class="nav-number">2.</span> <span class="nav-text">实现条件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0%E6%AD%A5%E9%AA%A4"><span class="nav-number">3.</span> <span class="nav-text">实现步骤</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9C%A8%E5%9B%BA%E6%80%81%E7%A1%AC%E7%9B%98%E4%B8%8A%E5%BB%BA%E7%AB%8B%E4%B8%8E%E6%9C%AC%E7%BA%A7%E5%86%85%E5%AD%98%E5%AE%B9%E9%87%8F%E4%B8%80%E8%87%B4%E7%9A%84%E4%BC%91%E7%9C%A0%E5%88%86%E5%8C%BA%E3%80%82"><span class="nav-number">3.1.</span> <span class="nav-text">在固态硬盘上建立与本级内存容量一致的休眠分区。</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9C%A8%E4%B8%BB%E6%9D%BFBIOS%E4%B8%AD%E8%AE%BE%E7%BD%AE%E3%80%82"><span class="nav-number">3.2.</span> <span class="nav-text">在主板BIOS中设置。</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%8B%E8%BD%BD%E5%AE%89%E8%A3%85Intel%C2%AE-Rapid-Start-Technology-%E9%A9%B1%E5%8A%A8%E7%A8%8B%E5%BA%8F"><span class="nav-number">3.3.</span> <span class="nav-text">下载安装Intel® Rapid Start Technology 驱动程序</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">3.4.</span> <span class="nav-text">参考</span></a></li></ol></li></ol></div>
+          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AE%80%E5%8D%95%E4%BB%8B%E7%BB%8D"><span class="nav-number">1.</span> <span class="nav-text">简单介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%9D%A1%E7%9C%A0-amp-%E4%BC%91%E7%9C%A0"><span class="nav-number">1.1.</span> <span class="nav-text">睡眠 &amp; 休眠</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0%E6%9D%A1%E4%BB%B6"><span class="nav-number">2.</span> <span class="nav-text">实现条件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0%E6%AD%A5%E9%AA%A4"><span class="nav-number">3.</span> <span class="nav-text">实现步骤</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9C%A8%E5%9B%BA%E6%80%81%E7%A1%AC%E7%9B%98%E4%B8%8A%E5%BB%BA%E7%AB%8B%E4%B8%8E%E6%9C%AC%E7%BA%A7%E5%86%85%E5%AD%98%E5%AE%B9%E9%87%8F%E4%B8%80%E8%87%B4%E7%9A%84%E4%BC%91%E7%9C%A0%E5%88%86%E5%8C%BA%E3%80%82"><span class="nav-number">3.1.</span> <span class="nav-text">在固态硬盘上建立与本级内存容量一致的休眠分区。</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9C%A8%E4%B8%BB%E6%9D%BFBIOS%E4%B8%AD%E8%AE%BE%E7%BD%AE%E3%80%82"><span class="nav-number">3.2.</span> <span class="nav-text">在主板 BIOS 中设置。</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%8B%E8%BD%BD%E5%AE%89%E8%A3%85Intel%C2%AE-Rapid-Start-Technology-%E9%A9%B1%E5%8A%A8%E7%A8%8B%E5%BA%8F"><span class="nav-number">3.3.</span> <span class="nav-text">下载安装 Intel® Rapid Start Technology 驱动程序</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">3.4.</span> <span class="nav-text">参考</span></a></li></ol></li></ol></div>
       </section>
       <!--/noindex-->
 
       <section class="site-overview-wrap sidebar-panel">
         <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <img class="site-author-image" itemprop="image" alt="独木舟的木"
-      src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+      src="https://static01.imgkr.com/temp/88aab3c08a3f43f5a14f21c6c357c816.JPG">
   <p class="site-author-name" itemprop="name">独木舟的木</p>
   <div class="site-description" itemprop="description">生若直木，不语斧凿。</div>
 </div>
@@ -285,7 +321,7 @@
     <link itemprop="mainEntityOfPage" href="https://andy0570.com/2017/02/03/%E4%B8%BA%20Windows%20%E7%B3%BB%E7%BB%9F%E5%BC%80%E5%90%AF%20Intel%C2%AE%20Rapid%20Start%20Technology/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+      <meta itemprop="image" content="https://static01.imgkr.com/temp/88aab3c08a3f43f5a14f21c6c357c816.JPG">
       <meta itemprop="name" content="独木舟的木">
       <meta itemprop="description" content="生若直木，不语斧凿。">
     </span>
@@ -326,7 +362,21 @@
                 </span>
             </span>
 
-          <br>
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2017/02/03/%E4%B8%BA%20Windows%20%E7%B3%BB%E7%BB%9F%E5%BC%80%E5%90%AF%20Intel%C2%AE%20Rapid%20Start%20Technology/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2017/02/03/%E4%B8%BA%20Windows%20%E7%B3%BB%E7%BB%9F%E5%BC%80%E5%90%AF%20Intel%C2%AE%20Rapid%20Start%20Technology/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  <br>
             <span class="post-meta-item" title="本文字数">
               <span class="post-meta-item-icon">
                 <i class="far fa-file-word"></i>
@@ -350,63 +400,63 @@
     
     <div class="post-body" itemprop="articleBody">
         <h2 id="简单介绍"><a href="#简单介绍" class="headerlink" title="简单介绍"></a>简单介绍</h2><p>Intel® Rapid Start Technology（IRST）：英特尔快速启动技术能够使您的系统从深度睡眠模式中更快地启动和运行，从而节省时间和功耗。</p>
-<h3 id="睡眠-amp-休眠"><a href="#睡眠-amp-休眠" class="headerlink" title="睡眠&amp;休眠"></a>睡眠&amp;休眠</h3><ul>
-<li><strong>睡眠模式</strong><br><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072241.png"></li>
+<h3 id="睡眠-amp-休眠"><a href="#睡眠-amp-休眠" class="headerlink" title="睡眠&amp;休眠"></a>睡眠 &amp; 休眠</h3><ul>
+<li><strong>睡眠模式</strong><br><img data-src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072241.png"></li>
 </ul>
 <a id="more"></a>
 
-<p>　<strong>计算机睡眠（Sleep）</strong>是计算机由<strong>工作状态</strong>转为<strong>等待状态</strong>的一种新的节能模式 ，是在Windows Vista与Windows7操作系统中新添加的系统功能。其开启方式是在电脑系统的开始菜单中点击电源按钮右侧的下拉箭头选择“睡眠”按钮。开启睡眠状态时，系统的所有搜索工作都会保存在硬盘下的一个系统文件，同时关闭除了内存外所有设备的供电。<br>　　这种模式结合了待机和休眠的所有优点。将系统切换到睡眠状态后，系统会将内存中的数据全部转存到硬盘上的休眠文件中（这一点类似休眠），然后关闭<strong>除了内存外</strong>所有设备的供电，让内存中的数据依然维持着（这一点类似待机）。这样，当我们想要恢复的时候，如果在睡眠过程中供电没有发生过异常，就可以直接从内存中的数据恢复（类似待机），速度很快；但如果睡眠过程中供电异常，内存中的数据已经丢失了，还可以从硬盘上恢复（类似休眠），只是速度会慢一点。不过无论如何，这种模式都不会导致数据丢失。</p>
+<p>　<strong>计算机睡眠（Sleep）</strong>是计算机由<strong>工作状态</strong>转为<strong>等待状态</strong>的一种新的节能模式 ，是在 Windows Vista 与 Windows7 操作系统中新添加的系统功能。其开启方式是在电脑系统的开始菜单中点击电源按钮右侧的下拉箭头选择 “睡眠” 按钮。开启睡眠状态时，系统的所有搜索工作都会保存在硬盘下的一个系统文件，同时关闭除了内存外所有设备的供电。<br>　　这种模式结合了待机和休眠的所有优点。将系统切换到睡眠状态后，系统会将内存中的数据全部转存到硬盘上的休眠文件中（这一点类似休眠），然后关闭<strong>除了内存外</strong>所有设备的供电，让内存中的数据依然维持着（这一点类似待机）。这样，当我们想要恢复的时候，如果在睡眠过程中供电没有发生过异常，就可以直接从内存中的数据恢复（类似待机），速度很快；但如果睡眠过程中供电异常，内存中的数据已经丢失了，还可以从硬盘上恢复（类似休眠），只是速度会慢一点。不过无论如何，这种模式都不会导致数据丢失。</p>
 <ul>
-<li><p><strong>休眠模式</strong><br><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072253.png"></p>
-<p> <strong>计算机休眠</strong>，是指将内存中的数据暂时保存在硬盘中，然后<strong>切断内存的电源</strong>。需要从休眠状态唤醒机器时，一般只需按动电源开关，有的机器也可通过键盘按任意键唤醒。唤醒时间一般在30秒到40秒左右。    </p>
+<li><p><strong>休眠模式</strong><br><img data-src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072253.png"></p>
+<p> <strong>计算机休眠</strong>，是指将内存中的数据暂时保存在硬盘中，然后<strong>切断内存的电源</strong>。需要从休眠状态唤醒机器时，一般只需按动电源开关，有的机器也可通过键盘按任意键唤醒。唤醒时间一般在 30 秒到 40 秒左右。    </p>
 </li>
-<li><p><strong>Intel® Rapid Start Technology</strong><br><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072311.png"></p>
-<p>  使用<strong>Intel rapid start technology</strong>之后，计算机选择<strong>睡眠模式</strong>后，会在设定的时间内由<strong>睡眠状态</strong>转为特殊的低功耗状态（即<strong>休眠模式</strong>），但数据会保存到SSD固态硬盘的休眠分区中，然后下次开机时读取SSD中的数据。此时计算机的功耗相当于休眠的功耗，而唤醒的速度相当于睡眠，所以称之为快速唤醒技术。</p>
+<li><p><strong>Intel® Rapid Start Technology</strong><br><img data-src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072311.png"></p>
+<p>  使用 <strong>Intel rapid start technology</strong> 之后，计算机选择<strong>睡眠模式</strong>后，会在设定的时间内由<strong>睡眠状态</strong>转为特殊的低功耗状态（即<strong>休眠模式</strong>），但数据会保存到 SSD 固态硬盘的休眠分区中，然后下次开机时读取 SSD 中的数据。此时计算机的功耗相当于休眠的功耗，而唤醒的速度相当于睡眠，所以称之为快速唤醒技术。</p>
 </li>
 </ul>
 <h2 id="实现条件"><a href="#实现条件" class="headerlink" title="实现条件"></a>实现条件</h2><ul>
-<li>英特尔7系列芯片组；</li>
-<li>足够容量的SSD固态硬盘；</li>
-<li>BIOS功能支持；</li>
-<li>Windows 7（32位 和 64位版本）以上版本的系统；</li>
-<li>BIOS开启AHCI模式</li>
+<li>英特尔 7 系列芯片组；</li>
+<li>足够容量的 SSD 固态硬盘；</li>
+<li>BIOS 功能支持；</li>
+<li>Windows 7（32 位 和 64 位版本）以上版本的系统；</li>
+<li>BIOS 开启 AHCI 模式</li>
 </ul>
 <h2 id="实现步骤"><a href="#实现步骤" class="headerlink" title="实现步骤"></a>实现步骤</h2><h3 id="在固态硬盘上建立与本级内存容量一致的休眠分区。"><a href="#在固态硬盘上建立与本级内存容量一致的休眠分区。" class="headerlink" title="在固态硬盘上建立与本级内存容量一致的休眠分区。"></a>在固态硬盘上建立与本级内存容量一致的休眠分区。</h3><ol>
-<li><p><strong>windows桌面</strong> —&gt;鼠标右击 <strong>此电脑</strong> —&gt;<strong>管理（G）</strong> —&gt;<strong>存储—磁盘管理</strong></p>
+<li><p><strong>windows 桌面</strong> —&gt; 鼠标右击 <strong>此电脑</strong> —&gt; <strong>管理（G）</strong> —&gt; <strong>存储 — 磁盘管理</strong></p>
 </li>
-<li><p>选中SSD的磁盘 —&gt; 鼠标右击 <strong>压缩卷</strong> —&gt; 输入<strong>压缩空间量（MB）</strong>：数值为当前的电脑内存大小。（1GB=1024MB）。<br> 例如：我的电脑内存为：8BG，那么就输入8 * 1024 = 8192.   </p>
-<p>  <img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072312.png" alt="QQ图片20170203213625.png"><br> 设置完成后，磁盘管理工具的SSD磁盘中会有一块未分配的空间。</p>
+<li><p>选中 SSD 的磁盘 —&gt; 鼠标右击 <strong>压缩卷</strong> —&gt; 输入<strong>压缩空间量（MB）</strong>：数值为当前的电脑内存大小。（1GB=1024MB）。<br> 例如：我的电脑内存为：8BG，那么就输入 8 * 1024 = 8192.   </p>
+<p>  <img data-src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072312.png" alt="QQ图片20170203213625.png"><br> 设置完成后，磁盘管理工具的 SSD 磁盘中会有一块未分配的空间。</p>
 </li>
-<li><p>数据恢复及磁盘分区软件DiskGenius下载<br> <span class="exturl" data-url="aHR0cDovL3d3dy5kaXNrZ2VuaXVzLmNuLw==">官方下载地址<i class="fa fa-external-link-alt"></i></span><br> 百度网盘下载：<span class="exturl" data-url="aHR0cDovL3Bhbi5iYWlkdS5jb20vcy8xbWkzNEVrbw==">DiskGenius_Pro_4.3.0_XiaZaiBa.exe.zip<i class="fa fa-external-link-alt"></i></span> 密码: 9jrv</p>
-<p>安装完成后打开，选中SSD固态硬盘，鼠标右击 <strong>空闲部分</strong> 刚才未分配的磁盘—&gt; 选择 <strong>建立新分区</strong>，（我这里已经分配好了，贴出出图来只是告诉你在水平柱状磁盘图这里鼠标右击）<br><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072314.png" alt="QQ截图20170203214755.png"></p>
+<li><p>数据恢复及磁盘分区软件 DiskGenius 下载<br> <span class="exturl" data-url="aHR0cDovL3d3dy5kaXNrZ2VuaXVzLmNuLw==">官方下载地址<i class="fa fa-external-link-alt"></i></span><br> 百度网盘下载：<span class="exturl" data-url="aHR0cDovL3Bhbi5iYWlkdS5jb20vcy8xbWkzNEVrbw==">DiskGenius_Pro_4.3.0_XiaZaiBa.exe.zip<i class="fa fa-external-link-alt"></i></span> 密码: 9jrv</p>
+<p>安装完成后打开，选中 SSD 固态硬盘，鼠标右击 <strong>空闲部分</strong> 刚才未分配的磁盘 —&gt; 选择 <strong>建立新分区</strong>，（我这里已经分配好了，贴出出图来只是告诉你在水平柱状磁盘图这里鼠标右击）<br><img data-src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072314.png" alt="QQ截图20170203214755.png"></p>
 <p>在弹出的窗口中</p>
 <ul>
 <li>分区类型：选<strong>主磁盘分区</strong>；</li>
-<li>文件系统类型：选择**OS/2 hidden C:**；</li>
+<li>文件系统类型：选择 **OS/2 hidden C:**；</li>
 <li>新分区大小：就是刚才压缩的空间，基本默认就好；</li>
 <li>点击<strong>确定</strong>；</li>
-<li>最后在DiskGenius主菜单中点击<strong>保存更改</strong>。<br><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072315.png" alt="参考一张贴吧的图"></li>
+<li>最后在 DiskGenius 主菜单中点击<strong>保存更改</strong>。<br><img data-src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072315.png" alt="参考一张贴吧的图"></li>
 </ul>
 </li>
 </ol>
-<h3 id="在主板BIOS中设置。"><a href="#在主板BIOS中设置。" class="headerlink" title="在主板BIOS中设置。"></a>在主板BIOS中设置。</h3><p>以上设置完成后，重启电脑，开机后按F2（其他主板按DEL键）进入BIOS设置，以下两个设置一般在<strong>Advanced</strong>选项卡中可以找到。</p>
+<h3 id="在主板BIOS中设置。"><a href="#在主板BIOS中设置。" class="headerlink" title="在主板BIOS中设置。"></a>在主板 BIOS 中设置。</h3><p>以上设置完成后，重启电脑，开机后按 F2（其他主板按 DEL 键）进入 BIOS 设置，以下两个设置一般在 <strong>Advanced</strong> 选项卡中可以找到。</p>
 <ul>
-<li><p>检查SATA模式是否设置为AHCI模式；</p>
+<li><p>检查 SATA 模式是否设置为 AHCI 模式；</p>
 <blockquote>
-<p>注意：修改之后可能无法正常启动系统，所以，在修改AHCI模式之前，注册表修改一下。<br>修改方法：<br>单击“开始”，在“开始搜索”框中键入 regedit ，然后按 Enter。<br>如果显示“用户帐户控制”对话框，请单击“继续”。<br>找到并单击下面的注册表子项： HKEY_LOCAL_MACHINE\System\CurrentControlSet\Services\Msahci<br>在右窗格中，右键单击“名称”列中的“Start”，然后单击“修改”。<br>在“数值数据”框中，键入 0 ，然后单击“确定”。</p>
+<p>注意：修改之后可能无法正常启动系统，所以，在修改 AHCI 模式之前，注册表修改一下。<br>修改方法：<br>单击 “开始”，在 “开始搜索” 框中键入 regedit ，然后按 Enter。<br>如果显示 “用户帐户控制” 对话框，请单击 “继续”。<br>找到并单击下面的注册表子项： HKEY_LOCAL_MACHINE\System\CurrentControlSet\Services\Msahci<br>在右窗格中，右键单击 “名称” 列中的 “Start”，然后单击 “修改”。<br>在 “数值数据” 框中，键入 0 ，然后单击 “确定”。</p>
 </blockquote>
 </li>
 <li><p>Intel® Rapid Start Technology 设置为：Enable<br>设置好后保存退出重启电脑。</p>
 </li>
 </ul>
-<h3 id="下载安装Intel®-Rapid-Start-Technology-驱动程序"><a href="#下载安装Intel®-Rapid-Start-Technology-驱动程序" class="headerlink" title="下载安装Intel® Rapid Start Technology 驱动程序"></a>下载安装Intel® Rapid Start Technology 驱动程序</h3><p><span class="exturl" data-url="aHR0cHM6Ly9kb3dubG9hZGNlbnRlci5pbnRlbC5jb20vemgtY24vZG93bmxvYWQvMjE2MTIvSW50ZWwtUmFwaWQtU3RhcnQtVGVjaG5vbG9neQ==">Intel® Rapid Start Technology 驱动程序下载<i class="fa fa-external-link-alt"></i></span><br>驱动程序下载安装及使用比较简单，默认安装即可，之前的步骤没有设置好的话，可能弹出如下错误。<br><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072316.png" alt="b481279759ee3d6d0986406042166d224e4ade12.jpg"><br>网传还可能是Microsoft .NET Framework 3.5安装出了问题，待验证。<br>安装完成后打开的设置界面如下：<br><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072317.png"><br>计时器可以设置从睡眠模式到激活IRST断电的时间，设置为0即开启睡眠模式马上进入IRST断电。</p>
+<h3 id="下载安装Intel®-Rapid-Start-Technology-驱动程序"><a href="#下载安装Intel®-Rapid-Start-Technology-驱动程序" class="headerlink" title="下载安装Intel® Rapid Start Technology 驱动程序"></a>下载安装 Intel® Rapid Start Technology 驱动程序</h3><p><span class="exturl" data-url="aHR0cHM6Ly9kb3dubG9hZGNlbnRlci5pbnRlbC5jb20vemgtY24vZG93bmxvYWQvMjE2MTIvSW50ZWwtUmFwaWQtU3RhcnQtVGVjaG5vbG9neQ==">Intel® Rapid Start Technology 驱动程序下载<i class="fa fa-external-link-alt"></i></span><br>驱动程序下载安装及使用比较简单，默认安装即可，之前的步骤没有设置好的话，可能弹出如下错误。<br><img data-src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072316.png" alt="b481279759ee3d6d0986406042166d224e4ade12.jpg"><br>网传还可能是 Microsoft .NET Framework 3.5 安装出了问题，待验证。<br>安装完成后打开的设置界面如下：<br><img data-src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072317.png"><br>计时器可以设置从睡眠模式到激活 IRST 断电的时间，设置为 0 即开启睡眠模式马上进入 IRST 断电。</p>
 <h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><ul>
 <li><span class="exturl" data-url="aHR0cDovL2JhaWtlLmJhaWR1LmNvbS9saW5rP3VybD1CcUVJQjl2MDdLckxCN2ZWWFNPSzRldUFPTm45VDZnVzB5TE95RHk5RkVjYS1EVTRuVWs4bC1jWWRwUWcwbHMzR29uMl8zbWNpb1NDOTRydjY0YmVfbTNmbFZpaGtyYldDcXZYWlJEV2lRaGs4NkM4QkltcnN6SDgyYkoxdUYzQ0pTTjhYWG9MVy1iSVk3NUFwUkpZUmE=">百度百科：计算机睡眠<i class="fa fa-external-link-alt"></i></span></li>
 <li><span class="exturl" data-url="aHR0cDovL2JhaWtlLmJhaWR1LmNvbS9pdGVtLyVFOCVBRSVBMSVFNyVBRSU5NyVFNiU5QyVCQSVFNCVCQyU5MSVFNyU5QyVBMA==">百度百科：计算机休眠<i class="fa fa-external-link-alt"></i></span></li>
 <li><span class="exturl" data-url="aHR0cDovL3dlbmt1LmJhaWR1LmNvbS9saW5rP3VybD01MFZEbS1IQ2pYeUstRTNwamMwV3VKcnlWSUxRSWRmWFd0aVRabmFyZzZqdWR4bkRaaER4cXNUZEhweVdtVy16cUdMcVUzMWwyV3A1YjJodEhCbV9RazFEMWhTbXJqdkl0WXJUTkJhbjV2Qw==">Intel Rapid Start Technology 快速唤醒技术介绍<i class="fa fa-external-link-alt"></i></span></li>
 <li><span class="exturl" data-url="aHR0cDovL3RpZWJhLmJhaWR1LmNvbS9wLzI0MDYzOTc2MzE/c2VlX2x6PTE=">【教程】正确安装、卸载英特尔快速启动技术 V2.0<i class="fa fa-external-link-alt"></i></span></li>
-<li><span class="exturl" data-url="aHR0cDovL3d3dy4zNjBkb2MuY29tL2NvbnRlbnQvMTMvMTExNy8wOC8xNDY0MTM2OV8zMjk4MTA2MzAuc2h0bWw=">Intel Rapid Start Technology 实现5秒开机 | Jason’s Blog<i class="fa fa-external-link-alt"></i></span> </li>
-<li><span class="exturl" data-url="aHR0cDovL3RpZWJhLmJhaWR1LmNvbS9wLzMyNzYwMDE1Njg=">研究了好久的UEFI，和intel rapid start technology，结果发现 @baidu贴吧<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cDovL3d3dy4zNjBkb2MuY29tL2NvbnRlbnQvMTMvMTExNy8wOC8xNDY0MTM2OV8zMjk4MTA2MzAuc2h0bWw=">Intel Rapid Start Technology 实现 5 秒开机 | Jason’s Blog<i class="fa fa-external-link-alt"></i></span> </li>
+<li><span class="exturl" data-url="aHR0cDovL3RpZWJhLmJhaWR1LmNvbS9wLzMyNzYwMDE1Njg=">研究了好久的 UEFI，和 intel rapid start technology，结果发现 @baidu 贴吧<i class="fa fa-external-link-alt"></i></span></li>
 </ul>
 
     </div>
@@ -462,12 +512,12 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2017/01/19/Masonry%E2%80%94%E2%80%94%E7%AE%80%E5%8C%96%E8%87%AA%E5%8A%A8%E5%B8%83%E5%B1%80%E4%BB%A3%E7%A0%81%E6%A1%86%E6%9E%B6/" rel="prev" title="Masonry——简化自动布局代码框架">
-      <i class="fa fa-chevron-left"></i> Masonry——简化自动布局代码框架
+    <a href="/2017/01/19/Masonry%E2%80%94%E2%80%94%E7%AE%80%E5%8C%96%E8%87%AA%E5%8A%A8%E5%B8%83%E5%B1%80%E4%BB%A3%E7%A0%81%E6%A1%86%E6%9E%B6/" rel="prev" title="Masonry—— 简化自动布局代码框架">
+      <i class="fa fa-chevron-left"></i> Masonry—— 简化自动布局代码框架
     </a></div>
       <div class="post-nav-item">
-    <a href="/2017/02/07/%E3%80%8AObjective-C%20%E7%BC%96%E7%A8%8B%E3%80%8B7.%E6%95%B0%E5%AD%97/" rel="next" title="《Objective-C 编程》7.数字">
-      《Objective-C 编程》7.数字 <i class="fa fa-chevron-right"></i>
+    <a href="/2017/02/07/%E3%80%8AObjective-C%20%E7%BC%96%E7%A8%8B%E3%80%8B7.%E6%95%B0%E5%AD%97/" rel="next" title="《Objective-C 编程》7. 数字">
+      《Objective-C 编程》7. 数字 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -481,6 +531,7 @@
 
         </div>
         
+    <div class="comments" id="valine-comments"></div>
 
 <script>
   window.addEventListener('tabs:register', () => {
@@ -549,7 +600,11 @@
   </div>
 
   
-  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.0/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/next-theme/pjax@0/pjax.min.js"></script>
+  <script src="//unpkg.com/medium-zoom@1/dist/medium-zoom.min.js"></script>
+  <script src="//unpkg.com/lozad@1/dist/lozad.min.js"></script>
+  <script src="//unpkg.com/pangu@4/dist/browser/pangu.min.js"></script>
 
 <script src="/js/utils.js"></script>
 
@@ -560,9 +615,42 @@
 
 <script src="/js/bookmark.js"></script>
 
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '.page-configurations',
+    '.main-inner',
+    '.post-toc-wrap',
+    '.languages',
+    '.pjax'
+  ],
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+document.addEventListener('pjax:success', () => {
+  pjax.executeScripts(document.querySelectorAll('script[data-pjax], .pjax script'));
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  const hasTOC = document.querySelector('.post-toc');
+  document.querySelector('.sidebar-inner').classList.toggle('sidebar-nav-active', hasTOC);
+  document.querySelector(hasTOC ? '.sidebar-nav-toc' : '.sidebar-nav-overview').click();
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
 
   
-  <script>
+  <script data-pjax>
     (function(){
       var bp = document.createElement('script');
       var curProtocol = window.location.protocol.split(':')[0];
@@ -575,6 +663,10 @@
 
 
 
+  
+<script src="//unpkg.com/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//unpkg.com/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
 
 
 
@@ -586,9 +678,27 @@
 
 
 
+
+
+
+    <div class="pjax">
   
 
   
 
+
+<script>
+NexT.utils.loadComments('#valine-comments', () => {
+  NexT.utils.getScript('//unpkg.com/valine@1/dist/Valine.min.js', () => {
+    new Valine(Object.assign({
+      el  : '#valine-comments',
+      path: location.pathname,
+    }, {"enable":true,"appId":"S7i1Y8YorMKFPaYbJbekD5el-gzGzoHsz","appKey":"brOnU8mOQvSjpipJvdKUAIbU","placeholder":"写下你的评论...","avatar":"mm","meta":["nick","mail","link"],"pageSize":10,"language":"zh-cn","visitor":false,"comment_count":true,"recordIP":true,"serverURLs":null,"enableQQ":true,"requiredFields":[]}
+    ));
+  }, window.Valine);
+});
+</script>
+
+    </div>
 </body>
 </html>

@@ -18,21 +18,23 @@
 <link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css">
   
   <link rel="stylesheet" href="/lib/animate-css/animate.min.css">
+  <link rel="stylesheet" href="//unpkg.com/pace-js@1/themes/blue/pace-theme-minimal.css">
+  <script src="//unpkg.com/pace-js@1/pace.min.js"></script>
 
 <script class="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"andy0570.com","root":"/","scheme":"Gemini","version":"8.0.0-rc.5","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":"mac","bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false};
+    var CONFIG = {"hostname":"andy0570.com","root":"/","scheme":"Gemini","version":"8.0.0-rc.5","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":"mac","bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":true,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":true,"nav":null,"activeClass":"valine"},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"algolia":{"appID":"0E2AON8EZF","apiKey":"22fbefd84c8343239f5c04365b9728de","indexName":"MyBlogPlatform","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}}};
   </script>
 
-  <meta name="description" content="文档模型里任何代表某个元素的对象都至少能支持HTMLElement功能，其中一些还支持额外的功能。   理解：使用DOM可以读取或者设置HTML文档元素、设置CSS样式、配合JavaScript实现相关逻辑功能。  DOM元素速览表Document的成员使用方式：document.方法名">
+  <meta name="description" content="文档模型里任何代表某个元素的对象都至少能支持 HTMLElement 功能，其中一些还支持额外的功能。   理解：使用 DOM 可以读取或者设置 HTML 文档元素、设置 CSS 样式、配合 JavaScript 实现相关逻辑功能。  DOM 元素速览表Document 的成员使用方式：document.方法名">
 <meta property="og:type" content="article">
-<meta property="og:title" content="HTML笔记 10.DOM">
+<meta property="og:title" content="HTML 笔记 10.DOM">
 <meta property="og:url" content="https://andy0570.com/2018/03/19/HTML%E7%AC%94%E8%AE%B0%2010.DOM/index.html">
 <meta property="og:site_name" content="独木舟的木">
-<meta property="og:description" content="文档模型里任何代表某个元素的对象都至少能支持HTMLElement功能，其中一些还支持额外的功能。   理解：使用DOM可以读取或者设置HTML文档元素、设置CSS样式、配合JavaScript实现相关逻辑功能。  DOM元素速览表Document的成员使用方式：document.方法名">
+<meta property="og:description" content="文档模型里任何代表某个元素的对象都至少能支持 HTMLElement 功能，其中一些还支持额外的功能。   理解：使用 DOM 可以读取或者设置 HTML 文档元素、设置 CSS 样式、配合 JavaScript 实现相关逻辑功能。  DOM 元素速览表Document 的成员使用方式：document.方法名">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/075221.jpg">
 <meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/075224.jpg">
@@ -57,7 +59,7 @@
 <link rel="canonical" href="https://andy0570.com/2018/03/19/HTML%E7%AC%94%E8%AE%B0%2010.DOM/">
 
 
-<script class="page-configurations">
+<script data-pjax class="page-configurations">
   // https://hexo.io/docs/variables.html
   CONFIG.page = {
     sidebar: "",
@@ -67,10 +69,19 @@
   };
 </script>
 
-  <title>HTML笔记 10.DOM | 独木舟的木</title>
+  <title>HTML 笔记 10.DOM | 独木舟的木</title>
   
 
 
+  <script data-pjax>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?8229a094facca297f211d61323fd9fde";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
 
 
 
@@ -140,6 +151,7 @@
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -173,11 +185,35 @@
     <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
 
   </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
   </ul>
 </nav>
 
 
 
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
 
 </div>
           
@@ -202,14 +238,14 @@
 
       <!--noindex-->
       <section class="post-toc-wrap sidebar-panel">
-          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#DOM%E5%85%83%E7%B4%A0%E9%80%9F%E8%A7%88%E8%A1%A8"><span class="nav-number">1.</span> <span class="nav-text">DOM元素速览表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Document%E7%9A%84%E6%88%90%E5%91%98"><span class="nav-number">2.</span> <span class="nav-text">Document的成员</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Location%E5%AF%B9%E8%B1%A1"><span class="nav-number">3.</span> <span class="nav-text">Location对象</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Window-%E5%AF%B9%E8%B1%A1"><span class="nav-number">4.</span> <span class="nav-text">Window 对象</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#History-%E5%AF%B9%E8%B1%A1"><span class="nav-number">5.</span> <span class="nav-text">History 对象</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Screen-%E5%AF%B9%E8%B1%A1"><span class="nav-number">6.</span> <span class="nav-text">Screen 对象</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HTMLElement%E7%9A%84%E6%88%90%E5%91%98"><span class="nav-number">7.</span> <span class="nav-text">HTMLElement的成员</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Text-%E5%AF%B9%E8%B1%A1"><span class="nav-number">8.</span> <span class="nav-text">Text 对象</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DOM%E9%87%8C%E7%9A%84CSS%E5%B1%9E%E6%80%A7"><span class="nav-number">9.</span> <span class="nav-text">DOM里的CSS属性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DOM-%E4%B8%AD%E7%9A%84%E4%BA%8B%E4%BB%B6"><span class="nav-number">10.</span> <span class="nav-text">DOM 中的事件</span></a></li></ol></div>
+          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#DOM%E5%85%83%E7%B4%A0%E9%80%9F%E8%A7%88%E8%A1%A8"><span class="nav-number">1.</span> <span class="nav-text">DOM 元素速览表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Document%E7%9A%84%E6%88%90%E5%91%98"><span class="nav-number">2.</span> <span class="nav-text">Document 的成员</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Location%E5%AF%B9%E8%B1%A1"><span class="nav-number">3.</span> <span class="nav-text">Location 对象</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Window-%E5%AF%B9%E8%B1%A1"><span class="nav-number">4.</span> <span class="nav-text">Window 对象</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#History-%E5%AF%B9%E8%B1%A1"><span class="nav-number">5.</span> <span class="nav-text">History 对象</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Screen-%E5%AF%B9%E8%B1%A1"><span class="nav-number">6.</span> <span class="nav-text">Screen 对象</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HTMLElement%E7%9A%84%E6%88%90%E5%91%98"><span class="nav-number">7.</span> <span class="nav-text">HTMLElement 的成员</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Text-%E5%AF%B9%E8%B1%A1"><span class="nav-number">8.</span> <span class="nav-text">Text 对象</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DOM%E9%87%8C%E7%9A%84CSS%E5%B1%9E%E6%80%A7"><span class="nav-number">9.</span> <span class="nav-text">DOM 里的 CSS 属性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DOM-%E4%B8%AD%E7%9A%84%E4%BA%8B%E4%BB%B6"><span class="nav-number">10.</span> <span class="nav-text">DOM 中的事件</span></a></li></ol></div>
       </section>
       <!--/noindex-->
 
       <section class="site-overview-wrap sidebar-panel">
         <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <img class="site-author-image" itemprop="image" alt="独木舟的木"
-      src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+      src="https://static01.imgkr.com/temp/88aab3c08a3f43f5a14f21c6c357c816.JPG">
   <p class="site-author-name" itemprop="name">独木舟的木</p>
   <div class="site-description" itemprop="description">生若直木，不语斧凿。</div>
 </div>
@@ -290,7 +326,7 @@
     <link itemprop="mainEntityOfPage" href="https://andy0570.com/2018/03/19/HTML%E7%AC%94%E8%AE%B0%2010.DOM/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+      <meta itemprop="image" content="https://static01.imgkr.com/temp/88aab3c08a3f43f5a14f21c6c357c816.JPG">
       <meta itemprop="name" content="独木舟的木">
       <meta itemprop="description" content="生若直木，不语斧凿。">
     </span>
@@ -302,7 +338,7 @@
     
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          HTML笔记 10.DOM
+          HTML 笔记 10.DOM
         </h1>
 
         <div class="post-meta">
@@ -331,7 +367,21 @@
                 </span>
             </span>
 
-          <br>
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2018/03/19/HTML%E7%AC%94%E8%AE%B0%2010.DOM/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2018/03/19/HTML%E7%AC%94%E8%AE%B0%2010.DOM/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  <br>
             <span class="post-meta-item" title="本文字数">
               <span class="post-meta-item-icon">
                 <i class="far fa-file-word"></i>
@@ -355,33 +405,33 @@
     
     <div class="post-body" itemprop="articleBody">
         <ul>
-<li>文档模型里任何代表某个元素的对象都至少能支持HTMLElement功能，其中一些还支持额外的功能。</li>
+<li>文档模型里任何代表某个元素的对象都至少能支持 HTMLElement 功能，其中一些还支持额外的功能。</li>
 </ul>
 <blockquote>
-<p>理解：使用DOM可以读取或者设置HTML文档元素、设置CSS样式、配合JavaScript实现相关逻辑功能。</p>
+<p>理解：使用 DOM 可以读取或者设置 HTML 文档元素、设置 CSS 样式、配合 JavaScript 实现相关逻辑功能。</p>
 </blockquote>
-<h3 id="DOM元素速览表"><a href="#DOM元素速览表" class="headerlink" title="DOM元素速览表"></a>DOM元素速览表</h3><h3 id="Document的成员"><a href="#Document的成员" class="headerlink" title="Document的成员"></a>Document的成员</h3><p>使用方式：<code>document.方法名</code></p>
-<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/075221.jpg" alt="Document对象"></p>
+<h3 id="DOM元素速览表"><a href="#DOM元素速览表" class="headerlink" title="DOM元素速览表"></a>DOM 元素速览表</h3><h3 id="Document的成员"><a href="#Document的成员" class="headerlink" title="Document的成员"></a>Document 的成员</h3><p>使用方式：<code>document.方法名</code></p>
+<p><img data-src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/075221.jpg" alt="Document对象"></p>
 <a id="more"></a>
 
-<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/075224.jpg" alt="Document对象2"></p>
+<p><img data-src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/075224.jpg" alt="Document对象2"></p>
 <p>示例代码：</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>Example<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">&quot;utf-8&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">&quot;author&quot;</span> <span class="attr">content</span>=<span class="string">&quot;Hu QiLin&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">&quot;description&quot;</span> <span class="attr">content</span>=<span class="string">&quot;使用Document对象&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">&quot;shortcut icon&quot;</span> <span class="attr">type</span>=<span class="string">&quot;image/x-icon&quot;</span> <span class="attr">href</span>=<span class="string">&quot;favicon.icn&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">&quot;stylesheet&quot;</span> <span class="attr">href</span>=<span class="string">&quot;journal.css&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">p</span> <span class="attr">id</span>=<span class="string">&quot;fruittext&quot;</span>&gt;</span></span><br><span class="line">        There are lots of different kinds of fruit - there are over 500 varieties of <span class="tag">&lt;<span class="name">span</span> <span class="attr">id</span>=<span class="string">&quot;banana&quot;</span>&gt;</span>banana<span class="tag">&lt;/<span class="name">span</span>&gt;</span> alone. By the time we add the countless types of apples, oranges, and other well-known fruit, we are faced with thousands of choices.</span><br><span class="line">    <span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">p</span> <span class="attr">id</span>=<span class="string">&quot;apples&quot;</span>&gt;</span></span><br><span class="line">        One of the most interesting aspects of fruit is the variety available in each country. I live near London, in an area which is known for its apples.</span><br><span class="line">    <span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="javascript">        <span class="comment">/* &lt;pre&gt;元素表示其内容中的原有格式应被保留。 */</span></span></span><br><span class="line"><span class="javascript">        <span class="comment">/* document.URL:读取当前文档的URL*/</span></span></span><br><span class="line"><span class="javascript">        <span class="built_in">document</span>.writeln(<span class="string">&quot;&lt;pre&gt;URL: &quot;</span> + <span class="built_in">document</span>.URL);</span></span><br><span class="line"></span><br><span class="line"><span class="javascript">        <span class="comment">/* getElementsByTagName：选取属于某一给定标签类型的所有元素 */</span></span></span><br><span class="line"><span class="javascript">        <span class="keyword">var</span> elems = <span class="built_in">document</span>.getElementsByTagName(<span class="string">&quot;p&quot;</span>);</span></span><br><span class="line"><span class="javascript">        <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; elems.length; i++) &#123;</span></span><br><span class="line"><span class="javascript">            <span class="built_in">document</span>.writeln(<span class="string">&quot;Element ID: &quot;</span> + elems[i].id);</span></span><br><span class="line">            </span><br><span class="line"><span class="javascript">            <span class="comment">/* 设置CSS样式：border和padding属性 */</span></span></span><br><span class="line"><span class="javascript">            elems[i].style.border = <span class="string">&quot;medium double black&quot;</span>;</span></span><br><span class="line"><span class="javascript">            elems[i].style.padding = <span class="string">&quot;4px&quot;</span>;</span></span><br><span class="line">        &#125;</span><br><span class="line"><span class="javascript">        <span class="built_in">document</span>.write(<span class="string">&quot;&lt;/pre&gt;&quot;</span>);</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight html"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>Example<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">"utf-8"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">"author"</span> <span class="attr">content</span>=<span class="string">"Hu QiLin"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">"description"</span> <span class="attr">content</span>=<span class="string">"使用Document对象"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">"shortcut icon"</span> <span class="attr">type</span>=<span class="string">"image/x-icon"</span> <span class="attr">href</span>=<span class="string">"favicon.icn"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">"stylesheet"</span> <span class="attr">href</span>=<span class="string">"journal.css"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">p</span> <span class="attr">id</span>=<span class="string">"fruittext"</span>&gt;</span></span><br><span class="line">        There are lots of different kinds of fruit - there are over 500 varieties of <span class="tag">&lt;<span class="name">span</span> <span class="attr">id</span>=<span class="string">"banana"</span>&gt;</span>banana<span class="tag">&lt;/<span class="name">span</span>&gt;</span> alone. By the time we add the countless types of apples, oranges, and other well-known fruit, we are faced with thousands of choices.</span><br><span class="line">    <span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">p</span> <span class="attr">id</span>=<span class="string">"apples"</span>&gt;</span></span><br><span class="line">        One of the most interesting aspects of fruit is the variety available in each country. I live near London, in an area which is known for its apples.</span><br><span class="line">    <span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="javascript">        <span class="comment">/* &lt;pre&gt;元素表示其内容中的原有格式应被保留。 */</span></span></span><br><span class="line"><span class="javascript">        <span class="comment">/* document.URL:读取当前文档的URL*/</span></span></span><br><span class="line"><span class="javascript">        <span class="built_in">document</span>.writeln(<span class="string">"&lt;pre&gt;URL: "</span> + <span class="built_in">document</span>.URL);</span></span><br><span class="line"></span><br><span class="line"><span class="javascript">        <span class="comment">/* getElementsByTagName：选取属于某一给定标签类型的所有元素 */</span></span></span><br><span class="line"><span class="javascript">        <span class="keyword">var</span> elems = <span class="built_in">document</span>.getElementsByTagName(<span class="string">"p"</span>);</span></span><br><span class="line"><span class="javascript">        <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; elems.length; i++) {</span></span><br><span class="line"><span class="javascript">            <span class="built_in">document</span>.writeln(<span class="string">"Element ID: "</span> + elems[i].id);</span></span><br><span class="line">            </span><br><span class="line"><span class="javascript">            <span class="comment">/* 设置CSS样式：border和padding属性 */</span></span></span><br><span class="line"><span class="javascript">            elems[i].style.border = <span class="string">"medium double black"</span>;</span></span><br><span class="line"><span class="javascript">            elems[i].style.padding = <span class="string">"4px"</span>;</span></span><br><span class="line">        }</span><br><span class="line"><span class="javascript">        <span class="built_in">document</span>.write(<span class="string">"&lt;/pre&gt;"</span>);</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></tbody></table></figure>
 
 
 
-<p>使用Dccument元素获取文档的基本信息</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>Example<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">&quot;utf-8&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">&quot;author&quot;</span> <span class="attr">content</span>=<span class="string">&quot;Hu QiLin&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">&quot;description&quot;</span> <span class="attr">content</span>=<span class="string">&quot;使用Document对象&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="javascript">        <span class="built_in">document</span>.writeln(<span class="string">&quot;&lt;pre&gt;&quot;</span>);</span></span><br><span class="line"></span><br><span class="line"><span class="javascript">        <span class="built_in">document</span>.writeln(<span class="string">&quot;characterSet: &quot;</span> + <span class="built_in">document</span>.characterSet);</span></span><br><span class="line"><span class="javascript">        <span class="built_in">document</span>.writeln(<span class="string">&quot;charset: &quot;</span> + <span class="built_in">document</span>.charset);</span></span><br><span class="line"><span class="javascript">        <span class="built_in">document</span>.writeln(<span class="string">&quot;compatMode: &quot;</span> + <span class="built_in">document</span>.compatMode); <span class="comment">/* 怪异模式：CSS1compat / BackCompat：HTML文档中含有非标准功能 */</span></span></span><br><span class="line"><span class="javascript">        <span class="built_in">document</span>.writeln(<span class="string">&quot;defaultCharset: &quot;</span> + <span class="built_in">document</span>.defaultCharset);</span></span><br><span class="line"><span class="javascript">        <span class="built_in">document</span>.writeln(<span class="string">&quot;dir: &quot;</span> + <span class="built_in">document</span>.dir);</span></span><br><span class="line"><span class="javascript">        <span class="built_in">document</span>.writeln(<span class="string">&quot;domain: &quot;</span> + <span class="built_in">document</span>.domain);</span></span><br><span class="line"><span class="javascript">        <span class="built_in">document</span>.writeln(<span class="string">&quot;lastModified: &quot;</span> + <span class="built_in">document</span>.lastModified);</span></span><br><span class="line"><span class="javascript">        <span class="built_in">document</span>.writeln(<span class="string">&quot;referrer: &quot;</span> + <span class="built_in">document</span>.referrer);</span></span><br><span class="line"><span class="javascript">        <span class="built_in">document</span>.writeln(<span class="string">&quot;title: &quot;</span> + <span class="built_in">document</span>.title);</span></span><br><span class="line"></span><br><span class="line"><span class="javascript">        <span class="built_in">document</span>.write(<span class="string">&quot;&lt;/pre&gt;&quot;</span>);</span></span><br><span class="line">        </span><br><span class="line">        /*</span><br><span class="line">        characterSet: UTF-8</span><br><span class="line">        charset: UTF-8</span><br><span class="line">        compatMode: BackCompat</span><br><span class="line"><span class="javascript">        defaultCharset: <span class="literal">undefined</span></span></span><br><span class="line">        dir: </span><br><span class="line">        domain: 127.0.0.1</span><br><span class="line">        lastModified: 03/12/2018 14:09:26</span><br><span class="line"><span class="javascript">        referrer: http:<span class="comment">//127.0.0.1:61374/def-guide-to-html5-master/Definitive%20Guide%20HTML5/Chapter%2026/listing-02.html</span></span></span><br><span class="line">        title: </span><br><span class="line">        */</span><br><span class="line">    <span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>使用 Dccument 元素获取文档的基本信息</p>
+<figure class="highlight html"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>Example<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">"utf-8"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">"author"</span> <span class="attr">content</span>=<span class="string">"Hu QiLin"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">"description"</span> <span class="attr">content</span>=<span class="string">"使用Document对象"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="javascript">        <span class="built_in">document</span>.writeln(<span class="string">"&lt;pre&gt;"</span>);</span></span><br><span class="line"></span><br><span class="line"><span class="javascript">        <span class="built_in">document</span>.writeln(<span class="string">"characterSet: "</span> + <span class="built_in">document</span>.characterSet);</span></span><br><span class="line"><span class="javascript">        <span class="built_in">document</span>.writeln(<span class="string">"charset: "</span> + <span class="built_in">document</span>.charset);</span></span><br><span class="line"><span class="javascript">        <span class="built_in">document</span>.writeln(<span class="string">"compatMode: "</span> + <span class="built_in">document</span>.compatMode); <span class="comment">/* 怪异模式：CSS1compat / BackCompat：HTML文档中含有非标准功能 */</span></span></span><br><span class="line"><span class="javascript">        <span class="built_in">document</span>.writeln(<span class="string">"defaultCharset: "</span> + <span class="built_in">document</span>.defaultCharset);</span></span><br><span class="line"><span class="javascript">        <span class="built_in">document</span>.writeln(<span class="string">"dir: "</span> + <span class="built_in">document</span>.dir);</span></span><br><span class="line"><span class="javascript">        <span class="built_in">document</span>.writeln(<span class="string">"domain: "</span> + <span class="built_in">document</span>.domain);</span></span><br><span class="line"><span class="javascript">        <span class="built_in">document</span>.writeln(<span class="string">"lastModified: "</span> + <span class="built_in">document</span>.lastModified);</span></span><br><span class="line"><span class="javascript">        <span class="built_in">document</span>.writeln(<span class="string">"referrer: "</span> + <span class="built_in">document</span>.referrer);</span></span><br><span class="line"><span class="javascript">        <span class="built_in">document</span>.writeln(<span class="string">"title: "</span> + <span class="built_in">document</span>.title);</span></span><br><span class="line"></span><br><span class="line"><span class="javascript">        <span class="built_in">document</span>.write(<span class="string">"&lt;/pre&gt;"</span>);</span></span><br><span class="line">        </span><br><span class="line">        /*</span><br><span class="line">        characterSet: UTF-8</span><br><span class="line">        charset: UTF-8</span><br><span class="line">        compatMode: BackCompat</span><br><span class="line"><span class="javascript">        defaultCharset: <span class="literal">undefined</span></span></span><br><span class="line">        dir: </span><br><span class="line">        domain: 127.0.0.1</span><br><span class="line">        lastModified: 03/12/2018 14:09:26</span><br><span class="line"><span class="javascript">        referrer: http:<span class="comment">//127.0.0.1:61374/def-guide-to-html5-master/Definitive%20Guide%20HTML5/Chapter%2026/listing-02.html</span></span></span><br><span class="line">        title: </span><br><span class="line">        */</span><br><span class="line">    <span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></tbody></table></figure>
 
 
 
-<h3 id="Location对象"><a href="#Location对象" class="headerlink" title="Location对象"></a>Location对象</h3><p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/075225.jpg" alt="Location对象"></p>
-<p>使用location属性获取文档信息：</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="javascript">    <span class="built_in">document</span>.writeln(<span class="string">&quot;&lt;pre&gt;&quot;</span>);</span></span><br><span class="line"></span><br><span class="line"><span class="javascript">    <span class="built_in">document</span>.writeln(<span class="string">&quot;protocol: &quot;</span> + <span class="built_in">document</span>.location.protocol); <span class="comment">/* http */</span></span></span><br><span class="line"><span class="javascript">    <span class="built_in">document</span>.writeln(<span class="string">&quot;host: &quot;</span> + <span class="built_in">document</span>.location.host); <span class="comment">/* 127.0.0.1:61374 */</span></span></span><br><span class="line"><span class="javascript">    <span class="built_in">document</span>.writeln(<span class="string">&quot;hostname: &quot;</span> + <span class="built_in">document</span>.location.hostname); <span class="comment">/* 127.0.0.1 */</span></span></span><br><span class="line"><span class="javascript">    <span class="built_in">document</span>.writeln(<span class="string">&quot;port: &quot;</span> + <span class="built_in">document</span>.location.port); <span class="comment">/* 61374 */</span></span></span><br><span class="line"><span class="javascript">    <span class="built_in">document</span>.writeln(<span class="string">&quot;pathname: &quot;</span> + <span class="built_in">document</span>.location.pathname); <span class="comment">/* /index.htm */</span></span></span><br><span class="line"><span class="javascript">    <span class="built_in">document</span>.writeln(<span class="string">&quot;search: &quot;</span> + <span class="built_in">document</span>.location.search); <span class="comment">/* 返回URL中查询字符串部分，如： ？query=apples */</span> </span></span><br><span class="line"><span class="javascript">    <span class="built_in">document</span>.writeln(<span class="string">&quot;hash: &quot;</span> + <span class="built_in">document</span>.location.hash); <span class="comment">/* hash属性返回的是URL片段 */</span></span></span><br><span class="line"></span><br><span class="line"><span class="javascript">    <span class="built_in">document</span>.write(<span class="string">&quot;&lt;/pre&gt;&quot;</span>);</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h3 id="Location对象"><a href="#Location对象" class="headerlink" title="Location对象"></a>Location 对象</h3><p><img data-src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/075225.jpg" alt="Location对象"></p>
+<p>使用 location 属性获取文档信息：</p>
+<figure class="highlight html"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="javascript">    <span class="built_in">document</span>.writeln(<span class="string">"&lt;pre&gt;"</span>);</span></span><br><span class="line"></span><br><span class="line"><span class="javascript">    <span class="built_in">document</span>.writeln(<span class="string">"protocol: "</span> + <span class="built_in">document</span>.location.protocol); <span class="comment">/* http */</span></span></span><br><span class="line"><span class="javascript">    <span class="built_in">document</span>.writeln(<span class="string">"host: "</span> + <span class="built_in">document</span>.location.host); <span class="comment">/* 127.0.0.1:61374 */</span></span></span><br><span class="line"><span class="javascript">    <span class="built_in">document</span>.writeln(<span class="string">"hostname: "</span> + <span class="built_in">document</span>.location.hostname); <span class="comment">/* 127.0.0.1 */</span></span></span><br><span class="line"><span class="javascript">    <span class="built_in">document</span>.writeln(<span class="string">"port: "</span> + <span class="built_in">document</span>.location.port); <span class="comment">/* 61374 */</span></span></span><br><span class="line"><span class="javascript">    <span class="built_in">document</span>.writeln(<span class="string">"pathname: "</span> + <span class="built_in">document</span>.location.pathname); <span class="comment">/* /index.htm */</span></span></span><br><span class="line"><span class="javascript">    <span class="built_in">document</span>.writeln(<span class="string">"search: "</span> + <span class="built_in">document</span>.location.search); <span class="comment">/* 返回URL中查询字符串部分，如： ？query=apples */</span> </span></span><br><span class="line"><span class="javascript">    <span class="built_in">document</span>.writeln(<span class="string">"hash: "</span> + <span class="built_in">document</span>.location.hash); <span class="comment">/* hash属性返回的是URL片段 */</span></span></span><br><span class="line"></span><br><span class="line"><span class="javascript">    <span class="built_in">document</span>.write(<span class="string">"&lt;/pre&gt;"</span>);</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></tbody></table></figure>
 
 
 
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">HTML</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">title</span>&gt;</span>Example<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">&quot;author&quot;</span> <span class="attr">content</span>=<span class="string">&quot;Adam Freeman&quot;</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">&quot;description&quot;</span> <span class="attr">content</span>=<span class="string">&quot;A simple example&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">p</span>&gt;</span></span><br><span class="line">            There are lots of different kinds of fruit - there are over 500 varieties</span><br><span class="line">            of banana alone. By the time we add the countless types of apples, oranges,</span><br><span class="line">            and other well-known fruit, we are faced with thousands of choices. </span><br><span class="line">        <span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">button</span> <span class="attr">id</span>=<span class="string">&quot;pressme&quot;</span>&gt;</span>Press Me<span class="tag">&lt;/<span class="name">button</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">p</span>&gt;</span></span><br><span class="line">            One of the most interesting aspects of fruit is the variety available in</span><br><span class="line">            each country. I live near London, in an area which is known for</span><br><span class="line">            its apples.</span><br><span class="line"></span><br><span class="line">        <span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">img</span> <span class="attr">id</span>=<span class="string">&quot;banana&quot;</span> <span class="attr">src</span>=<span class="string">&quot;banana-small.png&quot;</span> <span class="attr">alt</span>=<span class="string">&quot;small banana&quot;</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="javascript">            <span class="comment">/* 用getElementById方法找到按钮，再设置按钮点击事件。 */</span></span></span><br><span class="line"><span class="javascript">            <span class="built_in">document</span>.getElementById(<span class="string">&quot;pressme&quot;</span>).onclick = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span></span><br><span class="line"><span class="javascript">                <span class="comment">/* 导航到id值匹配hash值的元素上 */</span></span></span><br><span class="line"><span class="javascript">                <span class="built_in">document</span>.location.hash = <span class="string">&quot;banana&quot;</span>;</span></span><br><span class="line">            &#125;</span><br><span class="line">        <span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight html"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">HTML</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">title</span>&gt;</span>Example<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">"author"</span> <span class="attr">content</span>=<span class="string">"Adam Freeman"</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">"description"</span> <span class="attr">content</span>=<span class="string">"A simple example"</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">p</span>&gt;</span></span><br><span class="line">            There are lots of different kinds of fruit - there are over 500 varieties</span><br><span class="line">            of banana alone. By the time we add the countless types of apples, oranges,</span><br><span class="line">            and other well-known fruit, we are faced with thousands of choices. </span><br><span class="line">        <span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">button</span> <span class="attr">id</span>=<span class="string">"pressme"</span>&gt;</span>Press Me<span class="tag">&lt;/<span class="name">button</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">p</span>&gt;</span></span><br><span class="line">            One of the most interesting aspects of fruit is the variety available in</span><br><span class="line">            each country. I live near London, in an area which is known for</span><br><span class="line">            its apples.</span><br><span class="line"></span><br><span class="line">        <span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">img</span> <span class="attr">id</span>=<span class="string">"banana"</span> <span class="attr">src</span>=<span class="string">"banana-small.png"</span> <span class="attr">alt</span>=<span class="string">"small banana"</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="javascript">            <span class="comment">/* 用getElementById方法找到按钮，再设置按钮点击事件。 */</span></span></span><br><span class="line"><span class="javascript">            <span class="built_in">document</span>.getElementById(<span class="string">"pressme"</span>).onclick = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>{</span></span><br><span class="line"><span class="javascript">                <span class="comment">/* 导航到id值匹配hash值的元素上 */</span></span></span><br><span class="line"><span class="javascript">                <span class="built_in">document</span>.location.hash = <span class="string">"banana"</span>;</span></span><br><span class="line">            }</span><br><span class="line">        <span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></tbody></table></figure>
 
 
 
@@ -389,17 +439,17 @@
 
 
 
-<h3 id="Window-对象"><a href="#Window-对象" class="headerlink" title="Window 对象"></a>Window 对象</h3><p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/075228.jpg" alt="Window对象"></p>
-<h3 id="History-对象"><a href="#History-对象" class="headerlink" title="History 对象"></a>History 对象</h3><p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/075229.jpg" alt="History对象"></p>
-<h3 id="Screen-对象"><a href="#Screen-对象" class="headerlink" title="Screen 对象"></a>Screen 对象</h3><p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/075232.jpg" alt="Screen对象"></p>
-<h3 id="HTMLElement的成员"><a href="#HTMLElement的成员" class="headerlink" title="HTMLElement的成员"></a>HTMLElement的成员</h3><p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/075235.jpg" alt="HTMLElement对象1"></p>
-<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/075236.jpg" alt="HTMLElement对象2"></p>
-<h3 id="Text-对象"><a href="#Text-对象" class="headerlink" title="Text 对象"></a>Text 对象</h3><p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/075238.jpg" alt="Text对象"></p>
-<h3 id="DOM里的CSS属性"><a href="#DOM里的CSS属性" class="headerlink" title="DOM里的CSS属性"></a>DOM里的CSS属性</h3><p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/075239.jpg" alt="DOM里的CSS属性1"></p>
-<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/075240.jpg" alt="DOM里的CSS属性2"></p>
-<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/075241.jpg" alt="DOM里的CSS属性3"></p>
+<h3 id="Window-对象"><a href="#Window-对象" class="headerlink" title="Window 对象"></a>Window 对象</h3><p><img data-src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/075228.jpg" alt="Window对象"></p>
+<h3 id="History-对象"><a href="#History-对象" class="headerlink" title="History 对象"></a>History 对象</h3><p><img data-src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/075229.jpg" alt="History对象"></p>
+<h3 id="Screen-对象"><a href="#Screen-对象" class="headerlink" title="Screen 对象"></a>Screen 对象</h3><p><img data-src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/075232.jpg" alt="Screen对象"></p>
+<h3 id="HTMLElement的成员"><a href="#HTMLElement的成员" class="headerlink" title="HTMLElement的成员"></a>HTMLElement 的成员</h3><p><img data-src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/075235.jpg" alt="HTMLElement对象1"></p>
+<p><img data-src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/075236.jpg" alt="HTMLElement对象2"></p>
+<h3 id="Text-对象"><a href="#Text-对象" class="headerlink" title="Text 对象"></a>Text 对象</h3><p><img data-src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/075238.jpg" alt="Text对象"></p>
+<h3 id="DOM里的CSS属性"><a href="#DOM里的CSS属性" class="headerlink" title="DOM里的CSS属性"></a>DOM 里的 CSS 属性</h3><p><img data-src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/075239.jpg" alt="DOM里的CSS属性1"></p>
+<p><img data-src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/075240.jpg" alt="DOM里的CSS属性2"></p>
+<p><img data-src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/075241.jpg" alt="DOM里的CSS属性3"></p>
 <h3 id="DOM-中的事件"><a href="#DOM-中的事件" class="headerlink" title="DOM 中的事件"></a>DOM 中的事件</h3><p>[图片上传失败…(image-d11f11-1521387685311)]</p>
-<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/075242.jpg" alt="DOM中的事件2"></p>
+<p><img data-src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/075242.jpg" alt="DOM中的事件2"></p>
 
     </div>
 
@@ -415,7 +465,7 @@
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="https://andy0570.com/2018/03/19/HTML%E7%AC%94%E8%AE%B0%2010.DOM/" title="HTML笔记 10.DOM">https://andy0570.com/2018/03/19/HTML笔记 10.DOM/</a>
+    <a href="https://andy0570.com/2018/03/19/HTML%E7%AC%94%E8%AE%B0%2010.DOM/" title="HTML 笔记 10.DOM">https://andy0570.com/2018/03/19/HTML笔记 10.DOM/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <span class="exturl" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpo"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</span> 许可协议。转载请注明出处！
@@ -454,8 +504,8 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2018/03/18/HTML%E7%AC%94%E8%AE%B0%209.%E5%B5%8C%E5%85%A5%E5%86%85%E5%AE%B9/" rel="prev" title="HTML笔记 9.嵌入内容.md">
-      <i class="fa fa-chevron-left"></i> HTML笔记 9.嵌入内容.md
+    <a href="/2018/03/18/HTML%E7%AC%94%E8%AE%B0%209.%E5%B5%8C%E5%85%A5%E5%86%85%E5%AE%B9/" rel="prev" title="HTML 笔记 9. 嵌入内容.md">
+      <i class="fa fa-chevron-left"></i> HTML 笔记 9. 嵌入内容.md
     </a></div>
       <div class="post-nav-item">
     <a href="/2018/03/19/HTML%20%E5%89%8D%E7%AB%AF%E8%B5%84%E6%BA%90/" rel="next" title="HTML 前端资源">
@@ -473,6 +523,7 @@
 
         </div>
         
+    <div class="comments" id="valine-comments"></div>
 
 <script>
   window.addEventListener('tabs:register', () => {
@@ -541,7 +592,11 @@
   </div>
 
   
-  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.0/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/next-theme/pjax@0/pjax.min.js"></script>
+  <script src="//unpkg.com/medium-zoom@1/dist/medium-zoom.min.js"></script>
+  <script src="//unpkg.com/lozad@1/dist/lozad.min.js"></script>
+  <script src="//unpkg.com/pangu@4/dist/browser/pangu.min.js"></script>
 
 <script src="/js/utils.js"></script>
 
@@ -552,9 +607,42 @@
 
 <script src="/js/bookmark.js"></script>
 
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '.page-configurations',
+    '.main-inner',
+    '.post-toc-wrap',
+    '.languages',
+    '.pjax'
+  ],
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+document.addEventListener('pjax:success', () => {
+  pjax.executeScripts(document.querySelectorAll('script[data-pjax], .pjax script'));
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  const hasTOC = document.querySelector('.post-toc');
+  document.querySelector('.sidebar-inner').classList.toggle('sidebar-nav-active', hasTOC);
+  document.querySelector(hasTOC ? '.sidebar-nav-toc' : '.sidebar-nav-overview').click();
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
 
   
-  <script>
+  <script data-pjax>
     (function(){
       var bp = document.createElement('script');
       var curProtocol = window.location.protocol.split(':')[0];
@@ -567,6 +655,10 @@
 
 
 
+  
+<script src="//unpkg.com/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//unpkg.com/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
 
 
 
@@ -578,9 +670,27 @@
 
 
 
+
+
+
+    <div class="pjax">
   
 
   
 
+
+<script>
+NexT.utils.loadComments('#valine-comments', () => {
+  NexT.utils.getScript('//unpkg.com/valine@1/dist/Valine.min.js', () => {
+    new Valine(Object.assign({
+      el  : '#valine-comments',
+      path: location.pathname,
+    }, {"enable":true,"appId":"S7i1Y8YorMKFPaYbJbekD5el-gzGzoHsz","appKey":"brOnU8mOQvSjpipJvdKUAIbU","placeholder":"写下你的评论...","avatar":"mm","meta":["nick","mail","link"],"pageSize":10,"language":"zh-cn","visitor":false,"comment_count":true,"recordIP":true,"serverURLs":null,"enableQQ":true,"requiredFields":[]}
+    ));
+  }, window.Valine);
+});
+</script>
+
+    </div>
 </body>
 </html>

@@ -18,21 +18,23 @@
 <link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css">
   
   <link rel="stylesheet" href="/lib/animate-css/animate.min.css">
+  <link rel="stylesheet" href="//unpkg.com/pace-js@1/themes/blue/pace-theme-minimal.css">
+  <script src="//unpkg.com/pace-js@1/pace.min.js"></script>
 
 <script class="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"andy0570.com","root":"/","scheme":"Gemini","version":"8.0.0-rc.5","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":"mac","bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false};
+    var CONFIG = {"hostname":"andy0570.com","root":"/","scheme":"Gemini","version":"8.0.0-rc.5","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":"mac","bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":true,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":true,"nav":null,"activeClass":"valine"},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"algolia":{"appID":"0E2AON8EZF","apiKey":"22fbefd84c8343239f5c04365b9728de","indexName":"MyBlogPlatform","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}}};
   </script>
 
-  <meta name="description" content="声明：本文参考自高性能iOS应用开发-高拉夫·瓦依希 第6章。   创建复合视图的三种方式：  故事版（Storyboard）或者 NIB 文件； 手写代码，创建并添加 UI 控件； 手写代码，直接绘制视图；">
+  <meta name="description" content="声明：本文参考自高性能 iOS 应用开发 - 高拉夫・瓦依希 第 6 章。   创建复合视图的三种方式：  故事版（Storyboard）或者 NIB 文件； 手写代码，创建并添加 UI 控件； 手写代码，直接绘制视图；">
 <meta property="og:type" content="article">
-<meta property="og:title" content="高性能 iOS 应用开发——创建复合视图的正确方式">
+<meta property="og:title" content="高性能 iOS 应用开发 —— 创建复合视图的正确方式">
 <meta property="og:url" content="https://andy0570.com/2017/12/06/%E9%AB%98%E6%80%A7%E8%83%BD%20iOS%20%E5%BA%94%E7%94%A8%E5%BC%80%E5%8F%91%E2%80%94%E2%80%94%E5%88%9B%E5%BB%BA%E5%A4%8D%E5%90%88%E8%A7%86%E5%9B%BE%E7%9A%84%E6%AD%A3%E7%A1%AE%E6%96%B9%E5%BC%8F/index.html">
 <meta property="og:site_name" content="独木舟的木">
-<meta property="og:description" content="声明：本文参考自高性能iOS应用开发-高拉夫·瓦依希 第6章。   创建复合视图的三种方式：  故事版（Storyboard）或者 NIB 文件； 手写代码，创建并添加 UI 控件； 手写代码，直接绘制视图；">
+<meta property="og:description" content="声明：本文参考自高性能 iOS 应用开发 - 高拉夫・瓦依希 第 6 章。   创建复合视图的三种方式：  故事版（Storyboard）或者 NIB 文件； 手写代码，创建并添加 UI 控件； 手写代码，直接绘制视图；">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072550.jpg">
 <meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072551.jpg">
@@ -49,7 +51,7 @@
 <link rel="canonical" href="https://andy0570.com/2017/12/06/%E9%AB%98%E6%80%A7%E8%83%BD%20iOS%20%E5%BA%94%E7%94%A8%E5%BC%80%E5%8F%91%E2%80%94%E2%80%94%E5%88%9B%E5%BB%BA%E5%A4%8D%E5%90%88%E8%A7%86%E5%9B%BE%E7%9A%84%E6%AD%A3%E7%A1%AE%E6%96%B9%E5%BC%8F/">
 
 
-<script class="page-configurations">
+<script data-pjax class="page-configurations">
   // https://hexo.io/docs/variables.html
   CONFIG.page = {
     sidebar: "",
@@ -59,10 +61,19 @@
   };
 </script>
 
-  <title>高性能 iOS 应用开发——创建复合视图的正确方式 | 独木舟的木</title>
+  <title>高性能 iOS 应用开发 —— 创建复合视图的正确方式 | 独木舟的木</title>
   
 
 
+  <script data-pjax>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?8229a094facca297f211d61323fd9fde";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
 
 
 
@@ -132,6 +143,7 @@
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -165,11 +177,35 @@
     <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
 
   </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
   </ul>
 </nav>
 
 
 
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
 
 </div>
           
@@ -194,14 +230,14 @@
 
       <!--noindex-->
       <section class="post-toc-wrap sidebar-panel">
-          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E5%A4%8D%E5%90%88%E8%A7%86%E5%9B%BE%EF%BC%88NIB%E6%96%B9%E5%BC%8F%EF%BC%89"><span class="nav-number">1.</span> <span class="nav-text">一、复合视图（NIB方式）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E5%A4%8D%E5%90%88%E8%A7%86%E5%9B%BE%EF%BC%88%E6%89%8B%E5%86%99%E4%BB%A3%E7%A0%81%EF%BC%89"><span class="nav-number">2.</span> <span class="nav-text">二、复合视图（手写代码）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#HPMailModel%E2%80%94%E2%80%94%E6%A8%A1%E5%9E%8B%E7%B1%BB"><span class="nav-number">2.1.</span> <span class="nav-text">HPMailModel——模型类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HPMailCompositeHandCell%E2%80%94%E2%80%94%E8%A7%86%E5%9B%BE%E7%B1%BB"><span class="nav-number">2.2.</span> <span class="nav-text">HPMailCompositeHandCell——视图类</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%89%E3%80%81%E7%9B%B4%E6%8E%A5%E7%BB%98%E5%88%B6"><span class="nav-number">3.</span> <span class="nav-text">三、直接绘制</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#HPMailDirectDrawCell%E2%80%94%E2%80%94%E8%A7%86%E5%9B%BE%E7%B1%BB"><span class="nav-number">3.1.</span> <span class="nav-text">HPMailDirectDrawCell——视图类</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BB%98%E5%88%B6%E5%9B%BE%E5%83%8F%E7%9A%84%E5%85%B6%E5%AE%83%E6%96%B9%E6%B3%95"><span class="nav-number">3.1.1.</span> <span class="nav-text">绘制图像的其它方法</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%9B%E3%80%81%E7%9C%9F%E6%9C%BA%E6%B5%8B%E8%AF%95"><span class="nav-number">4.</span> <span class="nav-text">四、真机测试</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%8D%E5%90%88%E8%A7%86%E5%9B%BE%EF%BC%88NIB%E6%96%B9%E5%BC%8F%EF%BC%89"><span class="nav-number">4.1.</span> <span class="nav-text">复合视图（NIB方式）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%E6%95%B0%E6%8D%AE%EF%BC%9A"><span class="nav-number">4.1.1.</span> <span class="nav-text">测试数据：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BB%93%E8%AE%BA"><span class="nav-number">4.1.2.</span> <span class="nav-text">结论</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%8D%E5%90%88%E8%A7%86%E5%9B%BE%EF%BC%88%E6%89%8B%E5%86%99%E4%BB%A3%E7%A0%81%EF%BC%89"><span class="nav-number">4.2.</span> <span class="nav-text">复合视图（手写代码）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%E6%95%B0%E6%8D%AE%EF%BC%9A-1"><span class="nav-number">4.2.1.</span> <span class="nav-text">测试数据：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BB%93%E8%AE%BA-1"><span class="nav-number">4.2.2.</span> <span class="nav-text">结论</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%9B%B4%E6%8E%A5%E7%BB%98%E5%88%B6"><span class="nav-number">4.3.</span> <span class="nav-text">直接绘制</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%E6%95%B0%E6%8D%AE"><span class="nav-number">4.3.1.</span> <span class="nav-text">测试数据</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BB%93%E8%AE%BA-2"><span class="nav-number">4.3.2.</span> <span class="nav-text">结论</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%BB%E7%BB%93%EF%BC%9A%E5%A4%8D%E5%90%88%E8%A7%86%E5%9B%BE-VS-%E7%9B%B4%E6%8E%A5%E7%BB%98%E5%9B%BE"><span class="nav-number">4.4.</span> <span class="nav-text">总结：复合视图 VS 直接绘图</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%80%A7%E8%83%BD%EF%BC%9A"><span class="nav-number">4.4.1.</span> <span class="nav-text">性能：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BB%B4%E6%8A%A4%EF%BC%9A"><span class="nav-number">4.4.2.</span> <span class="nav-text">维护：</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%BA%90%E7%A0%81"><span class="nav-number">4.5.</span> <span class="nav-text">源码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">5.</span> <span class="nav-text">参考</span></a></li></ol></div>
+          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E5%A4%8D%E5%90%88%E8%A7%86%E5%9B%BE%EF%BC%88NIB%E6%96%B9%E5%BC%8F%EF%BC%89"><span class="nav-number">1.</span> <span class="nav-text">一、复合视图（NIB 方式）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E5%A4%8D%E5%90%88%E8%A7%86%E5%9B%BE%EF%BC%88%E6%89%8B%E5%86%99%E4%BB%A3%E7%A0%81%EF%BC%89"><span class="nav-number">2.</span> <span class="nav-text">二、复合视图（手写代码）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#HPMailModel%E2%80%94%E2%80%94%E6%A8%A1%E5%9E%8B%E7%B1%BB"><span class="nav-number">2.1.</span> <span class="nav-text">HPMailModel—— 模型类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HPMailCompositeHandCell%E2%80%94%E2%80%94%E8%A7%86%E5%9B%BE%E7%B1%BB"><span class="nav-number">2.2.</span> <span class="nav-text">HPMailCompositeHandCell—— 视图类</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%89%E3%80%81%E7%9B%B4%E6%8E%A5%E7%BB%98%E5%88%B6"><span class="nav-number">3.</span> <span class="nav-text">三、直接绘制</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#HPMailDirectDrawCell%E2%80%94%E2%80%94%E8%A7%86%E5%9B%BE%E7%B1%BB"><span class="nav-number">3.1.</span> <span class="nav-text">HPMailDirectDrawCell—— 视图类</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BB%98%E5%88%B6%E5%9B%BE%E5%83%8F%E7%9A%84%E5%85%B6%E5%AE%83%E6%96%B9%E6%B3%95"><span class="nav-number">3.1.1.</span> <span class="nav-text">绘制图像的其它方法</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%9B%E3%80%81%E7%9C%9F%E6%9C%BA%E6%B5%8B%E8%AF%95"><span class="nav-number">4.</span> <span class="nav-text">四、真机测试</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%8D%E5%90%88%E8%A7%86%E5%9B%BE%EF%BC%88NIB%E6%96%B9%E5%BC%8F%EF%BC%89"><span class="nav-number">4.1.</span> <span class="nav-text">复合视图（NIB 方式）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%E6%95%B0%E6%8D%AE%EF%BC%9A"><span class="nav-number">4.1.1.</span> <span class="nav-text">测试数据：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BB%93%E8%AE%BA"><span class="nav-number">4.1.2.</span> <span class="nav-text">结论</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%8D%E5%90%88%E8%A7%86%E5%9B%BE%EF%BC%88%E6%89%8B%E5%86%99%E4%BB%A3%E7%A0%81%EF%BC%89"><span class="nav-number">4.2.</span> <span class="nav-text">复合视图（手写代码）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%E6%95%B0%E6%8D%AE%EF%BC%9A-1"><span class="nav-number">4.2.1.</span> <span class="nav-text">测试数据：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BB%93%E8%AE%BA-1"><span class="nav-number">4.2.2.</span> <span class="nav-text">结论</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%9B%B4%E6%8E%A5%E7%BB%98%E5%88%B6"><span class="nav-number">4.3.</span> <span class="nav-text">直接绘制</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%E6%95%B0%E6%8D%AE"><span class="nav-number">4.3.1.</span> <span class="nav-text">测试数据</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BB%93%E8%AE%BA-2"><span class="nav-number">4.3.2.</span> <span class="nav-text">结论</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%BB%E7%BB%93%EF%BC%9A%E5%A4%8D%E5%90%88%E8%A7%86%E5%9B%BE-VS-%E7%9B%B4%E6%8E%A5%E7%BB%98%E5%9B%BE"><span class="nav-number">4.4.</span> <span class="nav-text">总结：复合视图 VS 直接绘图</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%80%A7%E8%83%BD%EF%BC%9A"><span class="nav-number">4.4.1.</span> <span class="nav-text">性能：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BB%B4%E6%8A%A4%EF%BC%9A"><span class="nav-number">4.4.2.</span> <span class="nav-text">维护：</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%BA%90%E7%A0%81"><span class="nav-number">4.5.</span> <span class="nav-text">源码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">5.</span> <span class="nav-text">参考</span></a></li></ol></div>
       </section>
       <!--/noindex-->
 
       <section class="site-overview-wrap sidebar-panel">
         <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <img class="site-author-image" itemprop="image" alt="独木舟的木"
-      src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+      src="https://static01.imgkr.com/temp/88aab3c08a3f43f5a14f21c6c357c816.JPG">
   <p class="site-author-name" itemprop="name">独木舟的木</p>
   <div class="site-description" itemprop="description">生若直木，不语斧凿。</div>
 </div>
@@ -282,7 +318,7 @@
     <link itemprop="mainEntityOfPage" href="https://andy0570.com/2017/12/06/%E9%AB%98%E6%80%A7%E8%83%BD%20iOS%20%E5%BA%94%E7%94%A8%E5%BC%80%E5%8F%91%E2%80%94%E2%80%94%E5%88%9B%E5%BB%BA%E5%A4%8D%E5%90%88%E8%A7%86%E5%9B%BE%E7%9A%84%E6%AD%A3%E7%A1%AE%E6%96%B9%E5%BC%8F/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+      <meta itemprop="image" content="https://static01.imgkr.com/temp/88aab3c08a3f43f5a14f21c6c357c816.JPG">
       <meta itemprop="name" content="独木舟的木">
       <meta itemprop="description" content="生若直木，不语斧凿。">
     </span>
@@ -294,7 +330,7 @@
     
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          高性能 iOS 应用开发——创建复合视图的正确方式
+          高性能 iOS 应用开发 —— 创建复合视图的正确方式
         </h1>
 
         <div class="post-meta">
@@ -323,7 +359,21 @@
                 </span>
             </span>
 
-          <br>
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2017/12/06/%E9%AB%98%E6%80%A7%E8%83%BD%20iOS%20%E5%BA%94%E7%94%A8%E5%BC%80%E5%8F%91%E2%80%94%E2%80%94%E5%88%9B%E5%BB%BA%E5%A4%8D%E5%90%88%E8%A7%86%E5%9B%BE%E7%9A%84%E6%AD%A3%E7%A1%AE%E6%96%B9%E5%BC%8F/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2017/12/06/%E9%AB%98%E6%80%A7%E8%83%BD%20iOS%20%E5%BA%94%E7%94%A8%E5%BC%80%E5%8F%91%E2%80%94%E2%80%94%E5%88%9B%E5%BB%BA%E5%A4%8D%E5%90%88%E8%A7%86%E5%9B%BE%E7%9A%84%E6%AD%A3%E7%A1%AE%E6%96%B9%E5%BC%8F/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  <br>
             <span class="post-meta-item" title="本文字数">
               <span class="post-meta-item-icon">
                 <i class="far fa-file-word"></i>
@@ -347,9 +397,9 @@
     
     <div class="post-body" itemprop="articleBody">
         <blockquote>
-<p>声明：本文参考自<span class="exturl" data-url="aHR0cHM6Ly93d3cuYW1hem9uLmNuLyVFOSVBQiU5OCVFNiU4MCVBNyVFOCU4MyVCRGlPUyVFNSVCQSU5NCVFNyU5NCVBOCVFNSVCQyU4MCVFNSU4RiU5MS0lRTklQUIlOTglRTYlOEIlODklRTUlQTQlQUIlQzIlQjclRTclOTMlQTYlRTQlQkUlOUQlRTUlQjglOEMvZHAvQjA2WTYzNUoxUi9yZWY9c3JfMV8yP2llPVVURjgmcWlkPTE1MTI1NDM0MjAmc3I9OC0yJmtleXdvcmRzPSVFOSVBQiU5OCVFNiU4MCVBNyVFOCU4MyVCRCtpT1MrJUU1JUJBJTk0JUU3JTk0JUE4">高性能iOS应用开发-高拉夫·瓦依希<i class="fa fa-external-link-alt"></i></span> 第6章。</p>
+<p>声明：本文参考自<span class="exturl" data-url="aHR0cHM6Ly93d3cuYW1hem9uLmNuLyVFOSVBQiU5OCVFNiU4MCVBNyVFOCU4MyVCRGlPUyVFNSVCQSU5NCVFNyU5NCVBOCVFNSVCQyU4MCVFNSU4RiU5MS0lRTklQUIlOTglRTYlOEIlODklRTUlQTQlQUIlQzIlQjclRTclOTMlQTYlRTQlQkUlOUQlRTUlQjglOEMvZHAvQjA2WTYzNUoxUi9yZWY9c3JfMV8yP2llPVVURjgmcWlkPTE1MTI1NDM0MjAmc3I9OC0yJmtleXdvcmRzPSVFOSVBQiU5OCVFNiU4MCVBNyVFOCU4MyVCRCtpT1MrJUU1JUJBJTk0JUU3JTk0JUE4">高性能 iOS 应用开发 - 高拉夫・瓦依希<i class="fa fa-external-link-alt"></i></span> 第 6 章。</p>
 </blockquote>
-<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072550.jpg" alt="image"></p>
+<p><img data-src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072550.jpg" alt="image"></p>
 <p>创建复合视图的三种方式：</p>
 <ol>
 <li>故事版（Storyboard）或者 NIB 文件；</li>
@@ -360,7 +410,7 @@
 
 
 <p>开门见山，我会用以上三种不同的方式创建如下的复合视图（<strong>UITableViewCell</strong> 实例对象），并加载到 <strong>UITableViewController</strong> 页面上，同时测试它们各自的性能（耗时、内存占用）。</p>
-<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072551.jpg" alt="UITableViewCell"></p>
+<p><img data-src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072551.jpg" alt="UITableViewCell"></p>
 <p>元素：四个 <strong>UILabel</strong>、两个 <strong>UIImage</strong> 和一个 <strong>UIButton</strong> 对象。</p>
 <p>从左到右，从上到下依次是：</p>
 <table>
@@ -371,45 +421,45 @@
 </tr>
 </thead>
 <tbody><tr>
-<td>UIImage</td>
-<td>邮件状态图片（已读、未读、已回复）</td>
+<td> UIImage</td>
+<td> 邮件状态图片（已读、未读、已回复）</td>
 </tr>
 <tr>
 <td>UILabel</td>
 <td>E-mail 地址</td>
 </tr>
 <tr>
-<td>UILabel</td>
-<td>时间</td>
+<td> UILabel</td>
+<td> 时间</td>
 </tr>
 <tr>
-<td>UIImage</td>
-<td>是否有附件的图片📎</td>
-</tr>
-<tr>
-<td>UILabel</td>
-<td>邮件主题</td>
-</tr>
-<tr>
-<td>UIButton</td>
-<td>选中按钮</td>
+<td> UIImage</td>
+<td> 是否有附件的图片📎</td>
 </tr>
 <tr>
 <td>UILabel</td>
-<td>邮件摘要</td>
+<td> 邮件主题</td>
+</tr>
+<tr>
+<td> UIButton</td>
+<td> 选中按钮</td>
+</tr>
+<tr>
+<td> UILabel</td>
+<td> 邮件摘要</td>
 </tr>
 </tbody></table>
-<h2 id="一、复合视图（NIB方式）"><a href="#一、复合视图（NIB方式）" class="headerlink" title="一、复合视图（NIB方式）"></a>一、复合视图（NIB方式）</h2><p>使用NIB方式创建复合视图是最简单的方式（特点🤩：速度快、简单可视化），我们需要创建一个继承于 <strong>UITableViewCell</strong> 的新类：</p>
+<h2 id="一、复合视图（NIB方式）"><a href="#一、复合视图（NIB方式）" class="headerlink" title="一、复合视图（NIB方式）"></a>一、复合视图（NIB 方式）</h2><p>使用 NIB 方式创建复合视图是最简单的方式（特点🤩：速度快、简单可视化），我们需要创建一个继承于 <strong>UITableViewCell</strong> 的新类：</p>
 <p>记得勾选  ☑️<strong>Also create XIB file</strong></p>
-<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072552.jpg" alt="image"></p>
+<p><img data-src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072552.jpg" alt="image"></p>
 <p>然后向 NIB 文件中拖拽添加四个 <strong>UILabel</strong>、两个 <strong>UIImage</strong> 和一个 <strong>UIButton</strong> 控件，同时做好自动布局：</p>
-<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072553.jpg" alt="image"></p>
-<h2 id="二、复合视图（手写代码）"><a href="#二、复合视图（手写代码）" class="headerlink" title="二、复合视图（手写代码）"></a>二、复合视图（手写代码）</h2><p>使用手写代码创建复合视图耗时较长（特点✏️：速度慢、但是方便重用），同时我遵循了MVC的设计模式，为它创建了一个模型类。</p>
-<h3 id="HPMailModel——模型类"><a href="#HPMailModel——模型类" class="headerlink" title="HPMailModel——模型类"></a>HPMailModel——模型类</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; HPMailModel.h</span><br><span class="line">#import &lt;Foundation&#x2F;Foundation.h&gt;</span><br><span class="line"></span><br><span class="line">typedef NS_ENUM(NSUInteger, HPMailModelStatus) &#123;</span><br><span class="line">    HPMailModelStatusUnread,</span><br><span class="line">    HPMailModelStatusRead,</span><br><span class="line">    HPMailModelStatusReplied,</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">&#x2F;**</span><br><span class="line"> 邮箱模型</span><br><span class="line"> *&#x2F;</span><br><span class="line">@interface HPMailModel : NSObject</span><br><span class="line"></span><br><span class="line">@property (nonatomic, copy, readonly) NSString *email;</span><br><span class="line">@property (nonatomic, copy, readonly) NSString *subject;</span><br><span class="line">@property (nonatomic, copy, readonly) NSString *date;</span><br><span class="line">@property (nonatomic, copy, readonly) NSString *snippet;</span><br><span class="line">@property (nonatomic, assign, readonly) HPMailModelStatus mailStatus;</span><br><span class="line">@property (nonatomic, assign, readonly) BOOL hasAttachment;</span><br><span class="line">@property (nonatomic, assign, readwrite) BOOL isMailSelected;</span><br><span class="line"></span><br><span class="line">- (instancetype)initWithEmail:(NSString *)email</span><br><span class="line">                      subject:(NSString *)subject</span><br><span class="line">                         date:(NSString *)date</span><br><span class="line">                      snippet:(NSString *)snippet</span><br><span class="line">                  emailStatus:(HPMailModelStatus)status</span><br><span class="line">                hasAttachment:(BOOL)hasAttachment;</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;  HPMailModel.m</span><br><span class="line">&#x2F;&#x2F; 避免干扰，省略其它代码...</span><br></pre></td></tr></table></figure>
+<p><img data-src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072553.jpg" alt="image"></p>
+<h2 id="二、复合视图（手写代码）"><a href="#二、复合视图（手写代码）" class="headerlink" title="二、复合视图（手写代码）"></a>二、复合视图（手写代码）</h2><p>使用手写代码创建复合视图耗时较长（特点✏️：速度慢、但是方便重用），同时我遵循了 MVC 的设计模式，为它创建了一个模型类。</p>
+<h3 id="HPMailModel——模型类"><a href="#HPMailModel——模型类" class="headerlink" title="HPMailModel——模型类"></a>HPMailModel—— 模型类</h3><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">// HPMailModel.h</span><br><span class="line">#import &lt;Foundation/Foundation.h&gt;</span><br><span class="line"></span><br><span class="line">typedef NS_ENUM(NSUInteger, HPMailModelStatus) {</span><br><span class="line">    HPMailModelStatusUnread,</span><br><span class="line">    HPMailModelStatusRead,</span><br><span class="line">    HPMailModelStatusReplied,</span><br><span class="line">};</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> 邮箱模型</span><br><span class="line"> */</span><br><span class="line">@interface HPMailModel : NSObject</span><br><span class="line"></span><br><span class="line">@property (nonatomic, copy, readonly) NSString *email;</span><br><span class="line">@property (nonatomic, copy, readonly) NSString *subject;</span><br><span class="line">@property (nonatomic, copy, readonly) NSString *date;</span><br><span class="line">@property (nonatomic, copy, readonly) NSString *snippet;</span><br><span class="line">@property (nonatomic, assign, readonly) HPMailModelStatus mailStatus;</span><br><span class="line">@property (nonatomic, assign, readonly) BOOL hasAttachment;</span><br><span class="line">@property (nonatomic, assign, readwrite) BOOL isMailSelected;</span><br><span class="line"></span><br><span class="line">- (instancetype)initWithEmail:(NSString *)email</span><br><span class="line">                      subject:(NSString *)subject</span><br><span class="line">                         date:(NSString *)date</span><br><span class="line">                      snippet:(NSString *)snippet</span><br><span class="line">                  emailStatus:(HPMailModelStatus)status</span><br><span class="line">                hasAttachment:(BOOL)hasAttachment;</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">//  HPMailModel.m</span><br><span class="line">// 避免干扰，省略其它代码...</span><br></pre></td></tr></tbody></table></figure>
 
 
 
-<h3 id="HPMailCompositeHandCell——视图类"><a href="#HPMailCompositeHandCell——视图类" class="headerlink" title="HPMailCompositeHandCell——视图类"></a>HPMailCompositeHandCell——视图类</h3><p>步骤：</p>
+<h3 id="HPMailCompositeHandCell——视图类"><a href="#HPMailCompositeHandCell——视图类" class="headerlink" title="HPMailCompositeHandCell——视图类"></a>HPMailCompositeHandCell—— 视图类</h3><p>步骤：</p>
 <ul>
 <li>创建一个继承于 <strong>UITableViewCell</strong> 的新类；</li>
 <li>使用 <code>@property</code> 属性创建 UI 控件支持细节；</li>
@@ -421,7 +471,7 @@
 <li>所有控件通过 Lazy Loading 方式设置；</li>
 <li>使用了 <strong><span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL1NuYXBLaXQvTWFzb25yeQ==">Masonry<i class="fa fa-external-link-alt"></i></span></strong> 框架实现自动布局；</li>
 </ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;  HPMailCompositeHandCell.h</span><br><span class="line">#import &lt;UIKit&#x2F;UIKit.h&gt;</span><br><span class="line">@class HPMailModel;</span><br><span class="line"></span><br><span class="line">UIKIT_EXTERN const CGFloat HPMailCompositeHandCellHeight;</span><br><span class="line"></span><br><span class="line">&#x2F;**</span><br><span class="line"> 复合视图，手写代码</span><br><span class="line"> *&#x2F;</span><br><span class="line">@interface HPMailCompositeHandCell : UITableViewCell</span><br><span class="line"></span><br><span class="line">@property (nonatomic, strong) HPMailModel *model;</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;  HPMailCompositeHandCell.m</span><br><span class="line">#import &quot;HPMailCompositeHandCell.h&quot;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; Model</span><br><span class="line">#import &quot;HPMailModel.h&quot;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; Utils</span><br><span class="line">#import &lt;Masonry.h&gt;</span><br><span class="line"></span><br><span class="line">const CGFloat HPMailCompositeHandCellHeight &#x3D; 64;</span><br><span class="line"></span><br><span class="line">@interface HPMailCompositeHandCell ()</span><br><span class="line"></span><br><span class="line">@property (nonatomic, strong) UILabel *emailLabel;</span><br><span class="line">@property (nonatomic, strong) UILabel *subjectLabel;</span><br><span class="line">@property (nonatomic, strong) UILabel *snippetLabel;</span><br><span class="line">@property (nonatomic, strong) UILabel *dateLabel;</span><br><span class="line">@property (nonatomic, strong) UIButton *sectionButton;</span><br><span class="line">@property (nonatomic, strong) UIImageView *statusImageView;</span><br><span class="line">@property (nonatomic, strong) UIImageView *attachmentImageView;</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">@implementation HPMailCompositeHandCell</span><br><span class="line"></span><br><span class="line">#pragma mark - Lifecycle</span><br><span class="line"></span><br><span class="line">- (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier &#123;</span><br><span class="line">    self &#x3D; [super initWithStyle:style reuseIdentifier:reuseIdentifier];</span><br><span class="line">    if (self) &#123;</span><br><span class="line">        [self addSubviews];</span><br><span class="line">    &#125;</span><br><span class="line">    return self;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">#pragma mark - Custom Accessors</span><br><span class="line"></span><br><span class="line">-(void)setModel:(HPMailModel *)model &#123;</span><br><span class="line">    _model &#x3D; model;</span><br><span class="line">    [self render];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (UILabel *)emailLabel &#123;</span><br><span class="line">    if (!_emailLabel) &#123;</span><br><span class="line">        _emailLabel &#x3D; [[UILabel alloc] init];</span><br><span class="line">        _emailLabel.font &#x3D; [UIFont boldSystemFontOfSize:13.0f];</span><br><span class="line">    &#125;</span><br><span class="line">    return _emailLabel;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (UILabel *)subjectLabel &#123;</span><br><span class="line">    if (!_subjectLabel) &#123;</span><br><span class="line">        _subjectLabel &#x3D; [[UILabel alloc] init];</span><br><span class="line">        _subjectLabel.font &#x3D; [UIFont systemFontOfSize:13.0f];</span><br><span class="line">    &#125;</span><br><span class="line">    return _subjectLabel;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (UILabel *)snippetLabel &#123;</span><br><span class="line">    if (!_snippetLabel) &#123;</span><br><span class="line">        _snippetLabel &#x3D; [[UILabel alloc] init];</span><br><span class="line">        _snippetLabel.font &#x3D; [UIFont systemFontOfSize:13.0f];</span><br><span class="line">    &#125;</span><br><span class="line">    return _snippetLabel;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (UILabel *)dateLabel &#123;</span><br><span class="line">    if (!_dateLabel) &#123;</span><br><span class="line">        _dateLabel &#x3D; [[UILabel alloc] init];</span><br><span class="line">        _dateLabel.font &#x3D; [UIFont systemFontOfSize:13.0f];</span><br><span class="line">    &#125;</span><br><span class="line">    return _dateLabel;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (UIImageView *)statusImageView &#123;</span><br><span class="line">    if (!_statusImageView) &#123;</span><br><span class="line">        _statusImageView &#x3D; [[UIImageView alloc] init];</span><br><span class="line">    &#125;</span><br><span class="line">    return _statusImageView;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (UIImageView *)attachmentImageView &#123;</span><br><span class="line">    if (!_attachmentImageView) &#123;</span><br><span class="line">        _attachmentImageView &#x3D; [[UIImageView alloc] init];</span><br><span class="line">    &#125;</span><br><span class="line">    return _attachmentImageView;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (UIButton *)sectionButton &#123;</span><br><span class="line">    if (!_sectionButton) &#123;</span><br><span class="line">        _sectionButton &#x3D; [UIButton buttonWithType:UIButtonTypeCustom];</span><br><span class="line">        [_sectionButton addTarget:self action:@selector(sectionButtonDidClicked:) forControlEvents:UIControlEventTouchUpInside];</span><br><span class="line">    &#125;</span><br><span class="line">    return _sectionButton;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">#pragma mark - IBActions</span><br><span class="line"></span><br><span class="line">- (void)sectionButtonDidClicked:(id)sender &#123;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">#pragma mark - Private</span><br><span class="line"></span><br><span class="line">- (void)addSubviews &#123;</span><br><span class="line">    [self.contentView addSubview:self.statusImageView];</span><br><span class="line">    [self.contentView addSubview:self.attachmentImageView];</span><br><span class="line">    [self.contentView addSubview:self.sectionButton];</span><br><span class="line">    [self.contentView addSubview:self.emailLabel];</span><br><span class="line">    [self.contentView addSubview:self.subjectLabel];</span><br><span class="line">    [self.contentView addSubview:self.snippetLabel];</span><br><span class="line">    [self.contentView addSubview:self.dateLabel];</span><br><span class="line">    </span><br><span class="line">    CGSize size &#x3D; CGSizeMake(12, 12);</span><br><span class="line">    [self.statusImageView mas_makeConstraints:^(MASConstraintMaker *make) &#123;</span><br><span class="line">        make.top.mas_equalTo(self.contentView).with.offset(4);</span><br><span class="line">        make.left.mas_equalTo(self.contentView).with.offset(8);</span><br><span class="line">        make.size.mas_equalTo(size);</span><br><span class="line">    &#125;];</span><br><span class="line">    [self.attachmentImageView mas_makeConstraints:^(MASConstraintMaker *make) &#123;</span><br><span class="line">        make.top.equalTo(self.statusImageView.mas_bottom).with.offset(4);</span><br><span class="line">        make.left.equalTo(self.statusImageView);</span><br><span class="line">        make.size.mas_equalTo(size);</span><br><span class="line">    &#125;];</span><br><span class="line">    [self.sectionButton mas_makeConstraints:^(MASConstraintMaker *make) &#123;</span><br><span class="line">        make.top.equalTo(self.attachmentImageView.mas_bottom).with.offset(4);</span><br><span class="line">        make.left.equalTo(self.statusImageView);</span><br><span class="line">        make.size.mas_equalTo(size);</span><br><span class="line">    &#125;];</span><br><span class="line">    [self.emailLabel mas_makeConstraints:^(MASConstraintMaker *make) &#123;</span><br><span class="line">        make.top.equalTo(self.statusImageView);</span><br><span class="line">        make.left.equalTo(self.statusImageView.mas_right).with.offset(8);</span><br><span class="line">        make.height.mas_equalTo(16);</span><br><span class="line">    &#125;];</span><br><span class="line">    [self.subjectLabel mas_makeConstraints:^(MASConstraintMaker *make) &#123;</span><br><span class="line">        make.top.equalTo(self.emailLabel.mas_bottom).with.offset(8);</span><br><span class="line">        make.left.equalTo(self.emailLabel);</span><br><span class="line">        make.height.mas_equalTo(16);</span><br><span class="line">    &#125;];</span><br><span class="line">    [self.dateLabel mas_makeConstraints:^(MASConstraintMaker *make) &#123;</span><br><span class="line">        make.top.equalTo(self.emailLabel);</span><br><span class="line">        make.right.equalTo(self.contentView);</span><br><span class="line">        make.size.mas_equalTo(CGSizeMake(60, 16));</span><br><span class="line">        make.left.equalTo(self.subjectLabel.mas_right).with.offset(12);</span><br><span class="line">    &#125;];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)render &#123;</span><br><span class="line">    self.emailLabel.text &#x3D; self.model.email;</span><br><span class="line">    self.subjectLabel.text &#x3D; self.model.subject;</span><br><span class="line">    self.snippetLabel.text &#x3D; self.model.snippet;</span><br><span class="line">    self.dateLabel.text&#x3D; self.model.date;</span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F; 邮箱状态</span><br><span class="line">    UIImage *statusImage &#x3D; nil;</span><br><span class="line">    switch (self.model.mailStatus) &#123;</span><br><span class="line">        case HPMailModelStatusUnread:</span><br><span class="line">            statusImage &#x3D; [UIImage imageNamed:@&quot;mail_unread&quot;];</span><br><span class="line">            break;</span><br><span class="line">        case HPMailModelStatusRead:</span><br><span class="line">            statusImage &#x3D; [UIImage imageNamed:@&quot;mail_read&quot;];</span><br><span class="line">            break;</span><br><span class="line">        case HPMailModelStatusReplied:</span><br><span class="line">            statusImage &#x3D; [UIImage imageNamed:@&quot;mail_replied&quot;];</span><br><span class="line">            break;</span><br><span class="line">    &#125;</span><br><span class="line">    self.statusImageView.image &#x3D; statusImage;</span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F; 是否有附件</span><br><span class="line">    UIImage *attachmentImage &#x3D; nil;</span><br><span class="line">    if (self.model.hasAttachment) &#123;</span><br><span class="line">        attachmentImage &#x3D; [UIImage imageNamed:@&quot;mail_attachment&quot;];</span><br><span class="line">    &#125;</span><br><span class="line">    self.attachmentImageView.image &#x3D; attachmentImage;</span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F; 选中状态</span><br><span class="line">    UIImage *selectedImage &#x3D; [UIImage imageNamed:</span><br><span class="line">        (self.model.isMailSelected ? @&quot;mail_selected&quot; : @&quot;mail_unselected&quot;)];</span><br><span class="line">    [self.sectionButton setBackgroundImage:selectedImage forState:UIControlStateNormal];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br></pre></td><td class="code"><pre><span class="line">//  HPMailCompositeHandCell.h</span><br><span class="line">#import &lt;UIKit/UIKit.h&gt;</span><br><span class="line">@class HPMailModel;</span><br><span class="line"></span><br><span class="line">UIKIT_EXTERN const CGFloat HPMailCompositeHandCellHeight;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> 复合视图，手写代码</span><br><span class="line"> */</span><br><span class="line">@interface HPMailCompositeHandCell : UITableViewCell</span><br><span class="line"></span><br><span class="line">@property (nonatomic, strong) HPMailModel *model;</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">//  HPMailCompositeHandCell.m</span><br><span class="line">#import "HPMailCompositeHandCell.h"</span><br><span class="line"></span><br><span class="line">// Model</span><br><span class="line">#import "HPMailModel.h"</span><br><span class="line"></span><br><span class="line">// Utils</span><br><span class="line">#import &lt;Masonry.h&gt;</span><br><span class="line"></span><br><span class="line">const CGFloat HPMailCompositeHandCellHeight = 64;</span><br><span class="line"></span><br><span class="line">@interface HPMailCompositeHandCell ()</span><br><span class="line"></span><br><span class="line">@property (nonatomic, strong) UILabel *emailLabel;</span><br><span class="line">@property (nonatomic, strong) UILabel *subjectLabel;</span><br><span class="line">@property (nonatomic, strong) UILabel *snippetLabel;</span><br><span class="line">@property (nonatomic, strong) UILabel *dateLabel;</span><br><span class="line">@property (nonatomic, strong) UIButton *sectionButton;</span><br><span class="line">@property (nonatomic, strong) UIImageView *statusImageView;</span><br><span class="line">@property (nonatomic, strong) UIImageView *attachmentImageView;</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">@implementation HPMailCompositeHandCell</span><br><span class="line"></span><br><span class="line">#pragma mark - Lifecycle</span><br><span class="line"></span><br><span class="line">- (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {</span><br><span class="line">    self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];</span><br><span class="line">    if (self) {</span><br><span class="line">        [self addSubviews];</span><br><span class="line">    }</span><br><span class="line">    return self;</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">#pragma mark - Custom Accessors</span><br><span class="line"></span><br><span class="line">-(void)setModel:(HPMailModel *)model {</span><br><span class="line">    _model = model;</span><br><span class="line">    [self render];</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">- (UILabel *)emailLabel {</span><br><span class="line">    if (!_emailLabel) {</span><br><span class="line">        _emailLabel = [[UILabel alloc] init];</span><br><span class="line">        _emailLabel.font = [UIFont boldSystemFontOfSize:13.0f];</span><br><span class="line">    }</span><br><span class="line">    return _emailLabel;</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">- (UILabel *)subjectLabel {</span><br><span class="line">    if (!_subjectLabel) {</span><br><span class="line">        _subjectLabel = [[UILabel alloc] init];</span><br><span class="line">        _subjectLabel.font = [UIFont systemFontOfSize:13.0f];</span><br><span class="line">    }</span><br><span class="line">    return _subjectLabel;</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">- (UILabel *)snippetLabel {</span><br><span class="line">    if (!_snippetLabel) {</span><br><span class="line">        _snippetLabel = [[UILabel alloc] init];</span><br><span class="line">        _snippetLabel.font = [UIFont systemFontOfSize:13.0f];</span><br><span class="line">    }</span><br><span class="line">    return _snippetLabel;</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">- (UILabel *)dateLabel {</span><br><span class="line">    if (!_dateLabel) {</span><br><span class="line">        _dateLabel = [[UILabel alloc] init];</span><br><span class="line">        _dateLabel.font = [UIFont systemFontOfSize:13.0f];</span><br><span class="line">    }</span><br><span class="line">    return _dateLabel;</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">- (UIImageView *)statusImageView {</span><br><span class="line">    if (!_statusImageView) {</span><br><span class="line">        _statusImageView = [[UIImageView alloc] init];</span><br><span class="line">    }</span><br><span class="line">    return _statusImageView;</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">- (UIImageView *)attachmentImageView {</span><br><span class="line">    if (!_attachmentImageView) {</span><br><span class="line">        _attachmentImageView = [[UIImageView alloc] init];</span><br><span class="line">    }</span><br><span class="line">    return _attachmentImageView;</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">- (UIButton *)sectionButton {</span><br><span class="line">    if (!_sectionButton) {</span><br><span class="line">        _sectionButton = [UIButton buttonWithType:UIButtonTypeCustom];</span><br><span class="line">        [_sectionButton addTarget:self action:@selector(sectionButtonDidClicked:) forControlEvents:UIControlEventTouchUpInside];</span><br><span class="line">    }</span><br><span class="line">    return _sectionButton;</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">#pragma mark - IBActions</span><br><span class="line"></span><br><span class="line">- (void)sectionButtonDidClicked:(id)sender {</span><br><span class="line">    </span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">#pragma mark - Private</span><br><span class="line"></span><br><span class="line">- (void)addSubviews {</span><br><span class="line">    [self.contentView addSubview:self.statusImageView];</span><br><span class="line">    [self.contentView addSubview:self.attachmentImageView];</span><br><span class="line">    [self.contentView addSubview:self.sectionButton];</span><br><span class="line">    [self.contentView addSubview:self.emailLabel];</span><br><span class="line">    [self.contentView addSubview:self.subjectLabel];</span><br><span class="line">    [self.contentView addSubview:self.snippetLabel];</span><br><span class="line">    [self.contentView addSubview:self.dateLabel];</span><br><span class="line">    </span><br><span class="line">    CGSize size = CGSizeMake(12, 12);</span><br><span class="line">    [self.statusImageView mas_makeConstraints:^(MASConstraintMaker *make) {</span><br><span class="line">        make.top.mas_equalTo(self.contentView).with.offset(4);</span><br><span class="line">        make.left.mas_equalTo(self.contentView).with.offset(8);</span><br><span class="line">        make.size.mas_equalTo(size);</span><br><span class="line">    }];</span><br><span class="line">    [self.attachmentImageView mas_makeConstraints:^(MASConstraintMaker *make) {</span><br><span class="line">        make.top.equalTo(self.statusImageView.mas_bottom).with.offset(4);</span><br><span class="line">        make.left.equalTo(self.statusImageView);</span><br><span class="line">        make.size.mas_equalTo(size);</span><br><span class="line">    }];</span><br><span class="line">    [self.sectionButton mas_makeConstraints:^(MASConstraintMaker *make) {</span><br><span class="line">        make.top.equalTo(self.attachmentImageView.mas_bottom).with.offset(4);</span><br><span class="line">        make.left.equalTo(self.statusImageView);</span><br><span class="line">        make.size.mas_equalTo(size);</span><br><span class="line">    }];</span><br><span class="line">    [self.emailLabel mas_makeConstraints:^(MASConstraintMaker *make) {</span><br><span class="line">        make.top.equalTo(self.statusImageView);</span><br><span class="line">        make.left.equalTo(self.statusImageView.mas_right).with.offset(8);</span><br><span class="line">        make.height.mas_equalTo(16);</span><br><span class="line">    }];</span><br><span class="line">    [self.subjectLabel mas_makeConstraints:^(MASConstraintMaker *make) {</span><br><span class="line">        make.top.equalTo(self.emailLabel.mas_bottom).with.offset(8);</span><br><span class="line">        make.left.equalTo(self.emailLabel);</span><br><span class="line">        make.height.mas_equalTo(16);</span><br><span class="line">    }];</span><br><span class="line">    [self.dateLabel mas_makeConstraints:^(MASConstraintMaker *make) {</span><br><span class="line">        make.top.equalTo(self.emailLabel);</span><br><span class="line">        make.right.equalTo(self.contentView);</span><br><span class="line">        make.size.mas_equalTo(CGSizeMake(60, 16));</span><br><span class="line">        make.left.equalTo(self.subjectLabel.mas_right).with.offset(12);</span><br><span class="line">    }];</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">- (void)render {</span><br><span class="line">    self.emailLabel.text = self.model.email;</span><br><span class="line">    self.subjectLabel.text = self.model.subject;</span><br><span class="line">    self.snippetLabel.text = self.model.snippet;</span><br><span class="line">    self.dateLabel.text= self.model.date;</span><br><span class="line">    </span><br><span class="line">    // 邮箱状态</span><br><span class="line">    UIImage *statusImage = nil;</span><br><span class="line">    switch (self.model.mailStatus) {</span><br><span class="line">        case HPMailModelStatusUnread:</span><br><span class="line">            statusImage = [UIImage imageNamed:@"mail_unread"];</span><br><span class="line">            break;</span><br><span class="line">        case HPMailModelStatusRead:</span><br><span class="line">            statusImage = [UIImage imageNamed:@"mail_read"];</span><br><span class="line">            break;</span><br><span class="line">        case HPMailModelStatusReplied:</span><br><span class="line">            statusImage = [UIImage imageNamed:@"mail_replied"];</span><br><span class="line">            break;</span><br><span class="line">    }</span><br><span class="line">    self.statusImageView.image = statusImage;</span><br><span class="line">    </span><br><span class="line">    // 是否有附件</span><br><span class="line">    UIImage *attachmentImage = nil;</span><br><span class="line">    if (self.model.hasAttachment) {</span><br><span class="line">        attachmentImage = [UIImage imageNamed:@"mail_attachment"];</span><br><span class="line">    }</span><br><span class="line">    self.attachmentImageView.image = attachmentImage;</span><br><span class="line">    </span><br><span class="line">    // 选中状态</span><br><span class="line">    UIImage *selectedImage = [UIImage imageNamed:</span><br><span class="line">        (self.model.isMailSelected ? @"mail_selected" : @"mail_unselected")];</span><br><span class="line">    [self.sectionButton setBackgroundImage:selectedImage forState:UIControlStateNormal];</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
 
 
 
@@ -432,13 +482,13 @@
 <li>使用 <code>@property</code> 属性支持细节。</li>
 <li>覆盖 <code>drawRect:</code> 方法自定义渲染元素；</li>
 </ul>
-<h3 id="HPMailDirectDrawCell——视图类"><a href="#HPMailDirectDrawCell——视图类" class="headerlink" title="HPMailDirectDrawCell——视图类"></a>HPMailDirectDrawCell——视图类</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;  HPMailDirectDrawCell.h</span><br><span class="line">#import &lt;UIKit&#x2F;UIKit.h&gt;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 邮件状态</span><br><span class="line">typedef NS_ENUM(NSUInteger, HPMailDirectDrawCellStatus) &#123;</span><br><span class="line">    HPMailDirectDrawCellStatusUnread,</span><br><span class="line">    HPMailDirectDrawCellStatusRead,</span><br><span class="line">    HPMailDirectDrawCellStatusReplied,</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">&#x2F;**</span><br><span class="line"> 直接绘制视图</span><br><span class="line"> *&#x2F;</span><br><span class="line">@interface HPMailDirectDrawCell : UITableViewCell</span><br><span class="line"></span><br><span class="line">@property (nonatomic, copy) NSString *email;   &#x2F;&#x2F; 邮箱</span><br><span class="line">@property (nonatomic, copy) NSString *subject; &#x2F;&#x2F; 主题</span><br><span class="line">@property (nonatomic, copy) NSString *date;    &#x2F;&#x2F; 日期</span><br><span class="line">@property (nonatomic, copy) NSString *snippet; &#x2F;&#x2F; 摘要</span><br><span class="line">@property (nonatomic, assign) HPMailDirectDrawCellStatus mailStatus; &#x2F;&#x2F; 邮件状态</span><br><span class="line">@property (nonatomic, assign) BOOL hasAttachment;  &#x2F;&#x2F; 是否有附件</span><br><span class="line">@property (nonatomic, assign) BOOL isMailSelected; &#x2F;&#x2F; 是否已发送</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;  HPMailDirectDrawCell.m</span><br><span class="line">#import &quot;HPMailDirectDrawCell.h&quot;</span><br><span class="line"></span><br><span class="line">@implementation HPMailDirectDrawCell</span><br><span class="line"></span><br><span class="line">#pragma mark - Lifecycle</span><br><span class="line">&#x2F;&#x2F; 省略初始化方法...</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 覆盖 drawRect 方法</span><br><span class="line">- (void)drawRect:(CGRect)rect &#123;</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; 1.邮箱状态</span><br><span class="line">    UIImage *statusImage &#x3D; nil;</span><br><span class="line">    switch (self.mailStatus) &#123;</span><br><span class="line">        case HPMailDirectDrawCellStatusUnread:</span><br><span class="line">            statusImage &#x3D; [UIImage imageNamed:@&quot;mail_unread&quot;];</span><br><span class="line">            break;</span><br><span class="line">        case HPMailDirectDrawCellStatusRead:</span><br><span class="line">            statusImage &#x3D; [UIImage imageNamed:@&quot;mail_read&quot;];</span><br><span class="line">            break;</span><br><span class="line">        case HPMailDirectDrawCellStatusReplied:</span><br><span class="line">            statusImage &#x3D; [UIImage imageNamed:@&quot;mail_replied&quot;];</span><br><span class="line">            break;</span><br><span class="line">    &#125;</span><br><span class="line">    CGRect statusRect &#x3D; CGRectMake(8, 4, 12, 12);</span><br><span class="line">    [statusImage drawInRect:statusRect];</span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F; 2.附件</span><br><span class="line">    UIImage *attachmentImage &#x3D; nil;</span><br><span class="line">    if (self.hasAttachment) &#123;</span><br><span class="line">        attachmentImage &#x3D; [UIImage imageNamed:@&quot;mail_attachment&quot;];</span><br><span class="line">    &#125;</span><br><span class="line">    CGRect attachmentRect &#x3D; CGRectMake(8, 20, 12, 12);</span><br><span class="line">    [attachmentImage drawInRect:attachmentRect];</span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F; 3.邮件选中状态</span><br><span class="line">    UIImage *selectedImage &#x3D; [UIImage imageNamed:</span><br><span class="line">        (self.isMailSelected ? @&quot;mail_selected&quot; : @&quot;mail_unselected&quot;)];</span><br><span class="line">    CGRect selectedRect &#x3D; CGRectMake(8, 36, 12, 12);</span><br><span class="line">    [selectedImage drawInRect:selectedRect];</span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F; 或者使用 Core Graphics绘制矢量图像</span><br><span class="line">    </span><br><span class="line">    CGFloat fontSize &#x3D; 13;</span><br><span class="line">    CGFloat width &#x3D; rect.size.width;</span><br><span class="line">    CGFloat remainderWidth &#x3D; width - 28;</span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F; 4.邮箱</span><br><span class="line">    CGFloat emailWidth &#x3D; remainderWidth - 72;</span><br><span class="line">    UIFont *emailFont &#x3D; [UIFont boldSystemFontOfSize:fontSize];</span><br><span class="line">    NSDictionary *attrs &#x3D; @&#123;NSFontAttributeName : emailFont&#125;;</span><br><span class="line">    [self.email drawInRect:CGRectMake(28, 4, emailWidth, 16) withAttributes:attrs];</span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F; 5.主题、6.摘要</span><br><span class="line">    UIFont *stdFont &#x3D; [UIFont systemFontOfSize:fontSize];</span><br><span class="line">    NSDictionary *attrs2 &#x3D; @&#123;NSFontAttributeName : stdFont&#125;;</span><br><span class="line">    [self.subject drawInRect:CGRectMake(28, 24, remainderWidth, 16) withAttributes:attrs2];</span><br><span class="line">    [self.snippet drawInRect:CGRectMake(28, 44, remainderWidth, 16) withAttributes:attrs2];</span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F; 7.日期</span><br><span class="line">    UIFont *verdana &#x3D; [UIFont fontWithName:@&quot;Verdana&quot; size:10];</span><br><span class="line">    NSDictionary *attrs3 &#x3D; @&#123;NSFontAttributeName : verdana&#125;;</span><br><span class="line">    [self.date drawInRect:CGRectMake(width - 60, 4, 60, 16) withAttributes:attrs3];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="HPMailDirectDrawCell——视图类"><a href="#HPMailDirectDrawCell——视图类" class="headerlink" title="HPMailDirectDrawCell——视图类"></a>HPMailDirectDrawCell—— 视图类</h3><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br></pre></td><td class="code"><pre><span class="line">//  HPMailDirectDrawCell.h</span><br><span class="line">#import &lt;UIKit/UIKit.h&gt;</span><br><span class="line"></span><br><span class="line">// 邮件状态</span><br><span class="line">typedef NS_ENUM(NSUInteger, HPMailDirectDrawCellStatus) {</span><br><span class="line">    HPMailDirectDrawCellStatusUnread,</span><br><span class="line">    HPMailDirectDrawCellStatusRead,</span><br><span class="line">    HPMailDirectDrawCellStatusReplied,</span><br><span class="line">};</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> 直接绘制视图</span><br><span class="line"> */</span><br><span class="line">@interface HPMailDirectDrawCell : UITableViewCell</span><br><span class="line"></span><br><span class="line">@property (nonatomic, copy) NSString *email;   // 邮箱</span><br><span class="line">@property (nonatomic, copy) NSString *subject; // 主题</span><br><span class="line">@property (nonatomic, copy) NSString *date;    // 日期</span><br><span class="line">@property (nonatomic, copy) NSString *snippet; // 摘要</span><br><span class="line">@property (nonatomic, assign) HPMailDirectDrawCellStatus mailStatus; // 邮件状态</span><br><span class="line">@property (nonatomic, assign) BOOL hasAttachment;  // 是否有附件</span><br><span class="line">@property (nonatomic, assign) BOOL isMailSelected; // 是否已发送</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">//  HPMailDirectDrawCell.m</span><br><span class="line">#import "HPMailDirectDrawCell.h"</span><br><span class="line"></span><br><span class="line">@implementation HPMailDirectDrawCell</span><br><span class="line"></span><br><span class="line">#pragma mark - Lifecycle</span><br><span class="line">// 省略初始化方法...</span><br><span class="line"></span><br><span class="line">// 覆盖 drawRect 方法</span><br><span class="line">- (void)drawRect:(CGRect)rect {</span><br><span class="line"></span><br><span class="line">    // 1.邮箱状态</span><br><span class="line">    UIImage *statusImage = nil;</span><br><span class="line">    switch (self.mailStatus) {</span><br><span class="line">        case HPMailDirectDrawCellStatusUnread:</span><br><span class="line">            statusImage = [UIImage imageNamed:@"mail_unread"];</span><br><span class="line">            break;</span><br><span class="line">        case HPMailDirectDrawCellStatusRead:</span><br><span class="line">            statusImage = [UIImage imageNamed:@"mail_read"];</span><br><span class="line">            break;</span><br><span class="line">        case HPMailDirectDrawCellStatusReplied:</span><br><span class="line">            statusImage = [UIImage imageNamed:@"mail_replied"];</span><br><span class="line">            break;</span><br><span class="line">    }</span><br><span class="line">    CGRect statusRect = CGRectMake(8, 4, 12, 12);</span><br><span class="line">    [statusImage drawInRect:statusRect];</span><br><span class="line">    </span><br><span class="line">    // 2.附件</span><br><span class="line">    UIImage *attachmentImage = nil;</span><br><span class="line">    if (self.hasAttachment) {</span><br><span class="line">        attachmentImage = [UIImage imageNamed:@"mail_attachment"];</span><br><span class="line">    }</span><br><span class="line">    CGRect attachmentRect = CGRectMake(8, 20, 12, 12);</span><br><span class="line">    [attachmentImage drawInRect:attachmentRect];</span><br><span class="line">    </span><br><span class="line">    // 3.邮件选中状态</span><br><span class="line">    UIImage *selectedImage = [UIImage imageNamed:</span><br><span class="line">        (self.isMailSelected ? @"mail_selected" : @"mail_unselected")];</span><br><span class="line">    CGRect selectedRect = CGRectMake(8, 36, 12, 12);</span><br><span class="line">    [selectedImage drawInRect:selectedRect];</span><br><span class="line">    </span><br><span class="line">    // 或者使用 Core Graphics绘制矢量图像</span><br><span class="line">    </span><br><span class="line">    CGFloat fontSize = 13;</span><br><span class="line">    CGFloat width = rect.size.width;</span><br><span class="line">    CGFloat remainderWidth = width - 28;</span><br><span class="line">    </span><br><span class="line">    // 4.邮箱</span><br><span class="line">    CGFloat emailWidth = remainderWidth - 72;</span><br><span class="line">    UIFont *emailFont = [UIFont boldSystemFontOfSize:fontSize];</span><br><span class="line">    NSDictionary *attrs = @{NSFontAttributeName : emailFont};</span><br><span class="line">    [self.email drawInRect:CGRectMake(28, 4, emailWidth, 16) withAttributes:attrs];</span><br><span class="line">    </span><br><span class="line">    // 5.主题、6.摘要</span><br><span class="line">    UIFont *stdFont = [UIFont systemFontOfSize:fontSize];</span><br><span class="line">    NSDictionary *attrs2 = @{NSFontAttributeName : stdFont};</span><br><span class="line">    [self.subject drawInRect:CGRectMake(28, 24, remainderWidth, 16) withAttributes:attrs2];</span><br><span class="line">    [self.snippet drawInRect:CGRectMake(28, 44, remainderWidth, 16) withAttributes:attrs2];</span><br><span class="line">    </span><br><span class="line">    // 7.日期</span><br><span class="line">    UIFont *verdana = [UIFont fontWithName:@"Verdana" size:10];</span><br><span class="line">    NSDictionary *attrs3 = @{NSFontAttributeName : verdana};</span><br><span class="line">    [self.date drawInRect:CGRectMake(width - 60, 4, 60, 16) withAttributes:attrs3];</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
 
 
-<h4 id="绘制图像的其它方法"><a href="#绘制图像的其它方法" class="headerlink" title="绘制图像的其它方法"></a>绘制图像的其它方法</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; YYKit 中的方法，封装了可以绘制圆角的功能，最终还是调用了 drawInRect: 方法绘制图片。</span><br><span class="line">- (void)drawInRect:(CGRect)rect withContentMode:(UIViewContentMode)contentMode clipsToBounds:(BOOL)clips&#123;</span><br><span class="line">    CGRect drawRect &#x3D; YYCGRectFitWithContentMode(rect, self.size, contentMode);</span><br><span class="line">    if (drawRect.size.width &#x3D;&#x3D; 0 || drawRect.size.height &#x3D;&#x3D; 0) return;</span><br><span class="line">    if (clips) &#123;</span><br><span class="line">        CGContextRef context &#x3D; UIGraphicsGetCurrentContext();</span><br><span class="line">        if (context) &#123;</span><br><span class="line">            CGContextSaveGState(context);</span><br><span class="line">            CGContextAddRect(context, rect);</span><br><span class="line">            CGContextClip(context);</span><br><span class="line">            [self drawInRect:drawRect];</span><br><span class="line">            CGContextRestoreGState(context);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        [self drawInRect:drawRect];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="绘制图像的其它方法"><a href="#绘制图像的其它方法" class="headerlink" title="绘制图像的其它方法"></a>绘制图像的其它方法</h4><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">// YYKit 中的方法，封装了可以绘制圆角的功能，最终还是调用了 drawInRect: 方法绘制图片。</span><br><span class="line">- (void)drawInRect:(CGRect)rect withContentMode:(UIViewContentMode)contentMode clipsToBounds:(BOOL)clips{</span><br><span class="line">    CGRect drawRect = YYCGRectFitWithContentMode(rect, self.size, contentMode);</span><br><span class="line">    if (drawRect.size.width == 0 || drawRect.size.height == 0) return;</span><br><span class="line">    if (clips) {</span><br><span class="line">        CGContextRef context = UIGraphicsGetCurrentContext();</span><br><span class="line">        if (context) {</span><br><span class="line">            CGContextSaveGState(context);</span><br><span class="line">            CGContextAddRect(context, rect);</span><br><span class="line">            CGContextClip(context);</span><br><span class="line">            [self drawInRect:drawRect];</span><br><span class="line">            CGContextRestoreGState(context);</span><br><span class="line">        }</span><br><span class="line">    } else {</span><br><span class="line">        [self drawInRect:drawRect];</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
 
 <p>使用 Core Graphics 绘制矢量图像:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 获取上下文</span><br><span class="line">CGContextRef context &#x3D;UIGraphicsGetCurrentContext();</span><br><span class="line">&#x2F;&#x2F; 绘制的图片</span><br><span class="line">UIImage *image &#x3D; [UIImage imageNamed:@&quot;image.png&quot;];</span><br><span class="line">&#x2F;&#x2F; 使用Quarzt2D绘制的图片是倒置的，使用下方法设置坐标原点和显示比例来改变坐标系</span><br><span class="line">CGContextTranslateCTM(context,0.0f,self.frame.size.height);</span><br><span class="line">CGContextScaleCTM(context,1.0,-1.0);</span><br><span class="line">&#x2F;&#x2F; 在上下文绘制图片</span><br><span class="line">CGContextDrawImage(context,CGRectMake(220,130, image.size.width, image.size.height), image.CGImage);</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">// 获取上下文</span><br><span class="line">CGContextRef context =UIGraphicsGetCurrentContext();</span><br><span class="line">// 绘制的图片</span><br><span class="line">UIImage *image = [UIImage imageNamed:@"image.png"];</span><br><span class="line">// 使用Quarzt2D绘制的图片是倒置的，使用下方法设置坐标原点和显示比例来改变坐标系</span><br><span class="line">CGContextTranslateCTM(context,0.0f,self.frame.size.height);</span><br><span class="line">CGContextScaleCTM(context,1.0,-1.0);</span><br><span class="line">// 在上下文绘制图片</span><br><span class="line">CGContextDrawImage(context,CGRectMake(220,130, image.size.width, image.size.height), image.CGImage);</span><br></pre></td></tr></tbody></table></figure>
 
 
 
@@ -448,10 +498,10 @@
 </blockquote>
 <p>注：以下数据通过运行 iOS 11.1.2 (15B202) 系统的 iPhone 7 测试获得。</p>
 <p>测试耗时方法参考：<span class="exturl" data-url="aHR0cHM6Ly9naXN0LmdpdGh1Yi5jb20vYmlnbmVyZHJhbmNoLzIwMDY1ODc=">https://gist.github.com/bignerdranch/2006587<i class="fa fa-external-link-alt"></i></span></p>
-<h3 id="复合视图（NIB方式）"><a href="#复合视图（NIB方式）" class="headerlink" title="复合视图（NIB方式）"></a>复合视图（NIB方式）</h3><p>使用NIB方式创建 <strong>UITableViewCell</strong>。</p>
-<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072554.jpg" alt="image"></p>
+<h3 id="复合视图（NIB方式）"><a href="#复合视图（NIB方式）" class="headerlink" title="复合视图（NIB方式）"></a>复合视图（NIB 方式）</h3><p>使用 NIB 方式创建 <strong>UITableViewCell</strong>。</p>
+<p><img data-src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072554.jpg" alt="image"></p>
 <p>控制台输出：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">2017-12-06 14:36:09.874935+0800 HighPerformanceUI[16261:3579882] [cell 0]:Time&#x3D;10111458 ns</span><br><span class="line">2017-12-06 14:36:09.890794+0800 HighPerformanceUI[16261:3579882] [cell 1]:Time&#x3D;8530750 ns</span><br><span class="line">2017-12-06 14:36:09.903253+0800 HighPerformanceUI[16261:3579882] [cell 2]:Time&#x3D;6119000 ns</span><br><span class="line">2017-12-06 14:36:09.914309+0800 HighPerformanceUI[16261:3579882] [cell 3]:Time&#x3D;6263000 ns</span><br><span class="line">2017-12-06 14:36:09.924998+0800 HighPerformanceUI[16261:3579882] [cell 4]:Time&#x3D;5909041 ns</span><br><span class="line">2017-12-06 14:36:09.935583+0800 HighPerformanceUI[16261:3579882] [cell 5]:Time&#x3D;5874208 ns</span><br><span class="line">2017-12-06 14:36:09.946026+0800 HighPerformanceUI[16261:3579882] [cell 6]:Time&#x3D;5770791 ns</span><br><span class="line">2017-12-06 14:36:09.954495+0800 HighPerformanceUI[16261:3579882] [cell 7]:Time&#x3D;4502458 ns</span><br><span class="line">2017-12-06 14:36:09.962873+0800 HighPerformanceUI[16261:3579882] [cell 8]:Time&#x3D;4586708 ns</span><br><span class="line">2017-12-06 14:36:09.971758+0800 HighPerformanceUI[16261:3579882] [cell 9]:Time&#x3D;4689791 ns</span><br><span class="line">2017-12-06 14:36:09.981224+0800 HighPerformanceUI[16261:3579882] [cell 10]:Time&#x3D;4822166 ns</span><br><span class="line">2017-12-06 14:36:09.989914+0800 HighPerformanceUI[16261:3579882] [cell 11]:Time&#x3D;5009750 ns</span><br><span class="line">2017-12-06 14:36:09.997674+0800 HighPerformanceUI[16261:3579882] [cell 12]:Time&#x3D;4151583 ns</span><br><span class="line">2017-12-06 14:36:10.004306+0800 HighPerformanceUI[16261:3579882] [cell 13]:Time&#x3D;3466333 ns</span><br><span class="line">2017-12-06 14:36:10.521526+0800 HighPerformanceUI[16261:3579882] -[HPMailCompositeTableViewController viewDidAppear:]</span><br><span class="line">2017-12-06 14:36:11.392751+0800 HighPerformanceUI[16261:3579882] [cell 10]:Time&#x3D;808458 ns</span><br><span class="line">2017-12-06 14:36:11.541379+0800 HighPerformanceUI[16261:3579882] [cell 11]:Time&#x3D;517666 ns</span><br><span class="line">2017-12-06 14:36:11.707820+0800 HighPerformanceUI[16261:3579882] [cell 12]:Time&#x3D;514291 ns</span><br><span class="line">2017-12-06 14:36:12.246696+0800 HighPerformanceUI[16261:3579882] [cell 13]:Time&#x3D;1041750 ns</span><br><span class="line">2017-12-06 14:36:12.293053+0800 HighPerformanceUI[16261:3579882] [cell 14]:Time&#x3D;1011333 ns</span><br><span class="line">2017-12-06 14:36:12.391600+0800 HighPerformanceUI[16261:3579882] [cell 15]:Time&#x3D;627208 ns</span><br><span class="line">2017-12-06 14:36:12.557976+0800 HighPerformanceUI[16261:3579882] [cell 16]:Time&#x3D;656208 ns</span><br><span class="line">2017-12-06 14:36:13.093015+0800 HighPerformanceUI[16261:3579882] [cell 17]:Time&#x3D;1229708 ns</span><br><span class="line">2017-12-06 14:36:13.142731+0800 HighPerformanceUI[16261:3579882] [cell 18]:Time&#x3D;1018208 ns</span><br><span class="line">2017-12-06 14:36:13.209316+0800 HighPerformanceUI[16261:3579882] [cell 19]:Time&#x3D;1027208 ns</span><br><span class="line">2017-12-06 14:36:13.693038+0800 HighPerformanceUI[16261:3579882] [cell 20]:Time&#x3D;819666 ns</span><br><span class="line">2017-12-06 14:36:13.726195+0800 HighPerformanceUI[16261:3579882] [cell 21]:Time&#x3D;1128666 ns</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">2017-12-06 14:36:09.874935+0800 HighPerformanceUI[16261:3579882] [cell 0]:Time=10111458 ns</span><br><span class="line">2017-12-06 14:36:09.890794+0800 HighPerformanceUI[16261:3579882] [cell 1]:Time=8530750 ns</span><br><span class="line">2017-12-06 14:36:09.903253+0800 HighPerformanceUI[16261:3579882] [cell 2]:Time=6119000 ns</span><br><span class="line">2017-12-06 14:36:09.914309+0800 HighPerformanceUI[16261:3579882] [cell 3]:Time=6263000 ns</span><br><span class="line">2017-12-06 14:36:09.924998+0800 HighPerformanceUI[16261:3579882] [cell 4]:Time=5909041 ns</span><br><span class="line">2017-12-06 14:36:09.935583+0800 HighPerformanceUI[16261:3579882] [cell 5]:Time=5874208 ns</span><br><span class="line">2017-12-06 14:36:09.946026+0800 HighPerformanceUI[16261:3579882] [cell 6]:Time=5770791 ns</span><br><span class="line">2017-12-06 14:36:09.954495+0800 HighPerformanceUI[16261:3579882] [cell 7]:Time=4502458 ns</span><br><span class="line">2017-12-06 14:36:09.962873+0800 HighPerformanceUI[16261:3579882] [cell 8]:Time=4586708 ns</span><br><span class="line">2017-12-06 14:36:09.971758+0800 HighPerformanceUI[16261:3579882] [cell 9]:Time=4689791 ns</span><br><span class="line">2017-12-06 14:36:09.981224+0800 HighPerformanceUI[16261:3579882] [cell 10]:Time=4822166 ns</span><br><span class="line">2017-12-06 14:36:09.989914+0800 HighPerformanceUI[16261:3579882] [cell 11]:Time=5009750 ns</span><br><span class="line">2017-12-06 14:36:09.997674+0800 HighPerformanceUI[16261:3579882] [cell 12]:Time=4151583 ns</span><br><span class="line">2017-12-06 14:36:10.004306+0800 HighPerformanceUI[16261:3579882] [cell 13]:Time=3466333 ns</span><br><span class="line">2017-12-06 14:36:10.521526+0800 HighPerformanceUI[16261:3579882] -[HPMailCompositeTableViewController viewDidAppear:]</span><br><span class="line">2017-12-06 14:36:11.392751+0800 HighPerformanceUI[16261:3579882] [cell 10]:Time=808458 ns</span><br><span class="line">2017-12-06 14:36:11.541379+0800 HighPerformanceUI[16261:3579882] [cell 11]:Time=517666 ns</span><br><span class="line">2017-12-06 14:36:11.707820+0800 HighPerformanceUI[16261:3579882] [cell 12]:Time=514291 ns</span><br><span class="line">2017-12-06 14:36:12.246696+0800 HighPerformanceUI[16261:3579882] [cell 13]:Time=1041750 ns</span><br><span class="line">2017-12-06 14:36:12.293053+0800 HighPerformanceUI[16261:3579882] [cell 14]:Time=1011333 ns</span><br><span class="line">2017-12-06 14:36:12.391600+0800 HighPerformanceUI[16261:3579882] [cell 15]:Time=627208 ns</span><br><span class="line">2017-12-06 14:36:12.557976+0800 HighPerformanceUI[16261:3579882] [cell 16]:Time=656208 ns</span><br><span class="line">2017-12-06 14:36:13.093015+0800 HighPerformanceUI[16261:3579882] [cell 17]:Time=1229708 ns</span><br><span class="line">2017-12-06 14:36:13.142731+0800 HighPerformanceUI[16261:3579882] [cell 18]:Time=1018208 ns</span><br><span class="line">2017-12-06 14:36:13.209316+0800 HighPerformanceUI[16261:3579882] [cell 19]:Time=1027208 ns</span><br><span class="line">2017-12-06 14:36:13.693038+0800 HighPerformanceUI[16261:3579882] [cell 20]:Time=819666 ns</span><br><span class="line">2017-12-06 14:36:13.726195+0800 HighPerformanceUI[16261:3579882] [cell 21]:Time=1128666 ns</span><br></pre></td></tr></tbody></table></figure>
 
 
 
@@ -465,39 +515,39 @@
 </thead>
 <tbody><tr>
 <td>首次初始化</td>
-<td>10.1、11.72、10.23、9.9</td>
+<td> 10.1、11.72、10.23、9.9</td>
 <td>⚠️高</td>
 </tr>
 <tr>
 <td>后续初始化</td>
-<td>3.1～7.6、3.3～8.5、3.3～8.5、3.1～8.4</td>
-<td>中</td>
+<td> 3.1～7.6、3.3～8.5、3.3～8.5、3.1～8.4</td>
+<td> 中</td>
 </tr>
 <tr>
 <td>滚动后的首次初始化</td>
-<td>0.75、0.74、0.58、0.42</td>
-<td>低</td>
+<td> 0.75、0.74、0.58、0.42</td>
+<td> 低</td>
 </tr>
 <tr>
 <td>滚动后的第二次初始化</td>
-<td>0.49、0.5、0.49、0.49</td>
-<td>低</td>
+<td> 0.49、0.5、0.49、0.49</td>
+<td> 低</td>
 </tr>
 <tr>
 <td>重用</td>
-<td>0.48～0.64、0.52～0.99、0.41～1.1、0.62～2.3</td>
-<td>低</td>
+<td> 0.48～0.64、0.52～0.99、0.41～1.1、0.62～2.3</td>
+<td> 低</td>
 </tr>
 <tr>
 <td>内存</td>
-<td>2M左右</td>
+<td> 2M 左右</td>
 <td>中</td>
 </tr>
 </tbody></table>
 <h4 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h4><ul>
 <li>首次初始化和后续初始化相对耗时。</li>
 <li>滚动后的初始化及重用耗时较低。</li>
-<li>因为是使用的 NIB 方式创建视图，而加载 XML 格式的NIB资源会消耗些许资源，因此会有一定的内存占用。</li>
+<li>因为是使用的 NIB 方式创建视图，而加载 XML 格式的 NIB 资源会消耗些许资源，因此会有一定的内存占用。</li>
 </ul>
 <h3 id="复合视图（手写代码）"><a href="#复合视图（手写代码）" class="headerlink" title="复合视图（手写代码）"></a>复合视图（手写代码）</h3><p>使用手写代码的方式创建 <strong>UITableViewCell</strong>。</p>
 <h4 id="测试数据：-1"><a href="#测试数据：-1" class="headerlink" title="测试数据："></a>测试数据：</h4><table>
@@ -510,38 +560,38 @@
 </thead>
 <tbody><tr>
 <td>首次初始化</td>
-<td>5.5、7.8、7.5</td>
-<td>高</td>
+<td> 5.5、7.8、7.5</td>
+<td> 高</td>
 </tr>
 <tr>
 <td>后续初始化</td>
-<td>3.3～5.1、3.4～7.4、3.4～7.4</td>
-<td>中</td>
+<td> 3.3～5.1、3.4～7.4、3.4～7.4</td>
+<td> 中</td>
 </tr>
 <tr>
 <td>滚动后的首次初始化</td>
-<td>0.87、0.98、1.2</td>
-<td>低</td>
+<td> 0.87、0.98、1.2</td>
+<td> 低</td>
 </tr>
 <tr>
 <td>滚动后的第二次初始化</td>
-<td>0.73、0.96、0.95</td>
-<td>低</td>
+<td> 0.73、0.96、0.95</td>
+<td> 低</td>
 </tr>
 <tr>
 <td>重用</td>
-<td>0.8～2.7、0.98~1.4、0.9～1.4</td>
-<td>低</td>
+<td> 0.8～2.7、0.98~1.4、0.9～1.4</td>
+<td> 低</td>
 </tr>
 <tr>
 <td>内存</td>
-<td>0.6M左右</td>
+<td> 0.6M 左右</td>
 <td>低</td>
 </tr>
 </tbody></table>
 <h4 id="结论-1"><a href="#结论-1" class="headerlink" title="结论"></a>结论</h4><ul>
 <li>首次初始化和后续初始化耗时相对于 NIB 方式低 50%。</li>
-<li>滚动后的初始化及重用耗时，相对于NIB方式 高50%。</li>
+<li>滚动后的初始化及重用耗时，相对于 NIB 方式 高 50%。</li>
 <li>此方式内存占用最少。</li>
 </ul>
 <h3 id="直接绘制"><a href="#直接绘制" class="headerlink" title="直接绘制"></a>直接绘制</h3><p>通过覆盖 <code>drawRect:</code> 方法直接绘制内容的方式创建  <strong>UITableViewCell</strong>。</p>
@@ -555,46 +605,46 @@
 </thead>
 <tbody><tr>
 <td>首次初始化</td>
-<td>1.6、1.5、1.0、1.2、1.8</td>
-<td>低</td>
+<td> 1.6、1.5、1.0、1.2、1.8</td>
+<td> 低</td>
 </tr>
 <tr>
 <td>后续初始化</td>
-<td>0.9～1.2、0.87～0.93、0.87～1.0</td>
-<td>低</td>
+<td> 0.9～1.2、0.87～0.93、0.87～1.0</td>
+<td> 低</td>
 </tr>
 <tr>
 <td>滚动后的首次初始化</td>
-<td>0.39、0.38、0.37</td>
-<td>低</td>
+<td> 0.39、0.38、0.37</td>
+<td> 低</td>
 </tr>
 <tr>
 <td>滚动后的第二次初始化</td>
-<td>0.42、0.42、0.43</td>
-<td>低</td>
+<td> 0.42、0.42、0.43</td>
+<td> 低</td>
 </tr>
 <tr>
 <td>重用</td>
-<td>0.42～0.69、0.27～0.95、0.43～1.2</td>
-<td>低</td>
+<td> 0.42～0.69、0.27～0.95、0.43～1.2</td>
+<td> 低</td>
 </tr>
 <tr>
 <td>内存</td>
-<td>10M左右</td>
+<td> 10M 左右</td>
 <td>⚠️非常高</td>
 </tr>
 </tbody></table>
 <h4 id="结论-2"><a href="#结论-2" class="headerlink" title="结论"></a>结论</h4><ul>
 <li>无论是首次初始化还是后续滚动重用，耗时都是最少的，基本在 1 毫秒左右。</li>
-<li>内存占用恐怖，将近 10M。之前也看到一篇文章讲 <code>dwawRect:</code> 方法会占据大量内存的，感兴趣的可以去看看：<span class="exturl" data-url="aHR0cDovL2JpaG9uZ2JvLmNvbS8yMDE2LzAxLzAzL21lbW9yeUdob3N0ZHJhd1JlY3Qv">内存恶鬼drawRect<i class="fa fa-external-link-alt"></i></span>。</li>
+<li>内存占用恐怖，将近 10M。之前也看到一篇文章讲 <code>dwawRect:</code> 方法会占据大量内存的，感兴趣的可以去看看：<span class="exturl" data-url="aHR0cDovL2JpaG9uZ2JvLmNvbS8yMDE2LzAxLzAzL21lbW9yeUdob3N0ZHJhd1JlY3Qv">内存恶鬼 drawRect<i class="fa fa-external-link-alt"></i></span>。</li>
 </ul>
 <h3 id="总结：复合视图-VS-直接绘图"><a href="#总结：复合视图-VS-直接绘图" class="headerlink" title="总结：复合视图 VS 直接绘图"></a>总结：复合视图 VS 直接绘图</h3><h4 id="性能："><a href="#性能：" class="headerlink" title="性能："></a>性能：</h4><p><del>原文结论：从性能角度来看，在某些时候，直接绘图提供的性能比复合视图提供的要好一个数量级。</del></p>
 <p>我的结论：</p>
 <ul>
-<li>从<strong>耗时</strong>上看，直接绘图提供的性能确实比复合视图提供的要好很多：直接绘图耗时更低，且耗时稳定在 1毫秒左右，它的耗时波动性更小。而复合视图耗时不稳定，峰谷值差异较大，容易产生卡顿。</li>
+<li>从<strong>耗时</strong>上看，直接绘图提供的性能确实比复合视图提供的要好很多：直接绘图耗时更低，且耗时稳定在 1 毫秒左右，它的耗时波动性更小。而复合视图耗时不稳定，峰谷值差异较大，容易产生卡顿。</li>
 <li>但是，从<strong>内存占用</strong>上看，复合视图占用内存比直接绘图占用内存更少：<strong>手写代码 &lt; NIB 文件 &lt; 直接绘图</strong>。</li>
 </ul>
-<h4 id="维护："><a href="#维护：" class="headerlink" title="维护："></a>维护：</h4><p>原文结论：从代码可维护角度来看，直接绘图的代码会难以维护和发展。一旦应用稳定下来，你就可以比较明确地将复合UI换成直接绘图。</p>
+<h4 id="维护："><a href="#维护：" class="headerlink" title="维护："></a>维护：</h4><p>原文结论：从代码可维护角度来看，直接绘图的代码会难以维护和发展。一旦应用稳定下来，你就可以比较明确地将复合 UI 换成直接绘图。</p>
 <p>我的结论：因为原文中，没有对内存占用这一项性能指标作评估，而直接绘图的内存占用不容轻易忽视。因此，是否真的要在实际项目中将复合视图替换成直接绘图还有待商榷，而优化是以代码复杂度和开发人员生产力为代价的。</p>
 <p><a target="_blank" rel="noopener" href="http://wiki.c2.com/?PrematureOptimization"><em>Premature optimization is the root of all evil</em> — DonaldKnuth</a></p>
 <h3 id="源码"><a href="#源码" class="headerlink" title="源码"></a>源码</h3><p>GitHub：<span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL0FuZHkwNTcwL0hpZ2hQZXJmb3JtYW5jZVVJ">Andy0570/HighPerformanceUI<i class="fa fa-external-link-alt"></i></span></p>
@@ -619,7 +669,7 @@
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="https://andy0570.com/2017/12/06/%E9%AB%98%E6%80%A7%E8%83%BD%20iOS%20%E5%BA%94%E7%94%A8%E5%BC%80%E5%8F%91%E2%80%94%E2%80%94%E5%88%9B%E5%BB%BA%E5%A4%8D%E5%90%88%E8%A7%86%E5%9B%BE%E7%9A%84%E6%AD%A3%E7%A1%AE%E6%96%B9%E5%BC%8F/" title="高性能 iOS 应用开发——创建复合视图的正确方式">https://andy0570.com/2017/12/06/高性能 iOS 应用开发——创建复合视图的正确方式/</a>
+    <a href="https://andy0570.com/2017/12/06/%E9%AB%98%E6%80%A7%E8%83%BD%20iOS%20%E5%BA%94%E7%94%A8%E5%BC%80%E5%8F%91%E2%80%94%E2%80%94%E5%88%9B%E5%BB%BA%E5%A4%8D%E5%90%88%E8%A7%86%E5%9B%BE%E7%9A%84%E6%AD%A3%E7%A1%AE%E6%96%B9%E5%BC%8F/" title="高性能 iOS 应用开发 —— 创建复合视图的正确方式">https://andy0570.com/2017/12/06/高性能 iOS 应用开发——创建复合视图的正确方式/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <span class="exturl" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpo"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</span> 许可协议。转载请注明出处！
@@ -662,8 +712,8 @@
       <i class="fa fa-chevron-left"></i> NSPredicate
     </a></div>
       <div class="post-nav-item">
-    <a href="/2017/12/07/Tomcat%E5%AE%89%E8%A3%85%E5%8F%8A%E9%85%8D%E7%BD%AE/" rel="next" title="Tomcat安装及配置">
-      Tomcat安装及配置 <i class="fa fa-chevron-right"></i>
+    <a href="/2017/12/07/Tomcat%E5%AE%89%E8%A3%85%E5%8F%8A%E9%85%8D%E7%BD%AE/" rel="next" title="Tomcat 安装及配置">
+      Tomcat 安装及配置 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -677,6 +727,7 @@
 
         </div>
         
+    <div class="comments" id="valine-comments"></div>
 
 <script>
   window.addEventListener('tabs:register', () => {
@@ -745,7 +796,11 @@
   </div>
 
   
-  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.0/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/next-theme/pjax@0/pjax.min.js"></script>
+  <script src="//unpkg.com/medium-zoom@1/dist/medium-zoom.min.js"></script>
+  <script src="//unpkg.com/lozad@1/dist/lozad.min.js"></script>
+  <script src="//unpkg.com/pangu@4/dist/browser/pangu.min.js"></script>
 
 <script src="/js/utils.js"></script>
 
@@ -756,9 +811,42 @@
 
 <script src="/js/bookmark.js"></script>
 
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '.page-configurations',
+    '.main-inner',
+    '.post-toc-wrap',
+    '.languages',
+    '.pjax'
+  ],
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+document.addEventListener('pjax:success', () => {
+  pjax.executeScripts(document.querySelectorAll('script[data-pjax], .pjax script'));
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  const hasTOC = document.querySelector('.post-toc');
+  document.querySelector('.sidebar-inner').classList.toggle('sidebar-nav-active', hasTOC);
+  document.querySelector(hasTOC ? '.sidebar-nav-toc' : '.sidebar-nav-overview').click();
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
 
   
-  <script>
+  <script data-pjax>
     (function(){
       var bp = document.createElement('script');
       var curProtocol = window.location.protocol.split(':')[0];
@@ -771,6 +859,10 @@
 
 
 
+  
+<script src="//unpkg.com/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//unpkg.com/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
 
 
 
@@ -782,9 +874,27 @@
 
 
 
+
+
+
+    <div class="pjax">
   
 
   
 
+
+<script>
+NexT.utils.loadComments('#valine-comments', () => {
+  NexT.utils.getScript('//unpkg.com/valine@1/dist/Valine.min.js', () => {
+    new Valine(Object.assign({
+      el  : '#valine-comments',
+      path: location.pathname,
+    }, {"enable":true,"appId":"S7i1Y8YorMKFPaYbJbekD5el-gzGzoHsz","appKey":"brOnU8mOQvSjpipJvdKUAIbU","placeholder":"写下你的评论...","avatar":"mm","meta":["nick","mail","link"],"pageSize":10,"language":"zh-cn","visitor":false,"comment_count":true,"recordIP":true,"serverURLs":null,"enableQQ":true,"requiredFields":[]}
+    ));
+  }, window.Valine);
+});
+</script>
+
+    </div>
 </body>
 </html>

@@ -18,21 +18,23 @@
 <link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css">
   
   <link rel="stylesheet" href="/lib/animate-css/animate.min.css">
+  <link rel="stylesheet" href="//unpkg.com/pace-js@1/themes/blue/pace-theme-minimal.css">
+  <script src="//unpkg.com/pace-js@1/pace.min.js"></script>
 
 <script class="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"andy0570.com","root":"/","scheme":"Gemini","version":"8.0.0-rc.5","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":"mac","bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false};
+    var CONFIG = {"hostname":"andy0570.com","root":"/","scheme":"Gemini","version":"8.0.0-rc.5","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":"mac","bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":true,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":true,"nav":null,"activeClass":"valine"},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"algolia":{"appID":"0E2AON8EZF","apiKey":"22fbefd84c8343239f5c04365b9728de","indexName":"MyBlogPlatform","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}}};
   </script>
 
-  <meta name="description" content="GitHub 第三方框架做类似于闲鱼的TabBar，可参考的几个框架：  CYLTabBarController【低耦合集成 TabBarController】 LLRiseTabBar-iOS LLRiseTabBar-iOS AxcAE_TabBar animated-tab-bar Swift">
+  <meta name="description" content="GitHub 第三方框架做类似于闲鱼的 TabBar，可参考的几个框架：  CYLTabBarController【低耦合集成 TabBarController】 LLRiseTabBar-iOS LLRiseTabBar-iOS AxcAE_TabBar animated-tab-bar Swift">
 <meta property="og:type" content="article">
 <meta property="og:title" content="UITabBarController（一）">
 <meta property="og:url" content="https://andy0570.com/2017/03/15/UITabBarController%EF%BC%88%E4%B8%80%EF%BC%89/index.html">
 <meta property="og:site_name" content="独木舟的木">
-<meta property="og:description" content="GitHub 第三方框架做类似于闲鱼的TabBar，可参考的几个框架：  CYLTabBarController【低耦合集成 TabBarController】 LLRiseTabBar-iOS LLRiseTabBar-iOS AxcAE_TabBar animated-tab-bar Swift">
+<meta property="og:description" content="GitHub 第三方框架做类似于闲鱼的 TabBar，可参考的几个框架：  CYLTabBarController【低耦合集成 TabBarController】 LLRiseTabBar-iOS LLRiseTabBar-iOS AxcAE_TabBar animated-tab-bar Swift">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072444.gif">
 <meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072444-1.gif">
@@ -47,7 +49,7 @@
 <link rel="canonical" href="https://andy0570.com/2017/03/15/UITabBarController%EF%BC%88%E4%B8%80%EF%BC%89/">
 
 
-<script class="page-configurations">
+<script data-pjax class="page-configurations">
   // https://hexo.io/docs/variables.html
   CONFIG.page = {
     sidebar: "",
@@ -61,6 +63,15 @@
   
 
 
+  <script data-pjax>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?8229a094facca297f211d61323fd9fde";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
 
 
 
@@ -130,6 +141,7 @@
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -163,11 +175,35 @@
     <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
 
   </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
   </ul>
 </nav>
 
 
 
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
 
 </div>
           
@@ -192,14 +228,14 @@
 
       <!--noindex-->
       <section class="post-toc-wrap sidebar-panel">
-          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#GitHub-%E7%AC%AC%E4%B8%89%E6%96%B9%E6%A1%86%E6%9E%B6"><span class="nav-number">1.</span> <span class="nav-text">GitHub 第三方框架</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#UITabBarController-%E5%8E%9F%E7%94%9F%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95"><span class="nav-number">2.</span> <span class="nav-text">UITabBarController 原生使用方法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9B%E5%BB%BAUITabBarController%E5%AF%B9%E8%B1%A1"><span class="nav-number"></span> <span class="nav-text">创建UITabBarController对象</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AE%E6%A0%87%E7%AD%BE%E9%A1%B9"><span class="nav-number"></span> <span class="nav-text">设置标签项</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B7%A6%E8%BE%B9%E7%9A%84%E8%A7%86%E5%9B%BE%E6%8E%A7%E5%88%B6%E5%99%A8%EF%BC%9A"><span class="nav-number">1.</span> <span class="nav-text">左边的视图控制器：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%A6%E4%B8%80%E7%A7%8D%E8%AE%BE%E7%BD%AE%E6%96%B9%E5%BC%8F%E6%98%AF%E5%88%9B%E5%BB%BA%E4%B8%80%E4%B8%AATabBarController%E5%AD%90%E7%B1%BB%E5%AF%B9%E8%B1%A1%EF%BC%8C%E6%89%80%E6%9C%89%E5%AD%90%E8%A7%86%E5%9B%BE%E7%9A%84%E6%A0%87%E7%AD%BE%E9%A1%B9%E5%9C%A8%E8%AF%A5-m%E6%96%87%E4%BB%B6%E4%B8%AD%E8%AE%BE%E7%BD%AE%E3%80%82"><span class="nav-number"></span> <span class="nav-text">另一种设置方式是创建一个TabBarController子类对象，所有子视图的标签项在该.m文件中设置。</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A7%86%E5%9B%BE%E6%8E%A7%E5%88%B6%E5%99%A8%E7%9A%84%E8%AE%BE%E7%BD%AE%EF%BC%8C%E4%BB%A5%E5%8F%8A-TabBar-%E6%A0%87%E7%AD%BE%E7%9A%84%E8%AE%BE%E7%BD%AE%E5%85%A8%E9%83%A8%E9%87%87%E7%94%A8%E4%BB%A3%E7%A0%81%E6%96%B9%E5%BC%8F%E8%AE%BE%E7%BD%AE%E5%9C%A8%E5%90%8C%E4%B8%80%E4%B8%AA-TabBarController-%E5%AD%90%E7%B1%BB%E7%B1%BB%E4%B8%AD%EF%BC%9A"><span class="nav-number"></span> <span class="nav-text">视图控制器的设置，以及 TabBar 标签的设置全部采用代码方式设置在同一个 TabBarController 子类类中：</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8E%BB%E6%8E%89TabBar%E4%B8%8A%E9%83%A8%E7%9A%84%E9%BB%91%E8%89%B2%E7%BA%BF%E6%9D%A1"><span class="nav-number">1.</span> <span class="nav-text">去掉TabBar上部的黑色线条</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">2.</span> <span class="nav-text">参考</span></a></li></ol></div>
+          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#GitHub-%E7%AC%AC%E4%B8%89%E6%96%B9%E6%A1%86%E6%9E%B6"><span class="nav-number">1.</span> <span class="nav-text">GitHub 第三方框架</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#UITabBarController-%E5%8E%9F%E7%94%9F%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95"><span class="nav-number">2.</span> <span class="nav-text">UITabBarController 原生使用方法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9B%E5%BB%BAUITabBarController%E5%AF%B9%E8%B1%A1"><span class="nav-number"></span> <span class="nav-text">创建 UITabBarController 对象</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AE%E6%A0%87%E7%AD%BE%E9%A1%B9"><span class="nav-number"></span> <span class="nav-text">设置标签项</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B7%A6%E8%BE%B9%E7%9A%84%E8%A7%86%E5%9B%BE%E6%8E%A7%E5%88%B6%E5%99%A8%EF%BC%9A"><span class="nav-number">1.</span> <span class="nav-text">左边的视图控制器：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%A6%E4%B8%80%E7%A7%8D%E8%AE%BE%E7%BD%AE%E6%96%B9%E5%BC%8F%E6%98%AF%E5%88%9B%E5%BB%BA%E4%B8%80%E4%B8%AATabBarController%E5%AD%90%E7%B1%BB%E5%AF%B9%E8%B1%A1%EF%BC%8C%E6%89%80%E6%9C%89%E5%AD%90%E8%A7%86%E5%9B%BE%E7%9A%84%E6%A0%87%E7%AD%BE%E9%A1%B9%E5%9C%A8%E8%AF%A5-m%E6%96%87%E4%BB%B6%E4%B8%AD%E8%AE%BE%E7%BD%AE%E3%80%82"><span class="nav-number"></span> <span class="nav-text">另一种设置方式是创建一个 TabBarController 子类对象，所有子视图的标签项在该.m 文件中设置。</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A7%86%E5%9B%BE%E6%8E%A7%E5%88%B6%E5%99%A8%E7%9A%84%E8%AE%BE%E7%BD%AE%EF%BC%8C%E4%BB%A5%E5%8F%8A-TabBar-%E6%A0%87%E7%AD%BE%E7%9A%84%E8%AE%BE%E7%BD%AE%E5%85%A8%E9%83%A8%E9%87%87%E7%94%A8%E4%BB%A3%E7%A0%81%E6%96%B9%E5%BC%8F%E8%AE%BE%E7%BD%AE%E5%9C%A8%E5%90%8C%E4%B8%80%E4%B8%AA-TabBarController-%E5%AD%90%E7%B1%BB%E7%B1%BB%E4%B8%AD%EF%BC%9A"><span class="nav-number"></span> <span class="nav-text">视图控制器的设置，以及 TabBar 标签的设置全部采用代码方式设置在同一个 TabBarController 子类类中：</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8E%BB%E6%8E%89TabBar%E4%B8%8A%E9%83%A8%E7%9A%84%E9%BB%91%E8%89%B2%E7%BA%BF%E6%9D%A1"><span class="nav-number">1.</span> <span class="nav-text">去掉 TabBar 上部的黑色线条</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">2.</span> <span class="nav-text">参考</span></a></li></ol></div>
       </section>
       <!--/noindex-->
 
       <section class="site-overview-wrap sidebar-panel">
         <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <img class="site-author-image" itemprop="image" alt="独木舟的木"
-      src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+      src="https://static01.imgkr.com/temp/88aab3c08a3f43f5a14f21c6c357c816.JPG">
   <p class="site-author-name" itemprop="name">独木舟的木</p>
   <div class="site-description" itemprop="description">生若直木，不语斧凿。</div>
 </div>
@@ -280,7 +316,7 @@
     <link itemprop="mainEntityOfPage" href="https://andy0570.com/2017/03/15/UITabBarController%EF%BC%88%E4%B8%80%EF%BC%89/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+      <meta itemprop="image" content="https://static01.imgkr.com/temp/88aab3c08a3f43f5a14f21c6c357c816.JPG">
       <meta itemprop="name" content="独木舟的木">
       <meta itemprop="description" content="生若直木，不语斧凿。">
     </span>
@@ -321,7 +357,21 @@
                 </span>
             </span>
 
-          <br>
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2017/03/15/UITabBarController%EF%BC%88%E4%B8%80%EF%BC%89/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2017/03/15/UITabBarController%EF%BC%88%E4%B8%80%EF%BC%89/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  <br>
             <span class="post-meta-item" title="本文字数">
               <span class="post-meta-item-icon">
                 <i class="far fa-file-word"></i>
@@ -344,7 +394,7 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <h3 id="GitHub-第三方框架"><a href="#GitHub-第三方框架" class="headerlink" title="GitHub 第三方框架"></a>GitHub 第三方框架</h3><p>做类似于闲鱼的TabBar，可参考的几个框架：</p>
+        <h3 id="GitHub-第三方框架"><a href="#GitHub-第三方框架" class="headerlink" title="GitHub 第三方框架"></a>GitHub 第三方框架</h3><p>做类似于闲鱼的 TabBar，可参考的几个框架：</p>
 <ul>
 <li><span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL0NoZW5ZaWxvbmcvQ1lMVGFiQmFyQ29udHJvbGxlcg==">CYLTabBarController【低耦合集成 TabBarController】<i class="fa fa-external-link-alt"></i></span></li>
 <li><span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL05vQ29kZU5vV2lmZS9MTFJpc2VUYWJCYXItaU9T">LLRiseTabBar-iOS<i class="fa fa-external-link-alt"></i></span></li>
@@ -354,44 +404,44 @@
 </ul>
 <a id="more"></a>
 
-<h3 id="UITabBarController-原生使用方法"><a href="#UITabBarController-原生使用方法" class="headerlink" title="UITabBarController 原生使用方法"></a>UITabBarController 原生使用方法</h3><p><strong>UITabBarController</strong> 对象可以保存一组视图控制器。此外，<strong>UITabBarController</strong> 对象还会在屏幕底部显示一个标签栏（tab bar），标签栏会有多个标签项（tab item）,分别对应 <strong>UITabBarController</strong> 对象所保存的每一个视图控制器。单击某个标签项，<strong>UITabBarController</strong> 对象就会显示该标签项所对应的视图控制器的视图。</p>
-<p>Demo：<br><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072444.gif" alt="带标题和图标的标签项"></p>
-<h2 id="创建UITabBarController对象"><a href="#创建UITabBarController对象" class="headerlink" title="创建UITabBarController对象"></a>创建UITabBarController对象</h2><p>在AppDelegate.m文件中创建<strong>UITabBarController</strong>对象：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 保存一组视图控制器，使应用能够在两个视图控制器的对象之间自由的切换    </span><br><span class="line">HQLHyponsisViewController *hvc &#x3D; [[HQLHyponsisViewController alloc]init];</span><br><span class="line">HQLReminderViewController *rvc &#x3D; [[HQLReminderViewController alloc] init];</span><br><span class="line"></span><br><span class="line">UITabBarController *tabBarController &#x3D;[[UITabBarController alloc]init];</span><br><span class="line">&#x2F;&#x2F; 将两个创建的视图控制器加入该对象</span><br><span class="line">tabBarController.viewControllers &#x3D; @[hvc,rvc];</span><br><span class="line">self.window.rootViewController &#x3D;tabBarController;</span><br></pre></td></tr></table></figure>
+<h3 id="UITabBarController-原生使用方法"><a href="#UITabBarController-原生使用方法" class="headerlink" title="UITabBarController 原生使用方法"></a>UITabBarController 原生使用方法</h3><p><strong>UITabBarController</strong> 对象可以保存一组视图控制器。此外，<strong>UITabBarController</strong> 对象还会在屏幕底部显示一个标签栏（tab bar），标签栏会有多个标签项（tab item）, 分别对应 <strong>UITabBarController</strong> 对象所保存的每一个视图控制器。单击某个标签项，<strong>UITabBarController</strong> 对象就会显示该标签项所对应的视图控制器的视图。</p>
+<p>Demo：<br><img data-src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072444.gif" alt="带标题和图标的标签项"></p>
+<h2 id="创建UITabBarController对象"><a href="#创建UITabBarController对象" class="headerlink" title="创建UITabBarController对象"></a>创建 UITabBarController 对象</h2><p>在 AppDelegate.m 文件中创建 <strong>UITabBarController</strong> 对象：</p>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">// 保存一组视图控制器，使应用能够在两个视图控制器的对象之间自由的切换    </span><br><span class="line">HQLHyponsisViewController *hvc = [[HQLHyponsisViewController alloc]init];</span><br><span class="line">HQLReminderViewController *rvc = [[HQLReminderViewController alloc] init];</span><br><span class="line"></span><br><span class="line">UITabBarController *tabBarController =[[UITabBarController alloc]init];</span><br><span class="line">// 将两个创建的视图控制器加入该对象</span><br><span class="line">tabBarController.viewControllers = @[hvc,rvc];</span><br><span class="line">self.window.rootViewController =tabBarController;</span><br></pre></td></tr></tbody></table></figure>
 
-<h2 id="设置标签项"><a href="#设置标签项" class="headerlink" title="设置标签项"></a>设置标签项</h2><p>分别在每个ViewControl中的.m文件中覆写视图控制器的指定初始化方法</p>
-<h3 id="左边的视图控制器："><a href="#左边的视图控制器：" class="headerlink" title="左边的视图控制器："></a>左边的视图控制器：</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">    - (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil &#123;</span><br><span class="line"></span><br><span class="line">    self &#x3D; [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];</span><br><span class="line">    if (self) &#123;</span><br><span class="line">        &#x2F;&#x2F;设置标签页的标题</span><br><span class="line">        self.tabBarItem.title &#x3D; @&quot;Hypontize&quot;;</span><br><span class="line">        </span><br><span class="line">        &#x2F;&#x2F;从图像文件创建一个UIImage对象</span><br><span class="line">        &#x2F;&#x2F;在 Retina 显示屏上会加载 Hypno@2X.png 而不是 Hypno.png</span><br><span class="line">        UIImage *i &#x3D;[UIImage imageNamed:@&quot;Hypno.png&quot;];</span><br><span class="line">        </span><br><span class="line">        &#x2F;&#x2F;将UIImage对象赋给标签项的image属性</span><br><span class="line">        self.tabBarItem.image &#x3D; i;</span><br><span class="line">    &#125;</span><br><span class="line">    return self;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="设置标签项"><a href="#设置标签项" class="headerlink" title="设置标签项"></a>设置标签项</h2><p>分别在每个 ViewControl 中的.m 文件中覆写视图控制器的指定初始化方法</p>
+<h3 id="左边的视图控制器："><a href="#左边的视图控制器：" class="headerlink" title="左边的视图控制器："></a>左边的视图控制器：</h3><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">    - (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {</span><br><span class="line"></span><br><span class="line">    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];</span><br><span class="line">    if (self) {</span><br><span class="line">        //设置标签页的标题</span><br><span class="line">        self.tabBarItem.title = @"Hypontize";</span><br><span class="line">        </span><br><span class="line">        //从图像文件创建一个UIImage对象</span><br><span class="line">        //在 Retina 显示屏上会加载 Hypno@2X.png 而不是 Hypno.png</span><br><span class="line">        UIImage *i =[UIImage imageNamed:@"Hypno.png"];</span><br><span class="line">        </span><br><span class="line">        //将UIImage对象赋给标签项的image属性</span><br><span class="line">        self.tabBarItem.image = i;</span><br><span class="line">    }</span><br><span class="line">    return self;</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
 
-<p>##右边的视图控制器</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">    - (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil &#123;</span><br><span class="line">    </span><br><span class="line">    self &#x3D; [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];</span><br><span class="line">    if (self) &#123;</span><br><span class="line">        &#x2F;&#x2F;获取tabBarItem属性所是向的UITabBarItem对象</span><br><span class="line">        UITabBarItem *tbi &#x3D; self.tabBarItem;</span><br><span class="line">        &#x2F;&#x2F;设置UITabBarItem对象的标题</span><br><span class="line">        tbi.title &#x3D; @&quot;Reminder&quot;;</span><br><span class="line">        </span><br><span class="line">        &#x2F;&#x2F;从图像文件创建一个UIImage对象</span><br><span class="line">        UIImage *i &#x3D;[UIImage imageNamed:@&quot;Time.png&quot;];</span><br><span class="line">        &#x2F;&#x2F;将UIImage对象赋给标签项的image属性</span><br><span class="line">        tbi.image &#x3D; i;</span><br><span class="line">    &#125;</span><br><span class="line">    return self;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>## 右边的视图控制器</p>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">    - (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {</span><br><span class="line">    </span><br><span class="line">    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];</span><br><span class="line">    if (self) {</span><br><span class="line">        //获取tabBarItem属性所是向的UITabBarItem对象</span><br><span class="line">        UITabBarItem *tbi = self.tabBarItem;</span><br><span class="line">        //设置UITabBarItem对象的标题</span><br><span class="line">        tbi.title = @"Reminder";</span><br><span class="line">        </span><br><span class="line">        //从图像文件创建一个UIImage对象</span><br><span class="line">        UIImage *i =[UIImage imageNamed:@"Time.png"];</span><br><span class="line">        //将UIImage对象赋给标签项的image属性</span><br><span class="line">        tbi.image = i;</span><br><span class="line">    }</span><br><span class="line">    return self;</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
 
 
-<h2 id="另一种设置方式是创建一个TabBarController子类对象，所有子视图的标签项在该-m文件中设置。"><a href="#另一种设置方式是创建一个TabBarController子类对象，所有子视图的标签项在该-m文件中设置。" class="headerlink" title="另一种设置方式是创建一个TabBarController子类对象，所有子视图的标签项在该.m文件中设置。"></a>另一种设置方式是创建一个TabBarController子类对象，所有子视图的标签项在该.m文件中设置。</h2><blockquote>
+<h2 id="另一种设置方式是创建一个TabBarController子类对象，所有子视图的标签项在该-m文件中设置。"><a href="#另一种设置方式是创建一个TabBarController子类对象，所有子视图的标签项在该-m文件中设置。" class="headerlink" title="另一种设置方式是创建一个TabBarController子类对象，所有子视图的标签项在该.m文件中设置。"></a>另一种设置方式是创建一个 TabBarController 子类对象，所有子视图的标签项在该.m 文件中设置。</h2><blockquote>
 <p> 💡TabBarController 和各 ViewController 之间可以通过 StoryBoard 的方式连接。</p>
 </blockquote>
 <p>Demo：</p>
-<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072444-1.gif" alt="Demo演示"></p>
-<p>在tabBarController.m文件中设置如下：<br>    - (void)viewDidLoad {<br>    [super viewDidLoad];</p>
+<p><img data-src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/072444-1.gif" alt="Demo演示"></p>
+<p>在 tabBarController.m 文件中设置如下：<br>    - (void)viewDidLoad {<br>    [super viewDidLoad];</p>
 <pre><code>self.tabBar.backgroundColor = [UIColor whiteColor];
 
 //设置UITabBarItem的标题和图片
 //首页
 UITabBarItem *item1 = self.tabBar.items [0];
-item1.title = @&quot;首页&quot;;
-item1.image = [[UIImage imageNamed:@&quot;guide_home_nm&quot;] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
-item1.selectedImage = [[UIImage imageNamed:@&quot;guide_home_on&quot;] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+item1.title = @"首页";
+item1.image = [[UIImage imageNamed:@"guide_home_nm"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+item1.selectedImage = [[UIImage imageNamed:@"guide_home_on"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
 
 //资讯
 UITabBarItem *item2 = self.tabBar.items [1];
-item2.title = @&quot;资讯&quot;;
-item2.image = [[UIImage imageNamed:@&quot;guide_information_nm&quot;] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
-item2.selectedImage = [[UIImage imageNamed:@&quot;guide_information_on&quot;] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+item2.title = @"资讯";
+item2.image = [[UIImage imageNamed:@"guide_information_nm"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+item2.selectedImage = [[UIImage imageNamed:@"guide_information_on"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
 
 //我的
 UITabBarItem *item3 = self.tabBar.items [2];
-item3.title = @&quot;我的&quot;;
-item3.image = [[UIImage imageNamed:@&quot;guide_personal_nm&quot;] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
-item3.selectedImage = [[UIImage imageNamed:@&quot;guide_personal_on&quot;] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+item3.title = @"我的";
+item3.image = [[UIImage imageNamed:@"guide_personal_nm"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+item3.selectedImage = [[UIImage imageNamed:@"guide_personal_on"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
 
 //标签栏背景色
 [[UITabBar appearance] setBarTintColor:[UIColor whiteColor]];
@@ -401,13 +451,13 @@ item3.selectedImage = [[UIImage imageNamed:@&quot;guide_personal_on&quot;] image
 [[UITabBarItem appearance] setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:[UIColor grayColor],NSForegroundColorAttributeName, nil] forState:UIControlStateNormal];
 //被选中时的字体色
 [[UITabBarItem appearance] setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:[UIColor orangeColor],NSForegroundColorAttributeName, nil] forState:UIControlStateSelected];   
-&#125;</code></pre>
-<h2 id="视图控制器的设置，以及-TabBar-标签的设置全部采用代码方式设置在同一个-TabBarController-子类类中："><a href="#视图控制器的设置，以及-TabBar-标签的设置全部采用代码方式设置在同一个-TabBarController-子类类中：" class="headerlink" title="视图控制器的设置，以及 TabBar 标签的设置全部采用代码方式设置在同一个 TabBarController 子类类中："></a>视图控制器的设置，以及 TabBar 标签的设置全部采用代码方式设置在同一个 TabBarController 子类类中：</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line">- (instancetype)init &#123;</span><br><span class="line">    self &#x3D; [super init];</span><br><span class="line"></span><br><span class="line">    if (self) &#123;</span><br><span class="line">        &#x2F;&#x2F; 设置背景颜色和大小</span><br><span class="line">        self.view.backgroundColor &#x3D; COLOR_RGB(245, 245, 245);</span><br><span class="line">        self.view.frame &#x3D; CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);</span><br><span class="line"></span><br><span class="line">        [self initControllers];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    return self;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)initControllers &#123;</span><br><span class="line">    &#x2F;&#x2F; 电影tabbar</span><br><span class="line">    TPPViewController *filmViewController &#x3D; [self renderTabBarItem:[[TPPFilmViewController alloc] init] title:@&quot;电影&quot; imageNamed:@&quot;film_normal.png&quot; selectedImageNamed:@&quot;film_selected.png&quot;];</span><br><span class="line">    TPPNavigationController *filmNavigationController &#x3D; [[TPPNavigationController alloc] initWithRootViewController:filmViewController];</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; 影院tabbar</span><br><span class="line">    TPPViewController *cinemaViewController &#x3D; [self renderTabBarItem:[[TPPCinemaViewController alloc] init] title:@&quot;影院&quot; imageNamed:@&quot;cinema_normal.png&quot; selectedImageNamed:@&quot;cinema_selected.png&quot;];</span><br><span class="line">    TPPNavigationController *cinemaNavigationController &#x3D; [[TPPNavigationController alloc] initWithRootViewController:cinemaViewController];</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; 演出tabbar</span><br><span class="line">    TPPViewController *damaiViewController &#x3D; [self renderTabBarItem:[[TPPDamaiViewController alloc] init] title:@&quot;演出&quot; imageNamed:@&quot;damai_normal.png&quot; selectedImageNamed:@&quot;damai_selected.png&quot;];</span><br><span class="line">    TPPNavigationController *damaiNavigationController &#x3D; [[TPPNavigationController alloc] initWithRootViewController:damaiViewController];</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; 发现tabbar</span><br><span class="line">    TPPViewController *discoveryViewController &#x3D; [self renderTabBarItem:[[TPPDiscoveryViewController alloc] init] title:@&quot;发现&quot; imageNamed:@&quot;discovery_normal.png&quot; selectedImageNamed:@&quot;discovery_selected.png&quot;];</span><br><span class="line">    TPPNavigationController *discoveryNavigationController &#x3D; [[TPPNavigationController alloc] initWithRootViewController:discoveryViewController];</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; 我的tabbar</span><br><span class="line">    TPPViewController *mineViewController &#x3D; [self renderTabBarItem:[[TPPMineViewController alloc] init] title:@&quot;我的&quot; imageNamed:@&quot;mine_normal.png&quot; selectedImageNamed:@&quot;mine_selected.png&quot;];</span><br><span class="line">    TPPNavigationController *mineNavigationController &#x3D; [[TPPNavigationController alloc] initWithRootViewController:mineViewController];</span><br><span class="line"></span><br><span class="line">    self.viewControllers &#x3D; @[filmNavigationController, cinemaNavigationController, damaiNavigationController, discoveryNavigationController, mineNavigationController];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">#pragma mark - Public</span><br><span class="line"></span><br><span class="line">- (TPPViewController *)renderTabBarItem:(TPPViewController *)viewController</span><br><span class="line">                               title:(NSString *)title</span><br><span class="line">                          imageNamed:(NSString *)imageNamed</span><br><span class="line">                  selectedImageNamed:(NSString *)selectedImageNamed &#123;</span><br><span class="line">    &#x2F;&#x2F; 📝 设置导航栏的标题为 TabBar 标题</span><br><span class="line">    viewController.title &#x3D; title;</span><br><span class="line">    &#x2F;&#x2F; 📝 设置导航栏 TabBar</span><br><span class="line">    viewController.tabBarItem &#x3D; [[UITabBarItem alloc] initWithTitle:title image:[UIImage imageNamed:imageNamed] selectedImage:[[UIImage imageNamed:selectedImageNamed] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]];</span><br><span class="line">    &#x2F;&#x2F; 📝 设置导航栏被选中时的字体</span><br><span class="line">    [viewController.tabBarItem setTitleTextAttributes:@&#123;NSForegroundColorAttributeName: COLOR_RGB(255, 81, 103)&#125; forState:UIControlStateSelected];</span><br><span class="line"></span><br><span class="line">    return viewController;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+}</code></pre>
+<h2 id="视图控制器的设置，以及-TabBar-标签的设置全部采用代码方式设置在同一个-TabBarController-子类类中："><a href="#视图控制器的设置，以及-TabBar-标签的设置全部采用代码方式设置在同一个-TabBarController-子类类中：" class="headerlink" title="视图控制器的设置，以及 TabBar 标签的设置全部采用代码方式设置在同一个 TabBarController 子类类中："></a>视图控制器的设置，以及 TabBar 标签的设置全部采用代码方式设置在同一个 TabBarController 子类类中：</h2><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line">- (instancetype)init {</span><br><span class="line">    self = [super init];</span><br><span class="line"></span><br><span class="line">    if (self) {</span><br><span class="line">        // 设置背景颜色和大小</span><br><span class="line">        self.view.backgroundColor = COLOR_RGB(245, 245, 245);</span><br><span class="line">        self.view.frame = CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);</span><br><span class="line"></span><br><span class="line">        [self initControllers];</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    return self;</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">- (void)initControllers {</span><br><span class="line">    // 电影tabbar</span><br><span class="line">    TPPViewController *filmViewController = [self renderTabBarItem:[[TPPFilmViewController alloc] init] title:@"电影" imageNamed:@"film_normal.png" selectedImageNamed:@"film_selected.png"];</span><br><span class="line">    TPPNavigationController *filmNavigationController = [[TPPNavigationController alloc] initWithRootViewController:filmViewController];</span><br><span class="line"></span><br><span class="line">    // 影院tabbar</span><br><span class="line">    TPPViewController *cinemaViewController = [self renderTabBarItem:[[TPPCinemaViewController alloc] init] title:@"影院" imageNamed:@"cinema_normal.png" selectedImageNamed:@"cinema_selected.png"];</span><br><span class="line">    TPPNavigationController *cinemaNavigationController = [[TPPNavigationController alloc] initWithRootViewController:cinemaViewController];</span><br><span class="line"></span><br><span class="line">    // 演出tabbar</span><br><span class="line">    TPPViewController *damaiViewController = [self renderTabBarItem:[[TPPDamaiViewController alloc] init] title:@"演出" imageNamed:@"damai_normal.png" selectedImageNamed:@"damai_selected.png"];</span><br><span class="line">    TPPNavigationController *damaiNavigationController = [[TPPNavigationController alloc] initWithRootViewController:damaiViewController];</span><br><span class="line"></span><br><span class="line">    // 发现tabbar</span><br><span class="line">    TPPViewController *discoveryViewController = [self renderTabBarItem:[[TPPDiscoveryViewController alloc] init] title:@"发现" imageNamed:@"discovery_normal.png" selectedImageNamed:@"discovery_selected.png"];</span><br><span class="line">    TPPNavigationController *discoveryNavigationController = [[TPPNavigationController alloc] initWithRootViewController:discoveryViewController];</span><br><span class="line"></span><br><span class="line">    // 我的tabbar</span><br><span class="line">    TPPViewController *mineViewController = [self renderTabBarItem:[[TPPMineViewController alloc] init] title:@"我的" imageNamed:@"mine_normal.png" selectedImageNamed:@"mine_selected.png"];</span><br><span class="line">    TPPNavigationController *mineNavigationController = [[TPPNavigationController alloc] initWithRootViewController:mineViewController];</span><br><span class="line"></span><br><span class="line">    self.viewControllers = @[filmNavigationController, cinemaNavigationController, damaiNavigationController, discoveryNavigationController, mineNavigationController];</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">#pragma mark - Public</span><br><span class="line"></span><br><span class="line">- (TPPViewController *)renderTabBarItem:(TPPViewController *)viewController</span><br><span class="line">                               title:(NSString *)title</span><br><span class="line">                          imageNamed:(NSString *)imageNamed</span><br><span class="line">                  selectedImageNamed:(NSString *)selectedImageNamed {</span><br><span class="line">    // 📝 设置导航栏的标题为 TabBar 标题</span><br><span class="line">    viewController.title = title;</span><br><span class="line">    // 📝 设置导航栏 TabBar</span><br><span class="line">    viewController.tabBarItem = [[UITabBarItem alloc] initWithTitle:title image:[UIImage imageNamed:imageNamed] selectedImage:[[UIImage imageNamed:selectedImageNamed] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]];</span><br><span class="line">    // 📝 设置导航栏被选中时的字体</span><br><span class="line">    [viewController.tabBarItem setTitleTextAttributes:@{NSForegroundColorAttributeName: COLOR_RGB(255, 81, 103)} forState:UIControlStateSelected];</span><br><span class="line"></span><br><span class="line">    return viewController;</span><br><span class="line">}</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
 
-<h3 id="去掉TabBar上部的黑色线条"><a href="#去掉TabBar上部的黑色线条" class="headerlink" title="去掉TabBar上部的黑色线条"></a>去掉TabBar上部的黑色线条</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 去掉TabBar上部的黑色线条,设置TabBar透明背景</span><br><span class="line">[[UITabBar appearance] setBackgroundImage:[UIImage imageWithColor:[UIColor clearColor]]];</span><br><span class="line">[[UITabBar appearance] setShadowImage:[UIImage new]];</span><br><span class="line"></span><br><span class="line">UIView *topLineView &#x3D; [[UIView alloc] init];</span><br><span class="line">topLineView.frame &#x3D; CGRectMake(0, 0, CGRectGetWidth(self.tabBar.bounds), 1);</span><br><span class="line">topLineView.backgroundColor &#x3D; [UIColor colorWithWhite:0.966 alpha:1.000];</span><br><span class="line">[self.tabBar addSubview:topLineView];</span><br></pre></td></tr></table></figure>
+<h3 id="去掉TabBar上部的黑色线条"><a href="#去掉TabBar上部的黑色线条" class="headerlink" title="去掉TabBar上部的黑色线条"></a>去掉 TabBar 上部的黑色线条</h3><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">// 去掉TabBar上部的黑色线条,设置TabBar透明背景</span><br><span class="line">[[UITabBar appearance] setBackgroundImage:[UIImage imageWithColor:[UIColor clearColor]]];</span><br><span class="line">[[UITabBar appearance] setShadowImage:[UIImage new]];</span><br><span class="line"></span><br><span class="line">UIView *topLineView = [[UIView alloc] init];</span><br><span class="line">topLineView.frame = CGRectMake(0, 0, CGRectGetWidth(self.tabBar.bounds), 1);</span><br><span class="line">topLineView.backgroundColor = [UIColor colorWithWhite:0.966 alpha:1.000];</span><br><span class="line">[self.tabBar addSubview:topLineView];</span><br></pre></td></tr></tbody></table></figure>
 
 <h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><ul>
-<li><span class="exturl" data-url="aHR0cDovL3d3dy5jbmJsb2dzLmNvbS93ZW5kaW5nZGluZy9wLzM3NzU0ODguaHRtbA==">OS开发UI篇—UITabBarController简单介绍 @文顶顶<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cDovL3d3dy5jbmJsb2dzLmNvbS93ZW5kaW5nZGluZy9wLzM3NzU0ODguaHRtbA==">OS 开发 UI 篇 —UITabBarController 简单介绍 @文顶顶<i class="fa fa-external-link-alt"></i></span></li>
 </ul>
 
     </div>
@@ -483,6 +533,7 @@ item3.selectedImage = [[UIImage imageNamed:@&quot;guide_personal_on&quot;] image
 
         </div>
         
+    <div class="comments" id="valine-comments"></div>
 
 <script>
   window.addEventListener('tabs:register', () => {
@@ -551,7 +602,11 @@ item3.selectedImage = [[UIImage imageNamed:@&quot;guide_personal_on&quot;] image
   </div>
 
   
-  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.0/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/next-theme/pjax@0/pjax.min.js"></script>
+  <script src="//unpkg.com/medium-zoom@1/dist/medium-zoom.min.js"></script>
+  <script src="//unpkg.com/lozad@1/dist/lozad.min.js"></script>
+  <script src="//unpkg.com/pangu@4/dist/browser/pangu.min.js"></script>
 
 <script src="/js/utils.js"></script>
 
@@ -562,9 +617,42 @@ item3.selectedImage = [[UIImage imageNamed:@&quot;guide_personal_on&quot;] image
 
 <script src="/js/bookmark.js"></script>
 
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '.page-configurations',
+    '.main-inner',
+    '.post-toc-wrap',
+    '.languages',
+    '.pjax'
+  ],
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+document.addEventListener('pjax:success', () => {
+  pjax.executeScripts(document.querySelectorAll('script[data-pjax], .pjax script'));
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  const hasTOC = document.querySelector('.post-toc');
+  document.querySelector('.sidebar-inner').classList.toggle('sidebar-nav-active', hasTOC);
+  document.querySelector(hasTOC ? '.sidebar-nav-toc' : '.sidebar-nav-overview').click();
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
 
   
-  <script>
+  <script data-pjax>
     (function(){
       var bp = document.createElement('script');
       var curProtocol = window.location.protocol.split(':')[0];
@@ -577,6 +665,10 @@ item3.selectedImage = [[UIImage imageNamed:@&quot;guide_personal_on&quot;] image
 
 
 
+  
+<script src="//unpkg.com/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//unpkg.com/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
 
 
 
@@ -588,9 +680,27 @@ item3.selectedImage = [[UIImage imageNamed:@&quot;guide_personal_on&quot;] image
 
 
 
+
+
+
+    <div class="pjax">
   
 
   
 
+
+<script>
+NexT.utils.loadComments('#valine-comments', () => {
+  NexT.utils.getScript('//unpkg.com/valine@1/dist/Valine.min.js', () => {
+    new Valine(Object.assign({
+      el  : '#valine-comments',
+      path: location.pathname,
+    }, {"enable":true,"appId":"S7i1Y8YorMKFPaYbJbekD5el-gzGzoHsz","appKey":"brOnU8mOQvSjpipJvdKUAIbU","placeholder":"写下你的评论...","avatar":"mm","meta":["nick","mail","link"],"pageSize":10,"language":"zh-cn","visitor":false,"comment_count":true,"recordIP":true,"serverURLs":null,"enableQQ":true,"requiredFields":[]}
+    ));
+  }, window.Valine);
+});
+</script>
+
+    </div>
 </body>
 </html>

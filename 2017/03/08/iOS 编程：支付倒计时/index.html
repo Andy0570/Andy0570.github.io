@@ -18,21 +18,23 @@
 <link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css">
   
   <link rel="stylesheet" href="/lib/animate-css/animate.min.css">
+  <link rel="stylesheet" href="//unpkg.com/pace-js@1/themes/blue/pace-theme-minimal.css">
+  <script src="//unpkg.com/pace-js@1/pace.min.js"></script>
 
 <script class="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"andy0570.com","root":"/","scheme":"Gemini","version":"8.0.0-rc.5","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":"mac","bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false};
+    var CONFIG = {"hostname":"andy0570.com","root":"/","scheme":"Gemini","version":"8.0.0-rc.5","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":"mac","bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":true,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":true,"nav":null,"activeClass":"valine"},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"algolia":{"appID":"0E2AON8EZF","apiKey":"22fbefd84c8343239f5c04365b9728de","indexName":"MyBlogPlatform","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}}};
   </script>
 
-  <meta name="description" content="15分钟支付倒计时  12345678910111213141516171819202122232425&#x2F;&#x2F; 支付倒计时- (void)secondsCountDown:(UILabel *)label &amp;#123;    __block int timeout &#x3D; 900;    dispatch_queue_t queue &#x3D; dispatch_get">
+  <meta name="description" content="15 分钟支付倒计时   12345678910111213141516171819202122232425&#x2F;&#x2F; 支付倒计时- (void)secondsCountDown:(UILabel *)label {    __block int timeout &#x3D; 900;    dispatch_queue_t queue &#x3D; dispatch_get_global_queue(DISPATCH_">
 <meta property="og:type" content="article">
 <meta property="og:title" content="iOS 编程：支付倒计时">
 <meta property="og:url" content="https://andy0570.com/2017/03/08/iOS%20%E7%BC%96%E7%A8%8B%EF%BC%9A%E6%94%AF%E4%BB%98%E5%80%92%E8%AE%A1%E6%97%B6/index.html">
 <meta property="og:site_name" content="独木舟的木">
-<meta property="og:description" content="15分钟支付倒计时  12345678910111213141516171819202122232425&#x2F;&#x2F; 支付倒计时- (void)secondsCountDown:(UILabel *)label &amp;#123;    __block int timeout &#x3D; 900;    dispatch_queue_t queue &#x3D; dispatch_get">
+<meta property="og:description" content="15 分钟支付倒计时   12345678910111213141516171819202122232425&#x2F;&#x2F; 支付倒计时- (void)secondsCountDown:(UILabel *)label {    __block int timeout &#x3D; 900;    dispatch_queue_t queue &#x3D; dispatch_get_global_queue(DISPATCH_">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2017-03-08T06:39:00.000Z">
 <meta property="article:modified_time" content="2019-05-01T13:51:52.000Z">
@@ -43,7 +45,7 @@
 <link rel="canonical" href="https://andy0570.com/2017/03/08/iOS%20%E7%BC%96%E7%A8%8B%EF%BC%9A%E6%94%AF%E4%BB%98%E5%80%92%E8%AE%A1%E6%97%B6/">
 
 
-<script class="page-configurations">
+<script data-pjax class="page-configurations">
   // https://hexo.io/docs/variables.html
   CONFIG.page = {
     sidebar: "",
@@ -57,6 +59,15 @@
   
 
 
+  <script data-pjax>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?8229a094facca297f211d61323fd9fde";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
 
 
 
@@ -126,6 +137,7 @@
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -159,11 +171,35 @@
     <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
 
   </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
   </ul>
 </nav>
 
 
 
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
 
 </div>
           
@@ -195,7 +231,7 @@
       <section class="site-overview-wrap sidebar-panel">
         <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <img class="site-author-image" itemprop="image" alt="独木舟的木"
-      src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+      src="https://static01.imgkr.com/temp/88aab3c08a3f43f5a14f21c6c357c816.JPG">
   <p class="site-author-name" itemprop="name">独木舟的木</p>
   <div class="site-description" itemprop="description">生若直木，不语斧凿。</div>
 </div>
@@ -276,7 +312,7 @@
     <link itemprop="mainEntityOfPage" href="https://andy0570.com/2017/03/08/iOS%20%E7%BC%96%E7%A8%8B%EF%BC%9A%E6%94%AF%E4%BB%98%E5%80%92%E8%AE%A1%E6%97%B6/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+      <meta itemprop="image" content="https://static01.imgkr.com/temp/88aab3c08a3f43f5a14f21c6c357c816.JPG">
       <meta itemprop="name" content="独木舟的木">
       <meta itemprop="description" content="生若直木，不语斧凿。">
     </span>
@@ -317,7 +353,21 @@
                 </span>
             </span>
 
-          <br>
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2017/03/08/iOS%20%E7%BC%96%E7%A8%8B%EF%BC%9A%E6%94%AF%E4%BB%98%E5%80%92%E8%AE%A1%E6%97%B6/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2017/03/08/iOS%20%E7%BC%96%E7%A8%8B%EF%BC%9A%E6%94%AF%E4%BB%98%E5%80%92%E8%AE%A1%E6%97%B6/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  <br>
             <span class="post-meta-item" title="本文字数">
               <span class="post-meta-item-icon">
                 <i class="far fa-file-word"></i>
@@ -341,12 +391,12 @@
     
     <div class="post-body" itemprop="articleBody">
         <ul>
-<li>15分钟支付倒计时</li>
+<li>15 分钟支付倒计时 </li>
 </ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 支付倒计时</span><br><span class="line">- (void)secondsCountDown:(UILabel *)label &#123;</span><br><span class="line">    __block int timeout &#x3D; 900;</span><br><span class="line">    dispatch_queue_t queue &#x3D; dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);</span><br><span class="line">    dispatch_source_t _timer &#x3D; dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, queue);</span><br><span class="line">    dispatch_source_set_timer(_timer, dispatch_walltime(NULL, 0), 1.0*NSEC_PER_SEC, 0);&#x2F;&#x2F;每秒执行</span><br><span class="line">    dispatch_source_set_event_handler(_timer, ^&#123;</span><br><span class="line">        if (timeout&lt;&#x3D;0) &#123;</span><br><span class="line">            dispatch_source_cancel(_timer);</span><br><span class="line">            dispatch_async(dispatch_get_main_queue(), ^&#123;</span><br><span class="line">                &#x2F;&#x2F; 隐藏密码输入界面，禁用支付按钮</span><br><span class="line">                [MBProgressHUD showMessage:@&quot;付款超时，请返回重新选择座位&quot;];</span><br><span class="line">            &#125;);</span><br><span class="line">        &#125;else &#123;</span><br><span class="line">            int minutes &#x3D; timeout&#x2F;60;</span><br><span class="line">            int seconds &#x3D; timeout%60;</span><br><span class="line">            NSString *strTime &#x3D; [NSString stringWithFormat:@&quot;%d 分 %d 秒&quot;, minutes, seconds];</span><br><span class="line">            dispatch_async(dispatch_get_main_queue(), ^&#123;</span><br><span class="line">                label.text &#x3D; [NSString stringWithFormat:@&quot;请在 %@ 内完成付款，晚了座位就没有了哦&quot;,strTime];</span><br><span class="line">            &#125;);</span><br><span class="line">            timeout--;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">    dispatch_resume(_timer);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">// 支付倒计时</span><br><span class="line">- (void)secondsCountDown:(UILabel *)label {</span><br><span class="line">    __block int timeout = 900;</span><br><span class="line">    dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);</span><br><span class="line">    dispatch_source_t _timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, queue);</span><br><span class="line">    dispatch_source_set_timer(_timer, dispatch_walltime(NULL, 0), 1.0*NSEC_PER_SEC, 0);//每秒执行</span><br><span class="line">    dispatch_source_set_event_handler(_timer, ^{</span><br><span class="line">        if (timeout&lt;=0) {</span><br><span class="line">            dispatch_source_cancel(_timer);</span><br><span class="line">            dispatch_async(dispatch_get_main_queue(), ^{</span><br><span class="line">                // 隐藏密码输入界面，禁用支付按钮</span><br><span class="line">                [MBProgressHUD showMessage:@"付款超时，请返回重新选择座位"];</span><br><span class="line">            });</span><br><span class="line">        }else {</span><br><span class="line">            int minutes = timeout/60;</span><br><span class="line">            int seconds = timeout%60;</span><br><span class="line">            NSString *strTime = [NSString stringWithFormat:@"%d 分 %d 秒", minutes, seconds];</span><br><span class="line">            dispatch_async(dispatch_get_main_queue(), ^{</span><br><span class="line">                label.text = [NSString stringWithFormat:@"请在 %@ 内完成付款，晚了座位就没有了哦",strTime];</span><br><span class="line">            });</span><br><span class="line">            timeout--;</span><br><span class="line">        }</span><br><span class="line">    });</span><br><span class="line">    dispatch_resume(_timer);</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
 
 <h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><ul>
-<li><span class="exturl" data-url="aHR0cDovL3d3dy5jbmJsb2dzLmNvbS9zaXdlbnNzL3AvNjQyODkwMy5odG1s">iOS中常用的验证码倒计时, 支付半小时倒计时.<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cDovL3d3dy5jbmJsb2dzLmNvbS9zaXdlbnNzL3AvNjQyODkwMy5odG1s">iOS 中常用的验证码倒计时，支付半小时倒计时.<i class="fa fa-external-link-alt"></i></span></li>
 </ul>
 
     </div>
@@ -406,8 +456,8 @@
       <i class="fa fa-chevron-left"></i> 《Objective-C 编程》16.NSMutableString
     </a></div>
       <div class="post-nav-item">
-    <a href="/2017/03/09/Wonderful%E2%80%94%E2%80%94%E4%B8%80%E4%B8%AA%E5%85%B3%E4%BA%8E%E8%89%B2%E5%BD%A9%E7%9A%84%E5%BA%93/" rel="next" title="Wonderful——一个关于色彩的库">
-      Wonderful——一个关于色彩的库 <i class="fa fa-chevron-right"></i>
+    <a href="/2017/03/09/Wonderful%E2%80%94%E2%80%94%E4%B8%80%E4%B8%AA%E5%85%B3%E4%BA%8E%E8%89%B2%E5%BD%A9%E7%9A%84%E5%BA%93/" rel="next" title="Wonderful—— 一个关于色彩的库">
+      Wonderful—— 一个关于色彩的库 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -421,6 +471,7 @@
 
         </div>
         
+    <div class="comments" id="valine-comments"></div>
 
 <script>
   window.addEventListener('tabs:register', () => {
@@ -489,7 +540,11 @@
   </div>
 
   
-  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.0/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/next-theme/pjax@0/pjax.min.js"></script>
+  <script src="//unpkg.com/medium-zoom@1/dist/medium-zoom.min.js"></script>
+  <script src="//unpkg.com/lozad@1/dist/lozad.min.js"></script>
+  <script src="//unpkg.com/pangu@4/dist/browser/pangu.min.js"></script>
 
 <script src="/js/utils.js"></script>
 
@@ -500,9 +555,42 @@
 
 <script src="/js/bookmark.js"></script>
 
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '.page-configurations',
+    '.main-inner',
+    '.post-toc-wrap',
+    '.languages',
+    '.pjax'
+  ],
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+document.addEventListener('pjax:success', () => {
+  pjax.executeScripts(document.querySelectorAll('script[data-pjax], .pjax script'));
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  const hasTOC = document.querySelector('.post-toc');
+  document.querySelector('.sidebar-inner').classList.toggle('sidebar-nav-active', hasTOC);
+  document.querySelector(hasTOC ? '.sidebar-nav-toc' : '.sidebar-nav-overview').click();
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
 
   
-  <script>
+  <script data-pjax>
     (function(){
       var bp = document.createElement('script');
       var curProtocol = window.location.protocol.split(':')[0];
@@ -515,6 +603,10 @@
 
 
 
+  
+<script src="//unpkg.com/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//unpkg.com/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
 
 
 
@@ -526,9 +618,27 @@
 
 
 
+
+
+
+    <div class="pjax">
   
 
   
 
+
+<script>
+NexT.utils.loadComments('#valine-comments', () => {
+  NexT.utils.getScript('//unpkg.com/valine@1/dist/Valine.min.js', () => {
+    new Valine(Object.assign({
+      el  : '#valine-comments',
+      path: location.pathname,
+    }, {"enable":true,"appId":"S7i1Y8YorMKFPaYbJbekD5el-gzGzoHsz","appKey":"brOnU8mOQvSjpipJvdKUAIbU","placeholder":"写下你的评论...","avatar":"mm","meta":["nick","mail","link"],"pageSize":10,"language":"zh-cn","visitor":false,"comment_count":true,"recordIP":true,"serverURLs":null,"enableQQ":true,"requiredFields":[]}
+    ));
+  }, window.Valine);
+});
+</script>
+
+    </div>
 </body>
 </html>

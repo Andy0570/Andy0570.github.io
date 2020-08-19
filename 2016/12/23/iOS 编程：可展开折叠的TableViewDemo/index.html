@@ -18,21 +18,23 @@
 <link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css">
   
   <link rel="stylesheet" href="/lib/animate-css/animate.min.css">
+  <link rel="stylesheet" href="//unpkg.com/pace-js@1/themes/blue/pace-theme-minimal.css">
+  <script src="//unpkg.com/pace-js@1/pace.min.js"></script>
 
 <script class="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"andy0570.com","root":"/","scheme":"Gemini","version":"8.0.0-rc.5","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":"mac","bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false};
+    var CONFIG = {"hostname":"andy0570.com","root":"/","scheme":"Gemini","version":"8.0.0-rc.5","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":"mac","bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":true,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":true,"nav":null,"activeClass":"valine"},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"algolia":{"appID":"0E2AON8EZF","apiKey":"22fbefd84c8343239f5c04365b9728de","indexName":"MyBlogPlatform","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}}};
   </script>
 
-  <meta name="description" content="导读 该Demo展示了一个可展开折叠的TableView，类似于QQ好友分组列表，我参考了@zhenwenming 写的博客，通过研读，在实现原理不变的前提下，少放了几个不必要的对象，自己写了一个改进版的Demo。  对比差异参考的Demo： 博客： UITableView的折叠收缩和QQ好友分组效果 @zhenwenming   GitHub源码    博主的Demo：">
+  <meta name="description" content="导读 该 Demo 展示了一个可展开折叠的 TableView，类似于 QQ 好友分组列表，我参考了 @zhenwenming 写的博客，通过研读，在实现原理不变的前提下，少放了几个不必要的对象，自己写了一个改进版的 Demo。  对比差异参考的 Demo： 博客： UITableView 的折叠收缩和 QQ 好友分组效果 @zhenwenming   GitHub 源码    博主的 Demo：">
 <meta property="og:type" content="article">
 <meta property="og:title" content="iOS 编程：可展开折叠的 TableViewDemo">
 <meta property="og:url" content="https://andy0570.com/2016/12/23/iOS%20%E7%BC%96%E7%A8%8B%EF%BC%9A%E5%8F%AF%E5%B1%95%E5%BC%80%E6%8A%98%E5%8F%A0%E7%9A%84TableViewDemo/index.html">
 <meta property="og:site_name" content="独木舟的木">
-<meta property="og:description" content="导读 该Demo展示了一个可展开折叠的TableView，类似于QQ好友分组列表，我参考了@zhenwenming 写的博客，通过研读，在实现原理不变的前提下，少放了几个不必要的对象，自己写了一个改进版的Demo。  对比差异参考的Demo： 博客： UITableView的折叠收缩和QQ好友分组效果 @zhenwenming   GitHub源码    博主的Demo：">
+<meta property="og:description" content="导读 该 Demo 展示了一个可展开折叠的 TableView，类似于 QQ 好友分组列表，我参考了 @zhenwenming 写的博客，通过研读，在实现原理不变的前提下，少放了几个不必要的对象，自己写了一个改进版的 Demo。  对比差异参考的 Demo： 博客： UITableView 的折叠收缩和 QQ 好友分组效果 @zhenwenming   GitHub 源码    博主的 Demo：">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071126.gif">
 <meta property="og:image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071129.jpg">
@@ -49,7 +51,7 @@
 <link rel="canonical" href="https://andy0570.com/2016/12/23/iOS%20%E7%BC%96%E7%A8%8B%EF%BC%9A%E5%8F%AF%E5%B1%95%E5%BC%80%E6%8A%98%E5%8F%A0%E7%9A%84TableViewDemo/">
 
 
-<script class="page-configurations">
+<script data-pjax class="page-configurations">
   // https://hexo.io/docs/variables.html
   CONFIG.page = {
     sidebar: "",
@@ -63,6 +65,15 @@
   
 
 
+  <script data-pjax>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?8229a094facca297f211d61323fd9fde";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
 
 
 
@@ -132,6 +143,7 @@
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -165,11 +177,35 @@
     <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
 
   </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
   </ul>
 </nav>
 
 
 
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
 
 </div>
           
@@ -194,14 +230,14 @@
 
       <!--noindex-->
       <section class="post-toc-wrap sidebar-panel">
-          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AF%BC%E8%AF%BB"><span class="nav-number">1.</span> <span class="nav-text">导读</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AF%B9%E6%AF%94%E5%B7%AE%E5%BC%82"><span class="nav-number">2.</span> <span class="nav-text">对比差异</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E7%9A%84Demo%EF%BC%9A"><span class="nav-number">2.1.</span> <span class="nav-text">参考的Demo：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%88%91%E5%86%99%E7%9A%84Demo%EF%BC%9A"><span class="nav-number">2.2.</span> <span class="nav-text">我写的Demo：</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86"><span class="nav-number">3.</span> <span class="nav-text">实现原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E7%AB%A0"><span class="nav-number">4.</span> <span class="nav-text">参考文章</span></a></li></ol></div>
+          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AF%BC%E8%AF%BB"><span class="nav-number">1.</span> <span class="nav-text">导读</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AF%B9%E6%AF%94%E5%B7%AE%E5%BC%82"><span class="nav-number">2.</span> <span class="nav-text">对比差异</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E7%9A%84Demo%EF%BC%9A"><span class="nav-number">2.1.</span> <span class="nav-text">参考的 Demo：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%88%91%E5%86%99%E7%9A%84Demo%EF%BC%9A"><span class="nav-number">2.2.</span> <span class="nav-text">我写的 Demo：</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86"><span class="nav-number">3.</span> <span class="nav-text">实现原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E7%AB%A0"><span class="nav-number">4.</span> <span class="nav-text">参考文章</span></a></li></ol></div>
       </section>
       <!--/noindex-->
 
       <section class="site-overview-wrap sidebar-panel">
         <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <img class="site-author-image" itemprop="image" alt="独木舟的木"
-      src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+      src="https://static01.imgkr.com/temp/88aab3c08a3f43f5a14f21c6c357c816.JPG">
   <p class="site-author-name" itemprop="name">独木舟的木</p>
   <div class="site-description" itemprop="description">生若直木，不语斧凿。</div>
 </div>
@@ -282,7 +318,7 @@
     <link itemprop="mainEntityOfPage" href="https://andy0570.com/2016/12/23/iOS%20%E7%BC%96%E7%A8%8B%EF%BC%9A%E5%8F%AF%E5%B1%95%E5%BC%80%E6%8A%98%E5%8F%A0%E7%9A%84TableViewDemo/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/avatar.png">
+      <meta itemprop="image" content="https://static01.imgkr.com/temp/88aab3c08a3f43f5a14f21c6c357c816.JPG">
       <meta itemprop="name" content="独木舟的木">
       <meta itemprop="description" content="生若直木，不语斧凿。">
     </span>
@@ -323,7 +359,21 @@
                 </span>
             </span>
 
-          <br>
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2016/12/23/iOS%20%E7%BC%96%E7%A8%8B%EF%BC%9A%E5%8F%AF%E5%B1%95%E5%BC%80%E6%8A%98%E5%8F%A0%E7%9A%84TableViewDemo/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2016/12/23/iOS%20%E7%BC%96%E7%A8%8B%EF%BC%9A%E5%8F%AF%E5%B1%95%E5%BC%80%E6%8A%98%E5%8F%A0%E7%9A%84TableViewDemo/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  <br>
             <span class="post-meta-item" title="本文字数">
               <span class="post-meta-item-icon">
                 <i class="far fa-file-word"></i>
@@ -347,45 +397,45 @@
     
     <div class="post-body" itemprop="articleBody">
         <h3 id="导读"><a href="#导读" class="headerlink" title="导读"></a>导读</h3><blockquote>
-<p>该Demo展示了一个可展开折叠的TableView，类似于QQ好友分组列表，我参考了@zhenwenming 写的博客，通过研读，在实现原理不变的前提下，少放了几个不必要的对象，自己写了一个改进版的Demo。</p>
+<p>该 Demo 展示了一个可展开折叠的 TableView，类似于 QQ 好友分组列表，我参考了 @zhenwenming 写的博客，通过研读，在实现原理不变的前提下，少放了几个不必要的对象，自己写了一个改进版的 Demo。</p>
 </blockquote>
-<h3 id="对比差异"><a href="#对比差异" class="headerlink" title="对比差异"></a>对比差异</h3><h4 id="参考的Demo："><a href="#参考的Demo：" class="headerlink" title="参考的Demo："></a>参考的Demo：</h4><ul>
-<li><p>博客： <span class="exturl" data-url="aHR0cDovL2Jsb2cuY3Nkbi5uZXQvd2VubWluZ3poZW5nL2FydGljbGUvZGV0YWlscy81MDQ4MzUwMg==">UITableView的折叠收缩和QQ好友分组效果 @zhenwenming<i class="fa fa-external-link-alt"></i></span> </p>
+<h3 id="对比差异"><a href="#对比差异" class="headerlink" title="对比差异"></a>对比差异</h3><h4 id="参考的Demo："><a href="#参考的Demo：" class="headerlink" title="参考的Demo："></a>参考的 Demo：</h4><ul>
+<li><p>博客： <span class="exturl" data-url="aHR0cDovL2Jsb2cuY3Nkbi5uZXQvd2VubWluZ3poZW5nL2FydGljbGUvZGV0YWlscy81MDQ4MzUwMg==">UITableView 的折叠收缩和 QQ 好友分组效果 @zhenwenming<i class="fa fa-external-link-alt"></i></span> </p>
 </li>
-<li><p><span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL3poZW5nd2VubWluZy9FeHBhbmRUYWJsZVZpZXc=">GitHub源码<i class="fa fa-external-link-alt"></i></span>  </p>
+<li><p><span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL3poZW5nd2VubWluZy9FeHBhbmRUYWJsZVZpZXc=">GitHub 源码<i class="fa fa-external-link-alt"></i></span>  </p>
 </li>
-<li><p>博主的Demo：</p>
-<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071126.gif"></p>
+<li><p>博主的 Demo：</p>
+<p><img data-src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071126.gif"></p>
 </li>
 </ul>
 <a id="more"></a>
 
 <ul>
 <li>从 <strong>视图层次</strong>上看<br>通过分析代码，可以发现，该 <strong>ExpandTableView</strong> 折叠收缩的实现方式是：   <ul>
-<li><strong>分组名</strong>：section 1 ——&gt; 显示在 <strong>UITableView对象</strong> 的 <strong>Header View</strong> 上；</li>
-<li><strong>Header View</strong> 上 ——&gt; 用code画了一个 <strong>UIButton</strong></li>
-<li><strong>UIButton</strong> 上 ——&gt; 用code分别画了 2个<strong>UIImageView</strong> 显示左右两边的图片，一个<strong>UILabel</strong>显示文字，底部又放了一张 <strong>Line</strong> 的图片显示分割线</li>
-<li><strong>每组可展开/收缩的内容</strong>：section 11/12/13 ——&gt; 显示在 <strong>UITableView对象</strong> 的 <strong>UITableViewCell</strong> 上；然后<strong>UITableViewCell</strong>又是用Xib重新绘制了。</li>
-<li>另外，我发现，该<strong>ExpandTableView</strong>中列表视图的父视图是基于<strong>UIViewController</strong>的，<strong>TableView</strong>也是code画上去的，而我自己创建的时候就直接把父视图设置为<strong>UITableViewController</strong>,这样就不用手动创建<strong>TableView</strong>了。</li>
+<li><strong>分组名</strong>：section 1 ——&gt; 显示在 <strong>UITableView 对象</strong> 的 <strong>Header View</strong> 上；</li>
+<li><strong>Header View</strong> 上 ——&gt; 用 code 画了一个 <strong>UIButton</strong></li>
+<li><strong>UIButton</strong> 上 ——&gt; 用 code 分别画了 2 个 <strong>UIImageView</strong> 显示左右两边的图片，一个 <strong>UILabel</strong> 显示文字，底部又放了一张 <strong>Line</strong> 的图片显示分割线</li>
+<li><strong>每组可展开 / 收缩的内容</strong>：section 11/12/13 ——&gt; 显示在 <strong>UITableView 对象</strong> 的 <strong>UITableViewCell</strong> 上；然后 <strong>UITableViewCell</strong> 又是用 Xib 重新绘制了。</li>
+<li>另外，我发现，该 <strong>ExpandTableView</strong> 中列表视图的父视图是基于 <strong>UIViewController</strong> 的，<strong>TableView</strong> 也是 code 画上去的，而我自己创建的时候就直接把父视图设置为 <strong>UITableViewController</strong>, 这样就不用手动创建 <strong>TableView</strong> 了。</li>
 </ul>
 </li>
 </ul>
-<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071129.jpg"></p>
-<h4 id="我写的Demo："><a href="#我写的Demo：" class="headerlink" title="我写的Demo："></a>我写的Demo：</h4><ul>
-<li><span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL0FuZHkwNTcwL0hRTFRhYmxlVmlld0RlbW8=">GitHub源码<i class="fa fa-external-link-alt"></i></span></li>
+<p><img data-src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071129.jpg"></p>
+<h4 id="我写的Demo："><a href="#我写的Demo：" class="headerlink" title="我写的Demo："></a>我写的 Demo：</h4><ul>
+<li><span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL0FuZHkwNTcwL0hRTFRhYmxlVmlld0RlbW8=">GitHub 源码<i class="fa fa-external-link-alt"></i></span></li>
 </ul>
-<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071129.gif"></p>
+<p><img data-src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071129.gif"></p>
 <ul>
-<li><strong>视图层次</strong>上的优化点,<ul>
-<li><strong>UIButton</strong> 上,通过设置 <strong>UIButton</strong> 自带的 <strong>ImageView</strong> 和 <strong>Label</strong> 属性设置UI，通过设置两者的偏移量让其水平左右显示。</li>
-<li><strong>Header View</strong> 底部的分割线也没有通过放图片来设置，而是通过设置 <strong>UIButton</strong> 的背景为灰色，设置 <strong>Footer View</strong> 的高度为1，巧妙的显示了分割线。</li>
+<li><strong>视图层次</strong>上的优化点，<ul>
+<li><strong>UIButton</strong> 上，通过设置 <strong>UIButton</strong> 自带的 <strong>ImageView</strong> 和 <strong>Label</strong> 属性设置 UI，通过设置两者的偏移量让其水平左右显示。</li>
+<li><strong>Header View</strong> 底部的分割线也没有通过放图片来设置，而是通过设置 <strong>UIButton</strong> 的背景为灰色，设置 <strong>Footer View</strong> 的高度为 1，巧妙的显示了分割线。</li>
 </ul>
 </li>
 </ul>
-<p><img src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071132.jpg"></p>
-<h3 id="实现原理"><a href="#实现原理" class="headerlink" title="实现原理"></a>实现原理</h3><p>该可展开折叠的 <strong>TableView</strong> 通过 <strong>Header View</strong> 上的 <strong>Button</strong> 点击来实现 ，而每组的展开/折叠状态用1/0标记并存放在Flag数组中，每按一下<strong>Button</strong>，就修改一下Flag值，然后重新加载<strong>section</strong>,就实现分组展开收缩的动作了。<br>更多细节先参考源码吧： <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL0FuZHkwNTcwL0hRTFRhYmxlVmlld0RlbW8=">GitHub源码<i class="fa fa-external-link-alt"></i></span></p>
+<p><img data-src="https://blog-andy0570-1256077835.cos.ap-shanghai.myqcloud.com/site_Images/071132.jpg"></p>
+<h3 id="实现原理"><a href="#实现原理" class="headerlink" title="实现原理"></a>实现原理</h3><p>该可展开折叠的 <strong>TableView</strong> 通过 <strong>Header View</strong> 上的 <strong>Button</strong> 点击来实现 ，而每组的展开 / 折叠状态用 1/0 标记并存放在 Flag 数组中，每按一下 <strong>Button</strong>，就修改一下 Flag 值，然后重新加载 <strong>section</strong>, 就实现分组展开收缩的动作了。<br>更多细节先参考源码吧： <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL0FuZHkwNTcwL0hRTFRhYmxlVmlld0RlbW8=">GitHub 源码<i class="fa fa-external-link-alt"></i></span></p>
 <h3 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h3><ul>
-<li><span class="exturl" data-url="aHR0cDovL3d3dy5qaWFuc2h1LmNvbS9wLzllZWQ2MWViNmE2NA==">TableView的cell折叠和展开<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cDovL3d3dy5qaWFuc2h1LmNvbS9wLzllZWQ2MWViNmE2NA==">TableView 的 cell 折叠和展开<i class="fa fa-external-link-alt"></i></span></li>
 </ul>
 
     </div>
@@ -442,8 +492,8 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2016/12/23/JSON%E6%A0%A1%E9%AA%8C/" rel="prev" title="JSON校验">
-      <i class="fa fa-chevron-left"></i> JSON校验
+    <a href="/2016/12/23/JSON%E6%A0%A1%E9%AA%8C/" rel="prev" title="JSON 校验">
+      <i class="fa fa-chevron-left"></i> JSON 校验
     </a></div>
       <div class="post-nav-item">
     <a href="/2017/01/06/iOS%20%E7%BC%96%E7%A8%8B%EF%BC%9A%E8%8E%B7%E5%8F%96%E8%AE%BE%E5%A4%87%E4%BF%A1%E6%81%AF%E3%80%81%E5%BA%94%E7%94%A8%E8%B7%B3%E8%BD%AC/" rel="next" title="iOS 编程：获取设备信息、应用跳转">
@@ -461,6 +511,7 @@
 
         </div>
         
+    <div class="comments" id="valine-comments"></div>
 
 <script>
   window.addEventListener('tabs:register', () => {
@@ -529,7 +580,11 @@
   </div>
 
   
-  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.0/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/next-theme/pjax@0/pjax.min.js"></script>
+  <script src="//unpkg.com/medium-zoom@1/dist/medium-zoom.min.js"></script>
+  <script src="//unpkg.com/lozad@1/dist/lozad.min.js"></script>
+  <script src="//unpkg.com/pangu@4/dist/browser/pangu.min.js"></script>
 
 <script src="/js/utils.js"></script>
 
@@ -540,9 +595,42 @@
 
 <script src="/js/bookmark.js"></script>
 
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '.page-configurations',
+    '.main-inner',
+    '.post-toc-wrap',
+    '.languages',
+    '.pjax'
+  ],
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+document.addEventListener('pjax:success', () => {
+  pjax.executeScripts(document.querySelectorAll('script[data-pjax], .pjax script'));
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  const hasTOC = document.querySelector('.post-toc');
+  document.querySelector('.sidebar-inner').classList.toggle('sidebar-nav-active', hasTOC);
+  document.querySelector(hasTOC ? '.sidebar-nav-toc' : '.sidebar-nav-overview').click();
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
 
   
-  <script>
+  <script data-pjax>
     (function(){
       var bp = document.createElement('script');
       var curProtocol = window.location.protocol.split(':')[0];
@@ -555,6 +643,10 @@
 
 
 
+  
+<script src="//unpkg.com/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//unpkg.com/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
 
 
 
@@ -566,9 +658,27 @@
 
 
 
+
+
+
+    <div class="pjax">
   
 
   
 
+
+<script>
+NexT.utils.loadComments('#valine-comments', () => {
+  NexT.utils.getScript('//unpkg.com/valine@1/dist/Valine.min.js', () => {
+    new Valine(Object.assign({
+      el  : '#valine-comments',
+      path: location.pathname,
+    }, {"enable":true,"appId":"S7i1Y8YorMKFPaYbJbekD5el-gzGzoHsz","appKey":"brOnU8mOQvSjpipJvdKUAIbU","placeholder":"写下你的评论...","avatar":"mm","meta":["nick","mail","link"],"pageSize":10,"language":"zh-cn","visitor":false,"comment_count":true,"recordIP":true,"serverURLs":null,"enableQQ":true,"requiredFields":[]}
+    ));
+  }, window.Valine);
+});
+</script>
+
+    </div>
 </body>
 </html>
